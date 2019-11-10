@@ -20,4 +20,4 @@ git submodule update
 4. From the top level of this repository, run `startsg` (if your environment file is called `startsg.local`) or `startsg <my_local_environment_file.local>`.
 
 ## Files
-snap2_adc5g.slx -- A skeletal design comprising an ADC interface, ADC snapshot blocks, and a 1GbE control/monitoring core
+`snap2_adc5g.slx` -- A skeletal design comprising an ADC interface, ADC snapshot blocks, and a 1GbE control/monitoring core
