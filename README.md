@@ -19,5 +19,5 @@ git submodule update
 3. Create a local environment specification file `startsg.local`.
 4. From the top level of this repository, run `startsg` (if your environment file is called `startsg.local`) or `startsg <my_local_environment_file.local>`.
 
-## Files
+## Source Files
 `snap2_adc5g.slx` -- A skeletal design comprising an ADC interface, ADC snapshot blocks, and a 1GbE control/monitoring core
