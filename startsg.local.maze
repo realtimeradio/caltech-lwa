@@ -1,0 +1,5 @@
+export XILINX_PATH=/home/jackh/sw/Vivado/2016.4
+export MATLAB_PATH=/home/jackh/sw/MATLAB
+export PLATFORM=lin64
+export JASPER_BACKEND=vivado
+export PATH=/usr/bin:/usr/sbin:/bin:/sbin:$PATH
