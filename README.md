@@ -1,7 +1,7 @@
 # caltech-lwa
 A repository for LWA SNAP2 firmware
 
-Basen on the versions of the CASPER libraries provided by https://github.com/shlean/mlib_devel/
+Based on the versions of the CASPER libraries provided by https://github.com/shlean/mlib_devel/
 
 ## Software Versions:
 - Ubuntu 16.04
@@ -21,3 +21,5 @@ git submodule update
 
 ## Source Files
 `snap2_adc5g.slx` -- A skeletal design comprising an ADC interface, ADC snapshot blocks, and a 1GbE control/monitoring core
+`snap2_f_200msps_64i_4096c.slx` -- A 64-input F-engine, outputting (up to) 4096 frequency channels. Based on the HERA F-engine design (https://github.com/hera-team/hera_corr_f)
+`*_core*` -- Sub-components of `snap2_f_200msps_64i_4096c.slx` pre-compiled to keep the top-level model (relatively) lightweight
