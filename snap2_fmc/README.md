@@ -9,7 +9,7 @@ Based on a Vivado project provided by the Institute of Automation, Chinese Acade
 
 ## To build
 
-1. Source an appropriate Vivado environment (eg. `source ~/sw/Vivado/2016.4/settings64.sh`
+1. Source an appropriate Vivado environment (eg. `source ~/sw/Vivado/2016.4/settings64.sh` )
 2. Open Vivado
 3. Source the project configuration script: `source generate_project.tcl`
 4. Build the generated project using the Vivado GUI
@@ -20,7 +20,7 @@ The provided project includes an HDL module to count errors in received ADC data
 
 To interrogate error counters:
 
-1. Source an appropriate Vivado environment (eg. `source ~/sw/Vivado/2016.4/settings64.sh`
+1. Source an appropriate Vivado environment (eg. `source ~/sw/Vivado/2016.4/settings64.sh` )
 2. Run the provided test script:
 ```
 vivado -mode batch -source test_fmc_si.tcl
