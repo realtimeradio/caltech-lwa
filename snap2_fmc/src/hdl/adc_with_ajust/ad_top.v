@@ -428,6 +428,8 @@ ramp_error_counter ramp_error_counter_a[3:0] (
     .clk(a_clk_data),
     .rst(a_seek_win_state != 5'h15),
     .din({a_dataA_out, a_dataB_out, a_dataB_out, a_dataC_out}),
+    // If you want to deliberately break things:
+    //.din({a_dataA_out[79:1], ~a_dataA_out[0], a_dataB_out[79:1], ~a_dataB_out[0], a_dataC_out[79:1], ~a_dataC_out[0], a_dataD_out[79:1], ~a_dataD_out[0]}),
     .err_out(err_out_a),
     .ok_out(ok_out_a)
     );
