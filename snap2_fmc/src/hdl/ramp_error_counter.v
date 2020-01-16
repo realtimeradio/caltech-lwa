@@ -52,7 +52,7 @@ module ramp_error_counter(
             err_out <= 64'b0;
             ok_out <= 64'b0;
         end else begin
-            if ((serial_ok != 8'b11111111) && (parallel_ok != 7'b1111111)) begin
+            if ((serial_ok != 8'b11111111) || (parallel_ok != 7'b1111111)) begin
                 err_out <= err_out + 1'b1;
             end else begin
                 ok_out <= ok_out + 1'b1;
