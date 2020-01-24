@@ -190,6 +190,28 @@ end behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_scale_9301144849 is
+  port (
+    ip : in std_logic_vector((26 - 1) downto 0);
+    op : out std_logic_vector((26 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_scale_9301144849;
+architecture behavior of sysgen_scale_9301144849
+is
+  signal ip_17_23: signed((26 - 1) downto 0);
+begin
+  ip_17_23 <= std_logic_vector_to_signed(ip);
+  op <= signed_to_std_logic_vector(ip_17_23);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
 ---------------------------------------------------------------------
 --
 --  Entity        : xlconvert_pipeline
@@ -537,28 +559,6 @@ begin
          o   => q);
    end generate reg_delay;
 end architecture behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_scale_9301144849 is
-  port (
-    ip : in std_logic_vector((26 - 1) downto 0);
-    op : out std_logic_vector((26 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_scale_9301144849;
-architecture behavior of sysgen_scale_9301144849
-is
-  signal ip_17_23: signed((26 - 1) downto 0);
-begin
-  ip_17_23 <= std_logic_vector_to_signed(ip);
-  op <= signed_to_std_logic_vector(ip_17_23);
-end behavior;
 
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;

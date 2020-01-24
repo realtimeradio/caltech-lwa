@@ -7,10 +7,10 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set Compilation {IP Catalog}
 	set CompilationFlow {IP}
 	set CreateInterfaceDocument {off}
-	set DSPDevice {xc7k160t}
-	set DSPFamily {kintex7}
-	set DSPPackage {ffg676}
-	set DSPSpeed {-2}
+	set DSPDevice {xcku115}
+	set DSPFamily {kintexu}
+	set DSPPackage {flvf1924}
+	set DSPSpeed {-2-e}
 	set FPGAClockPeriod 5
 	set GenerateTestBench 0
 	set HDLLanguage {vhdl}
@@ -24,7 +24,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set IP_LifeCycle_Menu {2}
 	set IP_Logo {sysgen_icon_100.png}
 	set IP_Name {}
-	set IP_Revision {209294729}
+	set IP_Revision {210767397}
 	set IP_Socket_IP {0}
 	set IP_Socket_IP_Proj_Path {}
 	set IP_Vendor_Text {User_Company}
@@ -120,7 +120,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set SynthesisTool {Vivado}
 	set TargetDir {/home/jackh/src/caltech-lwa/pfb_fir_4096c_16i_core}
 	set TopLevelModule {pfb_fir_4096c_16i_core}
-	set TopLevelSimulinkHandle 92485
+	set TopLevelSimulinkHandle 126243
 	set VHDLLib {xil_defaultlib}
 	set TopLevelPortInterface {}
 	dict set TopLevelPortInterface sync Name {sync}

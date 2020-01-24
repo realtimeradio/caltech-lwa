@@ -222,7 +222,7 @@
   <spirit:vendorExtensions>
     <xilinx:coreExtensions>
       <xilinx:displayName>pfb_fir_4096c_16i_core</xilinx:displayName>
-      <xilinx:coreRevision>209294729</xilinx:coreRevision>
+      <xilinx:coreRevision>210767397</xilinx:coreRevision>
       <xilinx:configElementInfos>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.CLK.CLK_DOMAIN" xilinx:valueSource="default_prop"/>
       </xilinx:configElementInfos>

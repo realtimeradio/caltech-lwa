@@ -7,10 +7,10 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set Compilation {IP Catalog}
 	set CompilationFlow {IP}
 	set CreateInterfaceDocument {off}
-	set DSPDevice {xc7k160t}
-	set DSPFamily {kintex7}
-	set DSPPackage {ffg676}
-	set DSPSpeed {-2}
+	set DSPDevice {xcku115}
+	set DSPFamily {kintexu}
+	set DSPPackage {flvf1924}
+	set DSPSpeed {-2-e}
 	set FPGAClockPeriod 100
 	set GenerateTestBench 0
 	set HDLLanguage {vhdl}
@@ -24,7 +24,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set IP_LifeCycle_Menu {2}
 	set IP_Logo {sysgen_icon_100.png}
 	set IP_Name {}
-	set IP_Revision {209295814}
+	set IP_Revision {210767094}
 	set IP_Socket_IP {0}
 	set IP_Socket_IP_Proj_Path {}
 	set IP_Vendor_Text {User_Company}

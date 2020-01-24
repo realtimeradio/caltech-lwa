@@ -1,7 +1,7 @@
 --Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
---Date        : Tue Jan  7 09:49:42 2020
+--Date        : Fri Jan 24 10:27:21 2020
 --Host        : maze running 64-bit unknown
 --Command     : generate_target fft_4096c_1i_core_bd_wrapper.bd
 --Design      : fft_4096c_1i_core_bd_wrapper

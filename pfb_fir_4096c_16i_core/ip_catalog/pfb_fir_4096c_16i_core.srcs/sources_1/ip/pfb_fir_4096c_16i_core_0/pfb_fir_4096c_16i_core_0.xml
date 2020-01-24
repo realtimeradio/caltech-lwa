@@ -200,7 +200,7 @@
   <spirit:vendorExtensions>
     <xilinx:coreExtensions>
       <xilinx:displayName>pfb_fir_4096c_16i_core</xilinx:displayName>
-      <xilinx:coreRevision>209294729</xilinx:coreRevision>
+      <xilinx:coreRevision>210767397</xilinx:coreRevision>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2016.4</xilinx:xilinxVersion>

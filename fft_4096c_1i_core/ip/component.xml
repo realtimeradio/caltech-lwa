@@ -714,7 +714,7 @@
       <spirit:file>
         <spirit:name>hdl/fft_4096c_1i_core.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_35c77293</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_b246705b</spirit:userFileType>
         <spirit:logicalName>xil_defaultlib</spirit:logicalName>
       </spirit:file>
     </spirit:fileSet>
@@ -1157,15 +1157,15 @@
   <spirit:vendorExtensions>
     <xilinx:coreExtensions>
       <xilinx:supportedFamilies>
-        <xilinx:family xilinx:lifeCycle="Beta">kintex7</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">kintexu</xilinx:family>
       </xilinx:supportedFamilies>
       <xilinx:taxonomies>
         <xilinx:taxonomy>/System_Generator_for_DSP</xilinx:taxonomy>
       </xilinx:taxonomies>
       <xilinx:displayName>fft_4096c_1i_core</xilinx:displayName>
       <xilinx:definitionSource>sysgen</xilinx:definitionSource>
-      <xilinx:coreRevision>209295814</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2020-01-07T17:49:41Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>210767094</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2020-01-24T18:27:21Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2016.4</xilinx:xilinxVersion>
