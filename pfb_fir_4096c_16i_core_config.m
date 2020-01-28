@@ -18,13 +18,13 @@ function pfb_fir_4096c_16i_core_config(this_block)
   %this_block.tagAsCombinational;
 
   this_block.addSimulinkInport('sync');
-  this_block.addSimulinkInport('pol0_in');
+  this_block.addSimulinkInport('pol_in');
 
   this_block.addSimulinkOutport('sync_out');
-  this_block.addSimulinkOutport('pol0_out');
+  this_block.addSimulinkOutport('pol_out');
 
-  pol0_out_port = this_block.port('pol0_out');
-  pol0_out_port.setType('UFix_192_0');
+  pol_out_port = this_block.port('pol_out');
+  pol_out_port.setType('UFix_192_0');
 
   sync_out_port = this_block.port('sync_out');
   sync_out_port.setType('UFix_1_0');
@@ -33,8 +33,8 @@ function pfb_fir_4096c_16i_core_config(this_block)
   if (this_block.inputTypesKnown)
     % do input type checking, dynamic output type and generic setup in this code block.
 
-    if (this_block.port('pol0_in').width ~= 8*16);
-      this_block.setError('Input data type for port "pol0_in" must have width=8*16.');
+    if (this_block.port('pol_in').width ~= 8*16);
+      this_block.setError('Input data type for port "pol_in" must have width=8*16.');
     end
 
     %this_block.port('sync').useHDLVector(false);

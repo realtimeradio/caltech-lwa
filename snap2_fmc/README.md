@@ -21,13 +21,13 @@ The provided project includes an HDL module to count errors in received ADC data
 To interrogate error counters:
 
 1. Source an appropriate Vivado environment (eg. `source ~/sw/Vivado/2016.4/settings64.sh` )
-2. Run the provided test script:
+2. Run one of the provided test scripts. `test_fmc_si_right.tcl` tests the right-hand (when viewed from the analog inputs) FMC port. `test_fmc_si_left.tcl` tests the left-hand port. For example, to test the right-hand port:
 ```
-vivado -mode batch -source test_fmc_si.tcl
+vivado -mode batch -source test_fmc_si_right.tcl
 ```
 This script will program the FPGA, and poll error registers every 5 seconds.
 
 To execute this script without reprogramming the FPGA:
 ```
-vivado -mode batch -source test_fmc_si.tcl -tclargs noprogram
+vivado -mode batch -source test_fmc_si_right.tcl -tclargs noprogram
 ```
