@@ -436,7 +436,7 @@ ramp_error_counter ramp_error_counter_a[3:0] (
     
 ramp_error_counter ramp_error_counter_b[3:0] (
     .clk(b_clk_data),
-    .rst(a_seek_win_state != 5'h15),
+    .rst(b_seek_win_state != 5'h15),
     .din({b_dataA_out, b_dataB_out, b_dataB_out, b_dataC_out}),
     .err_out(err_out_b),
     .ok_out(ok_out_b)
