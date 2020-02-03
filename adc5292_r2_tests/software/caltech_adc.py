@@ -95,11 +95,11 @@ class CaltechAdc(object):
 
         """
 
+        self.numChannel = numChannel
         self.selectADC([1,3])
         #self.selectADC()
         self.logger.debug("Initialising ADCs")
-        #self.adc.init() # This includes a reset, so don't set any ADC registers before here!
-        self.adc.test('en_ramp')
+        self.adc.init() # This includes a reset, so don't set any ADC registers before here!
 
         self.selectADC([0,2])
         #self.selectADC()
@@ -108,11 +108,8 @@ class CaltechAdc(object):
         self.adc.write(0x1, 0x7) # interleave samples
         self.adc.write(0x8000, 0x40) # input select
         self.adc.write(0x8100, 0x46) # LSB first, offset binary, DDR, 10b
-        self.adc.write(0b1000000, 0x25)  # ramp mode
-        return
 
         # Select all ADCs and continue initialization
-        self.selectADC()
 
         if numChannel==1 and samplingRate<240:
             lowClkFreq = True
@@ -125,41 +122,48 @@ class CaltechAdc(object):
         else:
             lowClkFreq = False
 
-        self.logger.debug("Configuring ADC operating mode")
+        self.logger.info("Configuring ADC operating mode")
+        self.selectADC([1,3])
         if type(self.adc) is HMCAD1511:
             self.adc.setOperatingMode(numChannel,1,lowClkFreq)
         elif type(self.adc) is HMCAD1520:
             self.adc.setOperatingMode(numChannel,1,lowClkFreq,self.RESOLUTION)
 
+    def calibrate(self):
         self.setDemux(numChannel=1) # calibrate in full interleave mode
 
-        self.logger.debug('Check if MMCM locked')
+        self.logger.info('Check if MMCM locked')
         if not self.getWord('ADC16_LOCKED'):
             self.logger.error('MMCM not locked.')
             return False
 
         time.sleep(0.5)
 
-        self.logger.debug('Align line clock')
+        self.logger.info('Align line clock')
         if not self.alignLineClock():
             self.logger.error('Line clock alignment failed!')
             return False
 
-        self.logger.debug('Align frame clock')
+        self.logger.info('Align frame clock')
         if not self.alignFrameClock():
             self.logger.error('Frame clock alignment failed!')
             return False
 
+        self.logger.info('Running ramp test')
         if not self.rampTest():
             self.logger.warning('ADC failed on ramp test')
             return False
+        self.logger.info('Ramp Test OK!')
 
+        self.logger.info('Checking lanebond')
         if not self.isLaneBonded():
             self.logger.error('ADC failed Lane Bonding test')
             return False
+        self.logger.info('Lane bond OK!')
 
         # Finally place ADC in "correct" mode
-        self.setDemux(numChannel=numChannel)
+        self.logger.info('Configuring channelmode')
+        self.setDemux(numChannel=self.numChannel)
 
         return True
 
@@ -211,11 +215,15 @@ class CaltechAdc(object):
     def snapshot(self):
         """ Save 1024 consecutive samples of each ADC into its corresponding bram """
         for ram in self.snapCtrlList:
-            self.interface.write_int(ram, 0b100)
-            self.interface.write_int(ram, 0b101) # arm
-            self.interface.write_int(ram, 0b100)
-            self.interface.write_int(ram, 0b110) # trigger
-            self.interface.write_int(ram, 0b100)
+            self.interface.write_int(ram, 0b100, blindwrite=True)
+            self.interface.write_int(ram, 0b101, blindwrite=True) # arm
+            self.interface.write_int(ram, 0b100, blindwrite=True)
+            val = self._set(0x0, 0x1,   self.M_WB_W_SNAP_REQ)
+            self.adc._write(0x0, self.A_WB_W_CTRL)
+            self.adc._write(val, self.A_WB_W_CTRL)
+            self.adc._write(0x0, self.A_WB_W_CTRL)
+            #self.interface.write_int(ram, 0b110, blindwrite=True) # trigger
+            #self.interface.write_int(ram, 0b100, blindwrite=True)
 
     def calibrateAdcOffset(self):
 
@@ -270,7 +278,7 @@ class CaltechAdc(object):
         """
         return self.adc.interleave(data, mode)
 
-    def readRAM(self, ram=None, signed=True):
+    def readRAM(self, ram=None, signed=True, undo_bitflip=False):
         """ Read RAM(s) and return the 1024-sample data
 
         E.g.
@@ -280,21 +288,34 @@ class CaltechAdc(object):
             readRAM(signed=False)   # return a list of arrays in unsiged format
         """
         if ram==None:                       # read all RAMs
-            return self.readRAM(self.adcList,signed)
+            return self.readRAM(self.adcList,signed,undo_bitflip)
         elif isinstance(ram, list) and all(r in self.adcList for r in ram):
                                     # read a list of RAMs
-            data = [self.readRAM(r,signed) for r in ram if r in self.adcList]
+            data = [self.readRAM(r,signed,undo_bitflip) for r in ram if r in self.adcList]
             return dict(zip(ram,data))
         elif ram in self.adcList:               # read one RAM      
+            #if self.snapWidthList[ram]>8:       # ADC_DATA_WIDTH == 16
+            #    fmt = '!1024' + ('h' if signed else 'H')
+            #    length = 2048
+            #else:               # ADC_DATA_WIDTH == 8
+            #    fmt = '!1024' + ('b' if signed else 'B')
+            #    length = 1024
+            #vals = self.ram[ram]._read(addr=0, size=length)
+            #vals = np.array(struct.unpack(fmt,vals)).reshape(-1,8)
             if self.snapWidthList[ram]>8:       # ADC_DATA_WIDTH == 16
-                fmt = '!1024' + ('h' if signed else 'H')
+                fmt = '>1024H'
                 length = 2048
+                shift = 16 - self.snapWidthList[ram]
             else:               # ADC_DATA_WIDTH == 8
-                fmt = '!1024' + ('b' if signed else 'B')
+                fmt = '>1024B'
                 length = 1024
+                shift = 0
             vals = self.ram[ram]._read(addr=0, size=length)
-            vals = np.array(struct.unpack(fmt,vals)).reshape(-1,8)
-
+            vals = np.array(struct.unpack(fmt,vals)).reshape(-1,8) >> shift
+            if undo_bitflip:
+                vals = vals ^ (1<<(self.snapWidthList[ram] - 1)) # undo MSB inversion (which the firmware does)
+            if signed:
+                vals[vals>(2**(self.snapWidthList[ram]-1))] -= 2**self.snapWidthList[ram]
             return vals
         else:
             raise ValueError("Invalid parameter")
@@ -545,44 +566,55 @@ class CaltechAdc(object):
 
         self.selectADC(chipSel)
         if mode=='ramp':        # ramp mode
-            self.adc.test('en_ramp')
+            for adc in chipSel:
+                self.selectADC(adc)
+                if adc%2 == 0:
+                    self.adc.test_ads('en_ramp')
+                else:
+                    self.adc.test('en_ramp')
             taps=None
             pattern1=None
             pattern2=None
         elif pattern1==None and pattern2==None:
-            # synchronization mode
-            self.adc.test('pat_sync')
+            for adc in chipSel:
+                self.selectADC(adc)
+                resolution = self.snapWidthList[adc]
+                if adc%2 == 0:
+                    # synchronization mode
+                    self.adc.test_ads('pat_sync')
+                else:
+                    # synchronization mode
+                    self.adc.test('pat_sync')
             # pattern1 = 0b11110000 when self.RESOLUTION is 8
             # pattern1 = 0b111111000000 when self.RESOLUTION is 12
-            pattern1 = ((2**(self.RESOLUTION/2))-1) << (self.RESOLUTION/2)
-            pattern1 = self._signed(pattern1,self.RESOLUTION)
+            pattern1 = ((2**(resolution/2))-1) << (resolution/2)
+            pattern1 = self._signed(pattern1,resolution)
         elif isinstance(pattern1,int) and pattern2==None:
             # single pattern mode
-
-            if type(self.adc) is HMCAD1520:
-                # test patterns of HMCAD1520 need special cares
-                ofst = 16 - self.RESOLUTION
-                reg_p1 = pattern1 << ofst
-            else:
-                reg_p1 = pattern1
-
-            self.adc.test('single_custom_pat',reg_p1)
-            pattern1 = self._signed(pattern1,self.RESOLUTION)
+            reg_p1 = pattern1
+            for adc in chipSel:
+                self.selectADC(adc)
+                resolution = self.snapWidthList[adc]
+                if adc%2 == 0:
+                    self.adc.test_ads('single_custom_pat',reg_p1)
+                else:
+                    self.adc.test('single_custom_pat',reg_p1)
+            pattern1 = self._signed(pattern1,resolution)
         elif isinstance(pattern1,int) and isinstance(pattern2,int):
             # dual pattern mode
+            reg_p1 = pattern1
+            reg_p2 = pattern2
+            for adc in chipSel:
+                self.selectADC(adc)
+                resolution = self.snapWidthList[adc]
+                if adc%2 == 0:
+                    self.adc.test_ads('dual_custom_pat',reg_p1,reg_p2)
+                else:
+                    self.adc.test('dual_custom_pat',reg_p1,reg_p2)
 
-            if type(self.adc) is HMCAD1520:
-                # test patterns of HMCAD1520 need special cares
-                ofst = 16 - self.RESOLUTION
-                reg_p1 = pattern1 << ofst
-                reg_p2 = pattern2 << ofst
-            else:
-                reg_p1 = pattern1
-                reg_p2 = pattern2
 
-            self.adc.test('dual_custom_pat',reg_p1,reg_p2)
-            pattern1 = self._signed(pattern1,self.RESOLUTION)
-            pattern2 = self._signed(pattern2,self.RESOLUTION)
+            pattern1 = self._signed(pattern1,resolution)
+            pattern2 = self._signed(pattern2,resolution)
         else: 
             raise ValueError("Invalid parameter")
 
@@ -596,11 +628,13 @@ class CaltechAdc(object):
                 counts = [np.unique(d[:,i],return_counts=True)[1] for i in range(d.shape[1])]
                 r = [np.sum(np.sort(count)[::-1][2:]) for count in counts]
             elif mode=='err' and pattern2==None:    # err mode, single pattern
+                #print pattern1, d
                 r = np.sum(d!=pattern1, 0)
             elif mode=='err' and pattern2!=None:    # err mode, dual pattern
                 # Try two patterns with different order, and return the
                 # result
                 m1,m2 = np.zeros(d.shape),np.zeros(d.shape)
+                #print d, pattern1, pattern2
                 m1[0::2,:],m1[1::2,:]=pattern1,pattern2
                 m2[0::2,:],m2[1::2,:]=pattern2,pattern1
                 r=np.minimum(np.sum(d!=m1,0),np.sum(d!=m2,0))
@@ -628,7 +662,13 @@ class CaltechAdc(object):
             for cs in chipSel:
                 results[cs] = dict(zip(taps,[np.array(row) for row in results[cs]]))
         
-        self.adc.test('off')
+        
+        for adc in chipSel:
+            self.selectADC(adc)
+            if adc%2 == 0:
+                self.adc.test_ads('off')
+            else:
+                self.adc.test('off')
 
         if len(chipSel) == 1:
             return results[chipSel[0]]
@@ -754,13 +794,27 @@ class CaltechAdc(object):
         elif mode == 'dual_pat':    # dual_pat
             # Fine tune delay tap under dual pattern test mode
 
-            errs = self.testPatterns(taps=True,mode='std',pattern1=self.p1,
-                        pattern2=self.p2)
 
             for adc in self.adcList:
+                allDone = True
+                resolution = self.snapWidthList[adc]
+                pats = [0b1010101010,0b0101010101,0b0000000000,0b1111111111]
+                mask = (1<<(resolution/2))-1
+                ofst = resolution/2
+                p1 = ((pats[0] & mask) << ofst) + (pats[3] & mask)
+                p2 = ((pats[1] & mask) << ofst) + (pats[2] & mask)
+                #p1 = 0xaaaa & ((2**resolution)-1)
+                #p2 = p1
+                #print("adc %d writing pattern %x, %x" % (adc, p1, p2))
+                errs = self.testPatterns(chipSel=adc, taps=True,mode='std',pattern1=p1,
+                        pattern2=p2)
+                #errs = self.testPatterns(chipSel=adc, taps=True,mode='err',pattern1=p1)
                 for lane in self.laneList:
-                    vals = np.array(errs[adc].values())[:,lane]
+                    vals = np.array(errs.values())[:,lane]
+                    #print("adc %d, lane %d" % (adc, lane))
+                    #print vals
                     t = self.decideDelay(vals)  # Find a proper tap setting 
+                    self.logger.info("ADC %d lane %d: Chosen delay: %d" % (adc, lane, t))
                     if not t:
                         self.logger.error("ADC{0} lane{1} delay decision failed".format(adc,lane))
                     else:
@@ -780,26 +834,42 @@ class CaltechAdc(object):
         """ Align the frame clock with data frame
         """
 
-        for u in range(self.RESOLUTION*2):
-            allDone = True
-            errs = self.testPatterns(mode='err',pattern1=self.p1,pattern2=self.p2)
-            for adc in self.adcList:
+        for adc in self.adcList:
+            resolution = self.snapWidthList[adc]
+            pats = [0b1010101010,0b0101010101,0b0000000000,0b1111111111]
+            mask = (1<<(resolution/2))-1
+            ofst = resolution/2
+            p1 = ((pats[0] & mask) << ofst) + (pats[3] & mask)
+            p2 = ((pats[1] & mask) << ofst) + (pats[2] & mask)
+            self.logger.info("adc %d writing pattern %x, %x" % (adc, p1, p2))
+            for u in range(resolution*2):
+	        allDone = True
+                errs = self.testPatterns(chipSel=adc, mode='err',pattern1=p1,pattern2=p2)
                 for lane in self.laneList:
-                    if errs[adc][lane]!=0:
+                    #if errs[adc][lane]!=0:
+                    if errs[lane]!=0:
+                        self.logger.info("%d: bitslipping adc %d lane %d" % (u, adc, lane))
                         self.bitslip(adc,lane)
                         allDone = False
-            if allDone:
-                break;
+                if allDone:
+                    self.logger.info("Completed alignment for adc %d" % adc)
+                    break;
 
         return self.isFrameClockAligned()
 
     def isFrameClockAligned(self):
-        errs = self.testPatterns(mode='err',pattern1=self.p1,pattern2=self.p2)
-        if all(all(val==0 for val in adc.values()) for adc in errs.values()):
-            return True
-        else:
-            self.logger.debug('Frame clock NOT aligned.\n{0}'.format(str(errs)))
-            return False
+        ok = True
+        for adc in self.adcList:
+            resolution = self.snapWidthList[adc]
+            pats = [0b1010101010,0b0101010101,0b0000000000,0b1111111111]
+            mask = (1<<(resolution/2))-1
+            ofst = resolution/2
+            p1 = ((pats[0] & mask) << ofst) + (pats[3] & mask)
+            p2 = ((pats[1] & mask) << ofst) + (pats[2] & mask)
+            errs = self.testPatterns(chipSel=adc, mode='err',pattern1=self.p1,pattern2=self.p2)
+            ok = ok and (all(val==0 for val in errs.values()))
+            self.logger.info('Frame clock is aligned? %s' % ok)
+            return ok
 
     def rampTest(self):
         errs = self.testPatterns(mode='ramp')
@@ -816,6 +886,9 @@ class CaltechAdc(object):
                                 be mutually synchronized.
         returns: True is aligned, False otherwise
         """
+        self.selectADC([0,2])
+        self.adc.test_ads("en_ramp")
+        self.selectADC([1,3])
         self.adc.test("en_ramp")
         self.snapshot()
         d = self.readRAM(signed=False)
@@ -825,5 +898,8 @@ class CaltechAdc(object):
                 ok = ok and (np.all(d[adc][0] == d[self.adcList[0]][0][0]))
             else:
                 ok = ok and (np.all(d[adc][0] == d[adc][0][0]))
+        self.selectADC([0,2])
+        self.adc.test_ads("off")
+        self.selectADC([1,3])
         self.adc.test("off")
         return ok

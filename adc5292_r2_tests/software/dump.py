@@ -14,7 +14,12 @@ a = caltech_adc.CaltechAdc(r, logger=logger)
 
 
 a.snapshot()
-x = a.readRAM()
+x = a.readRAM(signed=False, undo_bitflip=True)
+#x = a.readRAM(signed=True, undo_bitflip=True)
 for i in range(4):
+    print ""
     for j in range(8):
-        print "%d:%d:" % (i,j), x[i][0:12,j]
+        print "%d:%d:" % (i,j), 
+        for k in range(12):
+            print "%3d " % x[i][k,j],
+        print ""

@@ -33,6 +33,17 @@ class HMCAD1511(WishBoneDevice):
 
     # Register address
 
+    DICT_ADS = [None] * 0x56
+    DICT_ADS[0x00] = {'rst': 0b1,}
+    DICT_ADS[0x25] = {  'en_ramp' : 0b111 << 4,
+            'dual_custom_pat' : 0b111 << 4,
+            'single_custom_pat' : 0b111 << 4,
+            'bits_custom1_upper': 0b11 << 0,
+            'bits_custom2_upper': 0b11 << 2,
+            }
+    DICT_ADS[0x26] = {  'bits_custom1' : 0b1111111111 << 6, }
+    DICT_ADS[0x27] = {  'bits_custom2' : 0b1111111111 << 6, }
+
     DICT = [None] * (0x56+1)
 
     DICT[0x00] = {  'rst' : 0b1 << 0,}
@@ -236,6 +247,83 @@ class HMCAD1511(WishBoneDevice):
         if rid == None:
             self.logger.error("Invalid parameter")
             raise ValueError("Invalid parameter")
+
+    def _getMask_ads(self, name):
+        rid = None
+        for d in self.DICT_ADS:
+            if d == None:
+                continue
+            if name in d:
+                rid = self.DICT_ADS.index(d)
+                return rid, d.get(name)
+        if rid == None:
+            self.logger.error("Invalid parameter")
+            raise ValueError("Invalid parameter")
+
+    def test_ads(self, mode='off', _bits_custom1=None, _bits_custom2=None):
+        """ Test ADC LVDS
+
+        Set LVDS test patterns
+         E.g.   test('off')
+            test('en_ramp')                 Ramp pattern 0-255
+            test('dual_custom_pat', 0xabcd, 0xdcba) Alternate between two custom patterns
+            test('single_custom_pat', 0xaaaa)       Repeat a custom pattern
+            test('pat_deskew')              Deskew pattern (10101010)
+            test('pat_sync')                Sync pattern (11110000)
+        """
+
+        if mode == 'en_ramp':
+            rid, mask = self._getMask_ads(mode)
+            self.write(self._set(0x0, 0b100, mask), rid)
+        elif mode == 'dual_custom_pat':
+            if not isinstance(_bits_custom1, int) or not isinstance(_bits_custom2, int):
+                self.logger.error("Invalid parameter")
+                raise ValueError("Invalid parameter")
+            rid, mask = self._getMask_ads('bits_custom1')
+            self.write(self._set(0x0, _bits_custom1 << 2, mask), rid)
+            rid, mask = self._getMask_ads('bits_custom2')
+            self.write(self._set(0x0, _bits_custom2 << 2, mask), rid)
+            rid, mask = self._getMask_ads(mode)
+            v = self._set(0x0, 0b010, mask)
+            rid, mask = self._getMask_ads('bits_custom1_upper')
+            v = self._set(v, _bits_custom1 >> 8, mask)
+            rid, mask = self._getMask_ads('bits_custom2_upper')
+            v = self._set(v, _bits_custom2 >> 8, mask)
+            self.write(v, rid)
+        elif mode == 'single_custom_pat':
+            if not isinstance(_bits_custom1, int):
+                self.logger.error("Invalid parameter")
+                raise ValueError("Invalid parameter")
+            rid, mask = self._getMask_ads('bits_custom1')
+            self.write(self._set(0x0, _bits_custom1 << 2, mask), rid)
+            rid, mask = self._getMask_ads(mode)
+            v = self._set(0x0, 0b000, mask)
+            rid, mask = self._getMask_ads('bits_custom1_upper')
+            v = self._set(v, _bits_custom1 >> 8, mask)
+            self.write(v, rid)
+        elif mode == 'pat_deskew':
+            self.test_ads(mode='single_custom_pat', _bits_custom1=0b1010101010)
+        elif mode == 'pat_sync':
+            self.test_ads(mode='single_custom_pat', _bits_custom1=0b1111100000)
+        elif mode == 'off':
+            rid, mask = self._getMask('en_ramp')
+            self.write(self._set(0x0, 0b000, mask), rid)
+        else:
+            self.logger.error("Invalid parameter")
+            raise ValueError("Invalid parameter")
+
+    # fine gain (x, not dB)
+    FGAIN = 2**-8, 2**-9, 2**-10, 2**-11, 2**-12, 2**-13
+
+    # For details please see table 23, 24 and 25 in HMCAD1511 datasheet
+    FGAIN_ORDER = { 4:[0,1,2,3,4,5,6,7],
+            2:[0,2,1,3,4,6,5,7],
+            1:[0,2,5,7,3,1,6,4]}
+
+    # For details please see table 14 in HMCAD1511 datasheet
+    CGAIN_ORDER = { 4:[[0,1],[2,3],[4,5],[6,7]],
+            2:[[0,1,2,3],[4,5,6,7]],
+            1:[[0,1,2,3,4,5,6,7]]}
 
     def test(self, mode='off', _bits_custom1=None, _bits_custom2=None):
         """ Test ADC LVDS
