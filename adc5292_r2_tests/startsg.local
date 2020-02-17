@@ -1,0 +1,6 @@
+export XILINX_PATH=/data/Xilinx/14.7/ISE_DS
+export MATLAB_PATH=/data/matlab-r2013b
+export PLATFORM=lin64
+export PATH=/usr/bin:/usr/sbin:/bin:/sbin:$PATH
+
+export LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu/libgmp.so"
