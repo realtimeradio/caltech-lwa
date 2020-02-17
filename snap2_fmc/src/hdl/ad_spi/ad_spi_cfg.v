@@ -1,17 +1,20 @@
-module ad_spi_cfg(
+module ad_spi_cfg #(
+    parameter CLK_DELAY = 30
+    )(
+
     clk             ,
 	clk200m         ,
-    sys_rst_n       ,		//ÏµÍ³¸´Î»
-    adc_rst         ,    	//AD¸´Î»  µÍµçÆ½ÓÐÐ§  
-    adc_mosi        ,    	//spiÅäÖÃADµÄÊý¾ÝÏß      write  
-    adc_sen         ,      //spiÅäÖÃADµÄÊ¹ÄÜÐÅºÅ 
-    adc_sclk        ,	   //spiÅäÖÃADµÄÊ±ÖÓ  
-	adc_miso        ,      //spiÅäÖÃADµÄÊý¾ÝÏß      read
+    sys_rst_n       ,		//ÏµÍ³ï¿½ï¿½Î»
+    adc_rst         ,    	//ADï¿½ï¿½Î»  ï¿½Íµï¿½Æ½ï¿½ï¿½Ð§  
+    adc_mosi        ,    	//spiï¿½ï¿½ï¿½ï¿½ADï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½      write  
+    adc_sen         ,      //spiï¿½ï¿½ï¿½ï¿½ADï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Åºï¿½ 
+    adc_sclk        ,	   //spiï¿½ï¿½ï¿½ï¿½ADï¿½ï¿½Ê±ï¿½ï¿½  
+	adc_miso        ,      //spiï¿½ï¿½ï¿½ï¿½ADï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½      read
     adc_sync        ,
     adc_sync_dir    ,	 
 	//----------------	 
     work_mode       ,
-//    clk_ctrl        ,      //ÓëADÏà¹ØµÄ¿ØÖÆ¹Ü½Å
+//    clk_ctrl        ,      //ï¿½ï¿½ADï¿½ï¿½ØµÄ¿ï¿½ï¿½Æ¹Ü½ï¿½
     cfg_reday       ,
 	//-------debug---------
 	vio_config_addr,
@@ -31,11 +34,11 @@ input               sys_rst_n       ;
 input               work_mode       ;
 //input   [1:0]       clk_ctrl        ;
 
-output                 adc_rst      ;    	//AD¸´Î»  µÍµçÆ½ÓÐÐ§  
-output                 adc_mosi     ;    	//spiÅäÖÃADµÄÊý¾ÝÏß   
-output                 adc_sen      ;     //spiÅäÖÃADµÄÊ¹ÄÜÐÅºÅ 
-output       reg       adc_sclk     ;	   //spiÅäÖÃADµÄÊ±ÖÓ 
-input                  adc_miso     ;     //ADÐ¾Æ¬½øÈëPower Down
+output                 adc_rst      ;    	//ADï¿½ï¿½Î»  ï¿½Íµï¿½Æ½ï¿½ï¿½Ð§  
+output                 adc_mosi     ;    	//spiï¿½ï¿½ï¿½ï¿½ADï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½   
+output                 adc_sen      ;     //spiï¿½ï¿½ï¿½ï¿½ADï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Åºï¿½ 
+output       reg       adc_sclk     ;	   //spiï¿½ï¿½ï¿½ï¿½ADï¿½ï¿½Ê±ï¿½ï¿½ 
+input                  adc_miso     ;     //ADÐ¾Æ¬ï¿½ï¿½ï¿½ï¿½Power Down
 output reg             cfg_reday    ;
 output                 adc_sync_dir ;
 output reg             adc_sync     ;
@@ -57,7 +60,7 @@ localparam	    Idle       = 5'd0,
 				offset_cfg = 5'd9,		Idle5 = 5'd10,	      gain_cfg      = 5'd11,	 Idle6 = 5'd12,
 				phase_cfg  = 5'd13,		Idle7 = 5'd14,	      cal_cfg       = 5'd15,   Idle8 = 5'd16,
 				cfg_wait   = 5'd17,     Sync_sig   = 5'd18,  Sync_wait = 5'd19;
-localparam	//-----×¢ÒâµØÖ·µÄ×î¸ßÎ»¿ØÖÆ×Å¶ÁÐ´ ¸ßÎªÐ´ µÍÎª¶Á----------
+localparam	//-----×¢ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½Å¶ï¿½Ð´ ï¿½ï¿½ÎªÐ´ ï¿½ï¿½Îªï¿½ï¿½----------
 				ADD_STEP1 = 8'h84,				REG_STEP1 = 16'h0001,  //soware reset
 				ADD_STEP2 = 8'h81,				ADCMODE   = 4'b1000,   //contrl
 				ADD_STEP3 = 8'h85,				REG_STEP3 = 16'h0000,  //test mode 
@@ -481,9 +484,8 @@ end
 assign  adc_spi_rdout = data_rd_out;
 assign  adc_spi_rdy   = data_rd_rdy;
 //------------spi_clk delay------------------
-parameter DELAY = 30;
 
-reg adc_sclk_delay[39:0];
+reg adc_sclk_delay[127:0];
 
 always@(posedge clk200m)
 begin
@@ -491,7 +493,7 @@ begin
 end
 
 genvar 		i;  
-generate for(i=0;i<30;i=i+1)
+generate for(i=0;i<127;i=i+1)
 	begin: spi_clk_delay
 
 		always@(posedge clk200m)
@@ -503,7 +505,7 @@ endgenerate
 
 always@(posedge clk200m)
 begin
-	adc_sclk <= adc_sclk_delay[30];
+	adc_sclk <= adc_sclk_delay[CLK_DELAY];
 end
 
 

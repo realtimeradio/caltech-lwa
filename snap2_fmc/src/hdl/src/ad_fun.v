@@ -18,12 +18,14 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module ad_fun(
+module ad_fun #(
+    parameter CLK_DELAY = 30
+    ) (
     gclk200m_buf,
     gclk10m_buf,
     spi_clk,
-    sys_rst_n  ,   //ÏµÍ³¸´Î»
-	 //---ADCµÄÊ±ÖÓÐÅºÅ----
+    sys_rst_n  ,   //ÏµÍ³ï¿½ï¿½Î»
+	 //---ADCï¿½ï¿½Ê±ï¿½ï¿½ï¿½Åºï¿½----
     ADR_P      ,   //625MHz
     ADR_N      ,
 	 //---OR---- 
@@ -35,7 +37,7 @@ module ad_fun(
     COR_N      ,
 	DOR_P      ,
     DOR_N      ,
-	 //---ADCÅäÖÃÐÅºÅ---- 
+	 //---ADCï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½---- 
     adc_sclk      ,   
     adc_sen       ,
     adc_rst       ,
@@ -44,7 +46,7 @@ module ad_fun(
 
     adc_sync      ,
 	adc_sync_dir  ,
-	 //----------ADC²É¼¯Êý¾Ý-----------
+	 //----------ADCï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½-----------
 	 A_P   ,
 	 A_N   ,
 	 B_P   ,
@@ -156,11 +158,11 @@ wire                adc_ready     ;
 wire                work_mode     ; 
 //wire    [1:0]       clk_ctrl      ; 
 
-wire                auto_seek_rsta	; //¸´Î»IOdelayµÄ¸´Î»ÐÅºÅ£¬ÓÃÓÚÖØÐÂ¼ÓÔØÑÓ³Ù¼ÆÊýÖµ Ò²»á¸´Î»MMCMµ¥Ôª
+wire                auto_seek_rsta	; //ï¿½ï¿½Î»IOdelayï¿½Ä¸ï¿½Î»ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ó³Ù¼ï¿½ï¿½ï¿½Öµ Ò²ï¿½á¸´Î»MMCMï¿½ï¿½Ôª
 
-//wire                a_adc_ddrrst		; //ÓÃÓÚ¹¹³É½ÓÊÕÊý¾ÝµÄ¸´Î»ÐÅºÅ
+//wire                a_adc_ddrrst		; //ï¿½ï¿½ï¿½Ú¹ï¿½ï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÄ¸ï¿½Î»ï¿½Åºï¿½
 
-wire                auto_spi_rstan	; //ÅäÖÃADCÂß¼­µÄ¸´Î»ÐÅºÅ
+wire                auto_spi_rstan	; //ï¿½ï¿½ï¿½ï¿½ADCï¿½ß¼ï¿½ï¿½Ä¸ï¿½Î»ï¿½Åºï¿½
 
 //wire [8:0]    	    a_CNTVALUEIN	;
 //wire [8:0]    		a_CNTVALUEOUT	;
@@ -198,19 +200,19 @@ wire rst_pro;
 //         .RST(rst_IDELAYCTRL)    // 1-bit input: Active high reset input. Asynchronous assert, synchronous deassert to                                 // REFCLK
 //      );
     assign iodelay_rdy = 1'b1;
-///////////////////Íê³É×Ô¶¯µ÷ÕûÑÓÊ±µÄ¹¦ÄÜ/////////////////////
+///////////////////ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ä¹ï¿½ï¿½ï¿½/////////////////////
 
 adc_AUTO_SEEK_D_WIN u_auto_seek_win (
-    .gclk10m_buf			(gclk10m_buf), //10M ×´Ì¬»úÊ±ÖÓ
+    .gclk10m_buf			(gclk10m_buf), //10M ×´Ì¬ï¿½ï¿½Ê±ï¿½ï¿½
     .rst     				(rst_pro),     
 	 //----channel----
-    .clk_div                (clk_div_a),          //½ÓÊÕÊý¾ÝºÍ²é´í
+    .clk_div                (clk_div_a),          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝºÍ²ï¿½ï¿½
     .gclk_sd_locked  	    (gclk_sd_lockeda), 
-    .auto_seek_rst		    (auto_seek_rsta), //*******    //¸´Î»IOdelayµÄ¸´Î»ÐÅºÅ£¬ÓÃÓÚÖØÐÂ¼ÓÔØÑÓ³Ù¼ÆÊýÖµ
-//    .a_adc_ddrrst			(a_adc_ddrrst),   //*******    //¸´Î»ISERDES
+    .auto_seek_rst		    (auto_seek_rsta), //*******    //ï¿½ï¿½Î»IOdelayï¿½Ä¸ï¿½Î»ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ó³Ù¼ï¿½ï¿½ï¿½Öµ
+//    .a_adc_ddrrst			(a_adc_ddrrst),   //*******    //ï¿½ï¿½Î»ISERDES
     .CNTVALUEIN 			(a_CNTVALUEIN ),	 
 	 //-----------adc------------- 
-    .auto_spi_rstn          (auto_spi_rstan),   //ÅäÖÃADCÂß¼­µÄ¸´Î»ÐÅºÅ
+    .auto_spi_rstn          (auto_spi_rstan),   //ï¿½ï¿½ï¿½ï¿½ADCï¿½ß¼ï¿½ï¿½Ä¸ï¿½Î»ï¿½Åºï¿½
     .work_mode			    (work_mode), 
 //    .a_clk_ctrl			    (clk_ctrl),  
     .adc_ready			    (adc_ready), 
@@ -231,14 +233,14 @@ adc_AUTO_SEEK_D_WIN u_auto_seek_win (
     );
 	 
 	  
-////////////////////Ê±ÖÓÐÅºÅµÄ²úÉú////////////////////
+////////////////////Ê±ï¿½ï¿½ï¿½ÅºÅµÄ²ï¿½ï¿½ï¿½////////////////////
 clk_rst u_clk_rst(
 	 //--------system clk and rst---------------	
     .sys_rst_n       (    sys_rst_n       ),
 	 //----input data clk-----
     .ADR_P           (    ADR_P           ),
     .ADR_N           (    ADR_N           ),
-	 //-----------¾Ö²¿Ê±ÖÓ---------------------	 
+	 //-----------ï¿½Ö²ï¿½Ê±ï¿½ï¿½---------------------	 
     .gclk_sd_lockeda (    gclk_sd_lockeda ), 
     .gclk_sd_bufra   (    gclk_sd_bufra   ), //625M
     .clk_div_a       (    clk_div_a       ) //156.25M
@@ -249,7 +251,7 @@ clk_rst u_clk_rst(
 );
 
 
-////////////////////ÅäÖÃADC ½ÓÊÕÊý¾Ý//////////////////// 
+////////////////////ï¿½ï¿½ï¿½ï¿½ADC ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½//////////////////// 
 //-----debug-----
 wire [15:0] adc_spi_rdout;
 wire  adc_spi_rdy;
@@ -259,7 +261,9 @@ assign adc_sync = adc_sync_vio | adc_sync_out;
 //--------------------------------------
  wire   load; 
  assign  load = auto_seek_rsta ;
-UA_adc_inf adc_inf(
+UA_adc_inf #(
+    .CLK_DELAY       (    CLK_DELAY       )
+    ) adc_inf (
 	.clk10m          (    gclk10m_buf     ), //10M 
 	.clk200m         (    gclk200m_buf    ), //200M
 	.auto_spi_rstan  (    auto_spi_rstan  ),
@@ -318,7 +322,7 @@ UA_adc_inf adc_inf(
 	.adc_spi_rdout   (   adc_spi_rdout    ),
 	.adc_spi_rdy     (   adc_spi_rdy      )
 );
-//----------½ÓÊÕÊý¾Ý¸´Î»ÐÅºÅµÄ²úÉú------------
+//----------ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½Î»ï¿½ÅºÅµÄ²ï¿½ï¿½ï¿½------------
 
 /////////////////////////data process////////////////////////////
 

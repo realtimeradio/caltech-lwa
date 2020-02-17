@@ -1,4 +1,6 @@
-module UA_adc_inf(
+module UA_adc_inf #(
+    parameter CLK_DELAY = 30
+    )(
     //--------------
 	 clk10m          , 
 	 clk200m         ,
@@ -184,8 +186,8 @@ wire rst_serdes;
 wire rst_iodelay;
   assign rst_serdes = rst_r4;
   assign rst_iodelay= rst_r2;     
-/////////////////½ÓÊÕÊý¾Ý//////////////////
-//-----Í¨µÀ0-------
+/////////////////ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½//////////////////
+//-----Í¨ï¿½ï¿½0-------
 UA_adc_data_receive u0_adc_data_receive(
     .adc_gclk        (    a_adc_gclk   ),
 	.clk_div         (    clk_div_a    ),
@@ -205,7 +207,7 @@ UA_adc_data_receive u0_adc_data_receive(
     .a_CNTVALUEIN    (    CNTVALUEIN_r2 ),
     .a_CNTVALUEOUT   (    CNTVALUEOUT )	 
     );
-//-----Í¨µÀ1-------
+//-----Í¨ï¿½ï¿½1-------
 UA_adc_data_receive u1_adc_data_receive(
     .adc_gclk        (    a_adc_gclk    ),
 	.clk_div         (    clk_div_a     ),	
@@ -224,7 +226,7 @@ UA_adc_data_receive u1_adc_data_receive(
     .a_CNTVALUEIN    (    CNTVALUEIN_r2 ),
     .a_CNTVALUEOUT   (                  )        	 
     );
-//-----Í¨µÀ2-------
+//-----Í¨ï¿½ï¿½2-------
 UA_adc_data_receive u2_adc_data_receive(
     .adc_gclk        (    a_adc_gclk    ),
 	.clk_div         (    clk_div_a     ),
@@ -244,7 +246,7 @@ UA_adc_data_receive u2_adc_data_receive(
     .a_CNTVALUEIN    (    CNTVALUEIN_r2 ),
     .a_CNTVALUEOUT   (                  )              	 
     );
-//-----Í¨µÀ3-------
+//-----Í¨ï¿½ï¿½3-------
 UA_adc_data_receive u3_adc_data_receive(
     .adc_gclk        (    a_adc_gclk    ),
 	.clk_div         (    clk_div_a     ),
@@ -265,8 +267,10 @@ UA_adc_data_receive u3_adc_data_receive(
     .a_CNTVALUEOUT   (                  )           
     );
 
-//////////////////ÅäÖÃ	ADC//////////////////
-ad_spi_cfg u_ad_spi_cfg(
+//////////////////ï¿½ï¿½ï¿½ï¿½	ADC//////////////////
+ad_spi_cfg #(
+    .CLK_DELAY       (    CLK_DELAY       )
+    ) u_ad_spi_cfg (
     .clk             (    spi_clk         ),
 	.clk200m         (    clk200m         ),
     .sys_rst_n       (    auto_spi_rstan  ), //reset AD config

@@ -218,7 +218,9 @@ wire  a_clk_data;
 wire  a_clk_data_locked;
 //--------------------------
 
-ad_fun inst_AD_u72 (
+ad_fun  #(
+    .CLK_DELAY(30)
+    ) inst_AD_u72 (
 	 //INPUT
 	//----------------
     .gclk200m_buf(clk200m), 
@@ -299,7 +301,9 @@ wire  [3:0]  b_data_or;
 wire  b_clk_data;
 wire  b_clk_data_locked;
 //--------------------------
-ad_fun inst_AD_u73 (
+ad_fun #(
+    .CLK_DELAY(60)
+    ) inst_AD_u73 (
     //INPUT 
 	//----------------
     .gclk200m_buf(clk200m), 
@@ -436,7 +440,7 @@ ramp_error_counter ramp_error_counter_a[3:0] (
     
 ramp_error_counter ramp_error_counter_b[3:0] (
     .clk(b_clk_data),
-    .rst(a_seek_win_state != 5'h15),
+    .rst(b_seek_win_state != 5'h15),
     .din({b_dataA_out, b_dataB_out, b_dataB_out, b_dataC_out}),
     .err_out(err_out_b),
     .ok_out(ok_out_b)
