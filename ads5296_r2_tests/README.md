@@ -11,18 +11,19 @@ The models here provide basic ADC testing capabilities.
 
 ## Test models
 `ads5296_test.slx` -- A skeletal test design for the ADC board allowing short snapshots of ADC samples. This is sufficient for testing the ADC/FPGA link-training software.
+
 `ads5296_test_mux.slx` -- A similar design to the basic test model, but adds the capability to synchronously snapshot 256k samples from any two of the 16 available ADC channels.
 
 ## Software
 Testing software, written in Python2.7 (since it is based on the ancient `corr` module), can be found in the `software/` directory. It is not packaged for install, so scripts should be executed from this directory.
 
 ### Available scripts
-####`plot.py`
+#### `plot.py`
 
 (use with `ads5296_test.slx`)
 A simple, development-level script, for capturing data from ADCs and plotting spectra / samples.
 
-####`capture.py`
+#### `capture.py`
 
 (use with `ads5296_test_mux.slx`
 A parameterized script to capture dumps of 256k samples for either 1 or 2 ADC channels.
