@@ -4,7 +4,7 @@ use IEEE.std_logic_1164.all;
 library xil_defaultlib;
 entity pfb_fir_4096c_16i_core_stub is
   port (
-    pol_in : in std_logic_vector( 128-1 downto 0 );
+    pol_in : in std_logic_vector( 160-1 downto 0 );
     sync : in std_logic_vector( 32-1 downto 0 );
     clk : in std_logic;
     pol_out : out std_logic_vector( 192-1 downto 0 );

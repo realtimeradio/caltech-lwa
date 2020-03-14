@@ -33,7 +33,7 @@ function pfb_fir_4096c_16i_core_config(this_block)
   if (this_block.inputTypesKnown)
     % do input type checking, dynamic output type and generic setup in this code block.
 
-    if (this_block.port('pol_in').width ~= 8*16);
+    if (this_block.port('pol_in').width ~= 10*16);
       this_block.setError('Input data type for port "pol_in" must have width=8*16.');
     end
 
@@ -67,7 +67,7 @@ function pfb_fir_4096c_16i_core_config(this_block)
   %    this_block.addFile('');
   %    this_block.addFile('');
   %this_block.addFile('pfb_fir_2048ch_core/sysgen/pfb_fir_2048ch_core.vhd');
-  this_block.addFile('pfb_fir_4096c_16i_core.vhd');
+  this_block.addFile('pfb_fir_4096c_16i_core_ip_struct.vhd');
 return;
 
 

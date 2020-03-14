@@ -1145,6 +1145,10 @@ namespace eval ::xilinx::dsp::planaheadworker {
          }
       }
    }
+
+
+
+ 
    #-------------------------------------------------------------------------
    # handler for .xdc files when add project files
    # @param filelist    the list holds file names
@@ -1258,7 +1262,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
       upvar $filelist datl
       dsp_bxml_add_file_list $filebxml $datl
    }
-
+ 
    #-------------------------------------------------------------------------
    # handler for testbench files when add project files
    # @param filelist    the list holds file names
@@ -1287,7 +1291,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
    # Adds source files to the project.
    #-------------------------------------------------------------------------
    proc dsp_add_project_files {} {
-      set projfilesexts "xco ucf xdc mif coe ngc v vhd vhdl vh testbench tcl dat dcp"
+      set projfilesexts "xco ucf xdc mif mem coe ngc v vhd vhdl vh testbench tcl dat dcp"
       set retcode [ dsp_reset_project_file_list_var $projfilesexts ]
       set_property design_mode RTL [ get_filesets sources_1]
       set filedir [ dsp_get_sysgen_project_file_dir ]
@@ -1317,7 +1321,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
 
          foreach curext $projfilesexts {
             if { [string match -nocase "*.$curext" $filename] } {
-               if { [string match -nocase "*.v" $filename] || [string match -nocase "*.vhd" $filename] || [string match -nocase "*.vh" $filename] || [string match -nocase "*.vhdl" $filename]} {
+               if { [string match -nocase "*.v" $filename] || [string match -nocase "*.vhd" $filename] || [string match -nocase "*.vh" $filename] || [string match -nocase "*.vhdl" $filename] || [string match -nocase "*.mem" $filename]} {
                   if { [ dsp_has_testbench ] && [ string match -nocase ${paramvalueTestBenchModule} ${origrootname} ] } {
                      set listvarname [ dsp_get_list_var_name "testbench" ]
                      lappend $listvarname $filename
@@ -1409,7 +1413,6 @@ namespace eval ::xilinx::dsp::planaheadworker {
    # Sets the synthesis settings for vivado.
    #-------------------------------------------------------------------------
    proc dsp_set_vivado_synthesis_settings {} {
-      set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY} [current_project]
       set paramvalueSynthStrategyName [ dsp_get_param_value_in_driver_tcl_namespace SynthStrategyName ]
       if { [string length ${paramvalueSynthStrategyName}] > 0 } {
          set_property strategy ${paramvalueSynthStrategyName} [get_runs synth_1]
@@ -1614,6 +1617,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
    # Finishes the project creation.
    #-------------------------------------------------------------------------
    proc dsp_finish_project_creation {} {
+      #puts "PRINT: Entered dsp_finish_project_creation"
       if { [catch current_project] } {
          return
       }
@@ -1770,7 +1774,11 @@ namespace eval ::xilinx::dsp::planaheadworker {
          }
       } elseif [string match -nocase "dat" $filetype] {
             puts -nonewline $fpbxml {MIF}
-      } else {
+	
+      } elseif [string match -nocase "mem" $filetype]{
+	    puts -nonewline $fpbxml {MEM}
+
+      }else {
          puts -nonewline $fpbxml [string toupper $filetype]
       }
 
@@ -1816,7 +1824,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
       } elseif { [string match -nocase "dat" $filetype] } {
          puts $fpbxml {<UsedIn Val="SYNTHESIS"/>}
          puts $fpbxml {<UsedIn Val="SIMULATION"/>}
-      } elseif { [string match -nocase "mif" $filetype] || [string match -nocase "coe" $filetype] } {
+      } elseif { [string match -nocase "mif" $filetype] || [string match -nocase "coe" $filetype] || [string match -nocase "mem" $filetype] } {
          puts $fpbxml {<UsedIn Val="SIMULATION"/>}
       } else {
          puts $fpbxml {<UsedIn Val="SYNTHESIS"/>}
@@ -1828,7 +1836,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
    # add files to bxml
    #-------------------------------------------------------------------------
    proc dsp_bxml_add_files {fp} {
-      set projfilesexts "ucf xdc mif ngc v vh vhd vhdl testbench dat"
+      set projfilesexts "ucf xdc mif ngc v vh vhd vhdl testbench dat mem"
       set retcode [ dsp_reset_project_file_list_var $projfilesexts ]
 
       set manualsimfiles [list]
@@ -1917,6 +1925,11 @@ namespace eval ::xilinx::dsp::planaheadworker {
             file copy -force $coefile $ipdir
             dsp_bxml_add_file $fp $coefile
          }
+ 	 set memSources [ glob -nocomplain $filedir/*.mem ]
+         foreach memfile $memSources {
+            file copy -force $memfile $ipdir
+            dsp_bxml_add_file $fp $memfile
+         }	
 
          set callbackname "sgpaintcallback.tcl"
          if { [file exists $callbackname ] } {
@@ -2036,6 +2049,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
    # Creates a new PlanAhead project.
    #-------------------------------------------------------------------------
    proc dsp_create_planahead_project {} {
+      #puts "PRINT: Entered dsp_create_planahead_project"
       dsp_start_project_creation
       dsp_set_synthesis_settings
       dsp_set_implementation_settings
@@ -2236,10 +2250,11 @@ namespace eval ::xilinx::dsp::planaheadworker {
    proc dsptest_launch_sim { mode } {
       set simlog [dsptest_sim_log_file]
       if {[ dsp_is_running_vivado ]} {
+      	set_property target_simulator XSim [current_project]
          if { [ string match $mode timing ] } {
-            ::launch_xsim -mode [dsptest_translate_sim_mode $mode] -type [dsptest_get_sim_type $mode] -simset sim_1 
+            ::launch_simulation -mode [dsptest_translate_sim_mode $mode] -type [dsptest_get_sim_type $mode] -simset sim_1 
      } else {
-            ::launch_xsim -mode [dsptest_translate_sim_mode $mode] -simset sim_1 
+            ::launch_simulation -mode [dsptest_translate_sim_mode $mode] -simset sim_1 
      }
          # use this check until close_sim works correctly on Windows also
          if { [dsp_isLinuxOS] } {
@@ -2687,15 +2702,15 @@ namespace eval ::xilinx::dsp::planaheadworker {
                 # Add subcore reference to Synthesis 
                 set baseDir [format "%s/synth" $ipPath]
                 set destDirSynth [format "%s/ips/%s/synth" $ippath $ipName]
-                dsp_ip_packager_copy_files $baseDir $destDirSynth {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mif" "*.coe"}
+                dsp_ip_packager_copy_files $baseDir $destDirSynth {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mif" "*.coe" "*.mem"}
                 ipx::add_component_subcore_ref $vendor $library $name $version $synth
-                dsp_ip_packager_add_files_to_group $destDirSynth $synth {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mif" "*.coe"} {work}
+                dsp_ip_packager_add_files_to_group $destDirSynth $synth {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mif" "*.coe" "*.mem"} {work}
                 # Add subcore reference to Simulation    
                 set baseDir [format "%s/sim" $ipPath]
                 set destDirSim [format "%s/ips/%s/sim" $ippath $ipName]
-                dsp_ip_packager_copy_files $baseDir $destDirSim {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mif" "*.coe"}
+                dsp_ip_packager_copy_files $baseDir $destDirSim {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mif" "*.coe" "*.mem"}
                 ipx::add_component_subcore_ref $vendor $library $name $version $sim
-                dsp_ip_packager_add_files_to_group $destDirSim $sim {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mif" "*.coe"}  {work}
+                dsp_ip_packager_add_files_to_group $destDirSim $sim {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mif" "*.coe" "*.mem"}  {work}
 
                 # Add COE file into synthesis and simulation
                 set baseDir [format "%s/%s/%s.srcs/sources_1/ip/" $root $folder $nam]
@@ -2703,6 +2718,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
                 dsp_ip_packager_copy_files $baseDir $destDir {"*.coe"}
                 dsp_ip_packager_add_files_to_group $destDir $synth {"*.coe"} {work}
                 dsp_ip_packager_add_files_to_group $destDir $sim {"*.coe"}  {work}
+
             }    
             
         }
@@ -2778,9 +2794,9 @@ namespace eval ::xilinx::dsp::planaheadworker {
         set nam [dsp_ip_packager_get_top_name] 
         set baseDir [format "%s/%s/%s.srcs/sources_1/imports/sysgen/" $root $folder $nam]
         set destDir [format "%s/src/" $ippath]
-        dsp_ip_packager_copy_files $baseDir $destDir {"*.ngc" "*.v" "*.vhd" "*.vhdl"}
-        dsp_ip_packager_add_files_to_group $destDir $synth {"*.ngc" "*.v" "*.vhd" "*.vhdl"}  {work}
-        dsp_ip_packager_add_files_to_group $destDir $sim {"*.ngc" "*.v" "*.vhd" "*.vhdl"} {work}
+        dsp_ip_packager_copy_files $baseDir $destDir {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mem"}
+        dsp_ip_packager_add_files_to_group $destDir $synth {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mem"}  {work}
+        dsp_ip_packager_add_files_to_group $destDir $sim {"*.ngc" "*.v" "*.vhd" "*.vhdl" "*.mem"} {work}
         
         set baseDir [format "%s/%s/%s.srcs/constrs_1/imports/sysgen/" $root $folder $nam]
         set destDir [format "%s/constrain/" $ippath]
@@ -2794,8 +2810,8 @@ namespace eval ::xilinx::dsp::planaheadworker {
             set_property model_name [dsp_ip_packager_get_top_name] $test
             set baseDir [format "%s/%s/%s.srcs/sim_1/imports/sysgen/" $root $folder $nam]
             set destDir [format "%s/testbench/" $ippath]
-            dsp_ip_packager_copy_files $baseDir $destDir {"*.v" "*.vhd" "*.vhdl"}
-            dsp_ip_packager_add_files_to_group $destDir $test {"*.v" "*.vhd" "*.vhdl"} {work}
+            dsp_ip_packager_copy_files $baseDir $destDir {"*.v" "*.vhd" "*.vhdl" "*.mem"}
+            dsp_ip_packager_add_files_to_group $destDir $test {"*.v" "*.vhd" "*.vhdl" "*.mem"} {work}
         
             set baseDir [format "%s/%s/%s.srcs/sim_1/imports/" $root $folder $nam]
             set destDir [format "%s/testbench/" $ippath]
@@ -2852,6 +2868,10 @@ namespace eval ::xilinx::dsp::planaheadworker {
           remove_files $filelist
        }
        set filelist [get_files -of_objects {sources_1} *.coe]
+       if {[llength $filelist] > 0 } {
+          remove_files $filelist
+       }
+       set filelist [get_files -of_objects {sources_1} *.mem]
        if {[llength $filelist] > 0 } {
           remove_files $filelist
        }
@@ -3185,6 +3205,20 @@ namespace eval ::xilinx::dsp::planaheadworker {
          ipx::add_file "[file tail $ffile]" [dsp_ipp_get_simulation_file_group]
      }
  }
+
+ #
+ # Handles Processing of MEM files for packaging
+ #
+ proc dsp_ipp_handler_mem { filelist } {
+     set root_mem_dir "[dsp_ipp_get_ip_directory]"      
+     file mkdir "$root_mem_dir"     
+     foreach ffile $filelist {     
+         file copy -force "$ffile" "$root_mem_dir"    
+         puts "Adding File $ffile"
+         ipx::add_file "[file tail $ffile]" [dsp_ipp_get_synthesis_file_group]
+         ipx::add_file "[file tail $ffile]" [dsp_ipp_get_simulation_file_group]
+     }
+ }
  #
  # Handles processing of dat files for packaging - copied to the same dir as hdl files
  # needed to import HLS designs into System Generator for DSP
@@ -3422,6 +3456,8 @@ namespace eval ::xilinx::dsp::planaheadworker {
           }
       }
   }
+ 
+
   #----------------------------------------------------------
   # Factory Method to create a IP with user setting
   #----------------------------------------------------------
@@ -3431,6 +3467,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
       set_property display_name [dsp_ip_packager_get_top_name] $ip_core
       set_property description [dsp_ip_packager_get_description] $ip_core
       set_property company_url {} $ip_core
+      set_property XPM_LIBRARIES {XPM_MEMORY XPM_FIFO XPM_CDC} $ip_core
       set_property taxonomy [dsp_ip_packager_get_taxonomy] $ip_core
       set_property XML_FILE_NAME "[dsp_ipp_get_ip_directory]/component.xml" $ip_core
       set_property payment_required false $ip_core
@@ -3789,10 +3826,10 @@ namespace eval ::xilinx::dsp::planaheadworker {
        set replace [format "sysgen_dut: %s" [dsp_ipp_get_rtl_example_ip_name]]
        regsub -all $pattern $cont $replace cont 
        set pattern [format "sysgen_dut : entity [dsp_get_vhdllib].%s" [dsp_ip_packager_get_top_name]]
-       set replace [format "sysgen_dut : entity [dsp_get_vhdllib].%s" [dsp_ipp_get_rtl_example_ip_name]]
+       set replace [format "sysgen_dut : entity [dsp_get_vhdllib].%s" [dsp_ip_packager_get_top_name]_bd_wrapper]
        regsub -all $pattern $cont $replace cont 
        set pattern [format "%s sysgen_dut" [dsp_ip_packager_get_top_name]]
-       set replace [format "%s sysgen_dut" [dsp_ipp_get_rtl_example_ip_name]]
+       set replace [format "%s sysgen_dut" [dsp_ip_packager_get_top_name]_bd_wrapper]
        regsub -all $pattern $cont $replace cont 
        dsp_write_file $mod_test_bench_file $cont
        return $mod_test_bench_file
@@ -3873,7 +3910,7 @@ namespace eval ::xilinx::dsp::planaheadworker {
     }
     file mkdir "$root_ip_dir"
     
-    set projfilesexts "xci ucf xdc xco dat coe mif ngc vhd vhdl v h c htm mdd mtcl mak html dcp"
+    set projfilesexts "xci ucf xdc xco dat coe mem mif ngc vhd vhdl v h c htm mdd mtcl mak html dcp"
     set projpath [ get_property DIRECTORY [current_project] ]
     set nam [dsp_ip_packager_get_top_name]
     ::close_project
@@ -3950,11 +3987,15 @@ namespace eval ::xilinx::dsp::planaheadworker {
     update_ip_catalog
     # Remove coe files references
     remove_files [get_files "*.coe" -quiet] -quiet
+    # Remove mem files references
+    remove_files [get_files "*.mem" -quiet] -quiet
     # Create an example RTL Design
     create_ip -vlnv [dsp_ip_packager_get_vendor]:[dsp_ip_packager_get_library]:[dsp_ip_packager_get_top_name]:[dsp_ip_packager_get_version] -module_name [dsp_ipp_get_rtl_example_ip_name]
 
     # Add <top_module_name>_clock.xdc to ip_catalog project
     ::import_files -fileset [ get_filesets constrs_1 ] -force -norecurse [dsp_ipp_get_clock_xdc_file]
+    set top_level_module [ dsp_get_param_value_in_driver_tcl_namespace TopLevelModule ]
+    ::import_files -fileset [ get_filesets constrs_1 ] -force -norecurse [ dsp_get_file_name ${top_level_module}.xdc ]
     ::import_files -force -norecurse [ dsp_ipp_get_modified_stub_file ]
 
     # Create an example Testbench With the IP
@@ -4508,6 +4549,7 @@ proc dsp_is_processor_interfaces_available_on_ip {} {
    }
 
    proc dsp_generate_timing_report {} {
+       #puts "PRINT: Entered dsp_generate_timing_report"
        ### PERF_DEBUG
        set Performance_benchmarking 0
        if {$Performance_benchmarking == 1} {
@@ -4549,6 +4591,7 @@ proc dsp_is_processor_interfaces_available_on_ip {} {
        # Setting of following parameter enables Vivado database to preserve information of the merged/shared resources.
        # It will be saved as FILE_NAMES and LINE_NUMBERS cell properties.
        [ ::set_param netlist.enableMultipleFileLines 1 ]
+       #puts "PRINT: done enableMultipleFilelines"
 
        set prgs [get_property progress [get_runs synth_1]]
        if { [ string equal $prgs "100%" ] } {
@@ -4567,6 +4610,7 @@ proc dsp_is_processor_interfaces_available_on_ip {} {
 
            puts "INFO: SG_Analyzer -- Running synth_1 ..."
            [ ::launch_runs synth_1 ]
+           #puts "PRINT: launched synth_1"
            [ ::wait_on_run synth_1 ]
            if { [ catch {::open_run synth_1 -name "synth_1" -quiet} result ] } {
                # do nothing
@@ -4592,6 +4636,7 @@ proc dsp_is_processor_interfaces_available_on_ip {} {
        # if AnalyzeTimingPostImplementation is not set to 1
        # then run gather Vivado timing data post-synthesis
        set atPostImpl [ dsp_get_param_value_in_driver_tcl_namespace AnalyzeTimingPostImplementation ]
+       #puts "PRINT: $atPostImpl"
        ### DEBUG
        # puts "Value of analyzeTimingPostImplementation option: $atPostImpl";
        if { [ dsp_is_good_string $atPostImpl ] && [ string equal $atPostImpl "1" ] } {
@@ -4611,11 +4656,20 @@ proc dsp_is_processor_interfaces_available_on_ip {} {
                ### END PERF_DEBUG
 
                # run design optimization
+               #puts "PRINT: running opt_design"
                [ ::opt_design ]
-
+               
                puts "INFO: SG_Analyzer -- Running impl_1 ..."
-               [ ::launch_runs impl_1 ]
+               if {[ catch { ::launch_runs impl_1} ]} {
+                   #puts "PRINT: launch impl_1 fails and executing again"
+                   [ ::reset_run impl_1]
+                   [ ::launch_runs impl_1]
+                   [ ::wait_on_run impl_1 ]
+
+               }
+               #puts "PRINT: waiting for implementation to finish"
                [ ::wait_on_run impl_1 ]
+               #puts "PRINT: implementation done"
                if { [ catch {::open_run impl_1 -name "impl_1"} result ] } {
                    # do nothing
                }
@@ -5903,4 +5957,4 @@ proc dsp_is_processor_interfaces_available_on_ip {} {
 }
 # END namespace ::xilinx::dsp::planaheadworker
 
-# XSIP watermark, do not delete 67d7842dbbe25473c3c32b93c0da8047785f30d78e8a024de1b57352245f9689
+

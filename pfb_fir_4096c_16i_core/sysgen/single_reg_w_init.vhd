@@ -105,3 +105,5 @@ begin
     end generate; -- end bit_is_1
   end generate; -- end fd_prim_array
 end architecture structural;
+
+
