@@ -35,7 +35,9 @@ class HMCAD1511(WishBoneDevice):
 
     DICT_ADS = [None] * 0x56
     DICT_ADS[0x00] = {'rst': 0b1,}
-    DICT_ADS[0x25] = {  'en_ramp' : 0b111 << 4,
+    DICT_ADS[0x25] = {
+            'en_hard_sync' : 0b1 << 15,
+            'en_ramp' : 0b111 << 4,
             'dual_custom_pat' : 0b111 << 4,
             'single_custom_pat' : 0b111 << 4,
             'bits_custom1_upper': 0b11 << 0,
@@ -274,7 +276,9 @@ class HMCAD1511(WishBoneDevice):
 
         if mode == 'en_ramp':
             rid, mask = self._getMask_ads(mode)
-            self.write(self._set(0x0, 0b100, mask), rid)
+            v = self._set(0x0, 0b100, mask)
+            rid, mask = self._getMask_ads('en_hard_sync')
+            self.write(self._set(v, 0b1, mask), rid)
         elif mode == 'dual_custom_pat':
             if not isinstance(_bits_custom1, int) or not isinstance(_bits_custom2, int):
                 self.logger.error("Invalid parameter")

@@ -15,8 +15,8 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def calibrate(roach, boffile):
-    print("Programming FPGA with %s" % BOFFILE)
-    roach.progdev(BOFFILE)
+    print("Programming FPGA with %s" % boffile)
+    roach.progdev(boffile)
     
     a = caltech_adc.CaltechAdc(roach, logger=logger)
     
@@ -24,8 +24,8 @@ def calibrate(roach, boffile):
     a.reset() # Reset FPGA MMCMs
     
     # Reporgram FPGA now that ADC clocks should be setup
-    print("Re-programming FPGA with %s now ADCs have been initialized" % BOFFILE)
-    roach.progdev(BOFFILE)
+    print("Re-programming FPGA with %s now ADCs have been initialized" % boffile)
+    roach.progdev(boffile)
     
     a.logger.info('Check if MMCM locked')
     if not a.getWord('ADC16_LOCKED'):
@@ -34,6 +34,28 @@ def calibrate(roach, boffile):
        a.logger.info('ok')
     
     a.calibrate()
+
+def set_mode(roach, mode):
+    a = caltech_adc.CaltechAdc(roach, logger=logger)
+    if mode == "ramp":
+        a.selectADC([0,2])
+        a.adc.test_ads('en_ramp')
+        a.selectADC([1,3])
+        a.adc.test('en_ramp')
+        a.selectADC()
+    elif mode == 'adc':
+        a.selectADC([0,2])
+        a.adc.test_ads('off')
+        a.selectADC([1,3])
+        a.adc.test('off')
+        a.selectADC()
+    else:
+        print("ADC mode %s not understood!" % mode)
+    time.sleep(0.2)
+
+def sync(roach):
+    roach.write_int('sync',0); roach.write_int('sync', 1); roach.write_int('sync', 0)
+    time.sleep(0.2)
 
 def capture(roach, chans=[0]):
     N_BUFS = 4  # Number of capture buffers per channel
@@ -86,6 +108,10 @@ if __name__ == "__main__":
                         help="Second ADC channel to capture (allowed values: 0 through 15, or None)")
     parser.add_argument("-N", dest="n_dumps", type=int, default=1,
                         help="Number of captures to dump to disk")
+    parser.add_argument("--mode", dest="mode", type=str, default=None,
+                        help="'ramp', or 'adc'. Explicitly leave the ADC in ramp or normal mode")
+    parser.add_argument("--sync", dest="sync", action="store_true",
+                        help="Toggle the sync pin on the ADS5296 chips")
     parser.add_argument("--plot", dest="plot", action="store_true",
                         help="Plot data, rather than writing to disk")
     args = parser.parse_args()
@@ -94,6 +120,18 @@ if __name__ == "__main__":
     time.sleep(0.1)
     if args.program:
         calibrate(roach, args.boffile)
+
+    if args.mode is not None:
+        print("Setting ADCs to mode: %s" % args.mode)
+        if args.mode not in ["ramp", "adc"]:
+            print("Only mode values 'ramp' and 'adc' and allowed!")
+            exit()
+        else:
+            set_mode(roach, args.mode)
+
+    if args.sync:
+        print("Triggering external ADC sync pin(s)")
+        sync(roach)
 
     chans = [args.chan_a]
     if args.chan_b is not None:

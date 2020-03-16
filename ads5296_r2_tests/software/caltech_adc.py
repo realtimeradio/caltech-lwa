@@ -553,7 +553,7 @@ class CaltechAdc(object):
             raise ValueError("Invalid parameter")
 
         if taps==True:
-            taps = range(32)
+            taps = range(16)#range(32)
         elif taps in self.adcList:
             taps = [taps]
         if not isinstance(taps,list) and taps!=None:
