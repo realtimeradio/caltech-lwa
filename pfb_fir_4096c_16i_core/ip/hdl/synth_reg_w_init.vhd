@@ -94,3 +94,5 @@ begin
     o <= dly_i(width - 1 downto 0);
   end generate; -- end latency_gt_0
 end structural;
+
+

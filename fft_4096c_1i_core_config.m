@@ -78,7 +78,7 @@ function fft_4096c_1i_core_config(this_block)
   %    this_block.addFile('');
   %    this_block.addFile('');
   %this_block.addFile('fft_2048ch_6a_core/sysgen/fft_2048ch_6a_core.vhd');
-  this_block.addFile('fft_4096c_1i_core.vhd');
+  this_block.addFile('fft_4096c_1i_core_ip_struct.vhd');
 
 return;
 

@@ -24,7 +24,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set IP_LifeCycle_Menu {2}
 	set IP_Logo {sysgen_icon_100.png}
 	set IP_Name {}
-	set IP_Revision {210767397}
+	set IP_Revision {213033910}
 	set IP_Socket_IP {0}
 	set IP_Socket_IP_Proj_Path {}
 	set IP_Vendor_Text {User_Company}
@@ -42,72 +42,71 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 		{{single_reg_w_init.vhd} -lib {xil_defaultlib}}
 		{{xlclockdriver_rd.vhd} -lib {xil_defaultlib}}
 		{{vivado_ip.tcl}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i0_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i1_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i2_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i3_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i4_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i5_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i6_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i7_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i8_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i9_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i10_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i11_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i12_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i13_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i14_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i15_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i16_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i17_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i18_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i19_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i20_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i21_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i22_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i23_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i24_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i25_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i26_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i27_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i28_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i29_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i30_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i31_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i32_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i33_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i34_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i35_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i36_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i37_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i38_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i39_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i40_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i41_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i42_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i43_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i44_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i45_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i46_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i47_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i48_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i49_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i50_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i51_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i52_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i53_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i54_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i55_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i56_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i57_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i58_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i59_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i60_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i61_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i62_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i63_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i64_vivado.coe}}
-		{{pfb_fir_4096c_16i_core_blk_mem_gen_v8_3_i65_vivado.coe}}
+		{{xpm_4defad_vivado.mem}}
+		{{xpm_55a16b_vivado.mem}}
+		{{xpm_f41339_vivado.mem}}
+		{{xpm_11a8f9_vivado.mem}}
+		{{xpm_f6cc85_vivado.mem}}
+		{{xpm_eb8f56_vivado.mem}}
+		{{xpm_60270a_vivado.mem}}
+		{{xpm_c8d736_vivado.mem}}
+		{{xpm_458e11_vivado.mem}}
+		{{xpm_ab518a_vivado.mem}}
+		{{xpm_e6221f_vivado.mem}}
+		{{xpm_d1001f_vivado.mem}}
+		{{xpm_dc0e31_vivado.mem}}
+		{{xpm_c4dd72_vivado.mem}}
+		{{xpm_b4fa9c_vivado.mem}}
+		{{xpm_1d09f6_vivado.mem}}
+		{{xpm_15a026_vivado.mem}}
+		{{xpm_7c999a_vivado.mem}}
+		{{xpm_767aef_vivado.mem}}
+		{{xpm_3a480d_vivado.mem}}
+		{{xpm_6cee1e_vivado.mem}}
+		{{xpm_73da4b_vivado.mem}}
+		{{xpm_ae982d_vivado.mem}}
+		{{xpm_27c26f_vivado.mem}}
+		{{xpm_dbd99c_vivado.mem}}
+		{{xpm_534789_vivado.mem}}
+		{{xpm_edb5fc_vivado.mem}}
+		{{xpm_f11525_vivado.mem}}
+		{{xpm_0d69c4_vivado.mem}}
+		{{xpm_0825b5_vivado.mem}}
+		{{xpm_ba7252_vivado.mem}}
+		{{xpm_0ec7b7_vivado.mem}}
+		{{xpm_4a1036_vivado.mem}}
+		{{xpm_44c632_vivado.mem}}
+		{{xpm_3149cb_vivado.mem}}
+		{{xpm_05b3c4_vivado.mem}}
+		{{xpm_2c86ec_vivado.mem}}
+		{{xpm_c6c2e7_vivado.mem}}
+		{{xpm_d184d8_vivado.mem}}
+		{{xpm_1e5bbe_vivado.mem}}
+		{{xpm_8a7607_vivado.mem}}
+		{{xpm_679225_vivado.mem}}
+		{{xpm_a0b0b8_vivado.mem}}
+		{{xpm_7e67ae_vivado.mem}}
+		{{xpm_139bb3_vivado.mem}}
+		{{xpm_c99d5d_vivado.mem}}
+		{{xpm_73ac4c_vivado.mem}}
+		{{xpm_dd3843_vivado.mem}}
+		{{xpm_45501a_vivado.mem}}
+		{{xpm_885564_vivado.mem}}
+		{{xpm_63c7a0_vivado.mem}}
+		{{xpm_9159ca_vivado.mem}}
+		{{xpm_d85f4c_vivado.mem}}
+		{{xpm_930ef4_vivado.mem}}
+		{{xpm_360713_vivado.mem}}
+		{{xpm_70e728_vivado.mem}}
+		{{xpm_17b35a_vivado.mem}}
+		{{xpm_2d7b7f_vivado.mem}}
+		{{xpm_a76be4_vivado.mem}}
+		{{xpm_c9c90b_vivado.mem}}
+		{{xpm_6de52f_vivado.mem}}
+		{{xpm_ea8895_vivado.mem}}
+		{{xpm_b2f3da_vivado.mem}}
+		{{xpm_9fce2b_vivado.mem}}
+		{{xpm_5ddc0b_vivado.mem}}
 		{{pfb_fir_4096c_16i_core_entity_declarations.vhd} -lib {xil_defaultlib}}
 		{{pfb_fir_4096c_16i_core.vhd} -lib {xil_defaultlib}}
 		{{pfb_fir_4096c_16i_core_clock.xdc}}
@@ -120,7 +119,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set SynthesisTool {Vivado}
 	set TargetDir {/home/jackh/src/caltech-lwa/pfb_fir_4096c_16i_core}
 	set TopLevelModule {pfb_fir_4096c_16i_core}
-	set TopLevelSimulinkHandle 126243
+	set TopLevelSimulinkHandle 76829
 	set VHDLLib {xil_defaultlib}
 	set TopLevelPortInterface {}
 	dict set TopLevelPortInterface sync Name {sync}
@@ -139,10 +138,10 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	dict set TopLevelPortInterface sync Locs {}
 	dict set TopLevelPortInterface sync IOStandard {}
 	dict set TopLevelPortInterface pol_in Name {pol_in}
-	dict set TopLevelPortInterface pol_in Type UFix_128_0
+	dict set TopLevelPortInterface pol_in Type UFix_160_0
 	dict set TopLevelPortInterface pol_in ArithmeticType xlUnsigned
 	dict set TopLevelPortInterface pol_in BinaryPoint 0
-	dict set TopLevelPortInterface pol_in Width 128
+	dict set TopLevelPortInterface pol_in Width 160
 	dict set TopLevelPortInterface pol_in DatFile {pfb_fir_4096c_16i_core_pol_in.dat}
 	dict set TopLevelPortInterface pol_in IconText {pol_in}
 	dict set TopLevelPortInterface pol_in Direction in
