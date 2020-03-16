@@ -31,7 +31,7 @@ A parameterized script to capture dumps of 256k samples for either 1 or 2 ADC ch
 ```
 jackh@maze:~/src/caltech-lwa/ads5296_r2_tests/software$ python capture.py -h
 usage: capture.py [-h] [-r ROACHHOST] [-b BOFFILE] [-p] [-A CHAN_A]
-                  [-B CHAN_B] [-N N_DUMPS] [--plot]
+                  [-B CHAN_B] [-N N_DUMPS] [--mode MODE] [--sync] [--plot]
 
 Write ADC sample data to files
 
@@ -48,10 +48,13 @@ optional arguments:
   -B CHAN_B     Second ADC channel to capture (allowed values: 0 through 15,
                 or None) (default: None)
   -N N_DUMPS    Number of captures to dump to disk (default: 1)
+  --mode MODE   'ramp', or 'adc'. Explicitly leave the ADC in ramp or normal
+                mode (default: None)
+  --sync        Toggle the sync pin on the ADS5296 chips (default: False)
   --plot        Plot data, rather than writing to disk (default: False)
 ```
 
-**You must program your ROACH with this script (using the `-p` flag) to properlyy intialize the ADCs**
+**You must program your ROACH with this script (using the `-p` flag) to properly intialize the ADCs**
 
 This script can be used to either plot spectra and ADC samples to screen with the `--plot` flag. Or to dump data to csv files.
 
@@ -67,9 +70,14 @@ python capture.py -A 10 --plot
 python capture.py -A 10 -B 11 --plot
 ```
 
-3. Write a csv file containing 10 256k-sample dumps of antennas 8 and 9:
+3. Write a csv file containing 10 256k-sample dumps of ADC channels 8 and 9:
 ```
 python capture.py -A 8 -B 9 -N 10
+```
+
+4. Plot the ramp output of ADCs 0 and 8, after issuing an ADC sync:
+```
+python capture.py -A 0 -B 8 --mode ramp --sync
 ```
 
 Note that when capturing a dump of data from two channels takes approximately twice as long as capturing from a single channel.
