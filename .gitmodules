@@ -4,3 +4,6 @@
 [submodule "mlib_devel_r2"]
 	path = mlib_devel_r2
 	url = https://github.com/realtimeradio/mlib_devel
+[submodule "control_sw/libs/casperfpga"]
+	path = control_sw/libs/casperfpga
+	url = https://github.com/casper-astro/casperfpga
