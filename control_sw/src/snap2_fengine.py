@@ -34,7 +34,7 @@ class Snap2Fengine(object):
         self.reorder     = ChanReorder(self.fpga, 'chan_reorder', nchans=2**12)
         self.packetizer  = Packetizer(self.fpga, 'packetizer', n_time_demux=2) # Round robin time packets to two destinations
         self.eth         = Eth(self.fpga, 'eth')
-        self.corr        = Corr(self.fpga,'corr')
+        self.corr        = Corr(self.fpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
 
         self.ants = [None] * 64 # An attribute to store the antenna names of this board's inputs
         self.ant_indices = ant_indices or range(64) # An attribute to store the antenna numbers used in packet headers

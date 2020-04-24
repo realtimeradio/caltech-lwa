@@ -1,5 +1,5 @@
 class Corr(Block):
-    def __init__(self, host, name, acc_len=3815, logger=None):
+    def __init__(self, host, name, acc_len=3815, logger=None, n_chans=1024):
         """
         Instantiate an correlation block, which allows correlation
         of pairs of inputs to be computed.
@@ -8,12 +8,12 @@ class Corr(Block):
             host (casperfpga.CasperFpga): Host FPGA object
             name (string): Name (in simulink) of this block
             acc_len (int): Number of spectra to accumulate
+            n_chans (int) : Number of frequency channels _output_
         """
         super(Corr, self).__init__(host, name, logger)
-        self.nchans = 1024
+        self.n_chans = n_chans
         self.acc_len = acc_len
         self.spec_per_acc = 8
-        self.format='l'
    
     def set_input(self, pol1, pol2):
         """
@@ -28,7 +28,6 @@ class Corr(Block):
         cnt = self.read_uint('acc_cnt')
         while self.read_uint('acc_cnt') < (cnt+1):
             time.sleep(0.1)
-        return 1
 
     def read_bram(self, flush_vacc=True):
         """ 
@@ -40,7 +39,7 @@ class Corr(Block):
         """
         if flush_vacc:
             self.wait_for_acc()
-        spec = np.array(struct.unpack('>2048l',self.read('dout',8*1024)))
+        spec = np.array(struct.unpack('>%sl' % (2*self.n_chans), self.read('dout',8*self.n_chans)))
         spec = (spec[0::2]+1j*spec[1::2])
         return spec
     
@@ -57,20 +56,7 @@ class Corr(Block):
         if flush_vacc:
             self.wait_for_acc()      # Wait two acc_len for new spectra to load
         spec = self.read_bram()/float(self.acc_len*self.spec_per_acc)
-        if pol1==pol2:
-            return spec.real + 1j*np.zeros(len(spec))
-        else:
-            return spec
-
-    def get_max_hold(self, pol):
-        """
-        Mode works only for auto correlations.
-        Mapping: [1a, 1b, 2a, 2b, 3a, 3b] : [0, 1, 2, 3, 4, 5, 6, 7]
-        """
-        self.set_input(pol,pol)
-        self.wait_for_acc()
-        spec = self.read_bram()
-        return spec.imag 
+        return spec
 
     def plot_corr(self, pol1, pol2, show=False):
         from matplotlib import pyplot as plt
@@ -94,10 +80,10 @@ class Corr(Block):
 
     def get_acc_len(self):
         """
-        Get the currently loaded accumulation length. In FPGA clocks
+        Get the currently loaded accumulation length. In spectra
         """
         #Convert to spectra from clocks. See Firmware for reasoning behind 1024
-        self.acc_len = self.read_int('acc_len') // 1024
+        self.acc_len = self.read_int('acc_len') // self.n_chans
         return self.acc_len
 
     def set_acc_len(self,acc_len):
@@ -106,7 +92,7 @@ class Corr(Block):
         """
         assert isinstance(acc_len, int), "Cannot set accumulation length to type %r" % type(acc_len)
         self.acc_len = acc_len
-        acc_len = 1024*acc_len  #Convert to clks from spectra. See Firmware for reasoning behind 1024
+        acc_len = self.n_chans*acc_len  # Convert from spectra to FPGA clocks
         self.write_int('acc_len',acc_len)
 
     def initialize(self):
