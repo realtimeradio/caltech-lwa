@@ -1,94 +1,167 @@
 class Packetizer(Block):
-    def __init__(self, host, name, n_time_demux=2, logger=None):
+    """
+    The packetizer block allows dynamic definition of
+    packet sizes and contents.
+    In firmware, it is a simple block which allows
+    insertion of header entries  and EOFs at any point in the
+    incoming data stream.
+    It is up to the user to configure this block such that it
+    behaves in a reasonable manner -- i.e.
+       - Output data rate does not overflow the downstream Ethernet core
+       - Packets have a reasonable size
+       - EOFs and headers are correctly placed.
+    """
+    sample_width = 1 # Sample width in bytes: 4+4bit complex = 1 Byte
+    word_width = 32 # Granularity of packet size in Bytes
+    line_rate_gbps = 40 # Link speed in Gbits/s
+    def __init__(self, host, name, n_chans=4096, n_pols=64, sample_rate_mhz=200.0, logger=None):
         super(Packetizer, self).__init__(host, name, logger)
-        self.n_time_demux = n_time_demux
-        self.n_slots = 16
+        self.n_chans = n_chans
+        self.n_pols = n_pols
+        self.sample_rate_mhz = sample_rate_mhz
+        self.n_total_words = self.sample_width * self.n_chans * self.n_pols // self.word_width
+        self.n_words_per_chan = self.sample_width * self.n_pols // self.word_width
+        assert self.n_words_per_chan > 1,
+            "Packetizer software not compatible with n_pols / word_width combination"
+        self.full_data_rate_gbps = 8*self.sample_width * self.n_pols * self.n_chans * self.sample_rate_mhz*1e6 / 1.0e9
 
-    def set_dest_ip(self, ip, slot_offset=0):
-        for time_slot in range(self.n_time_demux):
-            self.write_int('ips',ip[time_slot], word_offset=(time_slot * self.n_slots + slot_offset))
-
-    def set_ant_header(self, ant, slot_offset=0): 
-        for time_slot in range(self.n_time_demux):
-            self.write_int('ants', ant, word_offset=(time_slot * self.n_slots + slot_offset))
+    def get_packet_info(self, n_pkt_chans, occupation=0.95):
+        """
+        Get the packet boundaries for packets with payload sizes
+        `n_bytes`.
         
-    def set_chan_header(self, chan, slot_offset=0):
-        for time_slot in range(self.n_time_demux):
-            self.write_int('chans', chan, word_offset=(time_slot*self.n_slots + slot_offset))
+        Parameters
+        ----------
+        n_pkt_chans : int
+            The number of channels per packet.
+        occupation : float
+            The maximum allowed throughput capacity of the underlying link.
+            The calculation does not include application or protocol overhead,
+            so must necessarily be < 1.
+        sample_rate : float
+            The ADC sampling rate, in MHz. Used to assess link occupation
 
+        Returns
+        -------
+        packet_starts, packet_payloads, channel_indices
 
-    def initialize(self):
-        for time_slot in range(self.n_slots):
-            self.set_dest_ip([0,0], time_slot)
-            self.set_ant_header(0, time_slot)
-            self.set_chan_header(0, time_slot)
-
-    def assign_slot(self, slot_num, chans, dests, reorder_block, ant):
+        packet_starts : list of ints
+            The word indexes where packets start -- i.e., where headers should be
+            written.
+            For example, a value [0, 1024, 2048, ...] indicates that headers
+            should be written into underlying brams at addresses 0, 1024, etc.
+        packet_payloads : list of range()
+            The range of indices where this packet's payload falls. Eg:
+            [range(1,257), range(1025,1281), range(2049,2305), ... etc]
+            These indices should be marked valid, and the last given an EOF.
+        channel_indices : list of range()
+            The range of channel indices this packet will send. Eg:
+            [range(1,129), range(1025,1153), range(2049,2177), ... etc]
+            Channels to be sent should be re-indexed so that they fall into
+            these ranges.
         """
-        The F-engine generates 8192 channels, but can only
-        output 6144(=8192 * 3/4), in order to keep within the output data rate cap.
-        Each output packet contains 384 frequency channels for a single antenna.
-        There are thus effectively 16 output slots, each corresponding
-        to a block of 384 frequency channels. Each block can be filled with
-        arbitrary channels (they can repeat, if you want), and sent
-        to a particular IP address.
-        slot_num -- a value from 0 to 15 -- the slot you want to allocate
-        chans    -- an array of 384 channels, which you want to put in this slot's packet
-        dests     -- A list of IP addresses of the odd and even X-engines for this chan range.
-        reorder_block -- a ChanReorder block object, which allows the
-                         packetizer to manipulate the channel ordering of the design. Bit gross. Sorry.
-        ants     -- The antenna index of the first antenna on this board. One packet contains 3 antennas
+        assert occupation < 1, "Link occupation must be < 1"
+        pkt_size = n_pkt_chans * self.n_words_per_chan * self.word_width
+        assert pkt_size <= 8192, "Can't send packets > 8192 bytes!"
 
+        # Figure out what fraction of channels we can fit on the link
+        self.logger.info("Full data rate is %.2f Gbps" % self.full_data_rate_gbps)
+        chan_frac = occupation * self.line_rate_gbps / self.full_data_rate_gbps
+        self.logger.info("%.2f link occupation => %.2f bandwidth sent" % (occupation, chan_frac))
+        # Round down to an integer number of channels
+        n_sent_chans = int(np.floor(chan_frac * self.n_chans))
+        self.logger.info("%.2f link occupation => %.d channels sent" % (occupation, n_sent_chans))
+        # Round down to a whole number of packets
+        n_pkts = (n_sent_chans // n_pkt_chans)
+        n_sent_chans = n_pkt_chans * n_pkts
+        self.logger.info("Will send %d channels in %d packets" % (n_sent_chans, n_pkts))
+        # Now figure out how many of the total words we're going to use and divide up the deadtime
+        # Reckon on using a full n_words_per_chan block for a header, even though a header
+        # only needs a single word.
+        n_words_used = (n_sent_chans + n_pkts) * self.n_words_per_chan
+        spare_words = self.n_total_words - n_words_used # This is necessarily a multiple of n_words_per_chan
+        assert spare_words % self.n_words_per_chan == 0, "This shouldn't be possible!"
+        assert spare_words >= 0, "Configuration doesn't have space for header words"
+        # Allocate enough words per packet for the data and header
+        n_words_per_packet = (n_sent_chans + 1) * self.n_words_per_chan
+        spare_words_per_packet = ((spare_words // self.n_words_per_chan) // n_pkts) * self.n_words_per_chan
+        packet_starts = np.arange(n_pkts) * (n_words_per_packet + spare_words_per_packet)
+        packet_payloads = []
+        channel_indices = []
+        for i in range(n_pkts):
+            # Payload starts after the header, for which we've allocated n_words_per_chan
+            packet_payloads += packet_starts[i] + self.n_words_per_chan
+            channel_indices += packet_payloads[i] // self.n_words_per_chan
+        return packet_starts, packet_payloads, channel_indices
+        
+    def write_config(self, packet_starts, packet_payloads, channel_indices, ant_indices, ips, print_config=False):
         """
-        NCHANS_PER_SLOT = 384
-        chans = np.array(chans, dtype='>L')
-        if slot_num > self.n_slots:
-            raise ValueError("Only %d output slots can be specified" % self.n_slots)
-        if chans.shape[0] != NCHANS_PER_SLOT:
-            raise ValueError("Each slot must contain %d frequency channels" % NCHANS_PER_SLOT)
+        Write the packetizer configuration BRAMs with appropriate entries.
 
-        if (type(dests) != list) or (len(dests) != self.n_time_demux):
-            raise ValueError("Packetizer requires a list of desitination IPs with %d entries" % self.n_time_demux)
+        Parameters
+        ----------
+        packet_starts : list of ints
+            Word-indices which are the first entry of a packet and should
+            be populated with headers (see `get_packet_info()`)
+        packet_payloads : list of range()s
+            Word-indices which are data payloads, and should be mared as
+            valid (see `get_packet_info()`)
+        channel_indices : list of ints
+            Header entries for the channel field of each packet to be sent
+        ant_indices : list of ints
+            Header entries for the antenna field of each packet to be sent
+        ips : list of str
+            IP addresses for each packet to be sent.
+        print : bool
+            If True, print config for debugging
 
-        # Set the frequency header of this slot to be the first specified channel
-        self.set_chan_header(chans[0], slot_offset=slot_num)
+        All parameters should have identical lengths.
+        """
 
-        # Set the antenna header of this slot (every slot represents 3 antennas
-        self.set_ant_header(ant=ant, slot_offset=slot_num)
+        def format_flags(is_header=False, is_valid=False, is_eof=False):
+            flags = (int(is_eof) << 16) + (int(is_vld) << 8) + (int(is_header) << 0)
+            return flags
 
-        # Set the destination address of this slot to be the specified IP address
-        self.set_dest_ip(dests, slot_offset=slot_num)
+        def deformat_flags(f):
+            is_eof = bool((f >> 16) & 1)
+            is_vld = bool((f >>  8) & 1)
+            is_hdr = bool((f >>  0) & 1)
+            return is_hdr, is_vld, is_eof
 
-        # set the channel orders
-        # The channels supplied need to emerge in the first 384 channels of a block
-        # of 512 (first 192 clks of 256clks for 2 pols)
-        for cn, chan in enumerate(chans[::8]):
-            reorder_block.reindex_channel(chan//8, slot_num*64 + cn)
-    def reset(self):
-        # stop traffic before reset
-        self.disable_tx()
-        # toggle reset
-        self.change_reg_bits('ctrl', 0, 0)
-        self.change_reg_bits('ctrl', 1, 0)
-        self.change_reg_bits('ctrl', 0, 0)
+        n_packets = len(packet_starts)
+        assert len(packet_payloads) == n_packets
+        assert len(channel_indices) == n_packets
+        assert len(ant_indices) == n_packets
+        assert len(ips) == n_packets
 
-    def enable_tx(self):
-        self.change_reg_bits('ctrl', 1, 1)
+        chans = [0] * self.n_total_words
+        ants  = [0] * self.n_total_words 
+        ips   = [0] * self.n_total_words 
+        flags = [0] * self.n_total_words 
 
-    def disable_tx(self):
-        self.change_reg_bits('ctrl', 0, 1)
+        for i in range(n_packets):
+            chans[packet_starts[i]] = pack(channel_indices[i])
+            ants[packet_starts[i]]  = pack(ant_indices[i])
+            ips[packet_starts[i]]   = pack(ips[i])
+            flags[packet_starts[i]] = pack(format_flags(is_header=True, is_valid=True))
+            for w in packet_payloads[i]:
+                flags[w] = format_flags(is_header=False, is_valid=True)
+            # Overwrite the last entry with the EOF
+	    flags[w] = format_flags(is_header=False, is_valid=True, is_eof=True)
 
-    def initialize(self):
-        #Set ip address of the SNAP
-        ipaddr = socket.inet_aton(socket.gethostbyname(self.host.host))
-        self.blindwrite('sw', ipaddr, offset=0x10)
-        self.set_port(self.port)
+        self.write('chans', struct.pack('>%dL' % self.n_total_words, *chans))
+        self.write('ants',  struct.pack('>%dL' % self.n_total_words, *ants))
+        self.write('ips',   struct.pack('>%dL' % self.n_total_words, *ips))
+        self.write('flags', struct.pack('>%dL' % self.n_total_words, *flags))
 
-    def set_source_port(self, port):
-        # see config_10gbe_core in katcp_wrapper
-        self.blindwrite('sw', struct.pack('>BBH', 0, 1, port), offset=0x20)
-                        
-    def print_status(self):
-        rv = self.get_status()
-        for key in rv.keys():
-            print '%12s : %d'%(key,rv[key])
+        if print_config:
+            for i in range(self.n_total_words):
+                is_hdr, is_vld, is_eof = deformat_flags(flags[i])
+                print('%4d: %4d %3d 0x%.8x' % (i, chans[i], ants[i], ips[i]), end=' ')
+                if is_vld:
+                    print('valid', end=' ')
+                if is_hdr:
+                    print('header', end=' ')
+                if is_eof:
+                    print('EOF', end=' ')
+                print()
