@@ -71,3 +71,5 @@ feng.configure_output(n_chans_per_packet,
                       ants=ants,
                      )
 
+feng.eth.enable_tx()
+
