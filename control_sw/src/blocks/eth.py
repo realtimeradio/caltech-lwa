@@ -2,9 +2,8 @@ from .block import Block
 
 class Eth(Block):
     _CORE_NAME = 'forty_gbe'
-    def __init__(self, host, name, port=10000, logger=None):
+    def __init__(self, host, name, logger=None):
         super(Eth, self).__init__(host, name, logger)
-        self.port = port
 
     def set_arp_table(self, macs):
         """
@@ -49,10 +48,6 @@ class Eth(Block):
         self.change_reg_bits('ctrl', 1, 18)
         self.change_reg_bits('ctrl', 0, 18)
 
-    def set_port(self, port):
-        self.port = port
-        self.change_reg_bits('ctrl', port, 2, 16)
-
     def reset(self):
         # stop traffic before reset
         self.disable_tx()
@@ -71,7 +66,6 @@ class Eth(Block):
         #Set ip address of the SNAP
         ipaddr = socket.inet_aton(socket.gethostbyname(self.host.host))
         self.blindwrite(self._CORE_NAME, ipaddr, offset=0x10)
-        self.set_port(self.port)
 
     def set_source_port(self, port):
         # see config_10gbe_core in katcp_wrapper
