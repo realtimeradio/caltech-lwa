@@ -39,7 +39,7 @@ class EqTvg(Block):
         with stream `i` taking the value `i`
         """
         for stream in range(self.n_streams):
-            self.write_stream_tvg(stream, np.ones(self.n_chans)*i)
+            self.write_stream_tvg(stream, np.ones(self.n_chans)*stream)
 
     def write_freq_ramp(self):
         """

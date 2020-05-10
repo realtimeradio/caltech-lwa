@@ -82,7 +82,7 @@ class Snap2Fengine(object):
         stat['serial'] = self.serial
         return stat
 
-    def configure_output(self, n_chans_per_packet, chans, ips, ants=None):
+    def configure_output(self, n_chans_per_packet, chans, ips, ports=None, ants=None):
         """
         """
         chans = np.array(chans)
@@ -96,8 +96,10 @@ class Snap2Fengine(object):
         packet_starts = packet_starts[0:n_packets]
         packet_payloads = packet_payloads[0:n_packets]
         channel_indices = channel_indices[0:n_packets]
+        ports = ports or [10000]*n_packetrs
         assert n_packets == len(packet_starts)
         assert len(ips) == n_packets
+        assert len(ports) == n_packets
 
         # channel_indices above gives the channel IDs which will
         # be sent. Remap the ones we _want_ into these slots
@@ -120,5 +122,6 @@ class Snap2Fengine(object):
             chans[::n_chans_per_packet],
             ant_indices,
             ips,
+            ports,
             print_config=True
         )

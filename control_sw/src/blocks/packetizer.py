@@ -125,7 +125,7 @@ class Packetizer(Block):
             w_cnt += spare_chans_per_packet * self.n_words_per_chan
         return packet_starts, packet_payloads, channel_indices
         
-    def write_config(self, packet_starts, packet_payloads, channel_indices, ant_indices, dest_ips, print_config=False):
+    def write_config(self, packet_starts, packet_payloads, channel_indices, ant_indices, dest_ips, dest_ports, print_config=False):
         """
         Write the packetizer configuration BRAMs with appropriate entries.
 
@@ -143,6 +143,8 @@ class Packetizer(Block):
             Header entries for the antenna field of each packet to be sent
         dest_ips : list of str
             IP addresses for each packet to be sent.
+        dest_ports : list of int
+            UDP destination ports for each packet to be sent.
         print : bool
             If True, print config for debugging
 
@@ -173,10 +175,12 @@ class Packetizer(Block):
         assert len(channel_indices) == n_packets
         assert len(ant_indices) == n_packets
         assert len(dest_ips) == n_packets
+        assert len(dest_ports) == n_packets
 
         chans = [0] * self.n_total_words
         ants  = [0] * self.n_total_words 
         ips   = [0] * self.n_total_words 
+        ports = [0] * self.n_total_words
         flags = [0] * self.n_total_words 
 
         for i in range(n_packets):
@@ -187,18 +191,20 @@ class Packetizer(Block):
                 flags[w] = format_flags(is_header=False, is_valid=True)
             # Insert the Destination IP synchronous with the EOF
             ips[w]   = ip2int(dest_ips[i])
+            ports[w]   = ip2int(dest_ports[i])
             # Overwrite the last entry with the EOF
             flags[w] = format_flags(is_header=False, is_valid=True, is_eof=True)
 
         self.write('chans', struct.pack('>%dL' % self.n_total_words, *chans))
         self.write('ants',  struct.pack('>%dL' % self.n_total_words, *ants))
         self.write('ips',   struct.pack('>%dL' % self.n_total_words, *ips))
+        self.write('ports', struct.pack('>%dL' % self.n_total_words, *ports))
         self.write('flags', struct.pack('>%dL' % self.n_total_words, *flags))
 
         if print_config:
             for i in range(self.n_total_words):
                 is_hdr, is_vld, is_eof = deformat_flags(flags[i])
-                print('%4d: %4d %3d 0x%.8x' % (i, chans[i], ants[i], ips[i]), end=' ')
+                print('%4d: %4d %3d %.5d 0x%.8x' % (i, chans[i], ants[i], ports[i], ips[i]), end=' ')
                 if is_vld:
                     print('valid', end=' ')
                 if is_hdr:
