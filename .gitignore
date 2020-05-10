@@ -13,3 +13,5 @@
 snap2_adc5g/
 snap2_f_200msps_64i_4096c/
 !snap2_f_200msps_64i_4096c/outputs/
+snap2_f_200msps_64i_4096c_test/
+!snap2_f_200msps_64i_4096c_test/outputs/
