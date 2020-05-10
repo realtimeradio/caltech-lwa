@@ -1,5 +1,5 @@
 import logging
-import helpers
+from lwa_f import helpers
 
 class Block(object):
     """

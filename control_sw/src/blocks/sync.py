@@ -1,4 +1,7 @@
+from .block import Block
+
 class Sync(Block):
+    PERIOD_BASE_DIVISOR = 13 * 4 * 8192
     def __init__(self, host, name, logger=None):
         super(Sync, self).__init__(host, name, logger)
         self.OFFSET_ARM_SYNC  = 0
@@ -30,6 +33,8 @@ class Sync(Block):
         """
         Change the period of the sync pulse
         """
+        assert (period % self.PERIOD_BASE_DIVISOR == 0), \
+            'Period should be a multiple of %d' % self.PERIOD_BASE_DIVISOR
         self.host.write_int('timebase_sync_period',period)
         self._info("Changed sync period to %.2f"%period)
 
@@ -82,4 +87,4 @@ class Sync(Block):
         """
         self.write_int('arm', 0)
         #self.change_period(2**16 * 9*7*6*5*3)
-        self.change_period(0)
+        self.change_period(self.PERIOD_BASE_DIVISOR * 256)

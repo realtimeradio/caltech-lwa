@@ -1,5 +1,6 @@
 import numpy as np
 import struct
+from .block import Block
 
 class EqTvg(Block):
     _FORMAT = 'B'
@@ -7,7 +8,7 @@ class EqTvg(Block):
         super(EqTvg, self).__init__(host, name, logger)
         self.n_streams = n_streams
         self.n_chans = n_chans
-        self._stream_size = struct.calcsize(self._FORMAT)*self.n_coeffs
+        self._stream_size = struct.calcsize(self._FORMAT)*self.n_chans
 
     def tvg_enable(self):
         self.write_int('tvg_en', 1)
@@ -27,7 +28,7 @@ class EqTvg(Block):
             Test vector array, with `self.n_chans` elements
         """
         tv = np.array(test_vector, dtype='>%s'%self._FORMAT)
-        assert (tv.shape[1] == self.n_chans), "Test vector should have self.n_chans elements!"
+        assert (tv.shape[0] == self.n_chans), "Test vector should have self.n_chans elements!"
         core_name = 'core%d_tv' % (stream // 16)
         sub_index = stream % 16
         self.write(core_name, tv.tostring(), offset=sub_index*self._stream_size)
@@ -38,7 +39,7 @@ class EqTvg(Block):
         with stream `i` taking the value `i`
         """
         for stream in range(self.n_streams):
-            self.write_stream_tvg(i, np.ones(self.n_chans)*i)
+            self.write_stream_tvg(stream, np.ones(self.n_chans)*i)
 
     def write_freq_ramp(self):
         """
@@ -48,7 +49,7 @@ class EqTvg(Block):
         ramp = np.arange(self.n_chans)
         ramp = np.array(ramp, dtype='>%s' %self._FORMAT) # tvg values are only 8 bits
         for stream in range(self.n_streams):
-            self.write_stream_tvg(i, ramp)
+            self.write_stream_tvg(stream, ramp)
 
     def read_stream_tvg(self, stream):
         """
@@ -67,7 +68,7 @@ class EqTvg(Block):
         core_name = 'core%d_tv' % (stream // 16)
         sub_index = stream % 16
         s = self.read(core_name, self._stream_size, offset=sub_index*self._stream_size)
-        tv = np.fromstring(s, dtype='>%s' %self._FORMAT)
+        tvg = np.fromstring(s, dtype='>%s' %self._FORMAT)
         return tvg
 
     def initialize(self):

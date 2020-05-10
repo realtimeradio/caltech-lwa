@@ -5,8 +5,9 @@ import socket
 import time
 import casperfpga
 import helpers
+from .block import Block
 
-class Adc(Block)
+class Adc(Block):
     def __init__(self, host, sample_rate=500, num_chans=2, resolution=8, ref=10, logger=None, **kwargs):
         """
         Instantiate an ADC block.

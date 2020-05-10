@@ -1,3 +1,8 @@
+import numpy as np
+import struct
+
+from .block import Block
+
 class Packetizer(Block):
     """
     The packetizer block allows dynamic definition of
@@ -21,11 +26,11 @@ class Packetizer(Block):
         self.sample_rate_mhz = sample_rate_mhz
         self.n_total_words = self.sample_width * self.n_chans * self.n_pols // self.word_width
         self.n_words_per_chan = self.sample_width * self.n_pols // self.word_width
-        assert self.n_words_per_chan > 1,
+        assert self.n_words_per_chan > 1, \
             "Packetizer software not compatible with n_pols / word_width combination"
-        self.full_data_rate_gbps = 8*self.sample_width * self.n_pols * self.n_chans * self.sample_rate_mhz*1e6 / 1.0e9
+        self.full_data_rate_gbps = 8*self.sample_width * self.n_pols * self.sample_rate_mhz*1e6/2. / 1.0e9
 
-    def get_packet_info(self, n_pkt_chans, occupation=0.95):
+    def get_packet_info(self, n_pkt_chans, occupation=0.95, chan_block_size=8):
         """
         Get the packet boundaries for packets with payload sizes
         `n_bytes`.
@@ -38,8 +43,9 @@ class Packetizer(Block):
             The maximum allowed throughput capacity of the underlying link.
             The calculation does not include application or protocol overhead,
             so must necessarily be < 1.
-        sample_rate : float
-            The ADC sampling rate, in MHz. Used to assess link occupation
+        chan_block_size : int
+            The granularity with which we can start packets. I.e., packets
+            must start on an n*`chan_block` boundary.
 
         Returns
         -------
@@ -65,36 +71,61 @@ class Packetizer(Block):
         assert pkt_size <= 8192, "Can't send packets > 8192 bytes!"
 
         # Figure out what fraction of channels we can fit on the link
-        self.logger.info("Full data rate is %.2f Gbps" % self.full_data_rate_gbps)
+        self._info("Full data rate is %.2f Gbps" % self.full_data_rate_gbps)
         chan_frac = occupation * self.line_rate_gbps / self.full_data_rate_gbps
-        self.logger.info("%.2f link occupation => %.2f bandwidth sent" % (occupation, chan_frac))
+        self._info("%.2f link occupation => %.2f bandwidth sent" % (occupation, chan_frac))
         # Round down to an integer number of channels
         n_sent_chans = int(np.floor(chan_frac * self.n_chans))
-        self.logger.info("%.2f link occupation => %.d channels sent" % (occupation, n_sent_chans))
+        self._info("%.2f link occupation => %.d channels sent" % (occupation, n_sent_chans))
         # Round down to a whole number of packets
         n_pkts = (n_sent_chans // n_pkt_chans)
         n_sent_chans = n_pkt_chans * n_pkts
-        self.logger.info("Will send %d channels in %d packets" % (n_sent_chans, n_pkts))
+        self._info("Will send %d channels in %d packets" % (n_sent_chans, n_pkts))
+
+        # Channels can only be sent in positions which are a multiple of chan_block_size
+        possible_chan_starts = range(0, self.n_chans, chan_block_size)
+        # Start words are these values scaled by number of words per channel _and_
+        # with 1 added -- data are delayed by 1 so that we can insert a header before word 0
+        possible_start_words = [(c*self.n_words_per_chan + 1) for c in possible_chan_starts]
+
         # Now figure out how many of the total words we're going to use and divide up the deadtime
         # Reckon on using a full n_words_per_chan block for a header, even though a header
         # only needs a single word.
         n_words_used = (n_sent_chans + n_pkts) * self.n_words_per_chan
         spare_words = self.n_total_words - n_words_used # This is necessarily a multiple of n_words_per_chan
+        self._info("Number of words used: %d" % n_words_used)
+        self._info("Number of words spare: %d" % spare_words)
         assert spare_words % self.n_words_per_chan == 0, "This shouldn't be possible!"
         assert spare_words >= 0, "Configuration doesn't have space for header words"
         # Allocate enough words per packet for the data and header
-        n_words_per_packet = (n_sent_chans + 1) * self.n_words_per_chan
-        spare_words_per_packet = ((spare_words // self.n_words_per_chan) // n_pkts) * self.n_words_per_chan
-        packet_starts = np.arange(n_pkts) * (n_words_per_packet + spare_words_per_packet)
+        spare_chans_per_packet = ((self.n_chans - n_sent_chans) // n_pkts)
+        self._info("Number of spare chans per packet: %d" % spare_chans_per_packet)
+        spare_chans_per_packet = chan_block_size * ((spare_chans_per_packet // chan_block_size)-1)
+        self._info("Using %d spare chans per packet" % spare_chans_per_packet)
+        packet_starts = []
         packet_payloads = []
         channel_indices = []
-        for i in range(n_pkts):
-            # Payload starts after the header, for which we've allocated n_words_per_chan
-            packet_payloads += packet_starts[i] + self.n_words_per_chan
-            channel_indices += packet_payloads[i] // self.n_words_per_chan
+        w_cnt = 0
+        for pkt in range(n_pkts):
+            packet_starts += [w_cnt]
+            w_cnt += 1
+            # Find place we can start a payload
+            for i in possible_start_words:
+                if i >= w_cnt:
+                    w_cnt = i
+                    break
+            packet_payloads += [range(w_cnt, w_cnt + n_pkt_chans * self.n_words_per_chan)]
+            # And which channels would these be?
+            channel_indices += [range(w_cnt // self.n_words_per_chan,
+                                      w_cnt // self.n_words_per_chan + n_pkt_chans)]
+            w_cnt += n_pkt_chans * self.n_words_per_chan
+            assert (w_cnt < self.n_total_words), \
+                "Packet %d: Tried to allocate word %d > %d" % (pkt, w_cnt, self.n_total_words)
+            # Add in padding space
+            w_cnt += spare_chans_per_packet * self.n_words_per_chan
         return packet_starts, packet_payloads, channel_indices
         
-    def write_config(self, packet_starts, packet_payloads, channel_indices, ant_indices, ips, print_config=False):
+    def write_config(self, packet_starts, packet_payloads, channel_indices, ant_indices, dest_ips, print_config=False):
         """
         Write the packetizer configuration BRAMs with appropriate entries.
 
@@ -110,7 +141,7 @@ class Packetizer(Block):
             Header entries for the channel field of each packet to be sent
         ant_indices : list of ints
             Header entries for the antenna field of each packet to be sent
-        ips : list of str
+        dest_ips : list of str
             IP addresses for each packet to be sent.
         print : bool
             If True, print config for debugging
@@ -119,7 +150,7 @@ class Packetizer(Block):
         """
 
         def format_flags(is_header=False, is_valid=False, is_eof=False):
-            flags = (int(is_eof) << 16) + (int(is_vld) << 8) + (int(is_header) << 0)
+            flags = (int(is_eof) << 16) + (int(is_valid) << 8) + (int(is_header) << 0)
             return flags
 
         def deformat_flags(f):
@@ -128,11 +159,20 @@ class Packetizer(Block):
             is_hdr = bool((f >>  0) & 1)
             return is_hdr, is_vld, is_eof
 
+        def ip2int(x):
+            octets = list(map(int, x.split('.')))
+            ip = 0
+            ip += (octets[0] << 24)
+            ip += (octets[1] << 16)
+            ip += (octets[2] << 8)
+            ip += (octets[3] << 0)
+            return ip
+
         n_packets = len(packet_starts)
         assert len(packet_payloads) == n_packets
         assert len(channel_indices) == n_packets
         assert len(ant_indices) == n_packets
-        assert len(ips) == n_packets
+        assert len(dest_ips) == n_packets
 
         chans = [0] * self.n_total_words
         ants  = [0] * self.n_total_words 
@@ -140,14 +180,15 @@ class Packetizer(Block):
         flags = [0] * self.n_total_words 
 
         for i in range(n_packets):
-            chans[packet_starts[i]] = pack(channel_indices[i])
-            ants[packet_starts[i]]  = pack(ant_indices[i])
-            ips[packet_starts[i]]   = pack(ips[i])
-            flags[packet_starts[i]] = pack(format_flags(is_header=True, is_valid=True))
+            chans[packet_starts[i]] = channel_indices[i]
+            ants[packet_starts[i]]  = ant_indices[i]
+            flags[packet_starts[i]] = format_flags(is_header=True, is_valid=True)
             for w in packet_payloads[i]:
                 flags[w] = format_flags(is_header=False, is_valid=True)
+            # Insert the Destination IP synchronous with the EOF
+            ips[w]   = ip2int(dest_ips[i])
             # Overwrite the last entry with the EOF
-	    flags[w] = format_flags(is_header=False, is_valid=True, is_eof=True)
+            flags[w] = format_flags(is_header=False, is_valid=True, is_eof=True)
 
         self.write('chans', struct.pack('>%dL' % self.n_total_words, *chans))
         self.write('ants',  struct.pack('>%dL' % self.n_total_words, *ants))

@@ -1,11 +1,12 @@
 import struct
 import numpy as np
+from .block import Block
 
 class Eq(Block):
     _WIDTH = 16
     _BP = 5
     _FORMAT = 'H'#'L'
-    def __init__(self, host, name, n_streams=64, n_coeffs=2**12, logger=None):
+    def __init__(self, host, name, n_streams=64, n_coeffs=2**9, logger=None):
         """
         Instantiate an EQ block
         
@@ -41,7 +42,7 @@ class Eq(Block):
         coeffs_str = struct.pack('>%d%s' % (len(coeffs), self._FORMAT), *coeffs)
         coeff_reg = 'core%d_coeffs' % (stream // 16)
         stream_sub_index = stream % 16
-        self.write(coeff_reg, coeffs_str, offset= self._stream_size * stream_sub_index)
+        self.write(coeff_reg, coeffs_str, offset=self._stream_size * stream_sub_index)
 
     def get_coeffs(self, stream):
         """

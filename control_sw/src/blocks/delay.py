@@ -1,3 +1,5 @@
+from .block import Block
+
 class Delay(Block):
     MIN_DELAY = 5 # minimum delay allowed
     def __init__(self, host, name, n_streams=64, logger=None):
@@ -41,7 +43,7 @@ class Delay(Block):
             if delay >= self.max_delay:
                 self._error('Tried to set delay to %d which is > the allowed maximum (%d)' % (delay, self.max_delay))
         self._info('Setting delay of stream %d to %d' % (stream, delay))
-        self.write_int('delay%d_delay' % stream, delay)
+        self.write_int('%d_delay' % stream, delay)
 
     def get_delay(self, stream):
         """
@@ -59,11 +61,16 @@ class Delay(Block):
         """
         if stream > self.n_streams:
             self._error('Tried to get delay for stream %d > n_streams (%d)' % (stream, self.n_streams))
-        return self.read_uint('delay%d_delay' % stream)
+        return self.read_uint('%d_delay' % stream)
 
     def initialize(self):
         """
-        Initialize all delays to 0.
+        Initialize all delays to minimum allowed
         """
         self.max_delay = self.get_max_delay()
-        self.write_int('delays', self.MIN_DELAY)
+        for i in range(self.n_streams):
+            self.set_delay(i, self.MIN_DELAY)
+
+    def print_status(self):
+        for i in range(self.n_streams):
+            self._info('Stream %d delay: %d' % (i, self.get_delay(i)))

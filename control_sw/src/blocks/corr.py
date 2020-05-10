@@ -1,5 +1,11 @@
+import time
+import struct
+import numpy as np
+
+from .block import Block
+
 class Corr(Block):
-    def __init__(self, host, name, acc_len=3815, logger=None, n_chans=1024):
+    def __init__(self, host, name, acc_len=1024, logger=None, n_chans=1024):
         """
         Instantiate an correlation block, which allows correlation
         of pairs of inputs to be computed.

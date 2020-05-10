@@ -11,7 +11,7 @@ class NoiseGen(Block):
     of this block, to create correlated or uncorrelated
     noise streams.
     """
-    def __init__(self, host, name, n_noise=4, n_outputs=64 logger=None):
+    def __init__(self, host, name, n_noise=5, n_outputs=64, logger=None):
         """
         NoiseGen Constructor
 

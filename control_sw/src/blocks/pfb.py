@@ -1,3 +1,5 @@
+from .block import Block
+
 class Pfb(Block):
     N_CORES = 4
     def __init__(self, host, name, logger=None):

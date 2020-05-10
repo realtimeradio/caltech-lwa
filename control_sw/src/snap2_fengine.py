@@ -1,20 +1,17 @@
 import logging
-import helpers
 import numpy as np
 import struct
 import time
 import datetime
 import casperfpga
-from blocks import *
+from . import helpers
+from .blocks import sync, noisegen, input, delay, pfb, eq, eqtvg, chanreorder, packetizer, eth, corr
 
 class Snap2Fengine(object):
-    def __init__(self, host, ant_indices=None, logger=None, redishost='redishost'):
+    def __init__(self, host, ant_indices=None, logger=None):
         self.host = host
         self.logger = logger or helpers.add_default_log_handlers(logging.getLogger(__name__ + "(%s)" % host))
-        if redishost is None:
-            self.fpga = casperfpga.CasperFpga(host=host, transport=casperfpga.TapcpTransport)
-        else:
-            self.fpga = casperfpga.CasperFpga(host=host, redishost=redishost, transport=casperfpga.RedisTapcpTransport)
+        self.fpga = casperfpga.CasperFpga(host=host, transport=casperfpga.TapcpTransport)
         # Try and get the canonical name of the host
         # to use as a serial number
         try:
@@ -23,18 +20,18 @@ class Snap2Fengine(object):
             self.serial = None
 
         # blocks
-        self.adc         = Adc(self.fpga)
-        self.sync        = Sync(self.fpga, 'sync')
-        self.noise       = NoiseGen(self.fpga, 'noise', n_noise=4, n_outputs=64)
-        self.input       = Input(self.fpga, 'input', n_streams=64)
-        self.delay       = Delay(self.fpga, 'delay', n_streams=64)
-        self.pfb         = Pfb(self.fpga, 'pfb')
-        self.eq          = Eq(self.fpga, 'eq_core', n_streams=64, ncoeffs=2**12)
-        self.eq_tvg      = EqTvg(self.fpga, 'eqtvg', n_streams=64, nchans=2**12)
-        self.reorder     = ChanReorder(self.fpga, 'chan_reorder', nchans=2**12)
-        self.packetizer  = Packetizer(self.fpga, 'packetizer', n_time_demux=2) # Round robin time packets to two destinations
-        self.eth         = Eth(self.fpga, 'eth')
-        self.corr        = Corr(self.fpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
+        #self.adc         = Adc(self.fpga)
+        self.sync        = sync.Sync(self.fpga, 'sync')
+        self.noise       = noisegen.NoiseGen(self.fpga, 'noise', n_noise=4, n_outputs=64)
+        self.input       = input.Input(self.fpga, 'input', n_streams=64)
+        self.delay       = delay.Delay(self.fpga, 'delay', n_streams=64)
+        self.pfb         = pfb.Pfb(self.fpga, 'pfb')
+        self.eq          = eq.Eq(self.fpga, 'eq', n_streams=64, n_coeffs=2**9)
+        self.eq_tvg      = eqtvg.EqTvg(self.fpga, 'post_eq_tvg', n_streams=64, n_chans=2**12)
+        self.reorder     = chanreorder.ChanReorder(self.fpga, 'chan_reorder', n_chans=2**12)
+        self.packetizer  = packetizer.Packetizer(self.fpga, 'packetizer')
+        self.eth         = eth.Eth(self.fpga, 'eth')
+        self.corr        = corr.Corr(self.fpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
 
         self.ants = [None] * 64 # An attribute to store the antenna names of this board's inputs
         self.ant_indices = ant_indices or range(64) # An attribute to store the antenna numbers used in packet headers
@@ -42,7 +39,7 @@ class Snap2Fengine(object):
         # The order here can be important, blocks are initialized in the
         # order they appear here
         self.blocks = [
-            self.adc,
+            #self.adc,
             self.sync,
             self.noise,
             self.input,
@@ -61,11 +58,11 @@ class Snap2Fengine(object):
     def is_programmed(self):
         """
         Lazy check to see if a board is programmed.
-        Check for the "adc16_controller" register. If it exists, the board is deemed programmed.
+        Check for the "version_version" register. If it exists, the board is deemed programmed.
         Returns:
             True if programmed, False otherwise
         """
-        return 'adc16_controller' in self.fpga.listdev()
+        return 'version_version' in self.fpga.listdev()
 
     def initialize(self):
         for block in self.blocks:
@@ -85,41 +82,43 @@ class Snap2Fengine(object):
         stat['serial'] = self.serial
         return stat
 
-    def assign_slot(self, slot_num, chans, dests):
+    def configure_output(self, n_chans_per_packet, chans, ips, ants=None):
         """
-        The F-engine generates 8192 channels, but can only
-        output 6144(=8192 * 3/4), in order to keep within the output data rate cap.
-        Each output packet contains 384 frequency channels for a single antenna.
-        There are thus effectively 16 output slots, each corresponding
-        to a block of 384 frequency channels. Each block can be filled with
-        arbitrary channels (they can repeat, if you want), and sent
-        to a particular IP address.
-        slot_num -- a value from 0 to 15 -- the slot you want to allocate
-        chans    -- an array of 384 channels, which you want to put in this slot's packet
-        dests     -- A list of IP addresses of the odd and even X-engines for this chan range.
-
         """
-        NCHANS_PER_SLOT = 384
-        chans = np.array(chans, dtype='>L')
-        if slot_num > self.packetizer.n_slots:
-            raise ValueError("Only %d output slots can be specified" % self.packetizer.n_slots)
-        if chans.shape[0] != NCHANS_PER_SLOT:
-            raise ValueError("Each slot must contain %d frequency channels" % NCHANS_PER_SLOT)
+        chans = np.array(chans)
+        assert chans.shape[0] % n_chans_per_packet == 0, \
+            "Number of chans to send must be an inter number of packets"
+        n_packets = chans.shape[0] // n_chans_per_packet
 
-        if (type(dests) != list) or (len(dests) != self.packetizer.n_time_demux):
-            raise ValueError("Packetizer requires a list of desitination IPs with %d entries" % self.packetizer.n_time_demux)
+        packet_starts, packet_payloads, channel_indices = \
+            self.packetizer.get_packet_info(n_chans_per_packet, chan_block_size=self.reorder.n_parallel_chans)
 
-        # Set the frequency header of this slot to be the first specified channel
-        self.packetizer.set_chan_header(chans[0], slot_offset=slot_num)
+        packet_starts = packet_starts[0:n_packets]
+        packet_payloads = packet_payloads[0:n_packets]
+        channel_indices = channel_indices[0:n_packets]
+        assert n_packets == len(packet_starts)
+        assert len(ips) == n_packets
 
-        # Set the antenna header of this slot (every slot represents 3 antennas
-        self.packetizer.set_ant_header(ant=self.ant_indices[0], slot_offset=slot_num)
+        # channel_indices above gives the channel IDs which will
+        # be sent. Remap the ones we _want_ into these slots
+        i = 0
+        output_order = list(range(self.reorder.n_chans))
+        for chan_range in channel_indices:
+            for chan in chan_range:
+                output_order[chan] = chans[i]
+                i += 1
+        self.reorder.set_channel_order(output_order)
+            
+        if ants is None:
+            ant_indices = [self.ant_indices[0]] * n_packets # Only the first antenna number goes in the header
+        else:
+            ant_indices = ants
 
-        # Set the destination address of this slot to be the specified IP address
-        self.packetizer.set_dest_ip(dests, slot_offset=slot_num)
-
-        # set the channel orders
-        # The channels supplied need to emerge in the first 384 channels of a block
-        # of 512 (first 192 clks of 256clks for 2 pols)
-        for cn, chan in enumerate(chans[::8]):
-            self.reorder.reindex_channel(chan//8, slot_num*64 + cn)
+        self.packetizer.write_config(
+            packet_starts,
+            packet_payloads,
+            chans[::n_chans_per_packet],
+            ant_indices,
+            ips,
+            print_config=True
+        )

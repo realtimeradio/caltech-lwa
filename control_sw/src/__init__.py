@@ -1,5 +1,5 @@
-from __version__ import __version__
+from .__version__ import __version__
 
-#from roach_fengine import RoachFengine
-from snap_fengine import SnapFengine
-from hera_corr import HeraCorrelator
+from . import blocks
+from .snap2_fengine import Snap2Fengine
+from .lwa_f import LwaF

@@ -5,7 +5,8 @@ import os
 ver = '0.0.1'
 try:
     import subprocess
-    ver = ver + '-' + subprocess.check_output(['git', 'describe', '--abbrev=8', '--always', '--dirty', '--tags']).strip()
+    ver = ver + '-' + subprocess.check_output(['git', 'describe', '--abbrev=8', '--always', '--dirty', '--tags']).decode().strip()
+    print('Version is: %s' % ver)
 except:
     print('Couldn\'t get version from git. Defaulting to %s' % ver)
 
@@ -21,7 +22,7 @@ setup(name='lwa_f',
       author_email='jack@realtimeradio.co.uk',
       url='https://github.com/realtimeradio/caltech-lwa',
       provides=['lwa_f'],
-      packages=['lwa_f'],
+      packages=['lwa_f', 'lwa_f.blocks'],
       package_dir={'lwa_f' : 'src'},
       scripts=glob.glob('scripts/*.py'),
       )

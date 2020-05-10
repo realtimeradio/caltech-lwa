@@ -1,5 +1,7 @@
 import struct
+import time
 import numpy as np
+from .block import Block
 
 class Input(Block):
     _USE_NOISE = 0
@@ -84,7 +86,8 @@ class Input(Block):
         Inputs:
             stream (int): Which stream to switch. If None, switch all.
         """
-        self.switch(self._USE_NOISE, stream)
+        self._info("Stream %s: switching to Noise" % stream)
+        self._switch(self._USE_NOISE, stream)
 
     def use_adc(self, stream=None):
         """
@@ -92,7 +95,8 @@ class Input(Block):
         Inputs:
             stream (int): Which stream to switch. If None, switch all.
         """
-        self.switch(self._USE_ADC, stream)
+        self.logger.info("Stream %s: switching to ADC" % stream)
+        self._switch(self._USE_ADC, stream)
 
     def use_zero(self, stream=None):
         """
@@ -100,7 +104,8 @@ class Input(Block):
         Inputs:
             stream (int): Which stream to switch. If None, switch all.
         """
-        self.switch(self._USE_ZERO, stream)
+        self._info("Stream %s: switching to Zeros" % stream)
+        self._switch(self._USE_ZERO, stream)
 
     def get_stats(self):
         """
@@ -129,7 +134,7 @@ class Input(Block):
     def print_status(self):
         mean, power, rms = self.get_stats()
         for i in range(self.n_streams):
-            self._info("stream %d : power %.3f, mean %.3f, rms %.3f" % (power[i], mean[i], rms[i]))
+            self._info("stream %d : power %.3f, mean %.3f, rms %.3f" % (i, power[i], mean[i], rms[i]))
 
     def _set_histogram_input(self, i):
         """
@@ -158,6 +163,7 @@ class Input(Block):
                     hist_a (numpy array): histogram data for "A" cores
                     hist_b (numpy array): histogram data for "B" cores
         """
+        self._info("Getting histogram for input %d" % input)
         self._set_histogram_input(input)
         time.sleep(0.1)
         v = np.array(struct.unpack('>%dH' % (2*2**self.n_bits), self.read('bit_stats_histogram_output', 2*2*2**self.n_bits)))

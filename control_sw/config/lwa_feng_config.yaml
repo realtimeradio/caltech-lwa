@@ -1,0 +1,27 @@
+#
+# For each fengine, specify the host ip address (host_ip), destination port (dest_port),
+# the antenna numbers it is processing (ants). 
+
+# FFT shift. One bit per FFT stage, the first stage is the LSB
+# If the FFT uses bit growth, some or all of the stages may be ignored
+fft_shift: 0xffffffff
+
+# Specify a full path to an F-Engine fpg files
+# or redis:<fpg filename> if the fpg file has been uploaded to redis
+#fpgfile: 'redis:snap_fengine_2019-10-27_0728.fpg'
+fpgfile: 'redis:snap_fengine_2019-08-29_1717.fpg'
+
+# Destination port for SNAP data
+dest_port: 8511
+
+# Phase switch step period
+
+fengines:
+    snap2-rev1:
+        ants: [0, 64]
+        ftge: '192.168.11.140'
+
+xengines:
+  arp:
+    192.168.11.4: 0x248a07e87c31
+

@@ -1,3 +1,5 @@
+from .block import Block
+
 class Eth(Block):
     _CORE_NAME = 'forty_gbe'
     def __init__(self, host, name, port=10000, logger=None):
