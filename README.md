@@ -4,9 +4,9 @@ A repository for LWA SNAP2 firmware
 Based on the versions of the CASPER libraries provided by https://github.com/shlean/mlib_devel/
 
 ## Software Versions:
-- Ubuntu 16.04
-- Xilinx Vivado System Edition 2016.4
-- MATLAB/Simulink 2016b
+- Ubuntu 18.04
+- Xilinx Vivado System Edition 2019.1.3
+- MATLAB/Simulink 2019b
 
 ## To open/modify/compile:
 
