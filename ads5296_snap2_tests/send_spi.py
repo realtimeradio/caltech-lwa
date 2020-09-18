@@ -50,20 +50,20 @@ if __name__ == "__main__":
         print("Using FMC 1 (B; left hand side)")
         fmcs += [1]
 
-    if args.reset:
-        for f in fmcs:
-            print("Reseting ADCs on FMC %d" % f)
-            adc.assert_reset(f)
-            adc.deassert_reset(f)
-
-    if args.sync:
-        for f in fmcs:
-            print("Syncing ADCs on FMC %d" % f)
-            adc.assert_sync(f)
-            adc.deassert_sync(f)
+    if len(fmcs) == 0:
+        print("Use --fmcA or --fmcB to select one or both FMC ports")
+        exit()
 
     while(True):
         for f in fmcs:
+            if args.reset:
+                print("Reseting ADCs on FMC %d" % f)
+                adc.assert_reset(f)
+                adc.deassert_reset(f)
+            if args.sync:
+                print("Syncing ADCs on FMC %d" % f)
+                adc.assert_sync(f)
+                adc.deassert_sync(f)
             for cs in range(args.csstart, args.csstop + 1):
                 print("Writing 0x%x to address 0x%x with chip-select %d on FMC %d" % (args.data, args.addr, cs, f))
                 adc.send_spi(args.addr, args.data, cs, f, show_diagram=args.diagram)
