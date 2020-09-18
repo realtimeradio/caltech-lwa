@@ -33,6 +33,8 @@ if __name__ == "__main__":
                         help="Strobe ADC sync line")
     parser.add_argument("--diagram", action="store_true",
                         help="Print ASCII waveforms")
+    parser.add_argument("--loop", action="store_true",
+                        help="Loop through ADCs forever")
     args = parser.parse_args()
 
 
@@ -60,12 +62,15 @@ if __name__ == "__main__":
             adc.assert_sync(f)
             adc.deassert_sync(f)
 
-    for f in fmcs:
-        for cs in range(args.csstart, args.csstop + 1):
-            print("Writing 0x%x to address 0x%x with chip-select %d on FMC %d" % (args.data, args.addr, cs, f))
-            adc.send_spi(args.addr, args.data, cs, f, show_diagram=args.diagram)
-            adc.enable_readout(cs, f)
-            readback = adc.send_spi(args.addr, 0, cs, f)
-            adc.disable_readout(cs, f)
-            print("Read back 0x%x" % readback)
+    while(True):
+        for f in fmcs:
+            for cs in range(args.csstart, args.csstop + 1):
+                print("Writing 0x%x to address 0x%x with chip-select %d on FMC %d" % (args.data, args.addr, cs, f))
+                adc.send_spi(args.addr, args.data, cs, f, show_diagram=args.diagram)
+                adc.enable_readout(cs, f)
+                readback = adc.send_spi(args.addr, 0, cs, f)
+                adc.disable_readout(cs, f)
+                print("Read back 0x%x" % readback)
+        if not args.loop:
+            break
     
