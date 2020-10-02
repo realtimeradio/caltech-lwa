@@ -40,36 +40,35 @@ if __name__ == "__main__":
 
     print("Connecting to %s" % args.host)
     s = casperfpga.CasperFpga(args.host, transport=casperfpga.TapcpTransport)
-    adc = ads5296.ADS5296(s)
 
     fmcs = []
     if args.fmcA:
         print("Using FMC 0 (A; right hand side)")
-        fmcs += [0]
+        fmcs += [ads5296.ADS5296fw(s, 0)]
     if args.fmcB:
         print("Using FMC 1 (B; left hand side)")
-        fmcs += [1]
+        fmcs += [ads5296.ADS5296fw(s, 1)]
 
     if len(fmcs) == 0:
         print("Use --fmcA or --fmcB to select one or both FMC ports")
         exit()
 
     while(True):
-        for f in fmcs:
+        for fn, f in enumerate(fmcs):
             if args.reset:
-                print("Reseting ADCs on FMC %d" % f)
-                adc.assert_reset(f)
-                adc.deassert_reset(f)
+                print("Reseting ADCs on FMC %d" % fn)
+                for cs in range(args.csstart, args.csstop + 1):
+                    f.reset(cs)
             if args.sync:
-                print("Syncing ADCs on FMC %d" % f)
-                adc.assert_sync(f)
-                adc.deassert_sync(f)
+                print("Syncing ADCs on FMC %d" % fn)
+                f.assert_sync()
+                f.deassert_sync()
             for cs in range(args.csstart, args.csstop + 1):
-                print("Writing 0x%x to address 0x%x with chip-select %d on FMC %d" % (args.data, args.addr, cs, f))
-                adc.send_spi(args.addr, args.data, cs, f, show_diagram=args.diagram)
-                adc.enable_readout(cs, f)
-                readback = adc.send_spi(args.addr, 0, cs, f)
-                adc.disable_readout(cs, f)
+                print("Writing 0x%x to address 0x%x with chip-select %d on FMC %d" % (args.data, args.addr, cs, fn))
+                f.write_spi(args.addr, args.data, cs)
+                f.enable_readout(cs)
+                readback = f.write_spi(args.addr, 0, cs)
+                f.disable_readout(cs)
                 print("Read back 0x%x" % readback)
         if not args.loop:
             break
