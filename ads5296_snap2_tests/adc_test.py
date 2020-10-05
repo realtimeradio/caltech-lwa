@@ -269,10 +269,10 @@ if __name__ == "__main__":
 
     # Always write all the channels
     chans = range(32)
-    t = time.ctime()
-    filename = "ADS5296_dump_%s_%s.csv" % (chans, t)
+    t = time.time()
+    filename = "ADS5296_dump_%s_%d.csv" % (chans, t)
     with open(filename, 'w') as fh:
-        fh.write("%s\n" % t)
+        fh.write("%s\n" % time.ctime(t))
         fh.write("%s\n" % (','.join(map(str, chans))))
     for i in range(args.n_dumps):
         print("Capturing %d of %d" % (i+1, args.n_dumps))
