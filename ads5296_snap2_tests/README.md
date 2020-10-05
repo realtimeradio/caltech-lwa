@@ -159,7 +159,7 @@ In this case, a csv file is created with the format used in the ROACH2 tests
 
 Generated csv files have a two line header. The first line contains the time the dump script was launched, in python `time.ctime()` string representation. The second header line contains the ADC channels which were dumped, as a comma-separated list of ADC channels. With the current software, this is always all 32 channels of a dual ADC board stack.
 
-Following the header, each line of the file represents a sequence of 256k ADC samples which were captured. Sequential lines cycle through multiple ADC channels (if a file contains more than one channel) and then through consecutive dumps. For example, a file generated with the command `python capture.py -N 4 -A 8 -B 9` might generate a file with the following contents:
+Following the header, each line of the file represents a sequence of 256k ADC samples which were captured. Sequential lines cycle through multiple ADC channels (if a file contains more than one channel) and then through consecutive dumps. For example, a file generated with the command `./adc_test.py --fmcB --sync --use_ramp -N 1` will generate a file with the following contents:
 
 ```
 Wed Feb 26 11:29:58 2020
@@ -167,6 +167,8 @@ Wed Feb 26 11:29:58 2020
 4,2,-4,3, ... -10,13 # 1k ADC samples from the first dump of channel 0
 5,-10,20, ... 14,-19 # 1k ADC samples from the first dump of channel 1
 # etc.
+1,-1,-2,3, ...,-2,.. # 1k ADC samples from the first dump of channel 31
+# END OF FILE
 ```
 
 Currently, dumps always have 1024 samples. This will be increased soon
