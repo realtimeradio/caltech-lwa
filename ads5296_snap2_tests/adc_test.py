@@ -270,7 +270,7 @@ if __name__ == "__main__":
     # Always write all the channels
     chans = range(32)
     t = time.time()
-    filename = "ADS5296_dump_%s_%d.csv" % (chans, t)
+    filename = "ADS5296_dump_0_31_%d.csv" % (t)
     with open(filename, 'w') as fh:
         fh.write("%s\n" % time.ctime(t))
         fh.write("%s\n" % (','.join(map(str, chans))))
