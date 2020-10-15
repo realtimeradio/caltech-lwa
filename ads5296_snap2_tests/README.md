@@ -13,29 +13,36 @@ source ~jackh/py3_mlib_venv/bin/activate
 
 A simple script for configuring ADCs and capturing data to file.
 
+Diagnostic information is printed to stderr, so can be redirected with (eg) 2>/dev/null to leave
+only pertinent information printed to screen.
+
 ```
 jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./adc_test.py -h
 usage: adc_test.py [-h] [--fmcA] [--fmcB] [--host HOST] [--init] [--sync]
                    [--use_ramp] [--cal_fclk] [--cal_data] [--err_cnt]
-                   [--print_binary] [-N N_DUMPS]
+                   [--outfile OUTFILE] [-f] [--print_binary] [-N N_DUMPS]
 
 Configure an ADS5296 board and grab data
 
 optional arguments:
-  -h, --help      show this help message and exit
-  --fmcA          Use FMC A; aka FMC 0; aka 'right hand' (default: False)
-  --fmcB          Use FMC B; aka FMC 1; aka 'left hand' (default: False)
-  --host HOST     Snap hostname / IP address (default: snap2-rev2-10)
-  --init          Reset and initialize ADCs (default: False)
-  --sync          Strobe ADC sync line (default: False)
-  --use_ramp      Turn on ramp test mode (default: False)
-  --cal_fclk      Sweep FCLK delays and use to set ADC data (default: False)
-  --cal_data      Sweep data line delays and use to set ADC data (default:
-                  False)
-  --err_cnt       Get error counts (default: False)
-  --print_binary  print a snapshot excerpt in binary (default: False)
-  -N N_DUMPS      Number of captures to dump to disk. 0 for no file output
-                  (default: 0)
+  -h, --help         show this help message and exit
+  --fmcA             Use FMC A; aka FMC 0; aka 'right hand' (default: False)
+  --fmcB             Use FMC B; aka FMC 1; aka 'left hand' (default: False)
+  --host HOST        Snap hostname / IP address (default: snap2-rev2-10)
+  --init             Reset and initialize ADCs (default: False)
+  --sync             Strobe ADC sync line (default: False)
+  --use_ramp         Turn on ramp test mode (default: False)
+  --cal_fclk         Sweep FCLK delays and use to set ADC data (default:
+                     False)
+  --cal_data         Sweep data line delays and use to set ADC data (default:
+                     False)
+  --err_cnt          Get error counts (default: False)
+  --outfile OUTFILE  Custom output filename (default: None)
+  -f, --force        Force overwriting of any existing output file (default:
+                     False)
+  --print_binary     print a snapshot excerpt in binary (default: False)
+  -N N_DUMPS         Number of captures to dump to disk. 0 for no file output
+                     (default: 0)
 ```
 
 **You must program the SNAP2 using Vivado prior to using this script**
@@ -59,6 +66,8 @@ Board 1 FCLK Delay 144 (slack 22)
 ################################
 ```
 
+`slack` is the number of delay taps between the chosen delay and the first delay setting which gives errors.
+
 Next, calibrate the data line delays
 
 ```
@@ -79,7 +88,7 @@ Data lane delays
  [172 180 192 176 184 184 184 184]
  [168 168 180 188 180 168 168 160]
  [288 304 300 284 292 304 292 300]
- [396 400   0 392 412 400 392 388]]
+ [396 400 388 392 412 400 392 388]]
 ```
 
 
@@ -172,5 +181,7 @@ Wed Feb 26 11:29:58 2020
 ```
 
 Currently, dumps always have 1024 samples. This will be increased soon
+
+
 
 

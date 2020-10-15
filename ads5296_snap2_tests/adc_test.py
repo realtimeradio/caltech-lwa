@@ -4,6 +4,8 @@ import numpy as np
 import struct
 import time
 import argparse
+import sys
+import os
 
 import casperfpga
 
@@ -58,8 +60,9 @@ def get_data_delays(a, step_size=TAP_STEP_SIZE):
         a.disable_rst_data(range(8), cs)
         a.enable_vtc_data(range(8), cs)
         a.disable_vtc_data(range(8), cs)
+    print("Scanning data delays")
     for dn, delay in enumerate(range(0, NTAPS, step_size)):
-        print("Scanning delay %d" % delay)
+        print("Scanning delay %d" % delay, file=sys.stderr)
         for cs in range(8):
             a.load_delay_data(delay, range(8), cs)
         d[dn] = get_snapshot(a)
@@ -115,7 +118,7 @@ def get_best_delays(errs, step_size=TAP_STEP_SIZE):
     for c in range(nchips):
         for l in range(nlanes):
             best[c,l] = slack[:,c,l].argmax()*step_size
-            print("Chip %d, Lane %d: Best delay: %d" % (c, l, best[c,l]))
+            print("Chip %d, Lane %d: Best delay: %d" % (c, l, best[c,l]), file=sys.stderr)
     return best
 
 def set_delays(a, delays, step_size=TAP_STEP_SIZE):
@@ -135,28 +138,28 @@ def print_sweep(errs, best_delays=None, step_size=TAP_STEP_SIZE):
     char = ["-", "X"]
     for c in range(nchips):
         for l in range(nlanes):
-            print("Chip %d, Lane %d:" % (c, l), end="    ")
+            print("Chip %d, Lane %d:" % (c, l), end="    ", file=sys.stderr)
             for s in range(nsteps):
                 if best_delays is not None:
                     if s == best_delays[c,l] // TAP_STEP_SIZE:
-                        print("|", end="")
+                        print("|", end="", file=sys.stderr)
                     else:
-                        print(char[int(errs[s, c, l] != 0)], end="")
+                        print(char[int(errs[s, c, l] != 0)], end="", file=sys.stderr)
                 else: 
-                    print(char[int(errs[s, c, l] != 0)], end="")
-            print()
-        print()
+                    print(char[int(errs[s, c, l] != 0)], end="", file=sys.stderr)
+            print(file=sys.stderr)
+        print(file=sys.stderr)
 
 def print_snapshot(x, binary=False):
     for i in range(8):             
         for j in range(6):
             for k in range(8):
                 if binary:
-                    print(np.binary_repr(x[i, k, j], width=10), end='  ')
+                    print(np.binary_repr(x[i, k, j], width=10), end='  ', file=sys.stderr)
                 else:
-                    print("%3d" % x[i, k, j], end='  ')
-            print()
-        print()
+                    print("%3d" % x[i, k, j], end='  ', file=sys.stderr)
+            print(file=sys.stderr)
+        print(file=sys.stderr)
 
 def init(a):
     for i in range(8):
@@ -178,10 +181,12 @@ def sync(fpga):
 def cal_fclk(a):
     delay0, slack0 = a.calibrate_fclk(0)
     delay1, slack1 = a.calibrate_fclk(1)
-    print("################################")
     print("Board 0 FCLK Delay %d (slack %d)" % (delay0, slack0))
     print("Board 1 FCLK Delay %d (slack %d)" % (delay1, slack1))
-    print("################################")
+    if slack0 == 0 or slack1 == 0:
+        return False
+    else:
+        return True
 
 
 if __name__ == "__main__":
@@ -205,6 +210,10 @@ if __name__ == "__main__":
                         help="Sweep data line delays and use to set ADC data")
     parser.add_argument("--err_cnt", action="store_true",
                         help="Get error counts")
+    parser.add_argument("--outfile", type=str, default=None,
+                        help="Custom output filename")
+    parser.add_argument("-f", "--force", action="store_true",
+                        help="Force overwriting of any existing output file")
     parser.add_argument("--print_binary", action="store_true",
                         help="print a snapshot excerpt in binary")
     parser.add_argument("-N", dest="n_dumps", type=int, default=0,
@@ -245,11 +254,17 @@ if __name__ == "__main__":
     if (clockrate == 0):
         exit()
    
+    ok = True 
     for adc in fmcs: 
+        fclk_ok = True
         if args.cal_fclk:
-            cal_fclk(adc)
+            fclk_ok = cal_fclk(adc)
+            if not fclk_ok:
+                print("FMC %d: FCLK calibration Failure!" % adc.fmc)
+                ok = False
         sync(s) # Need to sync after moving fclk to re-lock deserializers
     
+        data_ok = True
         if args.cal_data:
             errs = get_data_delays(adc)
             best = get_best_delays(errs)
@@ -257,11 +272,32 @@ if __name__ == "__main__":
             print(best)
             print_sweep(errs, best_delays=best)
             set_delays(adc, best)
+            errs = np.array(get_errs(adc, use_ramp=args.use_ramp))
+            data_ok = errs.sum() == 0
+            if not data_ok:
+                print("FMC %d: Data calibration Failure!" % adc.fmc)
+                ok = False
+
 
         if args.err_cnt:
-            print(get_errs(adc, use_ramp=args.use_ramp))
+            errs = get_errs(adc, use_ramp=args.use_ramp)
+            print("Errors by lane:")
+            print(errs)
+            if not np.array(errs).sum() == 0:
+                print("Link OK")
+            else:
+                print("Link FAIL")
             
-    
+    if args.cal_data or args.cal_fclk:
+        if ok:
+            print("#######################")
+            print("# Calibration SUCCESS #")
+            print("#######################")
+        else:
+            print("!!!!!!!!!!!!!!!!!!!!")
+            print("! Calibration FAIL !")
+            print("!!!!!!!!!!!!!!!!!!!!")
+
     x = get_snapshot(adc, signed=(not args.print_binary))
     print_snapshot(x, binary=args.print_binary)
     if args.n_dumps == 0:
@@ -270,12 +306,20 @@ if __name__ == "__main__":
     # Always write all the channels
     chans = range(32)
     t = time.time()
-    filename = "ADS5296_dump_0_31_%d.csv" % (t)
+    if args.outfile is not None:
+        filename = args.outfile
+    else:
+        filename = "ADS5296_dump_0_31_%d.csv" % (t)
+    print("Output file is %s" % filename)
+    if not args.force:
+        if os.path.exists(filename):
+            print("File already exists. Use the -f flag to overwrite, or choose a different --outfile name")
+            exit()
     with open(filename, 'w') as fh:
         fh.write("%s\n" % time.ctime(t))
         fh.write("%s\n" % (','.join(map(str, chans))))
     for i in range(args.n_dumps):
-        print("Capturing %d of %d" % (i+1, args.n_dumps))
+        print("Capturing %d of %d" % (i+1, args.n_dumps), file=sys.stderr)
         x = get_snapshot_interleaved(adc, signed=True)
         with open(filename, 'a') as fh:
             np.savetxt(fh, x, fmt="%d", delimiter=",")
