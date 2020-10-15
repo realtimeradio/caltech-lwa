@@ -212,6 +212,8 @@ if __name__ == "__main__":
                         help="Get error counts")
     parser.add_argument("--outfile", type=str, default=None,
                         help="Custom output filename")
+    parser.add_argument("--header", type=str, default="",
+                        help="Custom header text to be written to ithe third line of output file")
     parser.add_argument("-f", "--force", action="store_true",
                         help="Force overwriting of any existing output file")
     parser.add_argument("--print_binary", action="store_true",
@@ -318,6 +320,7 @@ if __name__ == "__main__":
     with open(filename, 'w') as fh:
         fh.write("%s\n" % time.ctime(t))
         fh.write("%s\n" % (','.join(map(str, chans))))
+        fh.write("%s\n" % args.header)
     for i in range(args.n_dumps):
         print("Capturing %d of %d" % (i+1, args.n_dumps), file=sys.stderr)
         x = get_snapshot_interleaved(adc, signed=True)

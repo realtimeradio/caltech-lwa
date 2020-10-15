@@ -20,7 +20,8 @@ only pertinent information printed to screen.
 jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./adc_test.py -h
 usage: adc_test.py [-h] [--fmcA] [--fmcB] [--host HOST] [--init] [--sync]
                    [--use_ramp] [--cal_fclk] [--cal_data] [--err_cnt]
-                   [--outfile OUTFILE] [-f] [--print_binary] [-N N_DUMPS]
+                   [--outfile OUTFILE] [--header HEADER] [-f] [--print_binary]
+                   [-N N_DUMPS]
 
 Configure an ADS5296 board and grab data
 
@@ -38,11 +39,14 @@ optional arguments:
                      False)
   --err_cnt          Get error counts (default: False)
   --outfile OUTFILE  Custom output filename (default: None)
+  --header HEADER    Custom header text to be written to ithe third line of
+                     output file (default: )
   -f, --force        Force overwriting of any existing output file (default:
                      False)
   --print_binary     print a snapshot excerpt in binary (default: False)
   -N N_DUMPS         Number of captures to dump to disk. 0 for no file output
                      (default: 0)
+
 ```
 
 **You must program the SNAP2 using Vivado prior to using this script**
