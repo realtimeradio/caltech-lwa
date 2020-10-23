@@ -6,4 +6,4 @@
 	url = https://github.com/realtimeradio/mlib_devel
 [submodule "control_sw/libs/casperfpga"]
 	path = control_sw/libs/casperfpga
-	url = https://github.com/casper-astro/casperfpga
+	url = https://github.com/realtimeradio/casperfpga
