@@ -32,6 +32,14 @@ def get_snapshot(a, signed=False):
         out[out>511] -= 1024
     return np.array(out, dtype=np.int32)
 
+def get_deep_snapshot(a):
+    a.fpga.write_int("single_chan_ss_ctrl", 0b0)
+    a.fpga.write_int("single_chan_ss_ctrl", 0b1)
+    a.fpga.write_int("single_chan_ss_ctrl", 0b0)
+    x = a.fpga.read("single_chan_ss_bram", 2*2**16)
+    d = struct.unpack(">%dh" % (2**16), x)
+    return np.array([d], dtype=np.int32) >> 6 # 10 bit samples are in MSBs of 16-bit words
+
 def get_snapshot_interleaved(a, signed=False):
     out = np.zeros([32,4096//4])
     a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)          
@@ -218,6 +226,8 @@ if __name__ == "__main__":
                         help="Force overwriting of any existing output file")
     parser.add_argument("--print_binary", action="store_true",
                         help="print a snapshot excerpt in binary")
+    parser.add_argument("-C", "--channel", type=int, default=None,
+                        help="grab 64k samples for a single channel")
     parser.add_argument("-N", dest="n_dumps", type=int, default=0,
                         help="Number of captures to dump to disk. 0 for no file output")
     args = parser.parse_args()
@@ -310,13 +320,23 @@ if __name__ == "__main__":
     if args.n_dumps == 0:
        exit()
 
-    # Always write all the channels
-    chans = range(32)
+    if args.channel is None:
+        # Snap all channels
+        chans = range(32)
+    else:
+        # Perform a long snapshot of a single channel
+        assert args.channel < 32, "--channel argument must be < 32"
+        chans = [args.channel]
+        adc.fpga.write_int("chan_sel", args.channel)
+        
     t = time.time()
     if args.outfile is not None:
         filename = args.outfile
     else:
-        filename = "ADS5296_dump_0_31_%d.csv" % (t)
+        if args.channel is None:
+            filename = "ADS5296_dump_0_31_%d.csv" % (t)
+        else:
+            filename = "ADS5296_dump_%d_%d.csv" % (args.channel, t)
     print("Output file is %s" % filename)
     if not args.force:
         if os.path.exists(filename):
@@ -328,6 +348,10 @@ if __name__ == "__main__":
         fh.write("%s\n" % args.header)
     for i in range(args.n_dumps):
         print("Capturing %d of %d" % (i+1, args.n_dumps), file=sys.stderr)
-        x = get_snapshot_interleaved(adc, signed=True)
+        if args.channel is None:
+            x = get_snapshot_interleaved(adc, signed=True)
+        else:
+            x = get_deep_snapshot(adc)
+            print(x, np.sum(x), x.shape)
         with open(filename, 'a') as fh:
             np.savetxt(fh, x, fmt="%d", delimiter=",")
