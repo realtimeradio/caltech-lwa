@@ -247,14 +247,19 @@ if __name__ == "__main__":
         else:
             use_data(adc)
             
-    
     if args.sync:
         sync(s)
+
+    for adc in fmcs:
+        for i in range(2):
+            clocks = adc.read_clk_rates(i)
+            print("FMC %d board %d, lclk, fclk[0..3]:" % (adc.fmc, i), clocks)
 
     clockrate = s.estimate_fpga_clock()
     print("FPGA clock: %f" % clockrate)
     if (clockrate == 0):
         exit()
+
    
     ok = True 
     for adc in fmcs: 
