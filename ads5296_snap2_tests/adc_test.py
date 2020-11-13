@@ -352,6 +352,6 @@ if __name__ == "__main__":
             x = get_snapshot_interleaved(adc, signed=True)
         else:
             x = get_deep_snapshot(adc)
-            print(x, np.sum(x), x.shape)
+            #print(x, np.sum(x), x.shape)
         with open(filename, 'a') as fh:
             np.savetxt(fh, x, fmt="%d", delimiter=",")
