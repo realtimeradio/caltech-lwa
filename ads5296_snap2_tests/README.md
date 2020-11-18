@@ -44,6 +44,8 @@ optional arguments:
   -f, --force        Force overwriting of any existing output file (default:
                      False)
   --print_binary     print a snapshot excerpt in binary (default: False)
+  -C CHANNEL, --channel CHANNEL
+                        grab 64k samples for a single channel (default: None)
   -N N_DUMPS         Number of captures to dump to disk. 0 for no file output
                      (default: 0)
 
@@ -170,13 +172,15 @@ FPGA clock: 200.313538
 
 In this case, a csv file is created with the format used in the ROACH2 tests
 
-Generated csv files have a two line header. The first line contains the time the dump script was launched, in python `time.ctime()` string representation. The second header line contains the ADC channels which were dumped, as a comma-separated list of ADC channels. With the current software, this is always all 32 channels of a dual ADC board stack.
+Generated csv files have a three line header. The first line contains the time the dump script was launched, in python `time.ctime()` string representation. The second header line contains the ADC channels which were dumped, as a comma-separated list of ADC channels. With the current software, this is always all 32 channels of a dual ADC board stack.
+The third line of the header contains custom text as supplied with the `--header` command line flag. It is empty if no custom header is supplied.
 
 Following the header, each line of the file represents a sequence of 256k ADC samples which were captured. Sequential lines cycle through multiple ADC channels (if a file contains more than one channel) and then through consecutive dumps. For example, a file generated with the command `./adc_test.py --fmcB --sync --use_ramp -N 1` will generate a file with the following contents:
 
 ```
 Wed Feb 26 11:29:58 2020
 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
+
 4,2,-4,3, ... -10,13 # 1k ADC samples from the first dump of channel 0
 5,-10,20, ... 14,-19 # 1k ADC samples from the first dump of channel 1
 # etc.
@@ -184,8 +188,25 @@ Wed Feb 26 11:29:58 2020
 # END OF FILE
 ```
 
-Currently, dumps always have 1024 samples. This will be increased soon
+4. Capture 2 snapshots of 64k samples from ADC channel 4, FMC B, to csv file
 
+```
+(py3_mlib_venv) jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./adc_test.py --fmcB --channel 4 -N 2
+```
 
+In this case, a csv file is created with the format used above, but containing a single ADC channel. Board 0, ADC_A input 0 is considered to be ADC channel 0
+Board 1, ADC_A, input 0 is considered to be ADC channel 16.
 
+Generated csv files have a three line header. The first line contains the time the dump script was launched, in python `time.ctime()` string representation. The second header line contains the ADC channels which were dumped, as a comma-separated list of ADC channels. When capturing 64k samples, only one ADC channel can be captured at one time.
+The third line of the header contains custom text as supplied with the `--header` command line flag. It is empty if no custom header is supplied.
 
+Following the header, each line of the file represents a sequence of 256k ADC samples which were captured. Sequential lines cycle through multiple ADC channels (if a file contains more than one channel) and then through consecutive dumps. For example, a file generated with the command `./adc_test.py --fmcB --sync --use_ramp -N 1` will generate a file with the following contents:
+
+```
+Wed Feb 26 11:29:58 2020
+4
+
+4,2,-4,3, ... -10,13 # 64k ADC samples from the first dump of channel 4
+5,-10,20, ... 14,-19 # 64k ADC samples from the second dump of channel 4
+# END OF FILE
+```
