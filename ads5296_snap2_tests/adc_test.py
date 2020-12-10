@@ -206,6 +206,8 @@ if __name__ == "__main__":
                         help="Use FMC B; aka FMC 1; aka 'left hand'")
     parser.add_argument("--host", type=str, default="snap2-rev2-10",
                         help="Snap hostname / IP address")
+    parser.add_argument("--clocksource", type=int, default=0,
+                        help="Board form which FPGA clock should be derived. 0='top', 1='bottom'")
     parser.add_argument("--init", action="store_true",
                         help="Reset and initialize ADCs")
     parser.add_argument("--sync", action="store_true",
@@ -248,6 +250,17 @@ if __name__ == "__main__":
         print("Use --fmcA or --fmcB to select one or both FMC ports")
         exit()
     
+    # set clock source switch
+    assert args.clocksource in [0,1], "--clocksource must be 0 or 1"
+    devs = s.listdev()
+    if 'ads5296_clksel1' in devs:
+        print("Setting ads5296_clksel1 to %d" % args.clocksource)
+        s.write_int('ads5296_clksel1', args.clocksource)
+
+    if 'ads5296_clksel0' in devs:
+        print("Setting ads5296_clksel0 to %d" % args.clocksource)
+        s.write_int('ads5296_clksel0', args.clocksource)
+
     for adc in fmcs:
         if args.init:
             init(adc)
