@@ -9,6 +9,57 @@ source ~jackh/py3_mlib_venv/bin/activate
 ```
 
 ### Available scripts
+
+#### `send_spi.py`
+
+A script for issuing SPI read and write commands.
+
+```
+usage: send_spi.py [-h] [--fmcA] [--fmcB] [--csstart CSSTART]
+                   [--csstop CSSTOP] [--host HOST] [--addr ADDR] [--data DATA]
+                   [--reset] [--sync] [--diagram] [--loop]
+
+Generate SPI traffic from SNAP2 -> ADC
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --fmcA             Use FMC A; aka FMC 0; aka 'right hand' (default: False)
+  --fmcB             Use FMC B; aka FMC 1; aka 'left hand' (default: False)
+  --csstart CSSTART  Loop through chip selects starting here (default: 0)
+  --csstop CSSTOP    Loop through chip selects stopping here (default: 7)
+  --host HOST        Snap hostname / IP address (default: snap2-rev2-10)
+  --addr ADDR        Address to read/write (default: 42)
+  --data DATA        Value to write. If None is given, the address will be
+                     read and not written (default: None)
+  --reset            Strobe ADC reset line (default: False)
+  --sync             Strobe ADC sync line (default: False)
+  --diagram          Print ASCII waveforms (default: False)
+  --loop             Loop through ADCs forever (default: False)
+```
+
+**You must program the SNAP2 using Vivado prior to using this script**
+
+Example usage:
+
+1. Write the value 0xff to address 0x10 of the ADC with chip select 1 on FMC A
+
+```
+jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./send_spi.py --fmcB --csstart 1 --csstop 1 --addr 16 --data 255
+```
+
+2. Write the value 0xff to address 0x10 of all ADCs (chip selects 0..7) on FMC A
+
+```
+jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./send_spi.py --fmcB --addr 16 --data 255
+```
+
+3. Read SPI address 0x10 of all ADCs (chip selects 0..7) on FMC A
+
+```
+jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./send_spi.py --fmcB --addr 16
+```
+
+
 #### `adc_test.py`
 
 A simple script for configuring ADCs and capturing data to file.
