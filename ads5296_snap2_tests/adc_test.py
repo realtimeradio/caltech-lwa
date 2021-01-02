@@ -249,6 +249,9 @@ if __name__ == "__main__":
     if len(fmcs) == 0:
         print("Use --fmcA or --fmcB to select one or both FMC ports")
         exit()
+
+    #for fmc in fmcs:
+    #    fmc.quiet = False
     
     # set clock source switch
     assert args.clocksource in [0,1], "--clocksource must be 0 or 1"
@@ -256,10 +259,14 @@ if __name__ == "__main__":
     if 'ads5296_clksel1' in devs:
         print("Setting ads5296_clksel1 to %d" % args.clocksource)
         s.write_int('ads5296_clksel1', args.clocksource)
+    else:
+        print("Skipping setting ads5296_clksel1 to %d because the firmware doesn't support this" % args.clocksource)
 
     if 'ads5296_clksel0' in devs:
         print("Setting ads5296_clksel0 to %d" % args.clocksource)
         s.write_int('ads5296_clksel0', args.clocksource)
+    else:
+        print("Skipping setting ads5296_clksel0 to %d because the firmware doesn't support this" % args.clocksource)
 
     for adc in fmcs:
         if args.init:
