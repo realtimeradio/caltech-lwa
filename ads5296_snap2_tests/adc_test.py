@@ -192,9 +192,9 @@ def cal_fclk(a):
     print("Board 0 FCLK Delay %d (slack %d)" % (delay0, slack0))
     print("Board 1 FCLK Delay %d (slack %d)" % (delay1, slack1))
     if slack0 == 0 or slack1 == 0:
-        return False
+        return False, delay0, delay1
     else:
-        return True
+        return True, delay0, delay1
 
 
 if __name__ == "__main__":
@@ -216,8 +216,16 @@ if __name__ == "__main__":
                         help="Turn on ramp test mode")
     parser.add_argument("--cal_fclk", action="store_true",
                         help="Sweep FCLK delays and use to set ADC data")
+    parser.add_argument("--load_fclk", action="store_true",
+                        help="Load fclk delays from a provided file specified with --fclk_delayfile")
+    parser.add_argument("--fclk_delayfile", type=str, default="fclk_delays.csv",
+                        help="File to which new FCLK calibration delays should be written/read")
     parser.add_argument("--cal_data", action="store_true",
                         help="Sweep data line delays and use to set ADC data")
+    parser.add_argument("--data_delayfile", type=str, default="data_delays.csv",
+                        help="File to which new data lane calibration delays should be written/read")
+    parser.add_argument("--load_data", action="store_true",
+                        help="Load data delays from a provided file specified with --data_delayfile")
     parser.add_argument("--err_cnt", action="store_true",
                         help="Get error counts")
     parser.add_argument("--outfile", type=str, default=None,
@@ -234,6 +242,14 @@ if __name__ == "__main__":
                         help="Number of captures to dump to disk. 0 for no file output")
     args = parser.parse_args()
 
+
+    if args.load_fclk and args.cal_fclk:
+        print("--load_fclk and --cal_fclk arguments are mutually exclusive. Exiting.")
+        exit()
+
+    if args.load_data and args.cal_data:
+        print("--load_data and --cal_data arguments are mutually exclusive. Exiting.")
+        exit()
 
     print("Connecting to %s" % args.host)
     s = casperfpga.CasperFpga(args.host, transport=casperfpga.TapcpTransport)
@@ -291,15 +307,31 @@ if __name__ == "__main__":
         exit()
 
    
+    if args.cal_fclk:
+        fclk_delays_fh = open(args.fclk_delayfile, "w")
+    else:
+        fclk_delays_fh = open(args.fclk_delayfile, "r")
+    if args.cal_data:
+        data_delays_fh = open(args.data_delayfile, "w")
+    else:
+        data_delays_fh = open(args.data_delayfile, "r")
+
     ok = True 
     for adc in fmcs: 
         fclk_ok = True
         if args.cal_fclk:
-            fclk_ok = cal_fclk(adc)
+            fclk_ok, delay0, delay1 = cal_fclk(adc)
+            fclk_delays_fh.write("%d,%d\n" % (delay0, delay1))
             if not fclk_ok:
                 print("FMC %d: FCLK calibration Failure!" % adc.fmc)
                 ok = False
-        sync(s) # Need to sync after moving fclk to re-lock deserializers
+            sync(s) # Need to sync after moving fclk to re-lock deserializers
+        if args.load_fclk:
+            delay = list(map(int, fclk_delays_fh.readline().split(',')))
+            for board_id in range(2):
+                adc.load_delay_fclk(delay[board_id], board_id*4)
+                print("FMC %d: Loaded board 0 FCLK Delay %d" % (adc.fmc, delay[board_id]))
+            sync(s) # Need to sync after moving fclk to re-lock deserializers
     
         data_ok = True
         if args.cal_data:
@@ -308,13 +340,25 @@ if __name__ == "__main__":
             print("Data lane delays")
             print(best)
             print_sweep(errs, best_delays=best)
+            for cn, chipdelay in enumerate(best):
+                data_delays_fh.write(",".join(map(str, chipdelay)))
+                data_delays_fh.write("\n")
             set_delays(adc, best)
             errs = np.array(get_errs(adc, use_ramp=args.use_ramp))
             data_ok = errs.sum() == 0
             if not data_ok:
                 print("FMC %d: Data calibration Failure!" % adc.fmc)
                 ok = False
-
+        if args.load_data:
+            delays = np.zeros([8,8], dtype=int)
+            for cn in range(8):
+                delays[cn] = list(map(int, data_delays_fh.readline().split(',')))
+            set_delays(adc, delays)
+            errs = np.array(get_errs(adc, use_ramp=args.use_ramp))
+            data_ok = errs.sum() == 0
+            if not data_ok:
+                print("FMC %d: Data calibration Failure after loading delays from file!" % adc.fmc)
+                ok = False
 
         if args.err_cnt:
             errs = get_errs(adc, use_ramp=args.use_ramp)

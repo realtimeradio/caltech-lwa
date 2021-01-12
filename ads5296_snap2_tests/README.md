@@ -69,36 +69,54 @@ only pertinent information printed to screen.
 
 ```
 jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./adc_test.py -h
-usage: adc_test.py [-h] [--fmcA] [--fmcB] [--host HOST] [--init] [--sync]
-                   [--use_ramp] [--cal_fclk] [--cal_data] [--err_cnt]
+Usage: adc_test.py [-h] [--fmcA] [--fmcB] [--host HOST]
+                   [--clocksource CLOCKSOURCE] [--init] [--sync] [--use_ramp]
+                   [--cal_fclk] [--load_fclk]
+                   [--fclk_delayfile FCLK_DELAYFILE] [--cal_data]
+                   [--data_delayfile DATA_DELAYFILE] [--load_data] [--err_cnt]
                    [--outfile OUTFILE] [--header HEADER] [-f] [--print_binary]
-                   [-N N_DUMPS]
+                   [-C CHANNEL] [-N N_DUMPS]
 
 Configure an ADS5296 board and grab data
 
 optional arguments:
-  -h, --help         show this help message and exit
-  --fmcA             Use FMC A; aka FMC 0; aka 'right hand' (default: False)
-  --fmcB             Use FMC B; aka FMC 1; aka 'left hand' (default: False)
-  --host HOST        Snap hostname / IP address (default: snap2-rev2-10)
-  --init             Reset and initialize ADCs (default: False)
-  --sync             Strobe ADC sync line (default: False)
-  --use_ramp         Turn on ramp test mode (default: False)
-  --cal_fclk         Sweep FCLK delays and use to set ADC data (default:
-                     False)
-  --cal_data         Sweep data line delays and use to set ADC data (default:
-                     False)
-  --err_cnt          Get error counts (default: False)
-  --outfile OUTFILE  Custom output filename (default: None)
-  --header HEADER    Custom header text to be written to ithe third line of
-                     output file (default: )
-  -f, --force        Force overwriting of any existing output file (default:
-                     False)
-  --print_binary     print a snapshot excerpt in binary (default: False)
+  -h, --help            show this help message and exit
+  --fmcA                Use FMC A; aka FMC 0; aka 'right hand' (default:
+                        False)
+  --fmcB                Use FMC B; aka FMC 1; aka 'left hand' (default: False)
+  --host HOST           Snap hostname / IP address (default: snap2-rev2-10)
+  --clocksource CLOCKSOURCE
+                        Board form which FPGA clock should be derived.
+                        0='top', 1='bottom' (default: 0)
+  --init                Reset and initialize ADCs (default: False)
+  --sync                Strobe ADC sync line (default: False)
+  --use_ramp            Turn on ramp test mode (default: False)
+  --cal_fclk            Sweep FCLK delays and use to set ADC data (default:
+                        False)
+  --load_fclk           Load fclk delays from a provided file specified with
+                        --fclk_delayfile (default: False)
+  --fclk_delayfile FCLK_DELAYFILE
+                        File to which new FCLK calibration delays should be
+                        written/read (default: fclk_delays.csv)
+  --cal_data            Sweep data line delays and use to set ADC data
+                        (default: False)
+  --data_delayfile DATA_DELAYFILE
+                        File to which new data lane calibration delays should
+                        be written/read (default: data_delays.csv)
+  --load_data           Load data delays from a provided file specified with
+                        --data_delayfile (default: False)
+  --err_cnt             Get error counts (default: False)
+  --outfile OUTFILE     Custom output filename (default: None)
+  --header HEADER       Custom header text to be written to ithe third line of
+                        output file (default: )
+  -f, --force           Force overwriting of any existing output file
+                        (default: False)
+  --print_binary        print a snapshot excerpt in binary (default: False)
   -C CHANNEL, --channel CHANNEL
                         grab 64k samples for a single channel (default: None)
-  -N N_DUMPS         Number of captures to dump to disk. 0 for no file output
-                     (default: 0)
+  -N N_DUMPS            Number of captures to dump to disk. 0 for no file
+                        output (default: 0)
+default: 0)
 
 ```
 
@@ -106,7 +124,7 @@ optional arguments:
 
 Example usage:
 
-1. Initialize a board, training the ADC->FPGA and setting input pin delays appropriately
+1. Initialize a board, training the ADC->FPGA and setting input pin delays appropriately. Save the resulting delays to `fclk_delays.csv`
 
 First, initialize ADC registers and align the frame clock
 
@@ -125,7 +143,7 @@ Board 1 FCLK Delay 144 (slack 22)
 
 `slack` is the number of delay taps between the chosen delay and the first delay setting which gives errors.
 
-Next, calibrate the data line delays
+Next, calibrate the data line delays, saving the resultant delay settings to `data_delays.csv`
 
 ```
 jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./adc_test.py --fmcB --cal_data
