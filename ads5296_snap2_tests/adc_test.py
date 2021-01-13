@@ -204,6 +204,8 @@ if __name__ == "__main__":
                         help="Use FMC A; aka FMC 0; aka 'right hand'")
     parser.add_argument("--fmcB", action="store_true",
                         help="Use FMC B; aka FMC 1; aka 'left hand'")
+    parser.add_argument("--program", action="store_true",
+                        help="Reprogram the FPGA from flash address 0")
     parser.add_argument("--host", type=str, default="snap2-rev2-10",
                         help="Snap hostname / IP address")
     parser.add_argument("--clocksource", type=int, default=0,
@@ -253,6 +255,10 @@ if __name__ == "__main__":
 
     print("Connecting to %s" % args.host)
     s = casperfpga.CasperFpga(args.host, transport=casperfpga.TapcpTransport)
+
+    if args.program:
+        print("Reprogramming from flash address 0")
+        s.transport.progdev(0)
 
     fmcs = []
     if args.fmcA:
