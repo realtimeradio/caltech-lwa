@@ -22,12 +22,16 @@ def get_snapshot(a, signed=False):
     a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)          
     a.fpga.write_int('snapshot0_snapshot_ctrl', 0b1)
     a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)
+    # Loop over chips
     for i in range(8):     
         x = a.fpga.read('snapshot%d_snapshot_bram' % i, 8192)
         d = struct.unpack('>4096H', x)
+        # Remove 10-bit -> 16-bit padding
         v = [xx >> 6 for xx in d]
-        for j in range(8):
-            out[i, j] = v[j::8]
+        # Loop over lanes
+        for j in range(4): # ADCs
+            for k in range(2): # interleaving
+                out[i, 2*j+k] = v[4*k+j::8]
     if signed:
         out[out>511] -= 1024
     return np.array(out, dtype=np.int32)
@@ -186,6 +190,11 @@ def sync(fpga):
     fpga.write_int('sync', 1)
     fpga.write_int('sync', 0)
 
+def reset(fpga):
+    fpga.write_int('rst', 0)
+    fpga.write_int('rst', 1)
+    fpga.write_int('rst', 0)
+
 def cal_fclk(a):
     delay0, slack0 = a.calibrate_fclk(0)
     delay1, slack1 = a.calibrate_fclk(1)
@@ -230,6 +239,10 @@ if __name__ == "__main__":
                         help="Load data delays from a provided file specified with --data_delayfile")
     parser.add_argument("--err_cnt", action="store_true",
                         help="Get error counts")
+    parser.add_argument("--reset_error_count", action="store_true",
+                        help="Reset the firmware error counters")
+    parser.add_argument("--check_errors", action="store_true",
+                        help="Set the ADCs to RAMP mode, and watch the firmware error counters. Use Ctrl-C to exit")
     parser.add_argument("--outfile", type=str, default=None,
                         help="Custom output filename")
     parser.add_argument("--header", type=str, default="",
@@ -252,6 +265,13 @@ if __name__ == "__main__":
     if args.load_data and args.cal_data:
         print("--load_data and --cal_data arguments are mutually exclusive. Exiting.")
         exit()
+
+    if args.n_dumps != 0 and args.check_errors:
+        print("--check_errors and --n_dumps arguments are mutually exclusive. Exiting.")
+        exit()
+
+    if args.check_errors and not args.use_ramp:
+        print("WARNING: --check_errors will only produce meaningful results in --use_ramp mode")
 
     print("Connecting to %s" % args.host)
     s = casperfpga.CasperFpga(args.host, transport=casperfpga.TapcpTransport)
@@ -290,10 +310,14 @@ if __name__ == "__main__":
     else:
         print("Skipping setting ads5296_clksel0 to %d because the firmware doesn't support this" % args.clocksource)
 
-    for adc in fmcs:
-        if args.init:
+    if args.init:
+        for adc in fmcs:
             init(adc)
+            for board in range(2):
+                adc.reset_mmcm(board)
+                adc.reset_iserdes(board)
 
+    for adc in fmcs:
         if args.use_ramp:
             use_ramp(adc)
         else:
@@ -331,14 +355,17 @@ if __name__ == "__main__":
             if not fclk_ok:
                 print("FMC %d: FCLK calibration Failure!" % adc.fmc)
                 ok = False
-            sync(s) # Need to sync after moving fclk to re-lock deserializers
         if args.load_fclk:
             delay = list(map(int, fclk_delays_fh.readline().split(',')))
             for board_id in range(2):
                 adc.load_delay_fclk(delay[board_id], board_id*4)
                 print("FMC %d: Loaded board 0 FCLK Delay %d" % (adc.fmc, delay[board_id]))
-            sync(s) # Need to sync after moving fclk to re-lock deserializers
+
+    if args.cal_fclk or args.load_fclk:
+        reset(s) # Flush FIFOs and begin reading after next sync
+        sync(s) # Need to sync after moving fclk to re-lock deserializers
     
+    for adc in fmcs: 
         data_ok = True
         if args.cal_data:
             errs = get_data_delays(adc)
@@ -387,6 +414,26 @@ if __name__ == "__main__":
 
     x = get_snapshot(adc, signed=(not args.print_binary))
     print_snapshot(x, binary=args.print_binary)
+
+    if args.reset_error_count:
+       print("Reseting error counters")
+       s.write_int('err_cnt_rst', 1)
+       s.write_int('err_cnt_rst', 0)
+
+    if args.check_errors:
+       t = time.ctime()
+       while(True):
+           print("Checking for errors at time: %s:" % t)
+           for i in range(32):
+               x = s.read_uint('err_cnt%d_interleave_err_cnt' % i)
+               if x != 0:
+                   print("CHIP %d, CHANNEL %d: Lane interleave error count %d" % (i//4, i%4, x))
+               for j in range(2):
+                   x = s.read_uint('err_cnt%d_ramp_err_cnt%d' % (i, j))
+                   if x != 0:
+                       print("CHIP %d, CHANNEL %d, LANE %d: Ramp corruption error count %d" %(i//4, i%4, j, x))
+           time.sleep(10)
+
     if args.n_dumps == 0:
        exit()
 

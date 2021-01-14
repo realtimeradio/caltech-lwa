@@ -68,14 +68,15 @@ Diagnostic information is printed to stderr, so can be redirected with (eg) 2>/d
 only pertinent information printed to screen.
 
 ```
-jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./adc_test.py -h
-Usage: adc_test.py [-h] [--fmcA] [--fmcB] [--host HOST]
+(py3_mlib_venv) jackh@maze:~/src/caltech-lwa/ads5296_snap2_tests$ ./adc_test.py -h
+usage: adc_test.py [-h] [--fmcA] [--fmcB] [--program] [--host HOST]
                    [--clocksource CLOCKSOURCE] [--init] [--sync] [--use_ramp]
                    [--cal_fclk] [--load_fclk]
                    [--fclk_delayfile FCLK_DELAYFILE] [--cal_data]
                    [--data_delayfile DATA_DELAYFILE] [--load_data] [--err_cnt]
-                   [--outfile OUTFILE] [--header HEADER] [-f] [--print_binary]
-                   [-C CHANNEL] [-N N_DUMPS]
+                   [--reset_error_count] [--check_errors] [--outfile OUTFILE]
+                   [--header HEADER] [-f] [--print_binary] [-C CHANNEL]
+                   [-N N_DUMPS]
 
 Configure an ADS5296 board and grab data
 
@@ -84,6 +85,8 @@ optional arguments:
   --fmcA                Use FMC A; aka FMC 0; aka 'right hand' (default:
                         False)
   --fmcB                Use FMC B; aka FMC 1; aka 'left hand' (default: False)
+  --program             Reprogram the FPGA from flash address 0 (default:
+                        False)
   --host HOST           Snap hostname / IP address (default: snap2-rev2-10)
   --clocksource CLOCKSOURCE
                         Board form which FPGA clock should be derived.
@@ -106,6 +109,9 @@ optional arguments:
   --load_data           Load data delays from a provided file specified with
                         --data_delayfile (default: False)
   --err_cnt             Get error counts (default: False)
+  --reset_error_count   Reset the firmware error counters (default: False)
+  --check_errors        Set the ADCs to RAMP mode, and watch the firmware
+                        error counters. Use Ctrl-C to exit (default: False)
   --outfile OUTFILE     Custom output filename (default: None)
   --header HEADER       Custom header text to be written to ithe third line of
                         output file (default: )
@@ -116,7 +122,6 @@ optional arguments:
                         grab 64k samples for a single channel (default: None)
   -N N_DUMPS            Number of captures to dump to disk. 0 for no file
                         output (default: 0)
-default: 0)
 
 ```
 
