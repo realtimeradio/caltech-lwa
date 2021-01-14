@@ -316,6 +316,7 @@ if __name__ == "__main__":
             for board in range(2):
                 adc.reset_mmcm(board)
                 adc.reset_iserdes(board)
+            sync(s)
 
     for adc in fmcs:
         if args.use_ramp:
@@ -362,6 +363,8 @@ if __name__ == "__main__":
                 print("FMC %d: Loaded board 0 FCLK Delay %d" % (adc.fmc, delay[board_id]))
 
     if args.cal_fclk or args.load_fclk:
+        for board in range(2):
+            adc.reset_iserdes(board)
         reset(s) # Flush FIFOs and begin reading after next sync
         sync(s) # Need to sync after moving fclk to re-lock deserializers
     
