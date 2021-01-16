@@ -340,11 +340,11 @@ if __name__ == "__main__":
    
     if args.cal_fclk:
         fclk_delays_fh = open(args.fclk_delayfile, "w")
-    else:
+    elif args.load_fclk:
         fclk_delays_fh = open(args.fclk_delayfile, "r")
     if args.cal_data:
         data_delays_fh = open(args.data_delayfile, "w")
-    else:
+    elif args.load_data:
         data_delays_fh = open(args.data_delayfile, "r")
 
     ok = True 
