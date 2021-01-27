@@ -356,7 +356,7 @@ if __name__ == "__main__":
         if args.use_ramp:
             use_ramp(adc)
         else:
-            use_data(adc)
+            pass# use_data(adc)
             
     if args.sync:
         sync(s)
@@ -416,7 +416,7 @@ if __name__ == "__main__":
                 data_delays_fh.write(",".join(map(str, chipdelay)))
                 data_delays_fh.write("\n")
             set_delays(adc, best)
-            do_bitslip(adc)
+            #do_bitslip(adc)
             errs = np.array(get_errs(adc, use_ramp=args.use_ramp))
             data_ok = errs.sum() == 0
             if not data_ok:
