@@ -407,7 +407,7 @@ if __name__ == "__main__":
         if args.cal_data:
             #reset(s) # Flush FIFOs and begin reading after next sync
             sync(s) # Need to sync after moving fclk to re-lock deserializers
-            errs = get_data_delays(adc, test_val=0b1010101010)
+            errs = get_data_delays(adc)
             best = get_best_delays(errs)
             print("Data lane delays")
             print(best)
