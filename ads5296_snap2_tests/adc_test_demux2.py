@@ -104,13 +104,12 @@ def do_bitslip(a):
                 print(np.binary_repr(get_snapshot(a)[chip,chan,0], width=10))
                 
 
-def get_errs(a, use_ramp=False):
-    TEST_VAL = 0b0000010101
+def get_errs(a, use_ramp=False, test_val=0b0000010101):
     for i in range(8):
         if use_ramp:
             a.enable_test_pattern('ramp', i)
         else:
-            a.enable_test_pattern('constant', i, val0=TEST_VAL)
+            a.enable_test_pattern('constant', i, val0=test_val)
     errs = np.zeros([8, 8]) # taps x chips x lanes
     d = get_snapshot(a)
     for c in range(8):
@@ -121,7 +120,7 @@ def get_errs(a, use_ramp=False):
                     if ds[i] != ((ds[i-1] + 1) % 1024):
                         errs[c,l] += 1
             else:
-                errs[c,l] = np.count_nonzero(d[c,l,:] != TEST_VAL)
+                errs[c,l] = np.count_nonzero(d[c,l,:] != test_val)
     return errs
     
 
@@ -237,8 +236,8 @@ if __name__ == "__main__":
                         help="Reprogram the FPGA from flash address 0")
     parser.add_argument("--host", type=str, default="snap2-rev2-10",
                         help="Snap hostname / IP address")
-    parser.add_argument("--clocksource", type=int, default=0,
-                        help="Board form which FPGA clock should be derived. 0='top', 1='bottom'")
+    parser.add_argument("--clocksource", type=int, default=None,
+                        help="Board form which FPGA clock should be derived. 0='lower', 1='upper'")
     parser.add_argument("--init", action="store_true",
                         help="Reset and initialize ADCs")
     parser.add_argument("--sync", action="store_true",
@@ -315,30 +314,26 @@ if __name__ == "__main__":
     #for fmc in fmcs:
     #    fmc.quiet = False
     
-    # set clock source switch
-    assert args.clocksource in [0,1], "--clocksource must be 0 or 1"
-    devs = s.listdev()
-    if 'ads5296_clksel1' in devs:
-        print("Setting ads5296_clksel1 to %d" % args.clocksource)
-        s.write_int('ads5296_clksel1', args.clocksource)
-    else:
-        print("Skipping setting ads5296_clksel1 to %d because the firmware doesn't support this" % args.clocksource)
-
-    if 'ads5296_clksel0' in devs:
-        print("Setting ads5296_clksel0 to %d" % args.clocksource)
-        s.write_int('ads5296_clksel0', args.clocksource)
-    else:
-        print("Skipping setting ads5296_clksel0 to %d because the firmware doesn't support this" % args.clocksource)
-
+    if args.clocksource is not None:
+        # set clock source switch
+        assert args.clocksource in [0,1], "--clocksource must be 0 or 1"
+        for adc in fmcs:
+            for board in range(2):
+                print("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, args.clocksource))
+                adc.set_clock_source(args.clocksource, board)
+        
     if args.init:
+        for adc in fmcs:
+            adc.reset_mmcm(board)
+        time.sleep(0.1) # wait for MMCM to come out of reset
         for adc in fmcs:
             init(adc)
             for board in range(2):
                 for cs in range(4*board, 4*board+1):
                     adc.enable_rst_data(range(8), cs)
                     adc.enable_rst_fclk(board)
-                adc.reset_mmcm(board)
-                time.sleep(0.1) # wait for MMCM to come out of reset
+                #adc.reset_mmcm(board)
+                #time.sleep(0.1) # wait for MMCM to come out of reset
                 # Enable VTCs before letting IODELAYs out of reset
                 adc.enable_vtc_fclk(board)
                 for cs in range(4*board, 4*board+1):
@@ -363,6 +358,9 @@ if __name__ == "__main__":
 
     for adc in fmcs:
         for i in range(2):
+            mmcm_locked = adc.mmcm_get_lock(i)
+            if mmcm_locked is not None:
+                print("FMC %d core %d MMCM locked?: %s" % (adc.fmc, i, mmcm_locked))
             clocks = adc.read_clk_rates(i)
             print("FMC %d board %d, lclk, fclk[0..3]:" % (adc.fmc, i), clocks)
 
@@ -404,10 +402,12 @@ if __name__ == "__main__":
     
     for adc in fmcs: 
         data_ok = True
+        #TEST_VAL = 0b0101010101
+        TEST_VAL = 0b0000010101
         if args.cal_data:
             #reset(s) # Flush FIFOs and begin reading after next sync
             sync(s) # Need to sync after moving fclk to re-lock deserializers
-            errs = get_data_delays(adc)
+            errs = get_data_delays(adc, test_val=TEST_VAL)
             best = get_best_delays(errs)
             print("Data lane delays")
             print(best)
@@ -417,7 +417,7 @@ if __name__ == "__main__":
                 data_delays_fh.write("\n")
             set_delays(adc, best)
             #do_bitslip(adc)
-            errs = np.array(get_errs(adc, use_ramp=args.use_ramp))
+            errs = np.array(get_errs(adc, use_ramp=args.use_ramp, test_val=TEST_VAL))
             data_ok = errs.sum() == 0
             if not data_ok:
                 print("FMC %d: Data calibration Failure!" % adc.fmc)
@@ -427,14 +427,14 @@ if __name__ == "__main__":
             for cn in range(8):
                 delays[cn] = list(map(int, data_delays_fh.readline().split(',')))
             set_delays(adc, delays)
-            errs = np.array(get_errs(adc, use_ramp=args.use_ramp))
+            errs = np.array(get_errs(adc, use_ramp=args.use_ramp, test_val=TEST_VAL))
             data_ok = errs.sum() == 0
             if not data_ok:
                 print("FMC %d: Data calibration Failure after loading delays from file!" % adc.fmc)
                 ok = False
 
         if args.err_cnt:
-            errs = get_errs(adc, use_ramp=args.use_ramp)
+            errs = get_errs(adc, use_ramp=args.use_ramp, test_val=TEST_VAL)
             print("Errors by lane:")
             print(errs)
             if not np.array(errs).sum() == 0:
