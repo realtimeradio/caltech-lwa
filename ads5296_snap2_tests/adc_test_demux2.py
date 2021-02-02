@@ -324,7 +324,8 @@ if __name__ == "__main__":
         
     if args.init:
         for adc in fmcs:
-            adc.reset_mmcm(board)
+            for board in range(2):
+                adc.reset_mmcm(board)
         time.sleep(0.1) # wait for MMCM to come out of reset
         for adc in fmcs:
             init(adc)
