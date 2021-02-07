@@ -352,7 +352,7 @@ if __name__ == "__main__":
         if args.use_ramp:
             use_ramp(adc)
         else:
-            pass# use_data(adc)
+            use_data(adc)
             
     if args.sync:
         sync(s)
