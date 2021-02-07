@@ -323,12 +323,17 @@ if __name__ == "__main__":
                 adc.set_clock_source(args.clocksource, board)
         
     if args.init:
+        # Initialize all ADCs, then reset all MMCMs
+        # This should leave the MMCMs locked no matter
+        # which ADC chip is sourcing the clock.
+        for adc in fmcs:
+            init(adc)
+        time.sleep(0.1) # wait for Initialization. Probably not needed
         for adc in fmcs:
             for board in range(2):
                 adc.reset_mmcm(board)
         time.sleep(0.1) # wait for MMCM to come out of reset
         for adc in fmcs:
-            init(adc)
             for board in range(2):
                 for cs in range(4*board, 4*board+1):
                     adc.enable_rst_data(range(8), cs)
