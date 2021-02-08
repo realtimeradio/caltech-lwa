@@ -185,10 +185,14 @@ def print_snapshot(x, binary=False):
     for i in range(8):             
         for j in range(6):
             for k in range(8):
-                if binary:
-                    print(np.binary_repr(x[i, k, j], width=10), end='  ', file=sys.stderr)
+                if k%2:
+                    d = x[i,k]
                 else:
-                    print("%3d" % x[i, k, j], end='  ', file=sys.stderr)
+                    d = x[i,k,1:]
+                if binary:
+                    print(np.binary_repr(d[j], width=10), end='  ', file=sys.stderr)
+                else:
+                    print("%3d" % d[j], end='  ', file=sys.stderr)
             print(file=sys.stderr)
         print(file=sys.stderr)
 
