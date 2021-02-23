@@ -10,6 +10,8 @@ import os
 import casperfpga
 
 TAP_STEP_SIZE = 4
+NSAMPLES = 256
+USE_EMBEDDED_BRAM = False
 
 try:
     from casperfpga import ads5296
@@ -17,15 +19,41 @@ except:
     print("Couldn't import ADS5296 control library from casperfpga")
     print("Are you using the correct python environment?")
 
-def get_snapshot(a, signed=False):
-    out = np.zeros([8,8,4096//8])
-    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)          
-    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b1)
-    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)
+#def get_snapshot(a, signed=False):
+#    out = np.zeros([8,8,NSAMPLES])
+#    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)          
+#    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b1)
+#    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)
+#    # Loop over chips
+#    for i in range(8):     
+#        x = a.fpga.read('snapshot%d_snapshot_bram' % i, 8192)
+#        d = struct.unpack('>4096H', x)
+#        # Remove 10-bit -> 16-bit padding
+#        v = [xx >> 6 for xx in d]
+#        # Loop over lanes
+#        for j in range(4): # ADCs
+#            for k in range(2): # interleaving
+#                out[i, 2*j+k] = v[4*k+j::8]
+#    if signed:
+#        out[out>511] -= 1024
+#    return np.array(out, dtype=np.int32)
+
+def get_snapshot(a, signed=False, use_embedded=USE_EMBEDDED_BRAM):
+    out = np.zeros([8,8,NSAMPLES])
+    if use_embedded:
+        trig_reg = 'snapshot_trig'
+    else:
+        trig_reg = 'snapshot0_snapshot_ctrl'
+    a.fpga.write_int(trig_reg, 0b0)          
+    a.fpga.write_int(trig_reg, 0b1)
+    a.fpga.write_int(trig_reg, 0b0)
     # Loop over chips
     for i in range(8):     
-        x = a.fpga.read('snapshot%d_snapshot_bram' % i, 8192)
-        d = struct.unpack('>4096H', x)
+        if use_embedded:
+            x = a.fpga.read('ads5296_wb_ram1_%d_%d' % (i // 4, i % 4), NSAMPLES*2*2*4)
+        else:
+            x = a.fpga.read('snapshot%d_snapshot_bram' % i, NSAMPLES*2*2*4)
+        d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
         # Remove 10-bit -> 16-bit padding
         v = [xx >> 6 for xx in d]
         # Loop over lanes
@@ -44,14 +72,21 @@ def get_deep_snapshot(a):
     d = struct.unpack(">%dh" % (2**16), x)
     return np.array([d], dtype=np.int32) >> 6 # 10 bit samples are in MSBs of 16-bit words
 
-def get_snapshot_interleaved(a, signed=False):
-    out = np.zeros([32,4096//4])
-    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)          
-    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b1)
-    a.fpga.write_int('snapshot0_snapshot_ctrl', 0b0)
+def get_snapshot_interleaved(a, signed=False, use_embedded=USE_EMBEDDED_BRAM):
+    out = np.zeros([32,2*NSAMPLES])
+    if use_embedded:
+        trig_reg = 'snapshot_trig'
+    else:
+        trig_reg = 'snapshot0_snapshot_ctrl'
+    a.fpga.write_int(trig_reg, 0b0)          
+    a.fpga.write_int(trig_reg, 0b1)
+    a.fpga.write_int(trig_reg, 0b0)
     for i in range(8):     
-        x = a.fpga.read('snapshot%d_snapshot_bram' % i, 8192)
-        d = struct.unpack('>4096H', x)
+        if use_embedded:
+            x = a.fpga.read('ads5296_wb_ram1_%d_%d' % (i // 4, i % 4), NSAMPLES*2*2*4)
+        else:
+            x = a.fpga.read('snapshot%d_snapshot_bram' % i, NSAMPLES*2*2*4)
+        d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
         v = [xx >> 6 for xx in d]
         for j in range(4):
             out[4*i + j] = v[j::4]
@@ -64,7 +99,7 @@ def get_data_delays(a, step_size=TAP_STEP_SIZE, test_val=0b0000010101):
         a.enable_test_pattern('constant', i, val0=test_val)
     NTAPS=512
     NSTEPS = NTAPS // step_size
-    d = np.zeros([NSTEPS, 8, 8, 512]) # taps x chips x lanes x samples
+    d = np.zeros([NSTEPS, 8, 8, NSAMPLES]) # taps x chips x lanes x samples
     errs = np.zeros([NSTEPS, 8, 8]) # taps x chips x lanes
     for cs in range(8):
         #a.enable_rst_data(range(8), cs)
@@ -324,7 +359,9 @@ if __name__ == "__main__":
         for adc in fmcs:
             for board in range(2):
                 print("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, args.clocksource))
+                adc.reset_mmcm_assert(board)
                 adc.set_clock_source(args.clocksource, board)
+                adc.reset_mmcm_deassert(board)
         
     if args.init:
         # Initialize all ADCs, then reset all MMCMs
@@ -354,7 +391,8 @@ if __name__ == "__main__":
                 for cs in range(4*board, 4*board+1):
                     adc.disable_rst_data(range(8), cs)
                     adc.disable_rst_fclk(board)
-            # Allow deserializers out of reset
+            # Flush FIFOs
+            reset(s)
             sync(s)
 
     for adc in fmcs:
@@ -415,7 +453,7 @@ if __name__ == "__main__":
         #TEST_VAL = 0b0101010101
         TEST_VAL = 0b0000010101
         if args.cal_data:
-            #reset(s) # Flush FIFOs and begin reading after next sync
+            reset(s) # Flush FIFOs and begin reading after next sync
             sync(s) # Need to sync after moving fclk to re-lock deserializers
             errs = get_data_delays(adc, test_val=TEST_VAL)
             best = get_best_delays(errs)
