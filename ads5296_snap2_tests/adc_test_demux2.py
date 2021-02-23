@@ -324,7 +324,9 @@ if __name__ == "__main__":
         for adc in fmcs:
             for board in range(2):
                 print("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, args.clocksource))
+                adc.reset_mmcm_assert(board)
                 adc.set_clock_source(args.clocksource, board)
+                adc.reset_mmcm_deassert(board)
         
     if args.init:
         # Initialize all ADCs, then reset all MMCMs
@@ -354,7 +356,8 @@ if __name__ == "__main__":
                 for cs in range(4*board, 4*board+1):
                     adc.disable_rst_data(range(8), cs)
                     adc.disable_rst_fclk(board)
-            # Allow deserializers out of reset
+            # Flush FIFOs
+            reset(s)
             sync(s)
 
     for adc in fmcs:
@@ -415,7 +418,7 @@ if __name__ == "__main__":
         #TEST_VAL = 0b0101010101
         TEST_VAL = 0b0000010101
         if args.cal_data:
-            #reset(s) # Flush FIFOs and begin reading after next sync
+            reset(s) # Flush FIFOs and begin reading after next sync
             sync(s) # Need to sync after moving fclk to re-lock deserializers
             errs = get_data_delays(adc, test_val=TEST_VAL)
             best = get_best_delays(errs)
