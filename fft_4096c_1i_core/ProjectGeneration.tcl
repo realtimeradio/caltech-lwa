@@ -11,7 +11,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set DSPFamily {kintexu}
 	set DSPPackage {flvf1924}
 	set DSPSpeed {-2-e}
-	set FPGAClockPeriod 100
+	set FPGAClockPeriod 5
 	set GenerateTestBench 0
 	set HDLLanguage {vhdl}
 	set IPOOCCacheRootPath {/home/jackh/.Xilinx/Sysgen/SysgenVivado/lnx64.o/ip}
@@ -24,7 +24,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set IP_LifeCycle_Menu {2}
 	set IP_Logo {sysgen_icon_100.png}
 	set IP_Name {}
-	set IP_Revision {210767094}
+	set IP_Revision {245267149}
 	set IP_Socket_IP {0}
 	set IP_Socket_IP_Proj_Path {}
 	set IP_Vendor_Text {User_Company}
@@ -41,38 +41,37 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 		{{synth_reg_reg.vhd} -lib {xil_defaultlib}}
 		{{single_reg_w_init.vhd} -lib {xil_defaultlib}}
 		{{xlclockdriver_rd.vhd} -lib {xil_defaultlib}}
+		{{xpm_4dd9cf_vivado.mem}}
 		{{vivado_ip.tcl}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i0_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i1_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i2_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i3_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i4_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i0_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i1_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i2_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i3_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i5_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i6_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i7_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i4_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i5_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i6_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i7_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i8_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i9_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i10_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i11_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i12_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i13_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i14_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i15_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i16_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i17_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i18_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_v8_0_i19_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i8_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i9_vivado.coe}}
-		{{fft_4096c_1i_core_blk_mem_gen_v8_3_i10_vivado.coe}}
+		{{xpm_a6dbfc_vivado.mem}}
+		{{xpm_73d646_vivado.mem}}
+		{{xpm_53c368_vivado.mem}}
+		{{fft_4096c_1i_core_dist_mem_gen_i0_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i1_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i2_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i3_vivado.coe}}
+		{{xpm_98f453_vivado.mem}}
+		{{xpm_cb2434_vivado.mem}}
+		{{xpm_45185a_vivado.mem}}
+		{{fft_4096c_1i_core_dist_mem_gen_i4_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i5_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i6_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i7_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i8_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i9_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i10_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i11_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i12_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i13_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i14_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i15_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i16_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i17_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i18_vivado.coe}}
+		{{fft_4096c_1i_core_dist_mem_gen_i19_vivado.coe}}
+		{{xpm_3c00a8_vivado.mem}}
+		{{xpm_f6cc85_vivado.mem}}
+		{{xpm_b42cce_dpram.mem}}
 		{{fft_4096c_1i_core_entity_declarations.vhd} -lib {xil_defaultlib}}
 		{{fft_4096c_1i_core.vhd} -lib {xil_defaultlib}}
 		{{fft_4096c_1i_core_clock.xdc}}
@@ -80,12 +79,12 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	}
 	set SimPeriod 1
 	set SimTime 6144
-	set SimulationTime {614700.00000000 ns}
+	set SimulationTime {30925.00000000 ns}
 	set SynthStrategyName {Vivado Synthesis Defaults}
 	set SynthesisTool {Vivado}
 	set TargetDir {/home/jackh/src/caltech-lwa/fft_4096c_1i_core}
 	set TopLevelModule {fft_4096c_1i_core}
-	set TopLevelSimulinkHandle 140541
+	set TopLevelSimulinkHandle 189926
 	set VHDLLib {xil_defaultlib}
 	set TopLevelPortInterface {}
 	dict set TopLevelPortInterface sync Name {sync}
@@ -119,10 +118,10 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	dict set TopLevelPortInterface shift Locs {}
 	dict set TopLevelPortInterface shift IOStandard {}
 	dict set TopLevelPortInterface pol_in Name {pol_in}
-	dict set TopLevelPortInterface pol_in Type UFix_192_0
+	dict set TopLevelPortInterface pol_in Type UFix_288_0
 	dict set TopLevelPortInterface pol_in ArithmeticType xlUnsigned
 	dict set TopLevelPortInterface pol_in BinaryPoint 0
-	dict set TopLevelPortInterface pol_in Width 192
+	dict set TopLevelPortInterface pol_in Width 288
 	dict set TopLevelPortInterface pol_in DatFile {fft_4096c_1i_core_pol_in.dat}
 	dict set TopLevelPortInterface pol_in IconText {pol_in}
 	dict set TopLevelPortInterface pol_in Direction in
@@ -133,21 +132,6 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	dict set TopLevelPortInterface pol_in ClockDomain {fft_4096c_1i_core}
 	dict set TopLevelPortInterface pol_in Locs {}
 	dict set TopLevelPortInterface pol_in IOStandard {}
-	dict set TopLevelPortInterface pol_out Name {pol_out}
-	dict set TopLevelPortInterface pol_out Type UFix_288_0
-	dict set TopLevelPortInterface pol_out ArithmeticType xlUnsigned
-	dict set TopLevelPortInterface pol_out BinaryPoint 0
-	dict set TopLevelPortInterface pol_out Width 288
-	dict set TopLevelPortInterface pol_out DatFile {fft_4096c_1i_core_pol_out.dat}
-	dict set TopLevelPortInterface pol_out IconText {pol_out}
-	dict set TopLevelPortInterface pol_out Direction out
-	dict set TopLevelPortInterface pol_out Period 1
-	dict set TopLevelPortInterface pol_out Interface 0
-	dict set TopLevelPortInterface pol_out InterfaceName {}
-	dict set TopLevelPortInterface pol_out InterfaceString {DATA}
-	dict set TopLevelPortInterface pol_out ClockDomain {fft_4096c_1i_core}
-	dict set TopLevelPortInterface pol_out Locs {}
-	dict set TopLevelPortInterface pol_out IOStandard {}
 	dict set TopLevelPortInterface overflow Name {overflow}
 	dict set TopLevelPortInterface overflow Type UFix_4_0
 	dict set TopLevelPortInterface overflow ArithmeticType xlUnsigned
@@ -163,6 +147,21 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	dict set TopLevelPortInterface overflow ClockDomain {fft_4096c_1i_core}
 	dict set TopLevelPortInterface overflow Locs {}
 	dict set TopLevelPortInterface overflow IOStandard {}
+	dict set TopLevelPortInterface pol_out Name {pol_out}
+	dict set TopLevelPortInterface pol_out Type UFix_288_0
+	dict set TopLevelPortInterface pol_out ArithmeticType xlUnsigned
+	dict set TopLevelPortInterface pol_out BinaryPoint 0
+	dict set TopLevelPortInterface pol_out Width 288
+	dict set TopLevelPortInterface pol_out DatFile {fft_4096c_1i_core_pol_out.dat}
+	dict set TopLevelPortInterface pol_out IconText {pol_out}
+	dict set TopLevelPortInterface pol_out Direction out
+	dict set TopLevelPortInterface pol_out Period 1
+	dict set TopLevelPortInterface pol_out Interface 0
+	dict set TopLevelPortInterface pol_out InterfaceName {}
+	dict set TopLevelPortInterface pol_out InterfaceString {DATA}
+	dict set TopLevelPortInterface pol_out ClockDomain {fft_4096c_1i_core}
+	dict set TopLevelPortInterface pol_out Locs {}
+	dict set TopLevelPortInterface pol_out IOStandard {}
 	dict set TopLevelPortInterface sync_out Name {sync_out}
 	dict set TopLevelPortInterface sync_out Type Bool
 	dict set TopLevelPortInterface sync_out ArithmeticType xlUnsigned

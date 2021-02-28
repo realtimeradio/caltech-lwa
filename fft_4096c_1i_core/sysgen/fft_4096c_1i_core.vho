@@ -4,7 +4,7 @@
     shift => shift,
     sync => sync,
     clk => clk,
-    pol_out => pol_out,
     overflow => overflow,
+    pol_out => pol_out,
     sync_out => sync_out
   );

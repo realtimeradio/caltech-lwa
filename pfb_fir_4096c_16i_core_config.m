@@ -24,7 +24,7 @@ function pfb_fir_4096c_16i_core_config(this_block)
   this_block.addSimulinkOutport('pol_out');
 
   pol_out_port = this_block.port('pol_out');
-  pol_out_port.setType('UFix_192_0');
+  pol_out_port.setType('UFix_288_0');
 
   sync_out_port = this_block.port('sync_out');
   sync_out_port.setType('UFix_1_0');

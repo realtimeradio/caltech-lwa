@@ -6,7 +6,7 @@ use xil_defaultlib.conv_pkg.all;
 entity pfb_fir_4096c_16i_core_ip_struct is
   port (
     pol_in : in std_logic_vector( 160-1 downto 0 );
-    pol_out : out std_logic_vector( 192-1 downto 0 );
+    pol_out : out std_logic_vector( 288-1 downto 0 );
     sync : in std_logic_vector( 32-1 downto 0 );
     sync_out : out std_logic_vector( 1-1 downto 0 );
     clk_1 : in std_logic;
@@ -18,7 +18,7 @@ architecture structural of pfb_fir_4096c_16i_core_ip_struct is
   component pfb_fir_4096c_16i_core_ip
     port ( 
       pol_in : in std_logic_vector( 160-1 downto 0 );
-      pol_out : out std_logic_vector( 192-1 downto 0 );
+      pol_out : out std_logic_vector( 288-1 downto 0 );
       sync : in std_logic_vector( 32-1 downto 0 );
       sync_out : out std_logic_vector( 1-1 downto 0 );
       clk : in std_logic

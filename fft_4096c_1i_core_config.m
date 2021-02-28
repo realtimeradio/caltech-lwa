@@ -37,7 +37,7 @@ function fft_4096c_1i_core_config(this_block)
   if (this_block.inputTypesKnown)
     % do input type checking, dynamic output type and generic setup in this code block.
 
-    if (this_block.port('pol_in').width ~= 12*16);
+    if (this_block.port('pol_in').width ~= 18*16);
       this_block.setError('Input data type for port "pol_in" must have width=12*16.');
     end
     if (this_block.port('shift').width ~= 16);

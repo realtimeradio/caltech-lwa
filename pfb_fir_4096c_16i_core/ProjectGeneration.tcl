@@ -24,7 +24,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set IP_LifeCycle_Menu {2}
 	set IP_Logo {sysgen_icon_100.png}
 	set IP_Name {}
-	set IP_Revision {213033910}
+	set IP_Revision {245259151}
 	set IP_Socket_IP {0}
 	set IP_Socket_IP_Proj_Path {}
 	set IP_Vendor_Text {User_Company}
@@ -119,7 +119,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set SynthesisTool {Vivado}
 	set TargetDir {/home/jackh/src/caltech-lwa/pfb_fir_4096c_16i_core}
 	set TopLevelModule {pfb_fir_4096c_16i_core}
-	set TopLevelSimulinkHandle 76829
+	set TopLevelSimulinkHandle 189926
 	set VHDLLib {xil_defaultlib}
 	set TopLevelPortInterface {}
 	dict set TopLevelPortInterface sync Name {sync}
@@ -153,10 +153,10 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	dict set TopLevelPortInterface pol_in Locs {}
 	dict set TopLevelPortInterface pol_in IOStandard {}
 	dict set TopLevelPortInterface pol_out Name {pol_out}
-	dict set TopLevelPortInterface pol_out Type UFix_192_0
+	dict set TopLevelPortInterface pol_out Type UFix_288_0
 	dict set TopLevelPortInterface pol_out ArithmeticType xlUnsigned
 	dict set TopLevelPortInterface pol_out BinaryPoint 0
-	dict set TopLevelPortInterface pol_out Width 192
+	dict set TopLevelPortInterface pol_out Width 288
 	dict set TopLevelPortInterface pol_out DatFile {pfb_fir_4096c_16i_core_pol_out.dat}
 	dict set TopLevelPortInterface pol_out IconText {pol_out}
 	dict set TopLevelPortInterface pol_out Direction out

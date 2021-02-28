@@ -5,7 +5,7 @@ library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 entity fft_4096c_1i_core_ip_struct is
   port (
-    pol_in : in std_logic_vector( 192-1 downto 0 );
+    pol_in : in std_logic_vector( 288-1 downto 0 );
     shift : in std_logic_vector( 16-1 downto 0 );
     sync : in std_logic_vector( 32-1 downto 0 );
     clk_1 : in std_logic;
@@ -19,7 +19,7 @@ end fft_4096c_1i_core_ip_struct;
 architecture structural of fft_4096c_1i_core_ip_struct is
   component fft_4096c_1i_core_ip
     port (
-      pol_in : in std_logic_vector( 192-1 downto 0 );
+      pol_in : in std_logic_vector( 288-1 downto 0 );
       shift : in std_logic_vector( 16-1 downto 0 );
       sync : in std_logic_vector( 32-1 downto 0 );
       clk : in std_logic;

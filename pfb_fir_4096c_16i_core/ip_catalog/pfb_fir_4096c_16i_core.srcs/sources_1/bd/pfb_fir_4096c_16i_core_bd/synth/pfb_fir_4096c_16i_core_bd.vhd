@@ -1,8 +1,8 @@
 --Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2019.1.3 (lin64) Build 2644227 Wed Sep  4 09:44:18 MDT 2019
---Date        : Wed Feb 19 16:06:00 2020
---Host        : rtr-dev1 running 64-bit Ubuntu 18.04.3 LTS
+--Date        : Fri Feb 26 15:32:58 2021
+--Host        : rtr-dev1 running 64-bit Ubuntu 18.04.4 LTS
 --Command     : generate_target pfb_fir_4096c_16i_core_bd.bd
 --Design      : pfb_fir_4096c_16i_core_bd
 --Purpose     : IP block netlist
@@ -15,7 +15,7 @@ entity pfb_fir_4096c_16i_core_bd is
   port (
     clk : in STD_LOGIC;
     pol_in : in STD_LOGIC_VECTOR ( 159 downto 0 );
-    pol_out : out STD_LOGIC_VECTOR ( 191 downto 0 );
+    pol_out : out STD_LOGIC_VECTOR ( 287 downto 0 );
     sync : in STD_LOGIC_VECTOR ( 31 downto 0 );
     sync_out : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
@@ -31,12 +31,12 @@ architecture STRUCTURE of pfb_fir_4096c_16i_core_bd is
     pol_in : in STD_LOGIC_VECTOR ( 159 downto 0 );
     sync : in STD_LOGIC_VECTOR ( 31 downto 0 );
     clk : in STD_LOGIC;
-    pol_out : out STD_LOGIC_VECTOR ( 191 downto 0 );
+    pol_out : out STD_LOGIC_VECTOR ( 287 downto 0 );
     sync_out : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component pfb_fir_4096c_16i_core_bd_pfb_fir_4096c_16i_core_1_0;
   signal clk_1 : STD_LOGIC;
-  signal pfb_fir_4096c_16i_core_1_pol_out : STD_LOGIC_VECTOR ( 191 downto 0 );
+  signal pfb_fir_4096c_16i_core_1_pol_out : STD_LOGIC_VECTOR ( 287 downto 0 );
   signal pfb_fir_4096c_16i_core_1_sync_out : STD_LOGIC_VECTOR ( 0 to 0 );
   signal pol_in_1 : STD_LOGIC_VECTOR ( 159 downto 0 );
   signal sync_1 : STD_LOGIC_VECTOR ( 31 downto 0 );
@@ -47,7 +47,7 @@ architecture STRUCTURE of pfb_fir_4096c_16i_core_bd is
   attribute X_INTERFACE_INFO of pol_in : signal is "xilinx.com:signal:data:1.0 DATA.POL_IN DATA";
   attribute X_INTERFACE_PARAMETER of pol_in : signal is "XIL_INTERFACENAME DATA.POL_IN, LAYERED_METADATA undef";
   attribute X_INTERFACE_INFO of pol_out : signal is "xilinx.com:signal:data:1.0 DATA.POL_OUT DATA";
-  attribute X_INTERFACE_PARAMETER of pol_out : signal is "XIL_INTERFACENAME DATA.POL_OUT, LAYERED_METADATA xilinx.com:interface:datatypes:1.0 {DATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 192} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} real {fixed {fractwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}}}}";
+  attribute X_INTERFACE_PARAMETER of pol_out : signal is "XIL_INTERFACENAME DATA.POL_OUT, LAYERED_METADATA xilinx.com:interface:datatypes:1.0 {DATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 288} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} real {fixed {fractwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}}}}";
   attribute X_INTERFACE_INFO of sync : signal is "xilinx.com:signal:data:1.0 DATA.SYNC DATA";
   attribute X_INTERFACE_PARAMETER of sync : signal is "XIL_INTERFACENAME DATA.SYNC, LAYERED_METADATA undef";
   attribute X_INTERFACE_INFO of sync_out : signal is "xilinx.com:signal:data:1.0 DATA.SYNC_OUT DATA";
@@ -55,14 +55,14 @@ architecture STRUCTURE of pfb_fir_4096c_16i_core_bd is
 begin
   clk_1 <= clk;
   pol_in_1(159 downto 0) <= pol_in(159 downto 0);
-  pol_out(191 downto 0) <= pfb_fir_4096c_16i_core_1_pol_out(191 downto 0);
+  pol_out(287 downto 0) <= pfb_fir_4096c_16i_core_1_pol_out(287 downto 0);
   sync_1(31 downto 0) <= sync(31 downto 0);
   sync_out(0) <= pfb_fir_4096c_16i_core_1_sync_out(0);
 pfb_fir_4096c_16i_core_1: component pfb_fir_4096c_16i_core_bd_pfb_fir_4096c_16i_core_1_0
      port map (
       clk => clk_1,
       pol_in(159 downto 0) => pol_in_1(159 downto 0),
-      pol_out(191 downto 0) => pfb_fir_4096c_16i_core_1_pol_out(191 downto 0),
+      pol_out(287 downto 0) => pfb_fir_4096c_16i_core_1_pol_out(287 downto 0),
       sync(31 downto 0) => sync_1(31 downto 0),
       sync_out(0) => pfb_fir_4096c_16i_core_1_sync_out(0)
     );
