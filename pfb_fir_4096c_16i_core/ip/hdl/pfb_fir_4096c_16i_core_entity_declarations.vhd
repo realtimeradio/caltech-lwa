@@ -73,6 +73,183 @@ end  behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+--$Header: /devl/xcs/repo/env/Jobs/sysgen/src/xbs/blocks/xlconvert/hdl/xlconvert.vhd,v 1.1 2004/11/22 00:17:30 rosty Exp $
+---------------------------------------------------------------------
+--
+--  Filename      : xlconvert.vhd
+--
+--  Description   : VHDL description of a fixed point converter block that
+--                  converts the input to a new output type.
+
+--
+---------------------------------------------------------------------
+
+
+---------------------------------------------------------------------
+--
+--  Entity        : xlconvert
+--
+--  Architecture  : behavior
+--
+--  Description   : Top level VHDL description of fixed point conver block.
+--
+---------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+
+entity convert_func_call_pfb_fir_4096c_16i_core_xlconvert is
+    generic (
+        din_width    : integer := 16;            -- Width of input
+        din_bin_pt   : integer := 4;             -- Binary point of input
+        din_arith    : integer := xlUnsigned;    -- Type of arith of input
+        dout_width   : integer := 8;             -- Width of output
+        dout_bin_pt  : integer := 2;             -- Binary point of output
+        dout_arith   : integer := xlUnsigned;    -- Type of arith of output
+        quantization : integer := xlTruncate;    -- xlRound or xlTruncate
+        overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
+    port (
+        din : in std_logic_vector (din_width-1 downto 0);
+        result : out std_logic_vector (dout_width-1 downto 0));
+end convert_func_call_pfb_fir_4096c_16i_core_xlconvert ;
+
+architecture behavior of convert_func_call_pfb_fir_4096c_16i_core_xlconvert is
+begin
+    -- Convert to output type and do saturation arith.
+    result <= convert_type(din, din_width, din_bin_pt, din_arith,
+                           dout_width, dout_bin_pt, dout_arith,
+                           quantization, overflow);
+end behavior;
+
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+
+entity pfb_fir_4096c_16i_core_xlconvert  is
+    generic (
+        din_width    : integer := 16;            -- Width of input
+        din_bin_pt   : integer := 4;             -- Binary point of input
+        din_arith    : integer := xlUnsigned;    -- Type of arith of input
+        dout_width   : integer := 8;             -- Width of output
+        dout_bin_pt  : integer := 2;             -- Binary point of output
+        dout_arith   : integer := xlUnsigned;    -- Type of arith of output
+        en_width     : integer := 1;
+        en_bin_pt    : integer := 0;
+        en_arith     : integer := xlUnsigned;
+        bool_conversion : integer :=0;           -- if one, convert ufix_1_0 to
+                                                 -- bool
+        latency      : integer := 0;             -- Ouput delay clk cycles
+        quantization : integer := xlTruncate;    -- xlRound or xlTruncate
+        overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
+    port (
+        din : in std_logic_vector (din_width-1 downto 0);
+        en  : in std_logic_vector (en_width-1 downto 0);
+        ce  : in std_logic;
+        clr : in std_logic;
+        clk : in std_logic;
+        dout : out std_logic_vector (dout_width-1 downto 0));
+
+end pfb_fir_4096c_16i_core_xlconvert ;
+
+architecture behavior of pfb_fir_4096c_16i_core_xlconvert  is
+
+    component synth_reg
+        generic (width       : integer;
+                 latency     : integer);
+        port (i       : in std_logic_vector(width-1 downto 0);
+              ce      : in std_logic;
+              clr     : in std_logic;
+              clk     : in std_logic;
+              o       : out std_logic_vector(width-1 downto 0));
+    end component;
+
+    component convert_func_call_pfb_fir_4096c_16i_core_xlconvert 
+        generic (
+            din_width    : integer := 16;            -- Width of input
+            din_bin_pt   : integer := 4;             -- Binary point of input
+            din_arith    : integer := xlUnsigned;    -- Type of arith of input
+            dout_width   : integer := 8;             -- Width of output
+            dout_bin_pt  : integer := 2;             -- Binary point of output
+            dout_arith   : integer := xlUnsigned;    -- Type of arith of output
+            quantization : integer := xlTruncate;    -- xlRound or xlTruncate
+            overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
+        port (
+            din : in std_logic_vector (din_width-1 downto 0);
+            result : out std_logic_vector (dout_width-1 downto 0));
+    end component;
+
+
+    -- synthesis translate_off
+--    signal real_din, real_dout : real;    -- For debugging info ports
+    -- synthesis translate_on
+    signal result : std_logic_vector(dout_width-1 downto 0);
+    signal internal_ce : std_logic;
+
+begin
+
+    -- Debugging info for internal full precision variables
+    -- synthesis translate_off
+--     real_din <= to_real(din, din_bin_pt, din_arith);
+--     real_dout <= to_real(dout, dout_bin_pt, dout_arith);
+    -- synthesis translate_on
+
+    internal_ce <= ce and en(0);
+
+    bool_conversion_generate : if (bool_conversion = 1)
+    generate
+      result <= din;
+    end generate; --bool_conversion_generate
+
+    std_conversion_generate : if (bool_conversion = 0)
+    generate
+      -- Workaround for XST bug
+      convert : convert_func_call_pfb_fir_4096c_16i_core_xlconvert 
+        generic map (
+          din_width   => din_width,
+          din_bin_pt  => din_bin_pt,
+          din_arith   => din_arith,
+          dout_width  => dout_width,
+          dout_bin_pt => dout_bin_pt,
+          dout_arith  => dout_arith,
+          quantization => quantization,
+          overflow     => overflow)
+        port map (
+          din => din,
+          result => result);
+    end generate; --std_conversion_generate
+
+    latency_test : if (latency > 0) generate
+        reg : synth_reg
+            generic map (
+              width => dout_width,
+              latency => latency
+            )
+            port map (
+              i => result,
+              ce => internal_ce,
+              clr => clr,
+              clk => clk,
+              o => dout
+            );
+    end generate;
+
+    latency0 : if (latency = 0)
+    generate
+        dout <= result;
+    end generate latency0;
+
+end  behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -544,17 +721,17 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_scale_26a5e29eed is
+entity sysgen_scale_06f443f0cd is
   port (
-    ip : in std_logic_vector((28 - 1) downto 0);
-    op : out std_logic_vector((28 - 1) downto 0);
+    ip : in std_logic_vector((27 - 1) downto 0);
+    op : out std_logic_vector((27 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_scale_26a5e29eed;
-architecture behavior of sysgen_scale_26a5e29eed
+end sysgen_scale_06f443f0cd;
+architecture behavior of sysgen_scale_06f443f0cd
 is
-  signal ip_17_23: signed((28 - 1) downto 0);
+  signal ip_17_23: signed((27 - 1) downto 0);
 begin
   ip_17_23 <= std_logic_vector_to_signed(ip);
   op <= signed_to_std_logic_vector(ip_17_23);
@@ -566,24 +743,24 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_addsub_3c5005e80b is
+entity sysgen_addsub_35e2930758 is
   port (
-    a : in std_logic_vector((28 - 1) downto 0);
-    b : in std_logic_vector((28 - 1) downto 0);
-    s : out std_logic_vector((28 - 1) downto 0);
+    a : in std_logic_vector((27 - 1) downto 0);
+    b : in std_logic_vector((27 - 1) downto 0);
+    s : out std_logic_vector((27 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_addsub_3c5005e80b;
-architecture behavior of sysgen_addsub_3c5005e80b
+end sysgen_addsub_35e2930758;
+architecture behavior of sysgen_addsub_35e2930758
 is
-  signal a_17_32: signed((28 - 1) downto 0);
-  signal b_17_35: signed((28 - 1) downto 0);
-  type array_type_op_mem_91_20 is array (0 to (1 - 1)) of signed((28 - 1) downto 0);
+  signal a_17_32: signed((27 - 1) downto 0);
+  signal b_17_35: signed((27 - 1) downto 0);
+  type array_type_op_mem_91_20 is array (0 to (1 - 1)) of signed((27 - 1) downto 0);
   signal op_mem_91_20: array_type_op_mem_91_20 := (
-    0 => "0000000000000000000000000000");
-  signal op_mem_91_20_front_din: signed((28 - 1) downto 0);
-  signal op_mem_91_20_back: signed((28 - 1) downto 0);
+    0 => "000000000000000000000000000");
+  signal op_mem_91_20_front_din: signed((27 - 1) downto 0);
+  signal op_mem_91_20_back: signed((27 - 1) downto 0);
   signal op_mem_91_20_push_front_pop_back_en: std_logic;
   type array_type_cout_mem_92_22 is array (0 to (1 - 1)) of unsigned((1 - 1) downto 0);
   signal cout_mem_92_22: array_type_cout_mem_92_22 := (
@@ -595,10 +772,10 @@ is
   signal prev_mode_93_22: unsigned((3 - 1) downto 0);
   signal prev_mode_93_22_reg_i: std_logic_vector((3 - 1) downto 0);
   signal prev_mode_93_22_reg_o: std_logic_vector((3 - 1) downto 0);
-  signal cast_69_18: signed((29 - 1) downto 0);
-  signal cast_69_22: signed((29 - 1) downto 0);
-  signal internal_s_69_5_addsub: signed((29 - 1) downto 0);
-  signal cast_internal_s_83_3_convert: signed((28 - 1) downto 0);
+  signal cast_69_18: signed((28 - 1) downto 0);
+  signal cast_69_22: signed((28 - 1) downto 0);
+  signal internal_s_69_5_addsub: signed((28 - 1) downto 0);
+  signal cast_internal_s_83_3_convert: signed((27 - 1) downto 0);
 begin
   a_17_32 <= std_logic_vector_to_signed(a);
   b_17_35 <= std_logic_vector_to_signed(b);
@@ -638,10 +815,10 @@ begin
       clr => clr, 
       i => prev_mode_93_22_reg_i, 
       o => prev_mode_93_22_reg_o);
-  cast_69_18 <= s2s_cast(a_17_32, 26, 29, 26);
-  cast_69_22 <= s2s_cast(b_17_35, 26, 29, 26);
+  cast_69_18 <= s2s_cast(a_17_32, 25, 28, 25);
+  cast_69_22 <= s2s_cast(b_17_35, 25, 28, 25);
   internal_s_69_5_addsub <= cast_69_18 + cast_69_22;
-  cast_internal_s_83_3_convert <= s2s_cast(internal_s_69_5_addsub, 26, 28, 26);
+  cast_internal_s_83_3_convert <= s2s_cast(internal_s_69_5_addsub, 25, 27, 25);
   op_mem_91_20_front_din <= cast_internal_s_83_3_convert;
   op_mem_91_20_push_front_pop_back_en <= '1';
   cout_mem_92_22_front_din <= std_logic_vector_to_unsigned("0");
@@ -881,27 +1058,27 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_mult_1551c48b0d is
+entity sysgen_mult_6a02b0ad65 is
   port (
-    a : in std_logic_vector((10 - 1) downto 0);
+    a : in std_logic_vector((9 - 1) downto 0);
     b : in std_logic_vector((18 - 1) downto 0);
-    p : out std_logic_vector((28 - 1) downto 0);
+    p : out std_logic_vector((27 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_mult_1551c48b0d;
-architecture behavior of sysgen_mult_1551c48b0d
+end sysgen_mult_6a02b0ad65;
+architecture behavior of sysgen_mult_6a02b0ad65
 is
-  signal a_1_22: signed((10 - 1) downto 0);
+  signal a_1_22: signed((9 - 1) downto 0);
   signal b_1_25: signed((18 - 1) downto 0);
-  type array_type_op_mem_65_20 is array (0 to (2 - 1)) of signed((28 - 1) downto 0);
+  type array_type_op_mem_65_20 is array (0 to (2 - 1)) of signed((27 - 1) downto 0);
   signal op_mem_65_20: array_type_op_mem_65_20 := (
-    "0000000000000000000000000000",
-    "0000000000000000000000000000");
-  signal op_mem_65_20_front_din: signed((28 - 1) downto 0);
-  signal op_mem_65_20_back: signed((28 - 1) downto 0);
+    "000000000000000000000000000",
+    "000000000000000000000000000");
+  signal op_mem_65_20_front_din: signed((27 - 1) downto 0);
+  signal op_mem_65_20_back: signed((27 - 1) downto 0);
   signal op_mem_65_20_push_front_pop_back_en: std_logic;
-  signal mult_46_56: signed((28 - 1) downto 0);
+  signal mult_46_56: signed((27 - 1) downto 0);
 begin
   a_1_22 <= std_logic_vector_to_signed(a);
   b_1_25 <= std_logic_vector_to_signed(b);
@@ -955,17 +1132,17 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_reinterpret_95194efd8c is
+entity sysgen_reinterpret_ffc349a5bf is
   port (
-    input_port : in std_logic_vector((10 - 1) downto 0);
-    output_port : out std_logic_vector((10 - 1) downto 0);
+    input_port : in std_logic_vector((9 - 1) downto 0);
+    output_port : out std_logic_vector((9 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_reinterpret_95194efd8c;
-architecture behavior of sysgen_reinterpret_95194efd8c
+end sysgen_reinterpret_ffc349a5bf;
+architecture behavior of sysgen_reinterpret_ffc349a5bf
 is
-  signal input_port_1_40: signed((10 - 1) downto 0);
+  signal input_port_1_40: signed((9 - 1) downto 0);
 begin
   input_port_1_40 <= std_logic_vector_to_signed(input_port);
   output_port <= signed_to_std_logic_vector(input_port_1_40);
@@ -1153,22 +1330,22 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_delay_75f0f08e75 is
+entity sysgen_delay_f4d17c9e21 is
   port (
-    d : in std_logic_vector((10 - 1) downto 0);
-    q : out std_logic_vector((10 - 1) downto 0);
+    d : in std_logic_vector((9 - 1) downto 0);
+    q : out std_logic_vector((9 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_delay_75f0f08e75;
-architecture behavior of sysgen_delay_75f0f08e75
+end sysgen_delay_f4d17c9e21;
+architecture behavior of sysgen_delay_f4d17c9e21
 is
-  signal d_1_22: std_logic_vector((10 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (1 - 1)) of std_logic_vector((10 - 1) downto 0);
+  signal d_1_22: std_logic_vector((9 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (1 - 1)) of std_logic_vector((9 - 1) downto 0);
   signal op_mem_20_24: array_type_op_mem_20_24 := (
-    0 => "0000000000");
-  signal op_mem_20_24_front_din: std_logic_vector((10 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((10 - 1) downto 0);
+    0 => "000000000");
+  signal op_mem_20_24_front_din: std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((9 - 1) downto 0);
   signal op_mem_20_24_push_front_pop_back_en: std_logic;
 begin
   d_1_22 <= d;
@@ -1368,6 +1545,181 @@ end behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_counter_f81855309d is
+  port (
+    op : out std_logic_vector((13 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_counter_f81855309d;
+architecture behavior of sysgen_counter_f81855309d
+is
+  signal count_reg_20_23: unsigned((13 - 1) downto 0) := "0000000000000";
+  signal count_reg_20_23_rst: std_logic;
+  signal rel_34_8: boolean;
+  signal rst_limit_join_34_5: boolean;
+  signal bool_44_4: boolean;
+  signal rst_limit_join_44_1: boolean;
+  signal count_reg_join_44_1: unsigned((14 - 1) downto 0);
+  signal count_reg_join_44_1_rst: std_logic;
+begin
+  proc_count_reg_20_23: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (count_reg_20_23_rst = '1')) then
+        count_reg_20_23 <= "0000000000000";
+      elsif (ce = '1') then 
+        count_reg_20_23 <= count_reg_20_23 + std_logic_vector_to_unsigned("0000000000001");
+      end if;
+    end if;
+  end process proc_count_reg_20_23;
+  rel_34_8 <= count_reg_20_23 = std_logic_vector_to_unsigned("1111111111101");
+  proc_if_34_5: process (rel_34_8)
+  is
+  begin
+    if rel_34_8 then
+      rst_limit_join_34_5 <= true;
+    else 
+      rst_limit_join_34_5 <= false;
+    end if;
+  end process proc_if_34_5;
+  bool_44_4 <= false or rst_limit_join_34_5;
+  proc_if_44_1: process (bool_44_4, count_reg_20_23, rst_limit_join_34_5)
+  is
+  begin
+    if bool_44_4 then
+      count_reg_join_44_1_rst <= '1';
+    else 
+      count_reg_join_44_1_rst <= '0';
+    end if;
+    if bool_44_4 then
+      rst_limit_join_44_1 <= false;
+    else 
+      rst_limit_join_44_1 <= rst_limit_join_34_5;
+    end if;
+  end process proc_if_44_1;
+  count_reg_20_23_rst <= count_reg_join_44_1_rst;
+  op <= unsigned_to_std_logic_vector(count_reg_20_23);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_fce50b36e0 is
+  port (
+    op : out std_logic_vector((14 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_fce50b36e0;
+architecture behavior of sysgen_constant_fce50b36e0
+is
+begin
+  op <= "00000000000001";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_09918a51d2 is
+  port (
+    op : out std_logic_vector((14 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_09918a51d2;
+architecture behavior of sysgen_constant_09918a51d2
+is
+begin
+  op <= "00000000000000";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_22d3decfb6 is
+  port (
+    op : out std_logic_vector((14 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_22d3decfb6;
+architecture behavior of sysgen_constant_22d3decfb6
+is
+begin
+  op <= "10000000000000";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_relational_1bb90894c7 is
+  port (
+    a : in std_logic_vector((14 - 1) downto 0);
+    b : in std_logic_vector((14 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_relational_1bb90894c7;
+architecture behavior of sysgen_relational_1bb90894c7
+is
+  signal a_1_31: unsigned((14 - 1) downto 0);
+  signal b_1_34: unsigned((14 - 1) downto 0);
+  signal result_12_3_rel: boolean;
+begin
+  a_1_31 <= std_logic_vector_to_unsigned(a);
+  b_1_34 <= std_logic_vector_to_unsigned(b);
+  result_12_3_rel <= a_1_31 = b_1_34;
+  op <= boolean_to_vector(result_12_3_rel);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_relational_8ededad4be is
+  port (
+    a : in std_logic_vector((14 - 1) downto 0);
+    b : in std_logic_vector((14 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_relational_8ededad4be;
+architecture behavior of sysgen_relational_8ededad4be
+is
+  signal a_1_31: unsigned((14 - 1) downto 0);
+  signal b_1_34: unsigned((14 - 1) downto 0);
+  signal result_14_3_rel: boolean;
+begin
+  a_1_31 <= std_logic_vector_to_unsigned(a);
+  b_1_34 <= std_logic_vector_to_unsigned(b);
+  result_14_3_rel <= a_1_31 /= b_1_34;
+  op <= boolean_to_vector(result_14_3_rel);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
 -------------------------------------------------------------------
  -- System Generator VHDL source file.
  --
@@ -1508,11 +1860,11 @@ entity pfb_fir_4096c_16i_core_xladdsub is
 
  component pfb_fir_4096c_16i_core_c_addsub_v12_0_i0
     port ( 
-    a: in std_logic_vector(29 - 1 downto 0);
+    a: in std_logic_vector(28 - 1 downto 0);
     clk: in std_logic:= '0';
     ce: in std_logic:= '0';
     s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(29 - 1 downto 0) 
+    b: in std_logic_vector(28 - 1 downto 0) 
  		  ); 
  end component;
 
@@ -1671,6 +2023,17 @@ entity pfb_fir_4096c_16i_core_xlcounter_free is
  		  ); 
  end component;
 
+ component pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i2
+    port ( 
+      clk: in std_logic;
+      ce: in std_logic;
+      SINIT: in std_logic;
+      load: in std_logic;
+      l: in std_logic_vector(op_width - 1 downto 0);
+      q: out std_logic_vector(op_width - 1 downto 0) 
+ 		  ); 
+ end component;
+
 -- synthesis translate_off
    constant zeroVec: std_logic_vector(op_width - 1 downto 0) := (others => '0');
    constant oneVec: std_logic_vector(op_width - 1 downto 0) := (others => '1');
@@ -1701,6 +2064,18 @@ entity pfb_fir_4096c_16i_core_xlcounter_free is
 
  comp1: if ((core_name0 = "pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i1")) generate 
   core_instance1:pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i1
+   port map ( 
+        clk => clk,
+        ce => core_ce,
+        SINIT => core_sinit,
+        load => load(0),
+        l => din,
+        q => op_net
+  ); 
+   end generate;
+
+ comp2: if ((core_name0 = "pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i2")) generate 
+  core_instance2:pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i2
    port map ( 
         clk => clk,
         ce => core_ce,
