@@ -6,8 +6,6 @@ class Pfb(Block):
         super(Pfb, self).__init__(host, name, logger)
         self.SHIFT_OFFSET = 0
         self.SHIFT_WIDTH  = 16
-        self.PRESHIFT_OFFSET = 16
-        self.PRESHIFT_WIDTH  = 2
         self.STAT_RST_BIT = 18
 
     def set_fft_shift(self, shift):
@@ -24,6 +22,7 @@ class Pfb(Block):
         core_is_of = []
         for i in range(self.N_CORES):
             core_is_of += [self.read_uint('pfb16x_%d_status' % i) != 0]
+        return core_is_of
             
     def is_overflowing(self):
         return any(self._is_overflowing_per_core())

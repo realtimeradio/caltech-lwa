@@ -5,7 +5,19 @@ import time
 import datetime
 import casperfpga
 from . import helpers
-from .blocks import sync, noisegen, input, delay, pfb, eq, eqtvg, chanreorder, packetizer, eth, corr
+from .blocks import adc
+from .blocks import sync
+from .blocks import noisegen
+from .blocks import input
+from .blocks import delay
+from .blocks import pfb
+from .blocks import autocorr
+from .blocks import eq
+from .blocks import eqtvg
+from .blocks import chanreorder
+from .blocks import packetizer
+from .blocks import eth
+from .blocks import corr
 
 class Snap2Fengine(object):
     def __init__(self, host, ant_indices=None, logger=None):
@@ -20,12 +32,14 @@ class Snap2Fengine(object):
             self.serial = None
 
         # blocks
-        #self.adc         = Adc(self.fpga)
+        self.sysmon      = casperfpga.sysmon.Sysmon(self.fpga)
+        self.adc         = adc.Adc(self.fpga, 'adc')
         self.sync        = sync.Sync(self.fpga, 'sync')
-        self.noise       = noisegen.NoiseGen(self.fpga, 'noise', n_noise=4, n_outputs=64)
+        self.noise       = noisegen.NoiseGen(self.fpga, 'noise', n_noise=3, n_outputs=64)
         self.input       = input.Input(self.fpga, 'input', n_streams=64)
         self.delay       = delay.Delay(self.fpga, 'delay', n_streams=64)
         self.pfb         = pfb.Pfb(self.fpga, 'pfb')
+        self.autocorr    = autocorr.AutoCorr(self.fpga, 'autocorr')
         self.eq          = eq.Eq(self.fpga, 'eq', n_streams=64, n_coeffs=2**9)
         self.eq_tvg      = eqtvg.EqTvg(self.fpga, 'post_eq_tvg', n_streams=64, n_chans=2**12)
         self.reorder     = chanreorder.ChanReorder(self.fpga, 'chan_reorder', n_chans=2**12)
@@ -80,6 +94,7 @@ class Snap2Fengine(object):
         stat['uptime'] = self.sync.uptime()
         stat['pps_count'] = self.sync.count()
         stat['serial'] = self.serial
+        stat.update(self.sysmon.get_all_sensors())
         return stat
 
     def configure_output(self, n_chans_per_packet, chans, ips, ports=None, ants=None):

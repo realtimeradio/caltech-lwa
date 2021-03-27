@@ -78,7 +78,7 @@ class NoiseGen(Block):
         # Control is in blocks of 8. Which block do we need?
         octal_block = output // 8
         octal_index = output % 8
-        ctrl_reg = "octal_mux%d_sel"
+        ctrl_reg = "octal_mux%d_sel" % octal_block
         self.change_reg_bits(ctrl_reg, noise, 4*octal_index, 4)
 
     def get_output_assignment(self, output):
@@ -102,7 +102,7 @@ class NoiseGen(Block):
         # Control is in blocks of 8. Which block do we need?
         octal_block = output // 8
         octal_index = output % 8
-        ctrl_reg = "octal_mux%d_sel"
+        ctrl_reg = "octal_mux%d_sel" % octal_block
         noise = self.get_reg_bits(ctrl_reg, 4*octal_index, 4)
         return noise
 

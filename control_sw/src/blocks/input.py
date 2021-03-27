@@ -32,21 +32,6 @@ class Input(Block):
         self.n_streams = n_streams
         self.n_bits = n_bits
 
-    def get_adc_snapshot(self, stream):
-        """
-        Get a block of samples from `stream`
-        
-        Returns a numpy array of samples
-        """
-        assert (stream < self.n_streams), "Can't get snapshot of stream >= self.n_streams" 
-        self.write_int('snap_sel', stream)
-        self.write_int('snapshot_ctrl', 0)
-        self.write_int('snapshot_ctrl', 1)
-        self.write_int('snapshot_ctrl', 3)
-        d = self.read('snapshot_bram', self._SNAPSHOT_SAMPLES_PER_POL)
-        d = struct.unpack('>%dh' % self._SNAPSHOT_SAMPLES_PER_POL, d)
-        return np.array(d)
-        
     def get_power_spectra(self, stream, acc_len=1):
         """
         Perform a software FFT of samples from `antenna`.
