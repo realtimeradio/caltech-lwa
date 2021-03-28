@@ -3,6 +3,7 @@ import numpy as np
 import struct
 import socket
 import time
+import progressbar
 import casperfpga
 from casperfpga import ads5296
 from lwa_f import helpers
@@ -13,6 +14,8 @@ NSAMPLES = 256
 USE_EMBEDDED_BRAM = False
 NBOARDS = 2
 NFMCS = 2
+
+TRIG_REG = 'snapshot_trigger'
 
 class Adc(Block):
     def __init__(self, host, name, logger=None, **kwargs):
@@ -27,7 +30,19 @@ class Adc(Block):
            ref (float): Reference frequency (in MHz) from which ADC clock is derived. If None, an external sampling clock must be used.
         """
         super(Adc, self).__init__(host, name, logger)
-        self.adcs = [ads5296.ADS5296fw(self.host, i) for i in range(NFMCS)]
+        # Check which ADCs are connected. Only if no ADC chips on an FMC board
+        # respond do we ignore a port
+        self.adcs = []
+        for fmc in range(NFMCS):
+            adc = ads5296.ADS5296fw(self.host, fmc)
+            connected_chips = adc.is_connected()
+            if np.any(connected_chips):
+                self.logger.info("Detected FMC ADC board on port %d" % fmc)
+                if not np.all(connected_chips):
+                    self.logger.warning("Not all chips responded on port %d" % fmc)
+                self.adcs += [adc]
+            else:
+                self.logger.warning("Did not detect FMC ADC board on port %d" % fmc)
 
     def initialize(self, clocksource=1):
         """
@@ -94,13 +109,9 @@ class Adc(Block):
         return mmcm_locked
 
     def trigger_snapshot(self):
-        for adc in self.adcs:
-            for board in range(2):
-                adc.trigger_snapshot(board)
-        #trig_reg = 'snapshot_trigger'
-        #self.write_int(trig_reg, 0b0)          
-        #self.write_int(trig_reg, 0b1)
-        #self.write_int(trig_reg, 0b0)
+        self.write_int(TRIG_REG, 0b0)          
+        self.write_int(TRIG_REG, 0b1)
+        self.write_int(TRIG_REG, 0b0)
 
     def get_snapshot(self, fmc, signed=False):
         out = np.zeros([8,8,NSAMPLES])
@@ -132,7 +143,7 @@ class Adc(Block):
             out[out>511] -= 1024
         return np.array(out, dtype=np.int32)
     
-    def _get_data_delays(self, adc, step_size=TAP_STEP_SIZE, test_val=0b0000010101):
+    def _get_errs_by_delay(self, adc, step_size=TAP_STEP_SIZE, test_val=0b0000010101):
         for i in range(8):
             adc.enable_test_pattern('constant', i, val0=test_val)
         NTAPS=512
@@ -145,8 +156,8 @@ class Adc(Block):
             adc.enable_vtc_data(range(8), cs)
             adc.disable_vtc_data(range(8), cs)
         self.logger.info("FMC %d Scanning data delays" % adc.fmc)
-        for dn, delay in enumerate(range(0, NTAPS, step_size)):
-            self.logger.info("FMC %d Scanning delay %d" % (adc.fmc, delay))
+        for dn, delay in enumerate(progressbar.progressbar(range(0, NTAPS, step_size))):
+            self.logger.debug("FMC %d Scanning delay %d" % (adc.fmc, delay))
             for cs in range(8):
                 adc.load_delay_data(delay, range(8), cs)
             d[dn] = self.get_snapshot(adc.fmc)
@@ -179,7 +190,8 @@ class Adc(Block):
     def _get_best_delays(self, errs, step_size=TAP_STEP_SIZE):
         nsteps, nchips, nlanes = errs.shape
         slack = np.zeros_like(errs)
-        best = np.zeros([nchips, nlanes], dtype=np.int32)
+        best_delay = np.zeros([nchips, nlanes], dtype=np.int32)
+        best_slack = np.zeros_like(best_delay)
         for c in range(nchips):
             for l in range(nlanes):
                 for s in range(nsteps):
@@ -200,9 +212,11 @@ class Adc(Block):
                     slack[s,c,l] = min(count_before, count_after)
         for c in range(nchips):
             for l in range(nlanes):
-                best[c,l] = slack[:,c,l].argmax()*step_size
-                self.logger.info("Chip %d, Lane %d: Best delay: %d" % (c, l, best[c,l]))
-        return best
+                best_trial = slack[:,c,l].argmax()
+                best_delay[c,l] = best_trial * step_size
+                best_slack[c,l] = slack[best_trial,c,l] * step_size
+                self.logger.debug("Chip %d, Lane %d: Best delay: %d (slack %d)" % (c, l, best_delay[c,l], best_slack[c,l]))
+        return best_delay, best_slack
     
     def set_delays(self, a, delays, step_size=TAP_STEP_SIZE):
         nchips, nlanes = delays.shape
@@ -230,7 +244,7 @@ class Adc(Block):
                             msg += "%s" % char[int(errs[s, c, l] != 0)]
                     else: 
                         msg += "%s" % char[int(errs[s, c, l] != 0)]
-                self.logger.info(msg)
+                self.logger.debug(msg)
     
     def _init(self):
         for adc in self.adcs:
@@ -248,15 +262,17 @@ class Adc(Block):
                 adc.enable_test_pattern('data', i)
 
     def calibrate(self, use_ramp=False):
-        data_ok = True
+        ok = True
         TEST_VAL = 0b0000010101
         for adc in self.adcs:
             #self.reset() # Flush FIFOs and begin reading after next sync
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
-            errs = self._get_data_delays(adc, test_val=TEST_VAL)
-            best = self._get_best_delays(errs)
-            self.logger.info("FMC %d data lane delays" % adc.fmc)
-            self.logger.info(best)
+            errs = self._get_errs_by_delay(adc, test_val=TEST_VAL)
+            best, slack = self._get_best_delays(errs)
+            self.logger.info("FMC %d data lane delays:\n%s" % (adc.fmc, best))
+            self.logger.info("FMC %d data lane slacks:\n%s" % (adc.fmc, slack))
+            if np.any(slack < 20):
+                self.warning("Delay solutions have small slack")
             self.print_sweep(errs, best_delays=best)
             #for cn, chipdelay in enumerate(best):
             #    data_delays_fh.write(",".join(map(str, chipdelay)))
@@ -264,8 +280,8 @@ class Adc(Block):
             self.set_delays(adc, best)
             #do_bitslip(adc)
             errs = np.array(self._get_errs(adc, use_ramp=use_ramp, test_val=TEST_VAL))
-            data_ok = errs.sum() == 0
-            if not data_ok:
+            adc_ok = (errs.sum() == 0)
+            if not adc_ok:
                 self.logger.error("FMC %d: Data calibration Failure!" % adc.fmc)
                 ok = False
         return ok

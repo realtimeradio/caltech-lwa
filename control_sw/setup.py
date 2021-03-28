@@ -28,9 +28,9 @@ setup(name='lwa_f',
       )
 
 if ver.endswith("dirty"):
-    print("********************************************")
-    print("* You are installing from a dirty git repo *")
-    print("*      One day you will regret this.       *")
-    print("*                                          *")
-    print("*  Consider cleaning up and reinstalling.  *")
-    print("********************************************")
+    print("***************************************************")
+    print("* You are installing from a dirty git repository. *")
+    print("*          One day you will regret this.          *")
+    print("*                                                 *")
+    print("*      Consider cleaning up and reinstalling.     *")
+    print("***************************************************")
