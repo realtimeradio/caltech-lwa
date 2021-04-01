@@ -8,16 +8,30 @@ import sys
 import os
 
 import casperfpga
+import logging
+
+import progressbar
+
+logger = logging.getLogger(__file__)
+logger.setLevel(logging.DEBUG)
+stdout_handler = logging.StreamHandler(sys.stdout)
+stdout_handler.setLevel(logging.INFO)
+stderr_handler = logging.StreamHandler(sys.stderr)
+stderr_handler.setLevel(logging.DEBUG)
+logger.addHandler(stdout_handler)
+logger.addHandler(stderr_handler)
 
 TAP_STEP_SIZE = 4
 NSAMPLES = 256
-USE_EMBEDDED_BRAM = False
+USE_EMBEDDED_BRAM = True
+
+FMC_NAMES = ['fmca', 'fmcb']
 
 try:
     from casperfpga import ads5296
-except:
-    print("Couldn't import ADS5296 control library from casperfpga")
-    print("Are you using the correct python environment?")
+except ImportError:
+    logger.error("Couldn't import ADS5296 control library from casperfpga")
+    logger.error("Are you using the correct python environment?")
 
 #def get_snapshot(a, signed=False):
 #    out = np.zeros([8,8,NSAMPLES])
@@ -38,58 +52,64 @@ except:
 #        out[out>511] -= 1024
 #    return np.array(out, dtype=np.int32)
 
-def get_snapshot(a, signed=False, use_embedded=USE_EMBEDDED_BRAM):
-    out = np.zeros([8,8,NSAMPLES])
+def get_snapshot(adcs, signed=False, use_embedded=USE_EMBEDDED_BRAM):
+    n_adcs = len(adcs)
+    out = np.zeros([n_adcs, 8,8,NSAMPLES])
     if use_embedded:
         trig_reg = 'snapshot_trig'
     else:
-        trig_reg = 'snapshot0_snapshot_ctrl'
-    a.fpga.write_int(trig_reg, 0b0)          
-    a.fpga.write_int(trig_reg, 0b1)
-    a.fpga.write_int(trig_reg, 0b0)
-    # Loop over chips
-    for i in range(8):     
-        if use_embedded:
-            x = a.fpga.read('ads5296_wb_ram1_%d_%d' % (i // 4, i % 4), NSAMPLES*2*2*4)
-        else:
-            x = a.fpga.read('snapshot%d_snapshot_bram' % i, NSAMPLES*2*2*4)
-        d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
-        # Remove 10-bit -> 16-bit padding
-        v = [xx >> 6 for xx in d]
-        # Loop over lanes
-        for j in range(4): # ADCs
-            for k in range(2): # interleaving
-                out[i, 2*j+k] = v[4*k+j::8]
+        trig_reg = '%s_snapshot0_snapshot_ctrl' % FMC_NAMES[0]
+    adcs[0].fpga.write_int(trig_reg, 0b0)          
+    adcs[0].fpga.write_int(trig_reg, 0b1)
+    adcs[0].fpga.write_int(trig_reg, 0b0)
+    # Loop over ADCs
+    for adcn, a in enumerate(adcs):
+        # Loop over chips
+        for i in range(8):     
+            if use_embedded:
+                x = a.fpga.read('ads5296_wb_ram%d_%d_%d' % (a.fmc, i // 4, i % 4), NSAMPLES*2*2*4)
+            else:
+                x = a.fpga.read('%s_snapshot%d_snapshot_bram' % (FMC_NAMES[a.fmc], i), NSAMPLES*2*2*4)
+            d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
+            # Remove 10-bit -> 16-bit padding
+            v = [xx >> 6 for xx in d]
+            # Loop over lanes
+            for j in range(4): # ADCs
+                for k in range(2): # interleaving
+                    out[adcn, i, 2*j+k] = v[4*k+j::8]
     if signed:
         out[out>511] -= 1024
     return np.array(out, dtype=np.int32)
 
 def get_deep_snapshot(a):
-    a.fpga.write_int("single_chan_ss_ctrl", 0b0)
-    a.fpga.write_int("single_chan_ss_ctrl", 0b1)
-    a.fpga.write_int("single_chan_ss_ctrl", 0b0)
-    x = a.fpga.read("single_chan_ss_bram", 2*2**16)
+    a.fpga.write_int("%s_single_chan_ss_ctrl" % FMC_NAMES[a.fmc], 0b0)
+    a.fpga.write_int("%s_single_chan_ss_ctrl" % FMC_NAMES[a.fmc], 0b1)
+    a.fpga.write_int("%s_single_chan_ss_ctrl" % FMC_NAMES[a.fmc], 0b0)
+    x = a.fpga.read("%s_single_chan_ss_bram" % FMC_NAMES[a.fmc], 2*2**16)
     d = struct.unpack(">%dh" % (2**16), x)
     return np.array([d], dtype=np.int32) >> 6 # 10 bit samples are in MSBs of 16-bit words
 
-def get_snapshot_interleaved(a, signed=False, use_embedded=USE_EMBEDDED_BRAM):
-    out = np.zeros([32,2*NSAMPLES])
+def get_snapshot_interleaved(adcs, signed=False, use_embedded=USE_EMBEDDED_BRAM):
+    n_adcs = len(adcs)
+    out = np.zeros([n_adcs, 32,2*NSAMPLES])
     if use_embedded:
         trig_reg = 'snapshot_trig'
     else:
-        trig_reg = 'snapshot0_snapshot_ctrl'
-    a.fpga.write_int(trig_reg, 0b0)          
-    a.fpga.write_int(trig_reg, 0b1)
-    a.fpga.write_int(trig_reg, 0b0)
-    for i in range(8):     
-        if use_embedded:
-            x = a.fpga.read('ads5296_wb_ram1_%d_%d' % (i // 4, i % 4), NSAMPLES*2*2*4)
-        else:
-            x = a.fpga.read('snapshot%d_snapshot_bram' % i, NSAMPLES*2*2*4)
-        d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
-        v = [xx >> 6 for xx in d]
-        for j in range(4):
-            out[4*i + j] = v[j::4]
+        trig_reg = '%s_snapshot0_snapshot_ctrl' % FMC_NAMES[0]
+    adcs[0].fpga.write_int(trig_reg, 0b0)          
+    adcs[0].fpga.write_int(trig_reg, 0b1)
+    adcs[0].fpga.write_int(trig_reg, 0b0)
+    # Loop over ADCs
+    for adcn, a in enumerate(adcs):
+        for i in range(8):     
+            if use_embedded:
+                x = a.fpga.read('ads5296_wb_ram%d_%d_%d' % (a.fmc, i // 4, i % 4), NSAMPLES*2*2*4)
+            else:
+                x = a.fpga.read('%s_snapshot%d_snapshot_bram' % (FMC_NAMES[a.fmc], i), NSAMPLES*2*2*4)
+            d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
+            v = [xx >> 6 for xx in d]
+            for j in range(4):
+                out[adcn, 4*i + j] = v[j::4]
     if signed:
         out[out>511] -= 1024
     return np.array(out, dtype=np.int32)
@@ -106,12 +126,11 @@ def get_data_delays(a, step_size=TAP_STEP_SIZE, test_val=0b0000010101):
         a.disable_rst_data(range(8), cs)
         a.enable_vtc_data(range(8), cs)
         a.disable_vtc_data(range(8), cs)
-    print("Scanning data delays")
-    for dn, delay in enumerate(range(0, NTAPS, step_size)):
-        print("Scanning delay %d" % delay, file=sys.stderr)
+    logger.info("Scanning data delays")
+    for dn, delay in enumerate(progressbar.progressbar(range(0, NTAPS, step_size))):
         for cs in range(8):
             a.load_delay_data(delay, range(8), cs)
-        d[dn] = get_snapshot(a)
+        d[dn] = get_snapshot([a])[0]
     for t in range(NSTEPS):
         for c in range(8):
             for l in range(8):
@@ -122,7 +141,7 @@ def do_bitslip(a):
     TEST_VAL = 0b1111100000
     for i in range(8):
         a.enable_test_pattern('constant', i, val0=TEST_VAL)
-    d = get_snapshot(a)
+    d = get_snapshot([a])[0]
     for chip in range(8):
         for chan in range(4):
             v = d[chip, chan, 0]
@@ -130,13 +149,13 @@ def do_bitslip(a):
             # concat two strings and turn to ints for comparison with shifts
             v2 = int(v_str + v_str, 2)
             for i in range(5):
-                print(chip, chan, np.binary_repr((v2>>10)&1023, width=10))
+                logger.info(chip, chan, np.binary_repr((v2>>10)&1023, width=10))
                 if ((v2 >> 10) & 1023) == TEST_VAL:
                     # Word boundary OK
                     break
                 a.bitslip((chip%4)*4 + chan, chip//4)
                 v2 = v2 << 2
-                print(np.binary_repr(get_snapshot(a)[chip,chan,0], width=10))
+                logger.info(np.binary_repr(get_snapshot([a])[0][chip,chan,0], width=10))
                 
 
 def get_errs(a, use_ramp=False, test_val=0b0000010101):
@@ -146,7 +165,7 @@ def get_errs(a, use_ramp=False, test_val=0b0000010101):
         else:
             a.enable_test_pattern('constant', i, val0=test_val)
     errs = np.zeros([8, 8]) # taps x chips x lanes
-    d = get_snapshot(a)
+    d = get_snapshot([a])[0]
     for c in range(8):
         for l in range(8):
             if use_ramp:
@@ -184,7 +203,7 @@ def get_best_delays(errs, step_size=TAP_STEP_SIZE):
     for c in range(nchips):
         for l in range(nlanes):
             best[c,l] = slack[:,c,l].argmax()*step_size
-            print("Chip %d, Lane %d: Best delay: %d" % (c, l, best[c,l]), file=sys.stderr)
+            #logger.debug("Chip %d, Lane %d: Best delay: %d" % (c, l, best[c,l]))
     return best
 
 def set_delays(a, delays, step_size=TAP_STEP_SIZE):
@@ -204,32 +223,36 @@ def print_sweep(errs, best_delays=None, step_size=TAP_STEP_SIZE):
     char = ["-", "X"]
     for c in range(nchips):
         for l in range(nlanes):
-            print("Chip %d, Lane %d:" % (c, l), end="    ", file=sys.stderr)
+            msg = "Chip %d, Lane %d:\t" % (c, l)
             for s in range(nsteps):
                 if best_delays is not None:
                     if s == best_delays[c,l] // TAP_STEP_SIZE:
-                        print("|", end="", file=sys.stderr)
+                        msg += "|"
                     else:
-                        print(char[int(errs[s, c, l] != 0)], end="", file=sys.stderr)
+                        msg += char[int(errs[s, c, l] != 0)]
                 else: 
-                    print(char[int(errs[s, c, l] != 0)], end="", file=sys.stderr)
-            print(file=sys.stderr)
-        print(file=sys.stderr)
+                    msg += char[int(errs[s, c, l] != 0)]
+            #msg += '\n'
+            logger.debug(msg)
+        
 
-def print_snapshot(x, binary=False):
-    for i in range(8):             
-        for j in range(6):
-            for k in range(8):
-                if k%2:
-                    d = x[i,k]
-                else:
-                    d = x[i,k,1:]
-                if binary:
-                    print(np.binary_repr(d[j], width=10), end='  ', file=sys.stderr)
-                else:
-                    print("%3d" % d[j], end='  ', file=sys.stderr)
-            print(file=sys.stderr)
-        print(file=sys.stderr)
+def print_snapshot(fmcs, binary=False):
+    for fmc in fmcs:
+        for i in range(8):             
+            s = ''
+            for j in range(6):
+                for k in range(8):
+                    if k%2:
+                        d = fmc[i,k]
+                    else:
+                        d = fmc[i,k,1:]
+                    if binary:
+                        s += np.binary_repr(d[j], width=10)
+                    else:
+                        s += "%3d" % d[j]
+                    s += "    "
+                s += "\n"
+            logger.debug(s)
 
 def init(a):
     for i in range(8):
@@ -256,8 +279,8 @@ def reset(fpga):
 def cal_fclk(a):
     delay0, slack0 = a.calibrate_fclk(0)
     delay1, slack1 = a.calibrate_fclk(1)
-    print("Board 0 FCLK Delay %d (slack %d)" % (delay0, slack0))
-    print("Board 1 FCLK Delay %d (slack %d)" % (delay1, slack1))
+    logger.info("Board 0 FCLK Delay %d (slack %d)" % (delay0, slack0))
+    logger.info("Board 1 FCLK Delay %d (slack %d)" % (delay1, slack1))
     if slack0 == 0 or slack1 == 0:
         return False, delay0, delay1
     else:
@@ -283,12 +306,12 @@ if __name__ == "__main__":
                         help="Strobe ADC sync line")
     parser.add_argument("--use_ramp", action="store_true",
                         help="Turn on ramp test mode")
-    parser.add_argument("--cal_fclk", action="store_true",
-                        help="Sweep FCLK delays and use to set ADC data")
-    parser.add_argument("--load_fclk", action="store_true",
-                        help="Load fclk delays from a provided file specified with --fclk_delayfile")
-    parser.add_argument("--fclk_delayfile", type=str, default="fclk_delays.csv",
-                        help="File to which new FCLK calibration delays should be written/read")
+    #parser.add_argument("--cal_fclk", action="store_true",
+    #                    help="Sweep FCLK delays and use to set ADC data")
+    #parser.add_argument("--load_fclk", action="store_true",
+    #                    help="Load fclk delays from a provided file specified with --fclk_delayfile")
+    #parser.add_argument("--fclk_delayfile", type=str, default="fclk_delays.csv",
+    #                    help="File to which new FCLK calibration delays should be written/read")
     parser.add_argument("--cal_data", action="store_true",
                         help="Sweep data line delays and use to set ADC data")
     parser.add_argument("--data_delayfile", type=str, default="data_delays.csv",
@@ -316,39 +339,42 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 
-    if args.load_fclk and args.cal_fclk:
-        print("--load_fclk and --cal_fclk arguments are mutually exclusive. Exiting.")
-        exit()
+    #if args.load_fclk and args.cal_fclk:
+    #    logger.error("--load_fclk and --cal_fclk arguments are mutually exclusive. Exiting.")
+    #    exit()
 
     if args.load_data and args.cal_data:
-        print("--load_data and --cal_data arguments are mutually exclusive. Exiting.")
+        logger.error("--load_data and --cal_data arguments are mutually exclusive. Exiting.")
         exit()
 
     if args.n_dumps != 0 and args.check_errors:
-        print("--check_errors and --n_dumps arguments are mutually exclusive. Exiting.")
+        logger.error("--check_errors and --n_dumps arguments are mutually exclusive. Exiting.")
         exit()
 
     if args.check_errors and not args.use_ramp:
-        print("WARNING: --check_errors will only produce meaningful results in --use_ramp mode")
+        logger.warning("WARNING: --check_errors will only produce meaningful results in --use_ramp mode")
 
-    print("Connecting to %s" % args.host)
+    logger.info("Connecting to %s" % args.host)
     s = casperfpga.CasperFpga(args.host, transport=casperfpga.TapcpTransport)
 
     if args.program:
-        print("Reprogramming from flash address 0")
+        logger.info("Reprogramming from flash address 0")
         s.transport.progdev(0)
 
     fmcs = []
     if args.fmcA:
-        print("Using FMC 0 (A; right hand side)")
-        fmcs += [ads5296.ADS5296fw(s, 0)]
+        logger.info("Using FMC 0 (A; right hand side)")
+        fmcs += [ads5296.ADS5296fw(s, 0, logger=logger)]
     if args.fmcB:
-        print("Using FMC 1 (B; left hand side)")
-        fmcs += [ads5296.ADS5296fw(s, 1)]
+        logger.info("Using FMC 1 (B; left hand side)")
+        fmcs += [ads5296.ADS5296fw(s, 1, logger=logger)]
 
     if len(fmcs) == 0:
-        print("Use --fmcA or --fmcB to select one or both FMC ports")
+        logger.error("Use --fmcA or --fmcB to select one or both FMC ports")
         exit()
+
+    for adc in fmcs:
+        logger.info("FMC %d firmware has pinout version %d" % (adc.fmc, adc.get_version()))
 
     #for fmc in fmcs:
     #    fmc.quiet = False
@@ -358,7 +384,7 @@ if __name__ == "__main__":
         assert args.clocksource in [0,1], "--clocksource must be 0 or 1"
         for adc in fmcs:
             for board in range(2):
-                print("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, args.clocksource))
+                logger.info("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, args.clocksource))
                 adc.reset_mmcm_assert(board)
                 adc.set_clock_source(args.clocksource, board)
                 adc.reset_mmcm_deassert(board)
@@ -391,9 +417,9 @@ if __name__ == "__main__":
                 for cs in range(4*board, 4*board+1):
                     adc.disable_rst_data(range(8), cs)
                     adc.disable_rst_fclk(board)
-            # Flush FIFOs
-            reset(s)
-            sync(s)
+        # Flush FIFOs
+        reset(s)
+        sync(s)
 
     for adc in fmcs:
         if args.use_ramp:
@@ -408,45 +434,46 @@ if __name__ == "__main__":
         for i in range(2):
             mmcm_locked = adc.mmcm_get_lock(i)
             if mmcm_locked is not None:
-                print("FMC %d core %d MMCM locked?: %s" % (adc.fmc, i, mmcm_locked))
+                logger.info("FMC %d core %d MMCM locked?: %s" % (adc.fmc, i, mmcm_locked))
             clocks = adc.read_clk_rates(i)
-            print("FMC %d board %d, lclk, fclk[0..3]:" % (adc.fmc, i), clocks)
+            logger.info("FMC %d board %d, lclk, fclk[0..3]: %s" % (adc.fmc, i, clocks))
 
     clockrate = s.estimate_fpga_clock()
-    print("FPGA clock: %f" % clockrate)
+    logger.info("FPGA clock: %f" % clockrate)
     if (clockrate == 0):
+        logger.error("Exiting because no clock detected")
         exit()
 
    
-    if args.cal_fclk:
-        fclk_delays_fh = open(args.fclk_delayfile, "w")
-    elif args.load_fclk:
-        fclk_delays_fh = open(args.fclk_delayfile, "r")
+    #if args.cal_fclk:
+    #    fclk_delays_fh = open(args.fclk_delayfile, "w")
+    #elif args.load_fclk:
+    #    fclk_delays_fh = open(args.fclk_delayfile, "r")
     if args.cal_data:
         data_delays_fh = open(args.data_delayfile, "w")
     elif args.load_data:
         data_delays_fh = open(args.data_delayfile, "r")
 
     ok = True 
-    for adc in fmcs: 
-        fclk_ok = True
-        if args.cal_fclk:
-            fclk_ok, delay0, delay1 = cal_fclk(adc)
-            fclk_delays_fh.write("%d,%d\n" % (delay0, delay1))
-            if not fclk_ok:
-                print("FMC %d: FCLK calibration Failure!" % adc.fmc)
-                ok = False
-        if args.load_fclk:
-            delay = list(map(int, fclk_delays_fh.readline().split(',')))
-            for board_id in range(2):
-                adc.load_delay_fclk(delay[board_id], board_id*4)
-                print("FMC %d: Loaded board 0 FCLK Delay %d" % (adc.fmc, delay[board_id]))
+    #for adc in fmcs: 
+    #    fclk_ok = True
+    #    if args.cal_fclk:
+    #        fclk_ok, delay0, delay1 = cal_fclk(adc)
+    #        fclk_delays_fh.write("%d,%d\n" % (delay0, delay1))
+    #        if not fclk_ok:
+    #            logger.error("FMC %d: FCLK calibration Failure!" % adc.fmc)
+    #            ok = False
+    #    if args.load_fclk:
+    #        delay = list(map(int, fclk_delays_fh.readline().split(',')))
+    #        for board_id in range(2):
+    #            adc.load_delay_fclk(delay[board_id], board_id*4)
+    #            logger.info("FMC %d: Loaded board 0 FCLK Delay %d" % (adc.fmc, delay[board_id]))
 
-    if args.cal_fclk or args.load_fclk:
-        for board in range(2):
-            adc.reset_iserdes(board)
-        reset(s) # Flush FIFOs and begin reading after next sync
-        sync(s) # Need to sync after moving fclk to re-lock deserializers
+    #if args.cal_fclk or args.load_fclk:
+    #    for board in range(2):
+    #        adc.reset_iserdes(board)
+    #    reset(s) # Flush FIFOs and begin reading after next sync
+    #    sync(s) # Need to sync after moving fclk to re-lock deserializers
     
     for adc in fmcs: 
         data_ok = True
@@ -457,8 +484,8 @@ if __name__ == "__main__":
             sync(s) # Need to sync after moving fclk to re-lock deserializers
             errs = get_data_delays(adc, test_val=TEST_VAL)
             best = get_best_delays(errs)
-            print("Data lane delays")
-            print(best)
+            logger.info("Data lane delays for FMC %d [chip x lane]" % adc.fmc)
+            logger.info("%s" % best)
             print_sweep(errs, best_delays=best)
             for cn, chipdelay in enumerate(best):
                 data_delays_fh.write(",".join(map(str, chipdelay)))
@@ -468,7 +495,7 @@ if __name__ == "__main__":
             errs = np.array(get_errs(adc, use_ramp=args.use_ramp, test_val=TEST_VAL))
             data_ok = errs.sum() == 0
             if not data_ok:
-                print("FMC %d: Data calibration Failure!" % adc.fmc)
+                logger.error("FMC %d: Data calibration Failure!" % adc.fmc)
                 ok = False
         if args.load_data:
             delays = np.zeros([8,8], dtype=int)
@@ -478,50 +505,52 @@ if __name__ == "__main__":
             errs = np.array(get_errs(adc, use_ramp=args.use_ramp, test_val=TEST_VAL))
             data_ok = errs.sum() == 0
             if not data_ok:
-                print("FMC %d: Data calibration Failure after loading delays from file!" % adc.fmc)
+                logger.error("FMC %d: Data calibration Failure after loading delays from file!" % adc.fmc)
                 ok = False
 
         if args.err_cnt:
             errs = get_errs(adc, use_ramp=args.use_ramp, test_val=TEST_VAL)
-            print("Errors by lane:")
-            print(errs)
+            logger.info("Errors by lane:")
+            logger.info("%s" % errs)
             if not np.array(errs).sum() == 0:
-                print("Link OK")
+                logger.info("Link OK")
             else:
-                print("Link FAIL")
+                logger.error("Link FAIL")
             
-    if args.cal_data or args.cal_fclk:
+    #if args.cal_data or args.cal_fclk:
+    if args.cal_data:
         reset(s)
         sync(s)
         if ok:
-            print("#######################")
-            print("# Calibration SUCCESS #")
-            print("#######################")
+            logger.info("#######################")
+            logger.info("# Calibration SUCCESS #")
+            logger.info("#######################")
         else:
-            print("!!!!!!!!!!!!!!!!!!!!")
-            print("! Calibration FAIL !")
-            print("!!!!!!!!!!!!!!!!!!!!")
+            logger.info("!!!!!!!!!!!!!!!!!!!!")
+            logger.info("! Calibration FAIL !")
+            logger.info("!!!!!!!!!!!!!!!!!!!!")
 
-    x = get_snapshot(adc, signed=(not args.print_binary))
+    x = get_snapshot(fmcs, signed=(not args.print_binary))
     print_snapshot(x, binary=args.print_binary)
 
     if args.reset_error_count:
-       print("Reseting error counters")
+       logger.info("Reseting error counters")
        s.write_int('err_cnt_rst', 1)
        s.write_int('err_cnt_rst', 0)
 
     if args.check_errors:
        t = time.ctime()
        while(True):
-           print("Checking for errors at time: %s:" % t)
-           for i in range(32):
-               x = s.read_uint('err_cnt%d_interleave_err_cnt' % i)
-               if x != 0:
-                   print("CHIP %d, CHANNEL %d: Lane interleave error count %d" % (i//4, i%4, x))
-               for j in range(2):
-                   x = s.read_uint('err_cnt%d_ramp_err_cnt%d' % (i, j))
+           logger.info("Checking for errors at time: %s:" % t)
+           for adcn, adc in fmcs:
+               for i in range(32):
+                   x = s.read_uint('%s_err_cnt%d_interleave_err_cnt' % (FMC_NAMES[adc.fmc], i))
                    if x != 0:
-                       print("CHIP %d, CHANNEL %d, LANE %d: Ramp corruption error count %d" %(i//4, i%4, j, x))
+                       logger.warning("FMC %d CHIP %d, CHANNEL %d: Lane interleave error count %d" % (adc.fmc, i//4, i%4, x))
+                   for j in range(2):
+                       x = s.read_uint('%s_err_cnt%d_ramp_err_cnt%d' % (FMC_NAMES[adc.fmc], i, j))
+                       if x != 0:
+                           logger.warning("FMC %d CHIP %d, CHANNEL %d, LANE %d: Ramp corruption error count %d" %(adc.fmc, i//4, i%4, j, x))
            time.sleep(10)
 
     if args.n_dumps == 0:
@@ -529,36 +558,51 @@ if __name__ == "__main__":
 
     if args.channel is None:
         # Snap all channels
-        chans = range(32)
+        chans = []
+        for adc in fmcs:
+            chans += range(32*adc.fmc, 32*(adc.fmc+1))
     else:
         # Perform a long snapshot of a single channel
-        assert args.channel < 32, "--channel argument must be < 32"
+        assert args.channel < 64, "--channel argument must be < 64"
         chans = [args.channel]
-        adc.fpga.write_int("chan_sel", args.channel)
+        for adc in fmcs:
+            adc.fpga.write_int("%s_chan_sel" % FMC_NAMES[adc.fmc], args.channel % 32)
         
     t = time.time()
     if args.outfile is not None:
         filename = args.outfile
     else:
         if args.channel is None:
-            filename = "ADS5296_dump_0_31_%d.csv" % (t)
+            filename = "ADS5296_dump_%d_%d_%d.csv" % (chans[0], chans[-1], t)
         else:
             filename = "ADS5296_dump_%d_%d.csv" % (args.channel, t)
-    print("Output file is %s" % filename)
+    logger.info("Output file is %s" % filename)
     if not args.force:
         if os.path.exists(filename):
-            print("File already exists. Use the -f flag to overwrite, or choose a different --outfile name")
+            logger.error("File already exists. Use the -f flag to overwrite, or choose a different --outfile name")
             exit()
     with open(filename, 'w') as fh:
         fh.write("%s\n" % time.ctime(t))
         fh.write("%s\n" % (','.join(map(str, chans))))
         fh.write("%s\n" % args.header)
     for i in range(args.n_dumps):
-        print("Capturing %d of %d" % (i+1, args.n_dumps), file=sys.stderr)
+        logger.debug("Capturing %d of %d" % (i+1, args.n_dumps))
         if args.channel is None:
-            x = get_snapshot_interleaved(adc, signed=True)
+            x = get_snapshot_interleaved(fmcs, signed=True)
+            shape = x.shape
+            x = x.reshape(shape[0]*shape[1], shape[2])
         else:
-            x = get_deep_snapshot(adc)
-            #print(x, np.sum(x), x.shape)
+            target_fmc = args.channel // 32
+            # Find the right ADC
+            target_adc = None
+            for adc in fmcs:
+                if adc.fmc == target_fmc:
+                    target_adc = adc
+            if target_adc is None:
+                logger.error("Cannot capture channel %d with selected FMCs. You should include FMC B for channels >= 32, and FMC A for channels < 32")
+                exit()
+            else:
+                x = get_deep_snapshot(target_adc)
+                #print(x, np.sum(x), x.shape)
         with open(filename, 'a') as fh:
             np.savetxt(fh, x, fmt="%d", delimiter=",")
