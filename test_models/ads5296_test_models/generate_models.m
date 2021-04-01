@@ -6,7 +6,7 @@ filename = get_param(template_model, 'FileName');
 for clock=[0 1]
     for fmc_bver = [1 2]
         load_system(template_model);
-        new_model = [filepath '/test_ads5296_fmca_r2_fmcb_r' num2str(fmc_bver) '_clk' num2str(clock)]
+        new_model = [filepath '/ads5296_fmca_r2_fmcb_r' num2str(fmc_bver) '_clk' num2str(clock)]
         %system(['cp' ' ' filename ' ' new_model]);
         %model_handle = load(new_model)
         set_param([template_model '/SNAP2'], 'clk_src', ['adc' num2str(clock) '_clk']);
