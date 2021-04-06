@@ -9,6 +9,7 @@ for clock=[0 1]
         new_model = [filepath '/ads5296_fmca_r2_fmcb_r' num2str(fmc_bver) '_clk' num2str(clock)]
         %system(['cp' ' ' filename ' ' new_model]);
         %model_handle = load(new_model)
+        set_param([template_model '/clk_source_const'], 'const', num2str(clock));
         set_param([template_model '/SNAP2'], 'clk_src', ['adc' num2str(clock) '_clk']);
         set_param([template_model '/fmca'], ...
             'fmc_clock', num2str(clock), ...
