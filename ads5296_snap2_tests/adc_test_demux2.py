@@ -542,7 +542,7 @@ if __name__ == "__main__":
        t = time.ctime()
        while(True):
            logger.info("Checking for errors at time: %s:" % t)
-           for adcn, adc in fmcs:
+           for adcn, adc in enumerate(fmcs):
                for i in range(32):
                    x = s.read_uint('%s_err_cnt%d_interleave_err_cnt' % (FMC_NAMES[adc.fmc], i))
                    if x != 0:
