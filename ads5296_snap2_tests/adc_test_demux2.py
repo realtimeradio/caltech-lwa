@@ -443,6 +443,12 @@ if __name__ == "__main__":
     if (clockrate == 0):
         logger.error("Exiting because no clock detected")
         exit()
+    else:
+        # Only print these if the board is clocking. Otherwise they might be wrong and misleading.
+        logger.info("Test firmware version: %s" % s.read_uint("ver"))
+        fmc_clk_source = ["A", "B"][s.read_uint("clk_source")]
+        logger.info("Test firmware clock source: FMC %s" % fmc_clk_source)
+
 
    
     #if args.cal_fclk:
