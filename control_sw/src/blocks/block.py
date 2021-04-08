@@ -74,11 +74,17 @@ class Block(object):
         """
         pass
 
-    def initialize(self):
+    def initialize(self, read_only=False):
         """
         Individual blocks should override this
         method to configure themselves appropriately
+
+        :param read_only: If False, initialize blocks in a way that might
+            change the configuration of running hardware. If True, read runtime
+            info from blocks, but don't change anything.
+        :type read_only: bool
         """
+
 
     def listdev(self):
         """

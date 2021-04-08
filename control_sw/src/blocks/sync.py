@@ -134,10 +134,13 @@ class Sync(Block):
         self._info('External Sync Count : %d' % (self.count_ext()))
         self._info('Internal Sync Count : %d' % (self.count_int()))
 
-    def initialize(self):
+    def initialize(self, read_only=False):
         """
         Initialize this block. Set sync period to 0.
         """
-        self.write_int('ctrl', 0)
+        if read_only:
+            pass
+        else:
+            self.write_int('ctrl', 0)
         #self.change_period(2**16 * 9*7*6*5*3)
-        self.change_period(self.PERIOD_BASE_DIVISOR * 256)
+        #self.change_period(self.PERIOD_BASE_DIVISOR * 256)

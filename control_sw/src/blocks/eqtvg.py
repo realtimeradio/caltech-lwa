@@ -71,6 +71,9 @@ class EqTvg(Block):
         tvg = np.fromstring(s, dtype='>%s' %self._FORMAT)
         return tvg
 
-    def initialize(self):
-        self.tvg_disable()
-        self.write_freq_ramp()
+    def initialize(self, read_only=False):
+        if read_only:
+            pass
+        else:
+            self.tvg_disable()
+            self.write_freq_ramp()

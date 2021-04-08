@@ -109,12 +109,15 @@ class Input(Block):
         rmss     = np.sqrt(powers)
         return means, powers, rmss
 
-    def initialize(self):
+    def initialize(self, read_only=False):
         """
         Switch to ADCs. Begin computing stats.
-         """
-        self.use_adc()
-        self.write_int('rms_enable', 1)
+        """
+        if read_only:
+            pass
+        else:
+            self.use_adc()
+            self.write_int('rms_enable', 1)
 
     def print_status(self):
         mean, power, rms = self.get_stats()

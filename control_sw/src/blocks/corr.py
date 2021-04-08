@@ -101,5 +101,8 @@ class Corr(Block):
         acc_len = self.n_chans*acc_len  # Convert from spectra to FPGA clocks
         self.write_int('acc_len',acc_len)
 
-    def initialize(self):
-        self.set_acc_len(self.acc_len)
+    def initialize(self, read_only=False):
+        if read_only:
+            self.get_acc_len()
+        else:
+            self.set_acc_len(self.acc_len)

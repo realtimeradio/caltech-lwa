@@ -59,5 +59,8 @@ class ChanReorder(Block):
             "`input_index` must be a multiple of self.n_parallel_chans"
         self.write_int('dynamic_map1', input_index, word_offset=output_index)
 
-    def initialize(self):
-        self.set_channel_order(np.arange(self.n_chans))
+    def initialize(self, read_only=False):
+        if read_only:
+            pass
+        else:
+            self.set_channel_order(np.arange(self.n_chans))

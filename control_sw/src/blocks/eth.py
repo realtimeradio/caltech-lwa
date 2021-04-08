@@ -62,7 +62,9 @@ class Eth(Block):
     def disable_tx(self):
         self.change_reg_bits('ctrl', 0, 1)
 
-    def initialize(self):
+    def initialize(self, read_only=False):
+        if read_only:
+            return
         #Set ip address of the SNAP
         ipaddr = socket.inet_aton(socket.gethostbyname(self.host.host))
         self.blindwrite(self._CORE_NAME, ipaddr, offset=0x10)

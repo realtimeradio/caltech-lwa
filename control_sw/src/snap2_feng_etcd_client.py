@@ -1,56 +1,143 @@
+import os
 import sys
 import time
+import json
+import numpy as np
 import etcd3
-import .snap2_fengine
+from . import snap2_fengine
 import logging
 
-N_STREAM_PER_BOARD = 64
-MAX_DELAY = 8192
+# ETCD Keys
+ETCD_CMD_ROOT = "/cmd/snap/"
+ETCD_MON_ROOT = "/mon/snap/"
+ETCD_RESP_ROOT = "/resp/snap/"
 
-#class Command():
-#    """
-#    A simple class to encapsulate some of the requirements of commands.
-#    
-#    :parameter logger: Logger object to which log messages should be emitted.
-#    :type logger: logging.Logger
-#
-#    :parameter **kwargs: Arguments required by this command. Each should be
-#        given as a dictionary which may include some, none, or all of the fields:
-#        "type" - the python type of the argument; "condition" - a [lamda] function
-#        to be called with the value of a kwarg as it's argument. This function
-#        should return True if the value is legitimate. For example, if a command
-#        required an argument "n_antennas" which is an integer less than 12,
-#        instantiate a `Command` object with the keyword arguments:
-#        ``n_antennas = {"type": int, "condition": lambda x: x<12}``
-#    """
-#    def __init__(self, logger, **kwargs):
-#        self.logger = logger
-#        for key, val in kwargs:
-#            assert isinstance(val, dict)
-#        self.required_args = kwargs
-#
-#    def check_args(self, **kwargs):
-#        """
-#        Check provided **kwargs against this class's dictionary of
-#        required arguments.
-#
-#        :return: True if all required arguments are present and allowed.
-#            False Otherwise.
-#
-#        """
-#        for key, val in self.required_args:
-#            if key not in **kwargs:
-#                self.logger.error("Missing kwarg: %s" % key)
-#                return False
-#            if "type" in val and not isinstance(kwargs[key], val["type"]):
-#                self.logger.error("Wrong kwarg type: %s" % key)
-#                return False
-#            if "condition" in val and not val["condition"](kwargs[key])
-#                self.logger.error("Kwarg condition check fail: %s" % key)
-#                return False
-#        return True
+class Snap2FengineEtcd():
+    """
+    An ETCD interface to a SNAP2 F-engine
 
-class Snap2FengineEtcdClient()
+    :param etcdhost: Hostname (or IP, in dotted quad notation)
+        of target etcd server.
+    :type etcdhost: string
+
+    :param logger: Python `logging.Logger` instance to which
+        this class's log messages should be emitted. If None,
+        log to stderr
+    :type logger: logging.Logger
+
+    """
+    def __init__(self, etcdhost="localhost", logger=None):
+        if logger is None:
+            self.logger = logging.getLogger("Snap2FengineEtcd")
+            stderr_handler = logging.StreamHandler(sys.stderr)
+            self.logger.addHandler(stderr_handler)
+            self.set_log_level("info")
+        else:
+            self.logger = logger
+
+        # Connect to ETCD and ping the connection
+        self.ec = etcd3.Etcd3Client(etcdhost)
+        try:
+            val, meta = self.ec.get('foo')
+        except:
+            self.logger.error("Failed to connect to Etcd server on host %s" % etcdhost)
+            raise
+
+    def set_log_level(self, level):
+        """
+        Set the logging level.
+
+        :param level: Logging level. Should be "debug", "info", or "warning"
+        :type level: string
+        """
+        if level not in ["debug", "info", "warning"]:
+            self.logger.error("Can't set log level to %s. Should be "
+                "'debug', 'info', or 'warning'")
+            return
+        if level == "debug":
+            self.logger.setLevel(logging.DEBUG)
+        elif level == "info":
+            self.logger.setLevel(logging.INFO)
+        elif level == "warning":
+            self.logger.setLevel(logging.WARNING)
+
+    def send_command(self, host, block, command, kwargs={}, timeout=10.0):
+        """
+        Send a command to a SNAP2
+
+        :param host: Bost to which command should be sent.
+        :type host: str
+
+        :param block: Block to which command applies.
+        :type block: str
+
+        :param command: Command to be sent
+        :type command: str
+
+        :param kwargs: Dictionary of key word arguments to be forwarded
+            to the chosen command method
+        :type kwargs: dict
+
+        :param timeout: Time, in seconds, to wait for a response to the command.
+        :type timeout: float
+
+        :return: Dictionary of values, dependent on the command response.
+        """
+        cmd_key = ETCD_CMD_ROOT + "%s/command" % host
+        resp_key = ETCD_RESP_ROOT + "%s/response" % host
+        timestamp = time.time()
+        sequence_id = int(timestamp * 1e6)
+        command_dict = {
+            "command": command,
+            "block": block,
+            "sequence_id": sequence_id,
+            "timestamp": timestamp,
+            "kwargs": kwargs,
+        }
+        try:
+            command_json = json.dumps(command_dict)
+        except:
+            self.logger.exception("Failed to JSON-encode command")
+            return False
+
+        self._response_received = False
+        self._response = None
+
+        def response_callback(watchresponse):
+            for event in watchresponse.events:
+                self.logger.debug("Got command response")
+                try:
+                    response_dict = json.loads(event.value.decode())
+                except:
+                    self.logger.exception("Response JSON decode error")
+                    continue
+                self.logger.debug("Response: %s" % response_dict)
+                resp_id = response_dict.get("sequence_id", None)
+                if resp_id == sequence_id:
+                    self._response = response_dict
+                    self._response_received = True
+                else:
+                    self.logger.debug("Seq ID %d didn't match expected (%d)" % (resp_id, sequence_id))
+
+        # Begin watching response channel and then send message
+        watch_id = self.ec.add_watch_callback(resp_key, response_callback)
+        # send command
+        self.ec.put(cmd_key, command_json)
+        starttime = time.time()
+        while(True):
+            if self._response_received:
+                self.ec.cancel_watch(watch_id)
+                try:
+                    self._response['response'] = json.loads(self._response['response'])
+                except:
+                    self.logger.exception("Method response JSON decode error")
+                return self._response['response']
+            if time.time() > starttime + timeout:
+                self.ec.cancel_watch(watch_id)
+                return None
+            time.sleep(0.01)
+
+class Snap2FengineEtcdClient():
     """
     An ETCD client to interface a single SNAP2 F-Engine
     to an etcd store.
@@ -58,14 +145,23 @@ class Snap2FengineEtcdClient()
     :param fhost: Hostname (or IP, in dotted quad notation)
         of target F-Engine
     :type host: string
+
     :param etcdhost: Hostname (or IP, in dotted quad notation)
         of target etcd server.
     :type etcdhost: string
+
     :param logger: Python `logging.Logger` instance to which
         this class's log messages should be emitted. If None,
         log to stderr
     :type logger: logging.Logger
+
+    :param fpg_tmp_dir: Directory where fpg files should be temporarily
+        written prior to upload.
+    :type fpg_tmp_dir: str
     """
+
+    # Received commands are checked against this list,
+    # prior to trying to call a method of the same name.
     allowed_commands = [
       'program',
       'set_delay',
@@ -74,6 +170,7 @@ class Snap2FengineEtcdClient()
       'set_output_configuration',
       'resync',
     ]
+
     def __init__(self, fhost, etcdhost="localhost", logger=None):
         self.fhost = fhost
         if logger is None:
@@ -86,18 +183,19 @@ class Snap2FengineEtcdClient()
         try:
             self.feng = snap2_fengine.Snap2Fengine(fhost)
         except:
-            self.logger.warning("Couldn't initialize F-Engine on host %s" % self.host)
+            self.logger.exception("Couldn't initialize F-Engine on host %s" % self.fhost)
             self.feng = None
         self.ec = etcd3.Etcd3Client(etcdhost)
         try:
             val, meta = self.ec.get('foo')
         except:
-            self.logger.error("Failed to connect to Etcd server on host %s" % etcdhost)
+            self.logger.exception("Failed to connect to Etcd server on host %s" % etcdhost)
             raise
-        self.cmd_key = "/cmd/snap/%s/command" % self.fhost
-        self.cmd_resp_key = "/cmd/snap/%s/response" % self.fhost
-        self.mon_root = "/mon/snap/%s/" % self.fhost
-        self.logger.debug("Command key root is %s" % self.cmd_root)
+        self.cmd_key = ETCD_CMD_ROOT + "%s/command" % self.fhost
+        self.cmd_resp_key = ETCD_RESP_ROOT + "%s/response" % self.fhost
+        self.mon_root = ETCD_MON_ROOT + "%s/" % self.fhost
+        self.logger.debug("Command key is %s" % self.cmd_key)
+        self.logger.debug("Command response key is %s" % self.cmd_resp_key)
         self.logger.debug("Monitor key root is %s" % self.mon_root)
         self._etcd_watch_id = None
 
@@ -177,7 +275,8 @@ class Snap2FengineEtcdClient()
         :type status: bool
 
         :param response: String response with which to respond. E.g.
-            'out of range', or 'command accepted'
+            'out of range', or 'command accepted'. If the command returns data,
+            this might be a json string of this data.
         :type response: string
         """
         if processed_ok:
@@ -197,7 +296,7 @@ class Snap2FengineEtcdClient()
             self.logger.error("Error trying to send ETCD command response")
             raise
 
-    def _etcd_callback(self, watchresponse)
+    def _etcd_callback(self, watchresponse):
         """
         A callback executed whenever this block's command key is modified.
         
@@ -213,7 +312,7 @@ class Snap2FengineEtcdClient()
         for event in watchresponse.events:
             self.logger.debug("Got command: %s" % event.value)
             try:
-                command_dict = json.loads(event.value)        
+                command_dict = json.loads(event.value.decode())
             except json.JSONDecodeError:
                 err = "JSON decode error"
                 self.logger.error(err)
@@ -230,77 +329,143 @@ class Snap2FengineEtcdClient()
                 return False
             if seq_id < 0:
                 self.warning("Sequence ID %d is suspicious" % seq_id)
+
+            block = command_dict.get("block", None)
+            if block is None:
+                self.logger.error("Received block string with no 'block' key!")
+                err = "Bad command format"
+                self._send_command_response(seq_id, False, err)
+                return False
+
             command = command_dict.get("command", None)
             if command is None:
                 self.logger.error("Received command string with no 'command' key!")
                 err = "Bad command format"
                 self._send_command_response(seq_id, False, err)
                 return False
-            if not command = self.allowed_commands:
-                self.logger.error("Received command not in allowed list!" % command)
-                err = "Command not allowed"
-                self._send_command_response(seq_id, False, err)
-                return False
-            if not (hasattr(self, command) and callable(getattr(self, command))):
-                self.logger.error("Received command %s not implemented!" % command)
-                err = "Command not implemented"
-                self._send_command_response(seq_id, False, err)
-                return False
-            if:
-                cmd_method = getattr(self, command)
-                cmd_kwargs = command_dict.get("kwargs", {})
-                try:
-                    ok, err = cmd_method(**cmd_kwargs)
-                except TypeError:
-                    ok = False
-                    err = "Command arguments invalid"
-                    self.logger.error(err)
-                except:
-                    ok = False
-                    err = "Command failed"
-                    self.logger.error(err)
-                self._send_command_response(seq_id, ok, err)
-                self.logger.info("Responded to command %s (ID %d): %s" % (command, seq_id, err))
-                return ok
 
-    def poll_stats(self):
-        """
-        Poll all statistics and push to etcd.
-        """
-        if self.feng is None:
-            self.logger.warning("F-Engine not initialized. Skipping polling")
+            # Deal with a couple of special cases
+            if block == "feng":
+                if command in ["get_fpga_stats", "configure_output"]:
+                    block_obj = self.feng
+                elif command in ["program"]:
+                    block_obj = self
+                else:
+                    self.logger.error("Received command invalid!")
+                    err = "Command invalid"
+                    self._send_command_response(seq_id, False, err)
+                    return False
+                cmd_method = getattr(block_obj, command)
+            else:
+                # Only allow commands to reference blocks which are in the Fengine.blocks list
+                if not (hasattr(self.feng, block) and getattr(self.feng, block) in self.feng.blocks):
+                    self.logger.error("Received block %s not allowed!" % block)
+                    err = "Wrong block"
+                    self._send_command_response(seq_id, False, err)
+                    return False
+                else:
+                    block_obj = getattr(self.feng, block)
+                # Check command is valid
+                if command.startswith("_"):
+                    self.logger.error("Received command starting with underscore!")
+                    err = "Command not allowed"
+                    self._send_command_response(seq_id, False, err)
+                    return False
+                if not (hasattr(block_obj, command) and callable(getattr(block_obj, command))):
+                    self.logger.error("Received command invalid!")
+                    err = "Command invalid"
+                    self._send_command_response(seq_id, False, err)
+                    return False
+                else:
+                    cmd_method = getattr(block_obj, command)
+            # Process command
+            cmd_kwargs = command_dict.get("kwargs", {})
+            ok = True
+            try:
+                resp = cmd_method(**cmd_kwargs)
+            except TypeError:
+                ok = False
+                err = "Command arguments invalid"
+                self.logger.exception(err)
+            except:
+                ok = False
+                err = "Command failed"
+                self.logger.exception(err)
+            if not ok:
+                self._send_command_response(seq_id, ok, err)
+                self.logger.error("Responded to command '%s' (ID %d): %s" % (command, seq_id, err))
+                return False
+            try:
+                if isinstance(resp, np.ndarray):
+                    resp = resp.tolist()
+                resp_str = json.dumps(resp)
+            except:
+                self.logger.exception("Failed to encode JSON")
+                resp_str = "JSON_ERROR"
+            self._send_command_response(seq_id, ok, resp_str)
+            self.logger.info("Responded to command '%s' (ID %d): OK? %s" % (command, seq_id, ok))
+            self.logger.debug("Responded to command '%s' (ID %d): %s" % (command, seq_id, resp_str))
+            return ok
+
+    #def poll_stats(self):
+    #    """
+    #    Poll all statistics and push to etcd.
+    #    """
+    #    if self.feng is None:
+    #        self.logger.warning("F-Engine not initialized. Skipping polling")
 
     def __del__(self):
         self.cancel_command_watch()
 
-    def program(self, fpgbytes):
-        if not isinstance(fpgbytes, bytes):
-            return False, "wrong type for fpgbytes"
-        return False, 'Not implemented'
+    def program(self, fpgfile, force=False):
+        """
+        Program an .fpg file to a SNAP2 FPGA. If the name of the file
+        matches what is already in flash, this command will simply
+        reboot the FPGA. If the name of the file doesn't match, the
+        new bitstream will be uploaded. This will take <=5 minutes.
 
-    def set_delay(self, stream, delay):
-        if not isinstance(stream, int):
-            return False, "wrong type for stream"
-        if not stream > N_STREAM_PER_BOARD:
-            return False, "stream number out of range"
-        if not isinstance(delay, int):
-            return False, "wrong type for delay"
-        if not delay < MAX_DELAY
-            return False, "Requested delay too large"
-        self.feng.delay.set_delay(stream, delay)
-        return True, "OK"
-        
-    def set_eq_coeffs(self, stream, coeffs):
-        if not isinstance(stream, int):
-            return False, "wrong type for stream"
-        if not stream > N_STREAM_PER_BOARD:
-            return False, "stream number out of range"
-        self.feng.eq.set_coeffs(stream, coeffs)
-        return True, "OK"
+        :param fpgfile: The .fpg file to be loaded.
+        :type fpgfile: str
 
-    def set_output_configuration(self, **kwargs):
-        return False, 'Not implemented'
+        :param force: If True, write the firmware to flash even if the SNAP claims
+            it is already loaded.
+        :type force: boolean
 
-    def resync(self, **kwargs):
-        return False, 'Not implemented'
+        """
+
+        if not isinstance(fpgfile, str):
+            return False, "wrong type for fpgfile"
+        if not isinstance(force, bool):
+            return False, "wrong type for force"
+
+        if not os.path.exists(fpgfile):
+            return False, "Path %s doesn't exist" % fpgfile
+
+        self.logger.info("Loading firmware %s to %s" % (fpgfile, self.fhost))
+        # If no FENG is yet connected, try to connect to a raw CasperFpga
+        # and then program it
+        if self.feng is None:
+            self.logger.debug("Using raw CasperFpga because no FEngine exists")
+            try:
+                fpga = snap2_fengine.casperfpga.CasperFpga(
+                           self.fhost,
+                           transport = snap2_fengine.casperfpga.TapcpTransport,
+                       )
+            except:
+                self.logger.exception("Exception when connecting to board")
+                return False, "Error during connection"
+        else:
+            fpga = self.feng.fpga
+
+        try:
+            fpga.transport.upload_to_ram_and_program(fpgfile, force=force)
+        except:
+            self.logger.exception("Exception when loading new firmware")
+            return False, "Error during load"
+        try:
+            self.feng = snap2_fengine.Snap2Fengine(self.fhost)
+        except:
+            self.logger.exception("Exception when instantiating F-Engine after firmware load")
+            return False, "Error after load"
+        return True, "image loaded"
 

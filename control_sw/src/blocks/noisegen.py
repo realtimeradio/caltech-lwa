@@ -106,7 +106,9 @@ class NoiseGen(Block):
         noise = self.get_reg_bits(ctrl_reg, 4*octal_index, 4)
         return noise
 
-    def initialize(self):
+    def initialize(self, read_only=False):
+        if read_only:
+            return
         for n in range(self.n_noise):
             self.set_seed(0, n)
 

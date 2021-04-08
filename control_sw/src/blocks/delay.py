@@ -25,7 +25,8 @@ class Delay(Block):
         delay : int
             Maximum supported delay, in ADC samples
         """
-        return self.read_uint('max_delay')
+        self.max_delay = self.read_uint('max_delay')
+        return self.max_delay
 
     def set_delay(self, stream, delay):
         """
@@ -39,9 +40,10 @@ class Delay(Block):
             self._warning("User requested delay of %d, but choosing %d because this is the minimum" % (delay, self.MIN_DELAY))
         if stream > self.n_streams:
             self._error('Tried to set delay for stream %d > n_streams (%d)' % (stream, self.n_streams))
-        if self.max_delay is not None:
-            if delay >= self.max_delay:
-                self._error('Tried to set delay to %d which is > the allowed maximum (%d)' % (delay, self.max_delay))
+        if self.max_delay is None:
+            self.get_max_delay()
+        if delay >= self.max_delay:
+            self._error('Tried to set delay to %d which is > the allowed maximum (%d)' % (delay, self.max_delay))
         self._info('Setting delay of stream %d to %d' % (stream, delay))
         self.write_int('%d_delay' % stream, delay)
 
@@ -63,13 +65,14 @@ class Delay(Block):
             self._error('Tried to get delay for stream %d > n_streams (%d)' % (stream, self.n_streams))
         return self.read_uint('%d_delay' % stream)
 
-    def initialize(self):
+    def initialize(self, read_only=False):
         """
         Initialize all delays to minimum allowed
         """
         self.max_delay = self.get_max_delay()
-        for i in range(self.n_streams):
-            self.set_delay(i, self.MIN_DELAY)
+        if not read_only:
+            for i in range(self.n_streams):
+                self.set_delay(i, self.MIN_DELAY)
 
     def print_status(self):
         for i in range(self.n_streams):

@@ -44,11 +44,13 @@ class Adc(Block):
             else:
                 self.logger.warning("Did not detect FMC ADC board on port %d" % fmc)
 
-    def initialize(self, clocksource=1):
+    def initialize(self, read_only=False, clocksource=1):
         """
         Initialize the configuration of the ADC chip.
         Returns True if initialization was successful. False otherwise.
         """
+        if read_only:
+            return
         for adc in self.adcs:
             for board in range(NBOARDS):
                 self.logger.info("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, clocksource))

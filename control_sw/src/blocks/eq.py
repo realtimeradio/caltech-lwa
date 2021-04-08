@@ -70,10 +70,12 @@ class Eq(Block):
     def print_status(self):
         self._info('Number of times inputs got clipped: %d'%self.clip_count())
 
-    def initialize(self):
+    def initialize(self, read_only=False):
         """
         Initialize block, setting coefficients to some nominally sane value.
         Currently, this is 100.0
         """
+        if read_only:
+            return
         for stream in range(self.n_streams):
             self.set_coeffs(stream, 100*np.ones(self.n_coeffs,dtype='>%s'%self._FORMAT))

@@ -11,9 +11,6 @@ class Pfb(Block):
     def set_fft_shift(self, shift):
         self.change_reg_bits('ctrl', shift, self.SHIFT_OFFSET, self.SHIFT_WIDTH)
 
-    def set_fft_preshift(self, shift):
-        self.change_reg_bits('ctrl', shift, self.PRESHIFT_OFFSET, self.PRESHIFT_WIDTH)
-
     def rst_stats(self):
         self.change_reg_bits('ctrl', 1, self.STAT_RST_BIT)
         self.change_reg_bits('ctrl', 0, self.STAT_RST_BIT)
@@ -27,7 +24,9 @@ class Pfb(Block):
     def is_overflowing(self):
         return any(self._is_overflowing_per_core())
         
-    def initialize(self):
+    def initialize(self, read_only=False):
+        if read_only:
+            return
         self.write_int('ctrl', 0)
         self.set_fft_shift(0b110101010101)
         self.rst_stats()

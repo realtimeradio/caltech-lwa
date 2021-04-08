@@ -53,7 +53,7 @@ class Snap2Fengine(object):
         # The order here can be important, blocks are initialized in the
         # order they appear here
         self.blocks = [
-            #self.adc,
+            self.adc,
             self.sync,
             self.noise,
             self.input,
@@ -64,10 +64,9 @@ class Snap2Fengine(object):
             self.reorder,
             self.packetizer,
             self.eth,
+            self.autocorr,
             self.corr,
         ]
-
-        self.initialized = False
 
     def is_programmed(self):
         """
@@ -78,11 +77,13 @@ class Snap2Fengine(object):
         """
         return 'version_version' in self.fpga.listdev()
 
-    def initialize(self):
+    def initialize(self, read_only=True):
         for block in self.blocks:
-            self.logger.info("Initializing block: %s" % block.name)
-            block.initialize()
-        self.initialized = True
+            if read_only:
+                self.logger.info("Initializing block (read only): %s" % block.name)
+            else:
+                self.logger.info("Initializing block (writable): %s" % block.name)
+            block.initialize(read_only=read_only)
 
     def get_fpga_stats(self):
         """
@@ -92,8 +93,10 @@ class Snap2Fengine(object):
         stat = {}
         stat['timestamp'] = datetime.datetime.now().isoformat()
         stat['uptime'] = self.sync.uptime()
-        stat['pps_count'] = self.sync.count()
+        stat['ext_pulse_count'] = self.sync.count_ext()
+        stat['int_pulse_count'] = self.sync.count_int()
         stat['serial'] = self.serial
+        stat['host'] = self.host
         stat.update(self.sysmon.get_all_sensors())
         return stat
 

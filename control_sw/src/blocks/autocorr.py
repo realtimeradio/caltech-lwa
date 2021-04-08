@@ -143,5 +143,8 @@ class AutoCorr(Block):
         self._acc_len = acc_len
         self.write_int('acc_len',acc_len)
 
-    def initialize(self):
-        self.set_acc_len(self._acc_len)
+    def initialize(self, read_only=False):
+        if read_only:
+            self.get_acc_len()
+        else:
+            self.set_acc_len(self._acc_len)
