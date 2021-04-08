@@ -24,8 +24,13 @@ if __name__ == "__main__":
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--upload", action="store_true",
                         help="Upload new bitstreams to flash, starting at address 0")
-    parser.add_argument("--progaddr", type=str, default=None,
-                        help="Address from which board should be reprogrammed. Enter as binary string with no preceding '0x'")
+    parser.add_argument("--bootaddr", type=str, default=None,
+                        help="Address from which booting should begin. "
+                             "Enter as binary string with no preceding '0x' "
+                             "If none is given, the FPGA will not be rebooted")
+    parser.add_argument("--uploadaddr", type=str, default="0x0",
+                        help="Address from which uploading or programming should begin. "
+                             "Enter as binary string with no preceding '0x'")
     parser.add_argument("--host", type=str, default="snap2-rev2-10",
                         help="Snap hostname / IP address")
     parser.add_argument("--binaries", nargs='*',
@@ -42,7 +47,7 @@ if __name__ == "__main__":
         if len(args.binaries) == 0:
             logger.error("If using --upload, you must specify binaries to write to flash with --binaries")
             exit()
-        addr = 0
+        addr = int(args.uploadaddr, 16)
         for fname in args.binaries:
             logger.info("Uploading %s to address 0x%x" % (fname, addr))
             if not fname.endswith(".fpg"):
@@ -51,9 +56,11 @@ if __name__ == "__main__":
             header, payload, md5 = fpga.transport._extract_bitstream(fname)
             logger.info("Uploading to flash") 
             addr = fpga.transport.write_to_flash(payload, addr)
+            logger.info("Next available start address is 0x%x" % addr)
+        exit()
 
 
-    if args.progaddr is not None:
-        addr = int(args.progaddr, 16)
+    if args.bootaddr is not None:
+        addr = int(args.bootaddr, 16)
         logger.info("Programming from address 0x%x. You will temporarily lose connectivity" % addr)
         fpga.transport.progdev(addr) 
