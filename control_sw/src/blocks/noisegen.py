@@ -116,7 +116,7 @@ class NoiseGen(Block):
         stats = {}
         flags = {}
         for n in range(self.n_noise):
-            stats['seed%.2d' % n] = self.get_seed(n)
+            stats['noise_core%.2d_seed' % n] = self.get_seed(n)
         for o in range(self.n_outputs):
-            stats['output%.2d_assignment' % o] = self.get_output_assignment(o)
+            stats['output_assignment%.2d' % o] = self.get_output_assignment(o)
         return stats, flags
