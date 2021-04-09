@@ -1,5 +1,7 @@
 import logging
+from termcolor import colored
 from lwa_f import helpers
+from lwa_f import error_levels as el
 
 class Block(object):
     """
@@ -67,12 +69,52 @@ class Block(object):
     def _exception(self, msg, *args, **kwargs):
         self.logger.exception(self._prefix_log(msg), *args, **kwargs)
 
-    def print_status(self):
+    def get_status(self):
         """
-        Individual blocks should override this
-        method to print some useful information.
+        Get a dictionary of status values, with optional warning of error flags.
+        To be overridden by individual blocks
+
+        :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
+            status key-value pairs, defined on a per-block basis. flags_dict is
+            a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
+            held in this dictionary should be as defined in `error_levels.py`.
         """
-        pass
+        status_dict = {}
+        flags_dict = {}
+        return status_dict, flags_dict
+
+    def print_status(self, use_color=True):
+        """
+        Print the information returned by `get_status`, highlighting error flags
+        with colors.
+
+        :param use_color: If True, print with errors highlighted with colored text.
+        :type use_color: bool
+        """
+        colormap = {
+            el.FENG_OK: 'green',
+            el.FENG_NOTIFY: 'blue',
+            el.FENG_WARNING: 'yellow',
+            el.FENG_ERROR: 'red',
+        }
+        try:
+            stats, flags = self.get_status()
+        except TypeError:
+            # If the block was too lazy to provide flags
+            try:
+                stats = self.get_status()
+                flags = {}
+            except:
+                self._error("Failed to call get_status successfully")
+                return
+        for k, v in sorted(stats.items()):
+            err = flags.get(k, el.FENG_OK)
+            color = colormap[err]
+            msg = '%s: %s' % (k, v)
+            if use_color:
+                print(colored(msg, color))
+            else:
+                print(msg)
 
     def initialize(self, read_only=False):
         """
@@ -95,25 +137,72 @@ class Block(object):
         return [x[len(self.prefix):] for x in devs if x.startswith(self.prefix)]
 
     def read_int(self, reg, word_offset=0, **kwargs):
-        return self.host.read_int(self.prefix + reg, word_offset=word_offset, **kwargs)
+        try:
+            return self.host.read_int(self.prefix + reg, word_offset=word_offset, **kwargs)
+        except:
+            if reg not in self.listdev():
+                self._error("Tried to read register %s which doesn't exist!" % reg)
+            raise
 
     def write_int(self, reg, val, word_offset=0, **kwargs):
-        self.host.write_int(self.prefix + reg, val, word_offset=word_offset, **kwargs)
+        try:
+            self.host.write_int(self.prefix + reg, val, word_offset=word_offset, **kwargs)
+        except:
+            if reg not in self.listdev():
+                self._error("Tried to read register %s which doesn't exist!" % reg)
+            else:
+                # Only raise an exception if the register is there, otherwise
+                # just skip the write
+                raise
 
     def read_uint(self, reg, word_offset=0, **kwargs):
-        return self.host.read_uint(self.prefix + reg, word_offset=word_offset, **kwargs)
+        try:
+            return self.host.read_uint(self.prefix + reg, word_offset=word_offset, **kwargs)
+        except:
+            if reg not in self.listdev():
+                self._error("Tried to read register %s which doesn't exist!" % reg)
+            raise
 
     def write_uint(self, reg, val, word_offset=0, **kwargs):
-        self.host.write_int(self.prefix + reg, val, word_offset=word_offset, **kwargs)
+        try:
+            self.host.write_int(self.prefix + reg, val, word_offset=word_offset, **kwargs)
+        except:
+            if reg not in self.listdev():
+                self._error("Tried to read register %s which doesn't exist!" % reg)
+            else:
+                # Only raise an exception if the register is there, otherwise
+                # just skip the write
+                raise
 
     def read(self, reg, nbytes, **kwargs):
-        return self.host.read(self.prefix + reg, nbytes, **kwargs)
+        try:
+            return self.host.read(self.prefix + reg, nbytes, **kwargs)
+        except:
+            if reg not in self.listdev():
+                self._error("Tried to read register %s which doesn't exist!" % reg)
+            raise
 
     def write(self, reg, val, offset=0, **kwargs):
-        self.host.write(self.prefix + reg, val, offset=offset, **kwargs)
+        try:
+            self.host.write(self.prefix + reg, val, offset=offset, **kwargs)
+        except:
+            if reg not in self.listdev():
+                self._error("Tried to read register %s which doesn't exist!" % reg)
+            else:
+                # Only raise an exception if the register is there, otherwise
+                # just skip the write
+                raise
 
     def blindwrite(self, reg, val, **kwargs):
-        self.host.blindwrite(self.prefix + reg, val, **kwargs)
+        try:
+            self.host.blindwrite(self.prefix + reg, val, **kwargs)
+        except:
+            if reg not in self.listdev():
+                self._error("Tried to read register %s which doesn't exist!" % reg)
+            else:
+                # Only raise an exception if the register is there, otherwise
+                # just skip the write
+                raise
 
     def change_reg_bits(self, reg, val, start, width=1):
         """

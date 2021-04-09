@@ -1,4 +1,5 @@
 from .block import Block
+from lwa_f.error_levels import *
 
 class Eth(Block):
     _CORE_NAME = 'forty_gbe'
@@ -27,7 +28,8 @@ class Eth(Block):
 
     def get_status(self):
         #stat = self.read_uint('sw_txs_ss_status')
-        rv = {}
+        stats = {}
+        flags = {}
         #rv['rx_overrun'  ] =  (stat >> 0) & 1   
         #rv['rx_bad_frame'] =  (stat >> 1) & 1
         #rv['tx_of'       ] =  (stat >> 2) & 1   # Transmission FIFO overflow
@@ -36,12 +38,14 @@ class Eth(Block):
         #rv['rx_led'      ] =  (stat >> 5) & 1   # Receive LED
         #rv['up'          ] =  (stat >> 6) & 1   # LED up
         #rv['eof_cnt'     ] =  (stat >> 7) & (2**25-1)
-        rv['tx_of'        ] =  self.read_uint(self._CORE_NAME + '_txofctr')
-        rv['tx_full'      ] =  self.read_uint(self._CORE_NAME + '_txfullctr')
-        rv['tx_err'       ] =  self.read_uint(self._CORE_NAME + '_txerrctr')
-        rv['tx_vld'       ] =  self.read_uint(self._CORE_NAME + '_txvldctr')
-        rv['tx_ctr'       ] =  self.read_uint(self._CORE_NAME + '_txctr')
-        return rv
+        stats['tx_of'        ] =  self.read_uint(self._CORE_NAME + '_txofctr')
+        stats['tx_full'      ] =  self.read_uint(self._CORE_NAME + '_txfullctr')
+        stats['tx_err'       ] =  self.read_uint(self._CORE_NAME + '_txerrctr')
+        stats['tx_vld'       ] =  self.read_uint(self._CORE_NAME + '_txvldctr')
+        stats['tx_ctr'       ] =  self.read_uint(self._CORE_NAME + '_txctr')
+        if stats['tx_of'] > 0:
+            flags['tx_of'] = FENG_ERROR
+        return stats, flags
         
     def status_reset(self):
         self.change_reg_bits('ctrl', 0, 18)
@@ -72,8 +76,3 @@ class Eth(Block):
     def set_source_port(self, port):
         # see config_10gbe_core in katcp_wrapper
         self.blindwrite(self._CORE_NAME, struct.pack('>BBH', 0, 1, port), offset=0x20)
-                        
-    def print_status(self):
-        rv = self.get_status()
-        for key in rv.keys():
-            self._info('%12s : %d'%(key,rv[key]))

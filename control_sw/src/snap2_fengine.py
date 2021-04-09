@@ -1,10 +1,14 @@
 import logging
+import socket
 import numpy as np
 import struct
 import time
 import datetime
 import casperfpga
 from . import helpers
+from . import __version__
+from .error_levels import *
+from .blocks import block
 from .blocks import adc
 from .blocks import sync
 from .blocks import noisegen
@@ -19,16 +23,23 @@ from .blocks import packetizer
 from .blocks import eth
 from .blocks import corr
 
-class Snap2Fengine(object):
+class Snap2Fengine(block.Block):
     def __init__(self, host, ant_indices=None, logger=None):
-        self.host = host
-        self.logger = logger or helpers.add_default_log_handlers(logging.getLogger(__name__ + "(%s)" % host))
-        self.fpga = casperfpga.CasperFpga(host=host, transport=casperfpga.TapcpTransport)
+        self.hostname = host
+        self.fpga = casperfpga.CasperFpga(
+                        host=self.hostname,
+                        transport=casperfpga.TapcpTransport,
+                    )
+
+        # Top-level F-engine sees all registers
+        super(Snap2Fengine, self).__init__(self.fpga, None, logger)
+
         # Try and get the canonical name of the host
         # to use as a serial number
         try:
-            self.serial = socket.gethostbyaddr(self.host)[0]
+            self.serial = socket.gethostbyaddr(self.hostname)[0]
         except:
+            self._exception("Couldn't get host by address %s" % self.hostname)
             self.serial = None
 
         # blocks
@@ -75,30 +86,59 @@ class Snap2Fengine(object):
         Returns:
             True if programmed, False otherwise
         """
-        return 'version_version' in self.fpga.listdev()
+        return 'version_version' in self.listdev()
 
     def initialize(self, read_only=True):
         for block in self.blocks:
             if read_only:
-                self.logger.info("Initializing block (read only): %s" % block.name)
+                self._info("Initializing block (read only): %s" % block.name)
             else:
-                self.logger.info("Initializing block (writable): %s" % block.name)
+                self._info("Initializing block (writable): %s" % block.name)
             block.initialize(read_only=read_only)
 
-    def get_fpga_stats(self):
+    def get_status_all(self):
+        stats = {}
+        stats['feng'] = self.get_status()
+        for block in self.blocks:
+            stats[block.name] = block.get_status()
+        return stats
+
+    def print_status_all(self, use_color=True):
+        print('Fengine stats:')
+        self.print_status(use_color)
+        for block in self.blocks:
+            print('Block %s stats:' % block.name)
+            block.print_status()
+
+    def get_status(self):
         """
         Get FPGA stats.
         returns: Dictionary of stats
         """
-        stat = {}
-        stat['timestamp'] = datetime.datetime.now().isoformat()
-        stat['uptime'] = self.sync.uptime()
-        stat['ext_pulse_count'] = self.sync.count_ext()
-        stat['int_pulse_count'] = self.sync.count_int()
-        stat['serial'] = self.serial
-        stat['host'] = self.host
-        stat.update(self.sysmon.get_all_sensors())
-        return stat
+        stats = {}
+        flags = {}
+        stats['programmed'] = self.is_programmed()
+        meta = self.fpga.transport.get_metadata()
+        stats['flash_firmware'] = meta['filename']
+        stats['flash_firmware_md5'] = meta['md5sum']
+        stats['timestamp'] = datetime.datetime.now().isoformat()
+        stats['serial'] = self.serial
+        stats['host'] = self.host
+        stats['sw_version'] = __version__
+        try:
+            stats.update(self.sysmon.get_all_sensors())
+            stats['sys_mon'] = 'reporting'
+            flags['sys_mon'] = FENG_OK
+        except:
+            stats['sys_mon'] = 'not reporting'
+            flags['sys_mon'] = FENG_ERROR
+        if not stats['programmed']:
+            flags['programmed'] = FENG_WARNING
+        if stats['sw_version'].endswith('dirty'):
+            flags['sw_version'] = FENG_WARNING
+        if stats['serial'] is None:
+            flags['serial'] = FENG_WARNING
+        return stats, flags
 
     def configure_output(self, n_chans_per_packet, chans, ips, ports=None, ants=None):
         """

@@ -112,8 +112,11 @@ class NoiseGen(Block):
         for n in range(self.n_noise):
             self.set_seed(0, n)
 
-    def print_status(self):
+    def get_status(self):
+        stats = {}
+        flags = {}
         for n in range(self.n_noise):
-            self._info('Noise block %d seed: %d' % (n, self.get_seed(n)))
+            stats['seed%.2d' % n] = self.get_seed(n)
         for o in range(self.n_outputs):
-            self._info('Output %d assigned to noise stream %d' % (o, self.get_output_assignment(o)))
+            stats['output%.2d_assignment' % o] = self.get_output_assignment(o)
+        return stats, flags

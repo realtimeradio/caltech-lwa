@@ -1,4 +1,7 @@
+import numpy as np
+
 from .block import Block
+from lwa_f.error_levels import *
 
 class Pfb(Block):
     N_CORES = 4
@@ -11,18 +14,31 @@ class Pfb(Block):
     def set_fft_shift(self, shift):
         self.change_reg_bits('ctrl', shift, self.SHIFT_OFFSET, self.SHIFT_WIDTH)
 
+    def get_fft_shift(self):
+        return self.get_reg_bits('ctrl', self.SHIFT_OFFSET, self.SHIFT_WIDTH)
+
     def rst_stats(self):
         self.change_reg_bits('ctrl', 1, self.STAT_RST_BIT)
         self.change_reg_bits('ctrl', 0, self.STAT_RST_BIT)
 
-    def _is_overflowing_per_core(self):
+    def _get_overflow_count_per_core(self):
         core_is_of = []
         for i in range(self.N_CORES):
             core_is_of += [self.read_uint('pfb16x_%d_status' % i) != 0]
         return core_is_of
             
-    def is_overflowing(self):
-        return any(self._is_overflowing_per_core())
+    def get_overflow_count(self):
+        return np.sum(self._get_overflow_count_per_core())
+
+    def get_status(self):
+        stats = {}
+        flags = {}
+        stats['overflow_count'] = self.get_overflow_count()
+        if stats['overflow_count'] != 0:
+            flags['overflow_count'] = FENG_WARNING
+        fft_shift = self.get_fft_shift()
+        stats['fft_shift'] = '0b%s' % np.binary_repr(fft_shift, width=self.SHIFT_WIDTH)
+        return stats, flags
         
     def initialize(self, read_only=False):
         if read_only:

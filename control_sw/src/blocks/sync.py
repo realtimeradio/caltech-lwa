@@ -120,19 +120,13 @@ class Sync(Block):
             self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD)
 
     def get_status(self):
-        rv = {
-            'uptime': self.uptime(),
-            'period': self.period(),
-            'ext_count': self.count_ext(),
-            'int_count': self.count_int(),
-        }
-        return rv
-
-    def print_status(self):
-        self._info('Uptime: %d seconds' % (self.uptime()))
-        self._info('Period: %d FPGA clocks' % (self.period()))
-        self._info('External Sync Count : %d' % (self.count_ext()))
-        self._info('Internal Sync Count : %d' % (self.count_int()))
+        stats = {}
+        flags = {}
+        stats['uptime_secs'] = self.uptime()
+        stats['period_fpga_clks'] = self.period()
+        stats['ext_count'] = self.count_ext()
+        stats['int_count'] = self.count_int()
+        return stats, flags
 
     def initialize(self, read_only=False):
         """

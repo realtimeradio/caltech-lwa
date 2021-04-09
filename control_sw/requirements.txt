@@ -2,3 +2,4 @@ pdoc3
 numpy
 matplotlib
 python3-tk
+termcolor

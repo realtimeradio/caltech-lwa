@@ -54,9 +54,9 @@ class Eq(Block):
         """
         coeff_reg = 'core%d_coeffs' % (stream // 16)
         stream_sub_index = stream % 16
-        coeffs_str = self.read(coeffs_reg, self._stream_size, offset= self._stream_size * stream_sub_index)
+        coeffs_str = self.read(coeff_reg, self._stream_size, offset= self._stream_size * stream_sub_index)
         coeffs = np.array(struct.unpack('>%d%s' % (self.n_coeffs, self._FORMAT), coeffs_str))
-        return coeffs / (2.**self._BP)
+        return coeffs, self._BP
 
     def clip_count(self):
         """
@@ -67,8 +67,17 @@ class Eq(Block):
             clip_cnt += self.read_uint('core%d_clip_cnt' % i)
         return clip_cnt
 
-    def print_status(self):
-        self._info('Number of times inputs got clipped: %d'%self.clip_count())
+    def get_status(self):
+        stats = {}
+        flags = {}
+        stats['clip_count'] = self.clip_count()
+        for stream in range(self.n_streams):
+            coeffs, bp = self.get_coeffs(stream)
+            stats['coefficients%.2d' % stream] = coeffs.tolist()
+            assert bp == self._BP, "Software hardcoded for all coefficient BPs the same"
+        stats['binary_point'] = self._BP
+        stats['coefficient_width'] = self._WIDTH
+        return stats, flags
 
     def initialize(self, read_only=False):
         """

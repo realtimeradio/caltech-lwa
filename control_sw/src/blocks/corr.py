@@ -3,6 +3,7 @@ import struct
 import numpy as np
 
 from .block import Block
+from lwa_f.error_levels import *
 
 class Corr(Block):
     def __init__(self, host, name, acc_len=1024, logger=None, n_chans=1024):
@@ -100,6 +101,13 @@ class Corr(Block):
         self.acc_len = acc_len
         acc_len = self.n_chans*acc_len  # Convert from spectra to FPGA clocks
         self.write_int('acc_len',acc_len)
+
+    def get_status(self):
+        stats = {
+            'acc_len': self.get_acc_len(),
+        }
+        flags = {}
+        return stats, flags
 
     def initialize(self, read_only=False):
         if read_only:

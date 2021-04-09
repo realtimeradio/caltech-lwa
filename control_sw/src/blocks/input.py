@@ -2,11 +2,16 @@ import struct
 import time
 import numpy as np
 from .block import Block
+from lwa_f.error_levels import *
 
 class Input(Block):
     _USE_NOISE = 0
     _USE_ADC   = 1
     _USE_ZERO  = 2
+    _INT_TO_POS = {}
+    _INT_TO_POS[_USE_NOISE] = 'noise'
+    _INT_TO_POS[_USE_ADC]   = 'adc'
+    _INT_TO_POS[_USE_ZERO]  = 'zero'
     _SNAPSHOT_SAMPLES_PER_POL = 2048
 
     def __init__(self, host, name, n_streams=64, n_bits=10, logger=None):
@@ -43,6 +48,16 @@ class Input(Block):
             v = self.get_adc_snapshot(antenna)
             P += np.abs(np.fft.rfft(v))**2
         return P
+
+    def get_switch_positions(self):
+        pos = []
+        for regn in range(self.n_streams // 16):
+            reg_val = self.read_uint('source_sel%d' % regn)
+            for i in range(16):
+                v = (reg_val >> (2*i)) & 0b11
+                pos += [self._INT_TO_POS[v]]
+        return pos
+                
 
     def _switch(self, val, stream=None):
         """
@@ -92,12 +107,12 @@ class Input(Block):
         self._info("Stream %s: switching to Zeros" % stream)
         self._switch(self._USE_ZERO, stream)
 
-    def get_stats(self):
+    def get_bit_stats(self):
         """
         Get the mean, RMS, and powers of
         all ADCs
         Returns:
-            means, powers, rmss. Each is a numpy array with one entry per input. (Or 12 entries if sum_cores=False)
+            means, powers, rmss. Each is a numpy array with one entry per input.
         """
         self.write_int('rms_enable', 1)
         time.sleep(0.01)
@@ -119,10 +134,23 @@ class Input(Block):
             self.use_adc()
             self.write_int('rms_enable', 1)
 
-    def print_status(self):
-        mean, power, rms = self.get_stats()
+    def get_status(self):
+        stats = {}
+        flags = {}
+        switch_positions = self.get_switch_positions()
+        mean, power, rms = self.get_bit_stats()
         for i in range(self.n_streams):
-            self._info("stream %d : power %.3f, mean %.3f, rms %.3f" % (i, power[i], mean[i], rms[i]))
+            stats['switch_position%.2d' % i] = switch_positions[i]
+            if switch_positions[i] != 'adc':
+                flags['switch_position%.2d' % i] = FENG_NOTIFY
+            stats['power%.2d' % i] = power[i]
+            stats['rms%.2d' % i]   = rms[i]
+            stats['mean%.2d' % i]  = mean[i]
+            if rms[i] > 30 or rms[i] < 5:
+                flags['rms%.2d' % i] = FENG_WARNING
+            if np.abs(mean[i]) > 2:
+                flags['mean%.2d' % i] = FENG_WARNING
+        return stats, flags
 
     def _set_histogram_input(self, i):
         """

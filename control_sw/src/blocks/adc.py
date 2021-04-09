@@ -7,6 +7,7 @@ import progressbar
 import casperfpga
 from casperfpga import ads5296
 from lwa_f import helpers
+from lwa_f.error_levels import *
 from .block import Block
 
 TAP_STEP_SIZE = 4
@@ -33,16 +34,23 @@ class Adc(Block):
         # Check which ADCs are connected. Only if no ADC chips on an FMC board
         # respond do we ignore a port
         self.adcs = []
+        self._connect_to_adcs()
+
+    def _connect_to_adcs(self):
         for fmc in range(NFMCS):
             adc = ads5296.ADS5296fw(self.host, fmc)
-            connected_chips = adc.is_connected()
+            try:
+                connected_chips = adc.is_connected()
+            except:
+                self._error("Failed to check ADC control register on fmc %d" % fmc)
+                continue
             if np.any(connected_chips):
-                self.logger.info("Detected FMC ADC board on port %d" % fmc)
+                self._info("Detected FMC ADC board on port %d" % fmc)
                 if not np.all(connected_chips):
-                    self.logger.warning("Not all chips responded on port %d" % fmc)
+                    self._warning("Not all chips responded on port %d" % fmc)
                 self.adcs += [adc]
             else:
-                self.logger.warning("Did not detect FMC ADC board on port %d" % fmc)
+                self._warning("Did not detect FMC ADC board on port %d" % fmc)
 
     def initialize(self, read_only=False, clocksource=1):
         """
@@ -51,9 +59,18 @@ class Adc(Block):
         """
         if read_only:
             return
+        # If we haven't yet connected to any ADCs, retry (maybe the board
+        # has been programmed since the last attempt)
+        if len(self.adcs) == 0:
+            self._info("Retrying ADC connections")
+            self._connect_to_adcs()
+        # If there are still no ADCs, give up
+        if len(self.adcs) == 0:
+            self._error("No ADCs found! Giving up intialization")
+            return
         for adc in self.adcs:
             for board in range(NBOARDS):
-                self.logger.info("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, clocksource))
+                self._info("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, clocksource))
                 adc.reset_mmcm_assert(board)
                 adc.set_clock_source(clocksource, board)
                 adc.reset_mmcm_deassert(board)
@@ -99,15 +116,15 @@ class Adc(Block):
         for adc in self.adcs:
             for board in range(2):
                 this_board_locked = adc.mmcm_get_lock(board)
-                self.logger.info("FMC %d board %d clock rates: %s" % (adc.fmc, board, adc.read_clk_rates(board)))
+                self._info("FMC %d board %d clock rates: %s" % (adc.fmc, board, adc.read_clk_rates(board)))
                 if this_board_locked is None:
                     # This board has no MMCM (it uses another board's)
                     continue
                 mmcm_locked = mmcm_locked and this_board_locked
                 if this_board_locked:
-                    self.logger.info("FMC %d board %d: MMCM locked" % (adc.fmc, board))
+                    self._info("FMC %d board %d: MMCM locked" % (adc.fmc, board))
                 else:
-                    self.logger.warning("FMC %d board %d: MMCM *NOT* locked" % (adc.fmc, board))
+                    self._warning("FMC %d board %d: MMCM *NOT* locked" % (adc.fmc, board))
         return mmcm_locked
 
     def trigger_snapshot(self):
@@ -157,9 +174,9 @@ class Adc(Block):
             adc.disable_rst_data(range(8), cs)
             adc.enable_vtc_data(range(8), cs)
             adc.disable_vtc_data(range(8), cs)
-        self.logger.info("FMC %d Scanning data delays" % adc.fmc)
+        self._info("FMC %d Scanning data delays" % adc.fmc)
         for dn, delay in enumerate(progressbar.progressbar(range(0, NTAPS, step_size))):
-            self.logger.debug("FMC %d Scanning delay %d" % (adc.fmc, delay))
+            self._debug("FMC %d Scanning delay %d" % (adc.fmc, delay))
             for cs in range(8):
                 adc.load_delay_data(delay, range(8), cs)
             d[dn] = self.get_snapshot(adc.fmc)
@@ -217,7 +234,7 @@ class Adc(Block):
                 best_trial = slack[:,c,l].argmax()
                 best_delay[c,l] = best_trial * step_size
                 best_slack[c,l] = slack[best_trial,c,l] * step_size
-                self.logger.debug("Chip %d, Lane %d: Best delay: %d (slack %d)" % (c, l, best_delay[c,l], best_slack[c,l]))
+                self._debug("Chip %d, Lane %d: Best delay: %d (slack %d)" % (c, l, best_delay[c,l], best_slack[c,l]))
         return best_delay, best_slack
     
     def set_delays(self, a, delays, step_size=TAP_STEP_SIZE):
@@ -246,7 +263,7 @@ class Adc(Block):
                             msg += "%s" % char[int(errs[s, c, l] != 0)]
                     else: 
                         msg += "%s" % char[int(errs[s, c, l] != 0)]
-                self.logger.debug(msg)
+                self._debug(msg)
     
     def _init(self):
         for adc in self.adcs:
@@ -271,8 +288,8 @@ class Adc(Block):
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
             errs = self._get_errs_by_delay(adc, test_val=TEST_VAL)
             best, slack = self._get_best_delays(errs)
-            self.logger.info("FMC %d data lane delays:\n%s" % (adc.fmc, best))
-            self.logger.info("FMC %d data lane slacks:\n%s" % (adc.fmc, slack))
+            self._info("FMC %d data lane delays:\n%s" % (adc.fmc, best))
+            self._info("FMC %d data lane slacks:\n%s" % (adc.fmc, slack))
             if np.any(slack < 20):
                 self.warning("Delay solutions have small slack")
             self.print_sweep(errs, best_delays=best)
@@ -284,7 +301,7 @@ class Adc(Block):
             errs = np.array(self._get_errs(adc, use_ramp=use_ramp, test_val=TEST_VAL))
             adc_ok = (errs.sum() == 0)
             if not adc_ok:
-                self.logger.error("FMC %d: Data calibration Failure!" % adc.fmc)
+                self._error("FMC %d: Data calibration Failure!" % adc.fmc)
                 ok = False
         return ok
 

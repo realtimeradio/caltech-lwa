@@ -1,6 +1,7 @@
 import numpy as np
 import struct
 from .block import Block
+from lwa_f.error_levels import *
 
 class EqTvg(Block):
     _FORMAT = 'B'
@@ -15,6 +16,9 @@ class EqTvg(Block):
 
     def tvg_disable(self):
         self.write_int('tvg_en', 0)
+
+    def tvg_is_enabled(self):
+        return bool(self.read_int('tvg_en'))
     
     def write_stream_tvg(self, stream, test_vector):
         """
@@ -70,6 +74,14 @@ class EqTvg(Block):
         s = self.read(core_name, self._stream_size, offset=sub_index*self._stream_size)
         tvg = np.fromstring(s, dtype='>%s' %self._FORMAT)
         return tvg
+
+    def get_stats(self):
+        stats = {}
+        flags = {}
+        stats['tvg_enabled'] = self.tvg_is_enabled()
+        if stats['tvg_enabled']:
+            flags['tvg_enabled'] = FENG_NOTIFY
+        return stats, flags
 
     def initialize(self, read_only=False):
         if read_only:

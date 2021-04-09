@@ -3,6 +3,7 @@ import struct
 import numpy as np
 
 from .block import Block
+from lwa_f.error_levels import *
 
 class AutoCorr(Block):
     def __init__(self, host, name,
@@ -142,6 +143,13 @@ class AutoCorr(Block):
         assert isinstance(acc_len, int), "Cannot set accumulation length to type %r" % type(acc_len)
         self._acc_len = acc_len
         self.write_int('acc_len',acc_len)
+
+    def get_status(self):
+        stats = {
+            'acc_len': self.get_acc_len(),
+        }
+        flags = {}
+        return stats, flags
 
     def initialize(self, read_only=False):
         if read_only:

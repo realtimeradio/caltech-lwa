@@ -1,4 +1,5 @@
 from .block import Block
+from lwa_f.error_levels import *
 
 class Delay(Block):
     MIN_DELAY = 5 # minimum delay allowed
@@ -74,6 +75,10 @@ class Delay(Block):
             for i in range(self.n_streams):
                 self.set_delay(i, self.MIN_DELAY)
 
-    def print_status(self):
+    def get_status(self):
+        stats = {}
+        flags = {}
         for i in range(self.n_streams):
-            self._info('Stream %d delay: %d' % (i, self.get_delay(i)))
+            stats['delay%.2d' % i] = self.get_delay(i)
+        stats['max_delay'] = self.get_max_delay()
+        return stats, flags
