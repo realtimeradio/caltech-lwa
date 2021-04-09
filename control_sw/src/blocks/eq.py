@@ -76,7 +76,7 @@ class Eq(Block):
             stats['coefficients%.2d' % stream] = coeffs.tolist()
             assert bp == self._BP, "Software hardcoded for all coefficient BPs the same"
         stats['binary_point'] = self._BP
-        stats['coefficient_width'] = self._WIDTH
+        stats['width'] = self._WIDTH
         return stats, flags
 
     def initialize(self, read_only=False):
