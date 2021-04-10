@@ -61,6 +61,43 @@ class Snap2FengineEtcdControl():
         elif level == "warning":
             self.logger.setLevel(logging.WARNING)
 
+    def _format_command(self, sequence_id, timestamp, block, command, kwargs={}):
+        """
+        Format a command to be sent via ETCD
+
+        :param sequence_id: The ``sequence_id`` command field
+        :type block: int
+
+        :param timestamp: The ``timestamp`` command field
+        :type timestamp: float
+
+        :param block: The ``block`` command field
+        :type block: str
+
+        :param command: The ``command`` command field
+        :type command: str
+
+        :param kwargs: The ``kwargs`` command field
+        :type kwargs: dict
+
+        :return: JSON-encoded command string to be sent. Returns None if there
+            is an enoding error.
+        """
+        command_dict = {
+            "command": command,
+            "block": block,
+            "sequence_id": sequence_id,
+            "timestamp": timestamp,
+            "kwargs": kwargs,
+        }
+        try:
+            command_json = json.dumps(command_dict)
+            return command_json
+        except:
+            self.logger.exception("Failed to JSON-encode command")
+            return
+
+
     def send_command(self, host, block, command, kwargs={}, timeout=10.0):
         """
         Send a command to a SNAP2
@@ -87,17 +124,14 @@ class Snap2FengineEtcdControl():
         resp_key = ETCD_RESP_ROOT + "%s/response" % host
         timestamp = time.time()
         sequence_id = int(timestamp * 1e6)
-        command_dict = {
-            "command": command,
-            "block": block,
-            "sequence_id": sequence_id,
-            "timestamp": timestamp,
-            "kwargs": kwargs,
-        }
-        try:
-            command_json = json.dumps(command_dict)
-        except:
-            self.logger.exception("Failed to JSON-encode command")
+        command_json = self._format_command(
+                           sequence_id,
+                           timestamp,
+                           block,
+                           command,
+                           kwargs = kwargs,
+                       )
+        if command_json is None:
             return False
 
         self._response_received = False
@@ -127,10 +161,10 @@ class Snap2FengineEtcdControl():
         while(True):
             if self._response_received:
                 self.ec.cancel_watch(watch_id)
-                try:
-                    self._response['response'] = json.loads(self._response['response'])
-                except:
-                    self.logger.exception("Method response JSON decode error")
+                #try:
+                #    self._response['response'] = json.loads(self._response['response'])
+                #except:
+                #    self.logger.exception("Method response JSON decode error")
                 return self._response['response']
             if time.time() > starttime + timeout:
                 self.ec.cancel_watch(watch_id)
@@ -398,13 +432,14 @@ class Snap2FengineEtcdClient():
             try:
                 if isinstance(resp, np.ndarray):
                     resp = resp.tolist()
-                resp_str = json.dumps(resp)
+                # Check we will be able to encode the response
+                test_encode = json.dumps(resp)
             except:
                 self.logger.exception("Failed to encode JSON")
-                resp_str = "JSON_ERROR"
-            self._send_command_response(seq_id, ok, resp_str)
+                resp = "JSON_ERROR"
+            self._send_command_response(seq_id, ok, resp)
             self.logger.info("Responded to command '%s' (ID %d): OK? %s" % (command, seq_id, ok))
-            self.logger.debug("Responded to command '%s' (ID %d): %s" % (command, seq_id, resp_str))
+            self.logger.debug("Responded to command '%s' (ID %d): %s" % (command, seq_id, resp))
             return ok
 
     #def poll_stats(self):
