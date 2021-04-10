@@ -1,0 +1,17 @@
+Diagrams are stored in Libreoffice Draw .odg format.
+To modify, open in LibreOffice, export as pdf, and then crop with the
+`pdfcrop` utility.
+
+Currently, `pdfcrop` can be obtained with
+
+```
+apt install texlive-extra-utils
+```
+
+Crop with:
+
+```
+pdfcrop <file.pdf>
+```
+
+Which will generate the cropped output: <file-crop.pdf>
