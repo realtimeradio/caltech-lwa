@@ -63,21 +63,21 @@ class Snap2Fengine(block.Block):
         
         # The order here can be important, blocks are initialized in the
         # order they appear here
-        self.blocks = [
-            self.adc,
-            self.sync,
-            self.noise,
-            self.input,
-            self.delay,
-            self.pfb,
-            self.eq,
-            self.eq_tvg,
-            self.reorder,
-            self.packetizer,
-            self.eth,
-            self.autocorr,
-            self.corr,
-        ]
+        self.blocks = {
+            'adc'       : self.adc,
+            'sync'      : self.sync,
+            'noise'     : self.noise,
+            'input'     : self.input,
+            'delay'     : self.delay,
+            'pfb'       : self.pfb,
+            'eq'        : self.eq,
+            'eq_tvg'    : self.eq_tvg,
+            'reorder'   : self.reorder,
+            'packetizer': self.packetizer,
+            'eth'       : self.eth,
+            'autocorr'  : self.autocorr,
+            'corr'      : self.corr,
+        }
 
     def is_programmed(self):
         """
@@ -89,25 +89,25 @@ class Snap2Fengine(block.Block):
         return 'version_version' in self.listdev()
 
     def initialize(self, read_only=True):
-        for block in self.blocks:
+        for blockname, block in self.blocks.items():
             if read_only:
-                self._info("Initializing block (read only): %s" % block.name)
+                self._info("Initializing block (read only): %s" % blockname)
             else:
-                self._info("Initializing block (writable): %s" % block.name)
+                self._info("Initializing block (writable): %s" % blockname)
             block.initialize(read_only=read_only)
 
     def get_status_all(self):
         stats = {}
         stats['feng'] = self.get_status()
-        for block in self.blocks:
-            stats[block.name] = block.get_status()
+        for blockname, block in self.blocks.items():
+            stats[blockname] = block.get_status()
         return stats
 
     def print_status_all(self, use_color=True):
         print('Fengine stats:')
         self.print_status(use_color)
-        for block in self.blocks:
-            print('Block %s stats:' % block.name)
+        for blockname, block in self.blocks.items():
+            print('Block %s stats:' % blockname)
             block.print_status()
 
     def get_status(self):

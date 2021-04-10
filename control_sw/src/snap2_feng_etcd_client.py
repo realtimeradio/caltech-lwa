@@ -12,7 +12,7 @@ ETCD_CMD_ROOT = "/cmd/snap/"
 ETCD_MON_ROOT = "/mon/snap/"
 ETCD_RESP_ROOT = "/resp/snap/"
 
-class Snap2FengineEtcd():
+class Snap2FengineEtcdControl():
     """
     An ETCD interface to a SNAP2 F-engine
 
@@ -357,14 +357,14 @@ class Snap2FengineEtcdClient():
                     return False
                 cmd_method = getattr(block_obj, command)
             else:
-                # Only allow commands to reference blocks which are in the Fengine.blocks list
-                if not (hasattr(self.feng, block) and getattr(self.feng, block) in self.feng.blocks):
+                # Only allow commands to reference blocks which are in the Fengine.blocks dict
+                if not block in self.feng.blocks:
                     self.logger.error("Received block %s not allowed!" % block)
                     err = "Wrong block"
                     self._send_command_response(seq_id, False, err)
                     return False
                 else:
-                    block_obj = getattr(self.feng, block)
+                    block_obj = self.feng.blocks[block]
                 # Check command is valid
                 if command.startswith("_"):
                     self.logger.error("Received command starting with underscore!")
