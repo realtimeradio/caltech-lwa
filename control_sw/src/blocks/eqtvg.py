@@ -75,7 +75,7 @@ class EqTvg(Block):
         tvg = np.fromstring(s, dtype='>%s' %self._FORMAT)
         return tvg
 
-    def get_stats(self):
+    def get_status(self):
         stats = {}
         flags = {}
         stats['tvg_enabled'] = self.tvg_is_enabled()
