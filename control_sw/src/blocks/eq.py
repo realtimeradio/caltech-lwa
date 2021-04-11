@@ -4,7 +4,7 @@ from .block import Block
 
 class Eq(Block):
     """
-    Instantiate a control interface for a Correlation block.
+    Instantiate a control interface for an Equalization block.
 
     :param host: CasperFpga interface for host.
     :type host: casperfpga.CasperFpga
@@ -20,7 +20,7 @@ class Eq(Block):
 
     :param n_coeffs: Number of coefficients per input stream. Coefficients
         are shared among neighbouring frequency channels.
-    :type n_coedds: int
+    :type n_coeffs: int
 
     """
     _WIDTH = 16 #: Coefficient bit width

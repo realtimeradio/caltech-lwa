@@ -21,7 +21,7 @@ class AutoCorr(Block):
     :param acc_len: Accumulation length initialization value, in spectra.
     :type acc_len: int
 
-    :param n_chans: Number of frequency channel.
+    :param n_chans: Number of frequency channels.
     :type n_chans: int
 
     :param n_pols: Number of individual data streams.

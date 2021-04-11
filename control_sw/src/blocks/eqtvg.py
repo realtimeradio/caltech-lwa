@@ -4,6 +4,26 @@ from .block import Block
 from lwa_f.error_levels import *
 
 class EqTvg(Block):
+    """
+    Instantiate a control interface for a post-equalization test vector
+    generator block.
+
+    :param host: CasperFpga interface for host.
+    :type host: casperfpga.CasperFpga
+
+    :param name: Name of block in Simulink hierarchy.
+    :type name: str
+
+    :param logger: Logger instance to which log messages should be emitted.
+    :type logger: logging.Logger
+
+    :param n_streams: Number of independent streams which may be delayed
+    :type n_streams: int
+
+    :param n_chans: Number of frequency channels.
+    :type n_chans: int
+
+    """
     _FORMAT = 'B'
     def __init__(self, host, name, n_streams=64, n_chans=2**12, logger=None):
         super(EqTvg, self).__init__(host, name, logger)
@@ -12,24 +32,42 @@ class EqTvg(Block):
         self._stream_size = struct.calcsize(self._FORMAT)*self.n_chans
 
     def tvg_enable(self):
+        """
+        Enable the test vector generator.
+        """
         self.write_int('tvg_en', 1)
 
     def tvg_disable(self):
+        """
+        Disable the test vector generator
+        """
         self.write_int('tvg_en', 0)
 
     def tvg_is_enabled(self):
+        """
+        Query the current test vector generator state.
+
+        :return: True if the test vector generator is enabled, else False.
+        :rtype: bool
+
+        """
         return bool(self.read_int('tvg_en'))
     
     def write_stream_tvg(self, stream, test_vector):
         """
-        Write a test vector `tv` to stream number `stream`.
+        Write a test vector pattern to a single signal stream.
         
-        Parameters
-        ----------
-        stream : int
-            Index of stream to which test vectors should be loaded
-        test_vector : numpy.Array
-            Test vector array, with `self.n_chans` elements
+        :param stream: Index of stream to which test vectors should be loaded.
+        :type stream: int
+
+        :param test_vector: `self.n_chans`-element test vector. Values should
+            be representable in 8-bit unsigned integer format. Data are loaded
+            such that the most-significant 4 bits of the test_vectors are
+            interpretted as the 2's complement 4-bit real sample data.
+            The least-significant 4 bits of the test vectors are interpretted as
+            the 2's complement 4-bit imaginary sample data.
+        :type test_vector: list or numpy.ndarray
+
         """
         tv = np.array(test_vector, dtype='>%s'%self._FORMAT)
         assert (tv.shape[0] == self.n_chans), "Test vector should have self.n_chans elements!"
@@ -40,7 +78,7 @@ class EqTvg(Block):
     def write_const_per_stream(self):
         """
         Write a constant to all the channels of a stream,
-        with stream `i` taking the value `i`
+        with stream `i` taking the value `i`.
         """
         for stream in range(self.n_streams):
             self.write_stream_tvg(stream, np.ones(self.n_chans)*stream)
@@ -48,7 +86,8 @@ class EqTvg(Block):
     def write_freq_ramp(self):
         """
         Write a frequency ramp to the test vector 
-        that is repeated for all antennas. 
+        that is repeated for all ADC inputs. Data are wrapped to fit into
+        8 bits. I.e., the test vector value for channel 257 takes the value ``1``.
         """
         ramp = np.arange(self.n_chans)
         ramp = np.array(ramp, dtype='>%s' %self._FORMAT) # tvg values are only 8 bits
@@ -57,17 +96,15 @@ class EqTvg(Block):
 
     def read_stream_tvg(self, stream):
         """
-        Read the test vector loaded to stream number `stream`.
+        Read the test vector loaded to an ADC stream.
         
-        Parameters
-        ----------
-        stream : int
-            Index of stream from which test vectors should be read.
+        :param stream: Index of stream from which test vectors should be read.
+        :type stream: int
 
-        Returns
-        -------
-        tv : numpy.Array
-            Test vector array.
+        :return: Test vector array, as loaded to the FPGA in 8-bit unsigned
+            integer representation.
+        :rtype: numpy.ndarray
+
         """
         core_name = 'core%d_tv' % (stream // 16)
         sub_index = stream % 16
@@ -76,6 +113,20 @@ class EqTvg(Block):
         return tvg
 
     def get_status(self):
+        """
+        Get status and error flag dictionaries.
+
+        Status keys:
+
+            - tvg_enabled: Currently state of test vector generator. ``True`` if
+              the generator is enabled, else ``False``.
+
+        :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
+            status key-value pairs. flags_dict is
+            a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
+            held in this dictionary are as defined in `error_levels.py` and indicate
+            that values in the status dictionary are outside normal ranges.
+`       """
         stats = {}
         flags = {}
         stats['tvg_enabled'] = self.tvg_is_enabled()
@@ -84,6 +135,14 @@ class EqTvg(Block):
         return stats, flags
 
     def initialize(self, read_only=False):
+        """
+        Initialize the block.
+
+        :param read_only: If True, do nothing. If False, load frequency-ramp
+            test vectors, but disable the test vector generator.
+        :type read_only: bool
+
+        """
         if read_only:
             pass
         else:
