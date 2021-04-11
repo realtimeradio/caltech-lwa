@@ -187,11 +187,11 @@ class Adc(Block):
             another port.
         :type trigger: bool
 
-        :return: numpy array of captured data with dimensions
+        :return: Array of captured data with dimensions
             [ADC_CHIPS_PER_FMC, ADC_LANES, TIME_SAMPLES]. Data from ADC
             lanes representing the same analog input are _not_ interleaved.
             Data from ADC lanes n,n+1 are associated with the same analog input.
-        :rtype: numpy.ndarray
+        :rtype: numpy.array
         """
         out = np.zeros([8,8,NSAMPLES])
         if trigger:
@@ -267,7 +267,7 @@ class Adc(Block):
             [DELAY_TRIAL, ADC_CHIPS_PER_FMC_CARD, DATA_LANES_PER_ADC_CHIP].
             A delay trial of ``n`` indicates an IDELAY tap setting of
             ``n`` x ``step_size``
-        :rtype: numpy.ndarray
+        :rtype: list
         """
         for i in range(8):
             adc.enable_test_pattern('constant', i, val0=test_val)
@@ -290,7 +290,7 @@ class Adc(Block):
             for c in range(8):
                 for l in range(8):
                     errs[t,c,l] = np.count_nonzero(d[t,c,l,:] != test_val)
-        return errs
+        return errs.tolist()
     
     def _get_errs(self, adc, use_ramp=False, test_val=0b0000010101):
         """
@@ -313,7 +313,7 @@ class Adc(Block):
 
         :return: Array of number of errors detected per ADC chip and lane.
             Error array has dimensions [ADC_CHIPS_PER_FMC_CARD, DATA_LANES_PER_ADC_CHIP].
-        :rtype: numpy.ndarray
+        :rtype: list
         """
         for i in range(8):
             if use_ramp:
@@ -331,7 +331,7 @@ class Adc(Block):
                             errs[c,l] += 1
                 else:
                     errs[c,l] = np.count_nonzero(d[c,l,:] != test_val)
-        return errs
+        return errs.tolist()
         
     
     def _get_best_delays(self, errs, step_size=TAP_STEP_SIZE):
@@ -343,7 +343,7 @@ class Adc(Block):
         :param errs: Array of error counts with dimensions
             [DELAY_TRIALS, ADC_CHIPS, DATA_LANES_PER_ADC_CHIP] such as that
             returned by ``_get_errs_by_delay``.
-        :type errs: numpy.ndarray
+        :type errs: list
       
         :param step_size: Number of IDELAY tap steps between delay trials.
         :type step_size: int
@@ -353,8 +353,9 @@ class Adc(Block):
             the optimal delay setting for each ADC chip and data lane.
             ``best_slacks`` is the range of delay values around the optimal
             value chosen which exhibited no errors.
-        :rtype: (numpy.ndarray, numpy.ndarray)
+        :rtype: (list, list)
         """
+        errs = np.array(errs)
         nsteps, nchips, nlanes = errs.shape
         slack = np.zeros_like(errs)
         best_delay = np.zeros([nchips, nlanes], dtype=np.int32)
@@ -383,7 +384,7 @@ class Adc(Block):
                 best_delay[c,l] = best_trial * step_size
                 best_slack[c,l] = slack[best_trial,c,l] * step_size
                 self._debug("Chip %d, Lane %d: Best delay: %d (slack %d)" % (c, l, best_delay[c,l], best_slack[c,l]))
-        return best_delay, best_slack
+        return best_delay.tolist(), best_slack.tolist()
     
     def set_delays(self, adc, delays):
         """
@@ -395,8 +396,9 @@ class Adc(Block):
         :param delays: Array of delays to load, with shape
             [ADC_CHIPS, DATA_LANES_PER_ADC_CHIP], such as that returned
             by ``_get_best_delays``.
-        :type delays: numpy.ndarray
+        :type delays: list
         """
+        delays = np.array(delays)
         nchips, nlanes = delays.shape
         for cs in range(8):
             #adc.enable_rst_data(range(8), cs)
@@ -420,17 +422,20 @@ class Adc(Block):
         :param errs: Array of error counts with dimensions
             [DELAY_TRIALS, ADC_CHIPS, DATA_LANES_PER_ADC_CHIP] such as that
             returned by ``_get_errs_by_delay``.
-        :type errs: numpy.ndarray
+        :type errs: list
       
         :param best_delays: Array of best delays, with shape
             [ADC_CHIPS, DATA_LANES_PER_ADC_CHIP], such as that returned
             by ``_get_best_delays``. These delays are marked with an
             ASCII ``|``.
-        :type best_delays: numpy.ndarray
+        :type best_delays: list
 
         :param step_size: Number of IDELAY tap steps between delay trials.
         :type step_size: int
         """
+        errs = np.array(errs)
+        if best_delays is not None:
+            best_delays = np.array(best_delays)
         nsteps, nchips, nlanes = errs.shape
         char = ["-", "X"]
         for c in range(nchips):
