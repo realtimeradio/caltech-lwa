@@ -19,17 +19,20 @@ NFMCS = 2
 TRIG_REG = 'snapshot_trigger'
 
 class Adc(Block):
-    def __init__(self, host, name, logger=None, **kwargs):
-        """
-        Instantiate an ADC block.
-        
-        Inputs:
-           host (casperfpga.Casperfpga): Host FPGA
-           sample_rate (float): Sample rate in MS/s
-           num_chans (int): Number of channels per ADC chip. Valid values are 1, 2, or 4.
-           resolution (int): Bit resolution of the ADC. Valid values are 8, 12.
-           ref (float): Reference frequency (in MHz) from which ADC clock is derived. If None, an external sampling clock must be used.
-        """
+    """
+    Instantiate a control interface for an ADC block.
+
+    :param host: CasperFpga interface for host.
+    :type host: casperfpga.CasperFpga
+
+    :param name: Name of block in Simulink hierarchy.
+    :type name: str
+
+    :param logger: Logger instance to which log messages should be emitted.
+    :type logger: logging.Logger
+    """
+
+    def __init__(self, host, name, logger=None):
         super(Adc, self).__init__(host, name, logger)
         # Check which ADCs are connected. Only if no ADC chips on an FMC board
         # respond do we ignore a port
@@ -37,6 +40,15 @@ class Adc(Block):
         self._connect_to_adcs()
 
     def _connect_to_adcs(self):
+        """
+        Populate the self.adcs attribute.
+
+        Attempt to connect to ADCs on multiple FMC ports,
+        by reading the reset register on each of the ADC board's
+        ADS5296 chips. If any of the chips associated with an FMC
+        port responds, consider this FMC port populated with an ADC,
+        and add it to the self.adcs list.
+        """
         for fmc in range(NFMCS):
             adc = ads5296.ADS5296fw(self.host, fmc)
             try:
@@ -54,11 +66,23 @@ class Adc(Block):
 
     def initialize(self, read_only=False, clocksource=1):
         """
-        Initialize the configuration of the ADC chip.
-        Returns True if initialization was successful. False otherwise.
+        Initialize connected ADC boards.
+
+        :param read_only: If True, don't do anything which would affect a running
+            system. If False, train ADC->FPGA data links.
+        :type read_only: bool
+
+        :param clocksource: Which ADC board (0 or 1) on an FMC card should serve
+            as the source of the clocks. Note that while this parameter is set
+            for boards on all FMC cards, only the FMC card selected as the clock
+            source at Simulink compile-time will be used for clocking.
+        :type clocksource: int
+        
+        :return: True if initialization was successful. False otherwise.
         """
         if read_only:
             return
+        assert clocksource in [0,1]
         # If we haven't yet connected to any ADCs, retry (maybe the board
         # has been programmed since the last attempt)
         if len(self.adcs) == 0:
@@ -106,12 +130,21 @@ class Adc(Block):
             #self.calibrate()
         self.mmcm_is_locked()
         # Flush FIFOs
-        for i in range(10): self.reset()
-        for i in range(10): self.sync()
+        #for i in range(10): self.reset()
+        #for i in range(10): self.sync()
+        self.reset()
+        self.sync()
         self.calibrate()
         return True
 
     def mmcm_is_locked(self):
+        """
+        Read the ADC control register to determine if the clock PLLs are
+        locked.
+
+        :return: True if the ADC clocks are locked. False otherwise.
+        :rtype: bool
+        """
         mmcm_locked = True
         for adc in self.adcs:
             for board in range(2):
@@ -127,14 +160,42 @@ class Adc(Block):
                     self._warning("FMC %d board %d: MMCM *NOT* locked" % (adc.fmc, board))
         return mmcm_locked
 
-    def trigger_snapshot(self):
+    def _trigger_snapshot(self):
+        """
+        Simultaneously trigger all ADC streams to record a snapshot of data.
+        """
         self.write_int(TRIG_REG, 0b0)          
         self.write_int(TRIG_REG, 0b1)
         self.write_int(TRIG_REG, 0b0)
 
-    def get_snapshot(self, fmc, signed=False):
+    def get_snapshot(self, fmc, signed=False, trigger=True):
+        """
+        Read a snapshot of data from all ADC channels on a single FMC card.
+        Return data without interleaving ADC cores.
+
+        :param fmc: Which FMC port (0 or 1) to read.
+        :type fmc: int
+
+        :param signed: If True, return data interpretted as signed 2's complement
+            integers. If False, return data as unsigned integers.
+        :type signed: bool
+
+        :param trigger: If True, trigger a new simultaneous capture of data from
+            all channels. If False, read existing data capture. Grabbing data
+            without a new trigger may be useful if you wish to read channels
+            from a second FMC port which were captured simultaneously with
+            another port.
+        :type trigger: bool
+
+        :return: numpy array of captured data with dimensions
+            [ADC_CHIPS_PER_FMC, ADC_LANES, TIME_SAMPLES]. Data from ADC
+            lanes representing the same analog input are _not_ interleaved.
+            Data from ADC lanes n,n+1 are associated with the same analog input.
+        :rtype: numpy.ndarray
+        """
         out = np.zeros([8,8,NSAMPLES])
-        self.trigger_snapshot()
+        if trigger:
+            self._trigger_snapshot()
         # Loop over chips
         for i in range(8):     
             x = self.host.read('ads5296_wb_ram%d_%d_%d' % (fmc, i // 4, i % 4), NSAMPLES*2*2*4)
@@ -149,9 +210,32 @@ class Adc(Block):
             out[out>511] -= 1024
         return np.array(out, dtype=np.int32)
     
-    def get_snapshot_interleaved(self, fmc, signed=False):
+    def get_snapshot_interleaved(self, fmc, signed=False, trigger=True):
+        """
+        Read a snapshot of data from all ADC channels on a single FMC card.
+        Return data with ADC cores interleaved.
+
+        :param fmc: Which FMC port (0 or 1) to read.
+        :type fmc: int
+
+        :param signed: If True, return data interpretted as signed 2's complement
+            integers. If False, return data as unsigned integers.
+        :type signed: bool
+
+        :param trigger: If True, trigger a new simultaneous capture of data from
+            all channels. If False, read existing data capture. Grabbing data
+            without a new trigger may be useful if you wish to read channels
+            from a second FMC port which were captured simultaneously with
+            another port.
+        :type trigger: bool
+
+        :return: numpy array of captured data with dimensions
+            [ADC_CHANNELS_PER_FMC, TIME_SAMPLES].
+        :rtype: numpy.ndarray
+        """
         out = np.zeros([32,2*NSAMPLES])
-        self.trigger_snapshot()
+        if trigger:
+            self._trigger_snapshot()
         for i in range(8):     
             x = self.host.read('ads5296_wb_ram%d_%d_%d' % (fmc, i // 4, i % 4), NSAMPLES*2*2*4)
             d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
@@ -163,6 +247,28 @@ class Adc(Block):
         return np.array(out, dtype=np.int32)
     
     def _get_errs_by_delay(self, adc, step_size=TAP_STEP_SIZE, test_val=0b0000010101):
+        """
+        Get number of ADC link errors as a function of input delay tap setting.
+
+        :param adc: ADS5296 object associated with an FMC ADC interface.
+        :type adc: casperfpga.ads5296.AD5296
+
+        :param step_size: Number of IDELAY tap steps between error counts.
+        :type step_size: int
+
+        :param test_val: The test value the ADC should transmit to the FPGA.
+            In order for error detection and work framing to work correctly,
+            this should be a value containing both ones and zeros, which,
+            when repeated in a serial stream, has an unambiguous word start
+            position.
+        :type test_val: int
+
+        :return: Array of errors with dimensions
+            [DELAY_TRIAL, ADC_CHIPS_PER_FMC_CARD, DATA_LANES_PER_ADC_CHIP].
+            A delay trial of ``n`` indicates an IDELAY tap setting of
+            ``n`` x ``step_size``
+        :rtype: numpy.ndarray
+        """
         for i in range(8):
             adc.enable_test_pattern('constant', i, val0=test_val)
         NTAPS=512
@@ -187,6 +293,28 @@ class Adc(Block):
         return errs
     
     def _get_errs(self, adc, use_ramp=False, test_val=0b0000010101):
+        """
+        Put all ADCs on an FMC interface in test mode, and check a snapshot
+        of ADC data for transmission errors.
+
+        :param adc: ADS5296 object associated with an FMC ADC interface.
+        :type adc: casperfpga.ads5296.AD5296
+
+        :param use_ramp: If True, set the ADC into ramp test mode, in which
+            a counter is transmitted. If False, send the provided test value.
+        :type use_ramp: bool
+        
+        :param test_val: The test value the ADC should transmit to the FPGA.
+            In order for error detection and work framing to work correctly,
+            this should be a value containing both ones and zeros, which,
+            when repeated in a serial stream, has an unambiguous word start
+            position.
+        :type test_val: int
+
+        :return: Array of number of errors detected per ADC chip and lane.
+            Error array has dimensions [ADC_CHIPS_PER_FMC_CARD, DATA_LANES_PER_ADC_CHIP].
+        :rtype: numpy.ndarray
+        """
         for i in range(8):
             if use_ramp:
                 adc.enable_test_pattern('ramp', i)
@@ -207,6 +335,26 @@ class Adc(Block):
         
     
     def _get_best_delays(self, errs, step_size=TAP_STEP_SIZE):
+        """
+        Given an array of errors (per delay setting, per ADC chip, per data lane)
+        such as that provided by ``_get_errs_by_delay``, determine the optimal
+        IDELAY tap setting.
+
+        :param errs: Array of error counts with dimensions
+            [DELAY_TRIALS, ADC_CHIPS, DATA_LANES_PER_ADC_CHIP] such as that
+            returned by ``_get_errs_by_delay``.
+        :type errs: numpy.ndarray
+      
+        :param step_size: Number of IDELAY tap steps between delay trials.
+        :type step_size: int
+
+        :return: (best_delays, best_slacks) tuple. ``best_delays`` is an
+            array of shape [ADC_CHIPS, DATA_LANES_PER_ADC_CHIP] containing
+            the optimal delay setting for each ADC chip and data lane.
+            ``best_slacks`` is the range of delay values around the optimal
+            value chosen which exhibited no errors.
+        :rtype: (numpy.ndarray, numpy.ndarray)
+        """
         nsteps, nchips, nlanes = errs.shape
         slack = np.zeros_like(errs)
         best_delay = np.zeros([nchips, nlanes], dtype=np.int32)
@@ -237,19 +385,52 @@ class Adc(Block):
                 self._debug("Chip %d, Lane %d: Best delay: %d (slack %d)" % (c, l, best_delay[c,l], best_slack[c,l]))
         return best_delay, best_slack
     
-    def set_delays(self, a, delays, step_size=TAP_STEP_SIZE):
+    def set_delays(self, adc, delays):
+        """
+        Set IDELAY tap values for all ADC data lanes on an FMC port.
+
+        :param adc: ADS5296 object associated with an FMC ADC interface.
+        :type adc: casperfpga.ads5296.AD5296
+
+        :param delays: Array of delays to load, with shape
+            [ADC_CHIPS, DATA_LANES_PER_ADC_CHIP], such as that returned
+            by ``_get_best_delays``.
+        :type delays: numpy.ndarray
+        """
         nchips, nlanes = delays.shape
         for cs in range(8):
-            #a.enable_rst_data(range(8), cs)
-            a.disable_rst_data(range(8), cs)
-            a.disable_vtc_data(range(8), cs)
+            #adc.enable_rst_data(range(8), cs)
+            adc.disable_rst_data(range(8), cs)
+            adc.disable_vtc_data(range(8), cs)
         for c in range(nchips):
             for l in range(nlanes):
-                a.load_delay_data(delays[c,l], [l], c)
+                adc.load_delay_data(delays[c,l], [l], c)
         for cs in range(8):
-            a.enable_vtc_data(range(8), cs)
+            adc.enable_vtc_data(range(8), cs)
     
     def print_sweep(self, errs, best_delays=None, step_size=TAP_STEP_SIZE):
+        """
+        Print, using ASCII, the valid data capture eye as a function of delay
+        setting. Delays are printed such that one row represents a sweep
+        of delays for a single ADC data lane.
+        Each column in the row is ``X`` if data contained errors at this delay,
+        ``-`` if no errors were detected at this delay, and ``|``, if this
+        delay is considered the best setting in the sweep range.
+
+        :param errs: Array of error counts with dimensions
+            [DELAY_TRIALS, ADC_CHIPS, DATA_LANES_PER_ADC_CHIP] such as that
+            returned by ``_get_errs_by_delay``.
+        :type errs: numpy.ndarray
+      
+        :param best_delays: Array of best delays, with shape
+            [ADC_CHIPS, DATA_LANES_PER_ADC_CHIP], such as that returned
+            by ``_get_best_delays``. These delays are marked with an
+            ASCII ``|``.
+        :type best_delays: numpy.ndarray
+
+        :param step_size: Number of IDELAY tap steps between delay trials.
+        :type step_size: int
+        """
         nsteps, nchips, nlanes = errs.shape
         char = ["-", "X"]
         for c in range(nchips):
@@ -266,21 +447,47 @@ class Adc(Block):
                 self._debug(msg)
     
     def _init(self):
+    """
+    Reset and initialize all ADC chips, using the ADS5296.init
+    method.
+    """
         for adc in self.adcs:
             for i in range(8):
                 adc.init(i) # includes reset
     
     def _use_ramp(self):
+        """
+        Set all ADCs into the "ramp" test mode, in which ADC
+        samples are replaced with a 10-bit counter which
+        increments with each ADC clock.
+        """
         for adc in self.adcs:
             for i in range(8):
                 adc.enable_test_pattern('ramp', i)
     
     def _use_data(self):
+        """
+        Set all ADCs into normal operating mode, in which analog inputs
+        are digitized and transmitted.
+        """
         for adc in self.adcs:
             for i in range(8):
                 adc.enable_test_pattern('data', i)
 
     def calibrate(self, use_ramp=False):
+        """
+        Compute and set all ADC data lane input delays to their optimal values.
+        After this call, the ADCs are left in test mode.
+
+        :param use_ramp: If True, after calibration, use the ramp test
+            pattern to verify the ADC->FPGA link is functioning correctly.
+            If False, perform this verification with the same constant test
+            value used for the calibration procedure.
+        :type use_ramp: bool
+
+        :return: True if the calibration procedure succeeded. False otherwise.
+        :rtype: bool
+        """
         ok = True
         TEST_VAL = 0b0000010101
         for adc in self.adcs:
@@ -306,11 +513,17 @@ class Adc(Block):
         return ok
 
     def sync(self):
+        """
+        Toggle the ADC sync input.
+        """
         self.write_int('sync', 0)
         self.write_int('sync', 1)
         self.write_int('sync', 0)
     
     def reset(self):
+        """
+        Toggle the ADC reset input.
+        """
         self.write_int('rst', 0)
         self.write_int('rst', 1)
         self.write_int('rst', 0)
