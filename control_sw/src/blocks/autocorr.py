@@ -7,7 +7,7 @@ from lwa_f.error_levels import *
 
 class AutoCorr(Block):
     """
-    Instantiate a control interface for an ADC block.
+    Instantiate a control interface for an Auto-Correlation block.
 
     :param host: CasperFpga interface for host.
     :type host: casperfpga.CasperFpga
@@ -137,7 +137,6 @@ class AutoCorr(Block):
 
         :param db: If True, plot 10log10(power). Else, plot linear.
         :type db: bool
-
 
         :param show: If True, call matplotlib's `show` after plotting
         :type show: bool
