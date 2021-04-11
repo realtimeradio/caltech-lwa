@@ -16,6 +16,7 @@ class Delay(Block):
 
     :param n_streams: Number of independent streams which may be delayed
     :type n_streams: int
+
     """
     MIN_DELAY = 5 #: minimum delay allowed
     def __init__(self, host, name, n_streams=64, logger=None):
@@ -30,6 +31,7 @@ class Delay(Block):
 
         :return: Maximum supported delay, in ADC samples
         :rtype: int
+
         """
         self.max_delay = self.read_uint('max_delay')
         return self.max_delay
@@ -43,6 +45,7 @@ class Delay(Block):
 
         :param delay: Number of ADC clock cycles delay to load.
         :type delay: int
+
         """
         if delay < self.MIN_DELAY:
             self._warning("User requested delay of %d, but choosing %d because this is the minimum" % (delay, self.MIN_DELAY))
@@ -65,6 +68,7 @@ class Delay(Block):
 
         :return: Currently loaded delay, in ADC samples
         :rtype: int
+
         """
         if stream > self.n_streams:
             self._error('Tried to get delay for stream %d > n_streams (%d)' % (stream, self.n_streams))
@@ -76,7 +80,8 @@ class Delay(Block):
 
         :param read_only: If True, do nothing. If False, initialize all
             delays to the minimum allowed value.
-        :type read_onle: bool
+        :type read_only: bool
+
         """
         self.max_delay = self.get_max_delay()
         if not read_only:
@@ -98,7 +103,8 @@ class Delay(Block):
             a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
             held in this dictionary are as defined in `error_levels.py` and indicate
             that values in the status dictionary are outside normal ranges.
-`       """
+
+        """
         stats = {}
         flags = {}
         for i in range(self.n_streams):
