@@ -44,7 +44,7 @@ Top-Level Control
 Timing Control
 ++++++++++++++
 
-.. autoclass:: lwa_f.blocks.delay.Delay
+.. autoclass:: lwa_f.blocks.sync.Sync
   :no-show-inheritance:
   :members:
 
@@ -71,7 +71,7 @@ Noise Generator Control
 
 
 Delay Control
-+++++++++++++++++
++++++++++++++
 
 .. autoclass:: lwa_f.blocks.delay.Delay
   :no-show-inheritance:
@@ -79,7 +79,7 @@ Delay Control
 
 
 PFB Control
-+++++++++++++++++
++++++++++++
 
 .. autoclass:: lwa_f.blocks.pfb.Pfb
   :no-show-inheritance:
@@ -95,7 +95,7 @@ Auto-correlation Control
 
 
 Correlation Control
-+++++++++++++++++
++++++++++++++++++++
 
 .. autoclass:: lwa_f.snap2_fengine.Snap2Fengine
   :no-show-inheritance:
@@ -130,7 +130,7 @@ Packetization Control
   :members:
 
 Ethernet Output Control
-+++++++++++++++++++++++++
++++++++++++++++++++++++
 
 .. autoclass:: lwa_f.blocks.eth.Eth
   :no-show-inheritance:
