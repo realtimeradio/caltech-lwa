@@ -447,10 +447,10 @@ class Adc(Block):
                 self._debug(msg)
     
     def _init(self):
-    """
-    Reset and initialize all ADC chips, using the ADS5296.init
-    method.
-    """
+        """
+        Reset and initialize all ADC chips, using the ADS5296.init
+        method.
+        """
         for adc in self.adcs:
             for i in range(8):
                 adc.init(i) # includes reset
