@@ -65,7 +65,7 @@ Input Control
 Noise Generator Control
 +++++++++++++++++++++++
 
-.. autoclass:: lwa_f.blocks.noisegen.Noisegen
+.. autoclass:: lwa_f.blocks.noisegen.NoiseGen
   :no-show-inheritance:
   :members:
 
@@ -97,7 +97,7 @@ Auto-correlation Control
 Correlation Control
 +++++++++++++++++++
 
-.. autoclass:: lwa_f.snap2_fengine.Snap2Fengine
+.. autoclass:: lwa_f.blocks.corr.Corr
   :no-show-inheritance:
   :members:
 
@@ -118,7 +118,7 @@ Equalization Control
 Channel Selection Control
 +++++++++++++++++++++++++
 
-.. autoclass:: lwa_f.blocks.chanreorder.CahnReorder
+.. autoclass:: lwa_f.blocks.chanreorder.ChanReorder
   :no-show-inheritance:
   :members:
 
@@ -151,7 +151,7 @@ In order to use the ``etcd`` control interface, a daemon
 a server with network access to the SNAP2 hardware being controlled.
 
 Key Organization
-~~~~~~~~~~~~~~~~
+++++++++++++++++
 
 For an F-Engine running on a SNAP2 ``hostname``, there are three relevant
 ``etcd`` key paths.
@@ -192,7 +192,7 @@ and contain low data-volume status information. For example, FPGA temperature,
 ADC RMS, number of transmitted Ethernet packets, and similar.
 
 Command/Response Protocol
-~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++
 
 The Command/Response protocol is designed to be a simple interface to the
 underlying ``Snap2Fengine`` control class.
@@ -334,7 +334,7 @@ The response to the example command (assuming processing the command took
   +=================+=====================================+
   | ``sequence_id`` | ``1``                               |
   +-----------------+-------------------------------------+
-  | ``timestamp` `  | ``1618060712.8``                    |
+  | ``timestamp``   | ``1618060712.8``                    |
   +-----------------+-------------------------------------+
   | ``status``      | ``"normal"``                        |
   +-----------------+-------------------------------------+

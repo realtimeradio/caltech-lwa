@@ -155,7 +155,8 @@ class Corr(Block):
             a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
             held in this dictionary are as defined in `error_levels.py` and indicate
             that values in the status dictionary are outside normal ranges.
-`       """
+
+        """
         stats = {
             'acc_len': self.get_acc_len(),
         }

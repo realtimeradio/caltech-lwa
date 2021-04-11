@@ -33,7 +33,7 @@ Install Prerequisites
 ---------------------
 
 Firmware Requirements
-~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++
 
 The LWA-253 F-Engine firmware can be built with the CASPER toolflow, and was
 designed using the following software stack:
