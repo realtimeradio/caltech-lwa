@@ -23,8 +23,10 @@ class Fpga(Block):
         """
         Lazy check to see if a board is programmed.
         Check for the "version_version" register. If it exists, the board is deemed programmed.
-        Returns:
-            True if programmed, False otherwise
+        
+        :return: True if programmed, False otherwise.
+        :rtype: bool
+
         """
         return 'version_version' in self.listdev()
 

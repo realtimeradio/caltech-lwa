@@ -5,6 +5,24 @@ from .block import Block
 from lwa_f.error_levels import *
 
 class Input(Block):
+    """
+    Instantiate a control interface for an Input block.
+
+    :param host: CasperFpga interface for host.
+    :type host: casperfpga.CasperFpga
+
+    :param name: Name of block in Simulink hierarchy.
+    :type name: str
+
+    :param logger: Logger instance to which log messages should be emitted.
+    :type logger: logging.Logger
+
+    :param n_streams: Number of independent streams which may be delayed
+    :type n_streams: int
+
+    :param n_bits: Number of bits per ADC sample.
+    :type n_bits: int
+    """
     _USE_NOISE = 0
     _USE_ADC   = 1
     _USE_ZERO  = 2
@@ -15,41 +33,21 @@ class Input(Block):
     _SNAPSHOT_SAMPLES_PER_POL = 2048
 
     def __init__(self, host, name, n_streams=64, n_bits=10, logger=None):
-        """
-        Instantiate an input contol block.
-        
-        Parameters
-        ----------
-        host : CasperFpga
-            The CasperFpga instance running firmware with which
-            this block is associated.
-        name : The name of this block. This should match the
-            top-level Simulink block name.
-        logger : a Logger instance which this block should use
-            for output. If `None`, default log handlers (as
-            defined in the `helpers.py` library) will be used.
-        n_streams : int
-            Number of streams this block handles
-        n_bits : int
-            Number of bits per ADC sample
-        """
         super(Input, self).__init__(host, name, logger)
         self.n_streams = n_streams
         self.n_bits = n_bits
 
-    def get_power_spectra(self, stream, acc_len=1):
-        """
-        Perform a software FFT of samples from `antenna`.
-        Accumulate power from `acc_len` snapshots.
-        Returns power spectrum as numpy array
-        """
-        P = np.zeros(self._SNAPSHOT_SAMPLES_PER_POL // 2 + 1)
-        for i in range(acc_len):
-            v = self.get_adc_snapshot(antenna)
-            P += np.abs(np.fft.rfft(v))**2
-        return P
-
     def get_switch_positions(self):
+        """
+        Get the positions of the input switches.
+
+        :return: List of switch positions. Entry ``n`` contains the position
+            of the switch associated with ADC input ``n``. Switch positions
+            are "noise" (internal digital noise generators), "adc"
+            (digitized ADC stream), or "zero" (constant 0).
+        :rtype: list of str
+
+        """
         pos = []
         for regn in range(self.n_streams // 16):
             reg_val = self.read_uint('source_sel%d' % regn)
@@ -61,14 +59,14 @@ class Input(Block):
 
     def _switch(self, val, stream=None):
         """
-        Switch stream number `stream` to input ID `val`.
+        Set the switch position of a single input stream.
         
-        Parameters
-        ----------
-        val : int
-            mux index to switch to
-        stream : int
-            Which stream to switch. If None, switch all.
+        :param val: mux select value desired.
+        :type val: int
+
+        :param stream: Which stream to switch. If None, switch all.
+        :type stream: int or None
+
         """
         assert (val < 4), "Mux input value not recognized!"
         if stream is not None:
@@ -83,8 +81,10 @@ class Input(Block):
     def use_noise(self, stream=None):
         """
         Switch input to internal noise source.
-        Inputs:
-            stream (int): Which stream to switch. If None, switch all.
+
+        :param stream: Which stream to switch. If None, switch all.
+        :type stream: int or None
+
         """
         self._info("Stream %s: switching to Noise" % stream)
         self._switch(self._USE_NOISE, stream)
@@ -92,8 +92,10 @@ class Input(Block):
     def use_adc(self, stream=None):
         """
         Switch input to ADC.
-        Inputs:
-            stream (int): Which stream to switch. If None, switch all.
+
+        :param stream: Which stream to switch. If None, switch all.
+        :type stream: int or None
+
         """
         self.logger.info("Stream %s: switching to ADC" % stream)
         self._switch(self._USE_ADC, stream)
@@ -101,18 +103,22 @@ class Input(Block):
     def use_zero(self, stream=None):
         """
         Switch input to zeros.
-        Inputs:
-            stream (int): Which stream to switch. If None, switch all.
+
+        :param stream: Which stream to switch. If None, switch all.
+        :type stream: int or None
+
         """
         self._info("Stream %s: switching to Zeros" % stream)
         self._switch(self._USE_ZERO, stream)
 
     def get_bit_stats(self):
         """
-        Get the mean, RMS, and powers of
-        all ADCs
-        Returns:
-            means, powers, rmss. Each is a numpy array with one entry per input.
+        Get the mean, RMS, and mean powers of all ADC streams.
+
+        :return: (means, powers, rmss) tuple. Each member of the tuple is an
+            array with ``self.n_streams`` elements.
+        :rval: (numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
         """
         self.write_int('rms_enable', 1)
         time.sleep(0.01)
@@ -126,7 +132,12 @@ class Input(Block):
 
     def initialize(self, read_only=False):
         """
-        Switch to ADCs. Begin computing stats.
+        Initialize the block.
+
+        :param read_only: If True, do nothing. If False, set the input
+            multiplexers to ADC data and enable statistic computation.
+        :type read_only: bool
+
         """
         if read_only:
             pass

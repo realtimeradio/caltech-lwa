@@ -41,6 +41,13 @@ Top-Level Control
   :no-show-inheritance:
   :members:
 
+FPGA Control
+++++++++++++
+
+.. autoclass:: lwa_f.blocks.fpga.Fpga
+  :no-show-inheritance:
+  :members:
+
 Timing Control
 ++++++++++++++
 

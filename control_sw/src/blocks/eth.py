@@ -2,6 +2,18 @@ from .block import Block
 from lwa_f.error_levels import *
 
 class Eth(Block):
+    """
+    Instantiate a control interface for a 40 GbE block.
+
+    :param host: CasperFpga interface for host.
+    :type host: casperfpga.CasperFpga
+
+    :param name: Name of block in Simulink hierarchy.
+    :type name: str
+
+    :param logger: Logger instance to which log messages should be emitted.
+    :type logger: logging.Logger
+    """
     _CORE_NAME = 'forty_gbe'
     def __init__(self, host, name, logger=None):
         super(Eth, self).__init__(host, name, logger)
@@ -9,10 +21,13 @@ class Eth(Block):
     def set_arp_table(self, macs):
         """
         Set the ARP table with a list of MAC addresses.
-        The list, `macs`, is passed such that the zeroth
-        element is the MAC address of the device with
-        IP XXX.XXX.XXX.0, and element N is the MAC
-        address of the device with IP XXX.XXX.XXX.N
+
+        :param macs: MAC addresses to be loaded into the ARP table. These
+            should be the form of a list of integers, such that the ``n``th
+            list entry contains the MAC address of the device with IP
+            `XXX.XXX.XXX.n`.
+        :type macs: list of int
+
         """
         macs = list(macs)
         macs_pack = struct.pack('>%dQ' % (len(macs)), *macs)
@@ -21,6 +36,12 @@ class Eth(Block):
     def add_arp_entry(self, ip, mac):
         """
         Set a single arp entry.
+
+        :param ip: The last octet of the IP address matching the given MAC.
+        :type ip: int
+
+        :param mac: The MAC address to be loaded to the ARP cache.
+        :type mac: int
         """
         mac_pack = struct.pack('>Q', mac)
         ip_offset = ip % 256
@@ -48,11 +69,18 @@ class Eth(Block):
         return stats, flags
         
     def status_reset(self):
+        """
+        Reset all status counters.
+        """
         self.change_reg_bits('ctrl', 0, 18)
         self.change_reg_bits('ctrl', 1, 18)
         self.change_reg_bits('ctrl', 0, 18)
 
     def reset(self):
+        """
+        Disable, then reset the 40 GbE core. It must be enabled with
+        ``enable_tx`` before traffic will be transmitted.
+        """
         # stop traffic before reset
         self.disable_tx()
         # toggle reset
@@ -61,9 +89,15 @@ class Eth(Block):
         self.change_reg_bits('ctrl', 0, 0)
 
     def enable_tx(self):
+        """
+        Enable Ethernet transmission.
+        """
         self.change_reg_bits('ctrl', 1, 1)
 
     def disable_tx(self):
+        """
+        Disable Ethernet transmission.
+        """
         self.change_reg_bits('ctrl', 0, 1)
 
     def initialize(self, read_only=False):
