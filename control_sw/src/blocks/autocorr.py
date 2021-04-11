@@ -6,6 +6,39 @@ from .block import Block
 from lwa_f.error_levels import *
 
 class AutoCorr(Block):
+    """
+    Instantiate a control interface for an ADC block.
+
+    :param host: CasperFpga interface for host.
+    :type host: casperfpga.CasperFpga
+
+    :param name: Name of block in Simulink hierarchy.
+    :type name: str
+
+    :param logger: Logger instance to which log messages should be emitted.
+    :type logger: logging.Logger
+
+    :param acc_len: Accumulation length initialization value, in spectra.
+    :type acc_len: int
+
+    :param n_chans: Number of frequency channel.
+    :type n_chans: int
+
+    :param n_pols: Number of individual data streams.
+    :type n_pols: int
+
+    :param n_parallel_streams: Number of streams processed by the firmware
+        module in parallel.
+    :type n_parallel_streams: int
+
+    :param n_cores: Number of accumulation cores in firmware design.
+    :type n_cores: int
+
+    :param use_mux: If True, only one core is instantiated and a multiplexer
+        is used to switch different inputs into it. If False, multiple
+        cores are instantiated simultaneously in firmware.
+    :type use_mux: bool
+    """
     def __init__(self, host, name,
                  acc_len=2**15,
                  logger=None,
@@ -15,20 +48,6 @@ class AutoCorr(Block):
                  n_cores=4,
                  use_mux=True,
                 ):
-        """
-        Instantiate an correlation block, which allows correlation
-        of pairs of inputs to be computed.
-        
-        Inputs:
-            host (casperfpga.CasperFpga): Host FPGA object
-            name (string): Name (in simulink) of this block
-            acc_len (int): Number of spectra to accumulate
-            n_chans (int) : Number of frequency channels output
-            n_pols (int) : Number of polarizations processed
-            n_parallel_streams (int) : Number of parallel data channels processed
-            n_firmware_cores (int) : Number of firmware autocorr submodules
-            use_mux (bool) : If True, multiplex streams into a common core
-        """
         super(AutoCorr, self).__init__(host, name, logger)
         self.n_chans = n_chans
         self._acc_len = acc_len
@@ -39,7 +58,7 @@ class AutoCorr(Block):
    
     def _wait_for_acc(self):
         """
-        Wait for a new accumulation to complete.
+        Block until a new accumulation completes.
         """
         cnt = self.read_uint('acc_cnt')
         while self.read_uint('acc_cnt') < (cnt+1):
@@ -47,7 +66,10 @@ class AutoCorr(Block):
 
     def _set_mux(self, sel):
         """
-        Set the core input multiplexer to input `sel`
+        Set the core input multiplexer.
+
+        :param sel: Multiplexer select value.
+        :type sel: int
         """
         if not self._use_mux:
             return
@@ -58,9 +80,11 @@ class AutoCorr(Block):
 
     def _read_bram(self):
         """ 
-        Reads ram containing autocorrelation spectra for all polarizations.
-        Returns:
-            numpy array containing uint64 autocorrelation spectra
+        Read RAM containing autocorrelation spectra for all polarizations in a core.
+
+        :return: Array of autocorrelation data, in float32 format. Array
+            dimensions are [POLARIZATIONS, FREQUENCY CHANNEL].
+        :rtype: numpy.array
         """
         if self._use_mux:
             dout = np.zeros([self.n_pols // self._n_cores, self.n_chans], dtype=np.float32)
@@ -84,33 +108,44 @@ class AutoCorr(Block):
                         x[subpol*n_chans_per_stream:(subpol+1)*n_chans_per_stream]
         return dout
     
-    def get_new_spectra(self, core_block=0):
+    def get_new_spectra(self, core=0):
         """
-        Get a new accumulation.
-        Inputs:
-            core_block (int) : If using multiplexing, read input block ID `core_block`
-        Returns: numpy array of shape(n_pol, n_chans), containing
-                 autocorrelations with accumulation length divided out.
+        Get a new average power spectra.
 
+        :param core: If using multiplexing, read data for this core. If not
+            using multiplexing, read data from all cores.
+        :type core: int
+
+        :return: Float32 array of dimensions [POLARIZATION, FREQUENCY CHANNEL]
+            containing autocorrelations with accumulation length divided out.
+        :rtype: numpy.array
         """
         if self._use_mux:
-            self._set_mux(core_block)
+            self._set_mux(core)
         self._wait_for_acc()
         spec = self._read_bram() / float(self.get_acc_len())
         return spec
 
-    def plot_spectra(self, core_block=0, db=True, show=True):
+    def plot_spectra(self, core=0, db=True, show=True):
         """
-        Plot spectra of all polarizations, with accumulation length divided out
+        Plot the spectra of all polarizations in a single core,
+        with accumulation length divided out
         
-        Inputs:
-            core_block (int) : If using multiplexing, read input block ID `core_block`
-            db (bool): If True, plot 10log10(power). Else, plot linear
-            show (bool): If True, call matplotlib's `show` after plotting
-        Returns: matplotlib Figure
+        :param core: If using multiplexing, read data for this core. If not
+            using multiplexing, read data from all cores.
+        :type core: int
+
+        :param db: If True, plot 10log10(power). Else, plot linear.
+        :type db: bool
+
+
+        :param show: If True, call matplotlib's `show` after plotting
+        :type show: bool
+
+        :return: matplotlib.Figure
         """
         from matplotlib import pyplot as plt
-        specs = self.get_new_spectra(core_block)
+        specs = self.get_new_spectra(core)
         f, ax = plt.subplots(1,1)
         if db:
             ax.set_ylabel('Power [dB]')
@@ -119,7 +154,7 @@ class AutoCorr(Block):
             ax.set_ylabel('Power [linear]')
         ax.set_xlabel('Frequency Channel')
         if self._use_mux:
-            channel_offset = core_block * self.n_pols // self._n_cores
+            channel_offset = core * self.n_pols // self._n_cores
         else:
             channel_offset = 0
         for speci, spec in enumerate(specs):
@@ -131,20 +166,39 @@ class AutoCorr(Block):
 
     def get_acc_len(self):
         """
-        Get the currently loaded accumulation length. In spectra
+        Get the currently loaded accumulation length in units of spectra.
+
+        :return: Current accumulation length
+        :rtype: int
         """
         self._acc_len = self.read_int('acc_len')
         return self._acc_len
 
-    def set_acc_len(self,acc_len):
+    def set_acc_len(self, acc_len):
         """
-        Set the number of spectra to accumulate to `acc_len`
+        Set the number of spectra to accumulate.
+
+        :param acc_len: Number of spectra to accumulate
+        :type acc_len: int
         """
         assert isinstance(acc_len, int), "Cannot set accumulation length to type %r" % type(acc_len)
         self._acc_len = acc_len
         self.write_int('acc_len',acc_len)
 
     def get_status(self):
+        """
+        Get status and error flag dictionaries.
+
+        Status keys:
+
+            - acc_len : Currently loaded accumulation length
+
+        :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
+            status key-value pairs. flags_dict is
+            a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
+            held in this dictionary are as defined in `error_levels.py` and indicate
+            that values in the status dictionary are outside normal ranges.
+`       """
         stats = {
             'acc_len': self.get_acc_len(),
         }
@@ -152,6 +206,14 @@ class AutoCorr(Block):
         return stats, flags
 
     def initialize(self, read_only=False):
+        """
+        Initialize the block, setting (or reading) the accumulation length.
+
+        :param read_only: If False, set the accumulation length to the value provided
+            when this block was instantiated. If True, use whatever accumulation length
+            is currently loaded.
+        :type read_only: bool
+        """
         if read_only:
             self.get_acc_len()
         else:
