@@ -23,47 +23,34 @@ from .blocks import packetizer
 from .blocks import eth
 from .blocks import corr
 
-class Snap2Fengine(block.Block):
-    def __init__(self, host, ant_indices=None, logger=None):
+class Snap2Fengine():
+    def __init__(self, host, logger=None):
         self.hostname = host
-        self.fpga = casperfpga.CasperFpga(
+        self._cfpga = casperfpga.CasperFpga(
                         host=self.hostname,
                         transport=casperfpga.TapcpTransport,
                     )
 
-        # Top-level F-engine sees all registers
-        super(Snap2Fengine, self).__init__(self.fpga, None, logger)
-
-        # Try and get the canonical name of the host
-        # to use as a serial number
-        try:
-            self.serial = socket.gethostbyaddr(self.hostname)[0]
-        except:
-            self._exception("Couldn't get host by address %s" % self.hostname)
-            self.serial = None
-
         # blocks
-        self.sysmon      = casperfpga.sysmon.Sysmon(self.fpga)
-        self.adc         = adc.Adc(self.fpga, 'adc')
-        self.sync        = sync.Sync(self.fpga, 'sync')
-        self.noise       = noisegen.NoiseGen(self.fpga, 'noise', n_noise=3, n_outputs=64)
-        self.input       = input.Input(self.fpga, 'input', n_streams=64)
-        self.delay       = delay.Delay(self.fpga, 'delay', n_streams=64)
-        self.pfb         = pfb.Pfb(self.fpga, 'pfb')
-        self.autocorr    = autocorr.AutoCorr(self.fpga, 'autocorr')
-        self.eq          = eq.Eq(self.fpga, 'eq', n_streams=64, n_coeffs=2**9)
-        self.eq_tvg      = eqtvg.EqTvg(self.fpga, 'post_eq_tvg', n_streams=64, n_chans=2**12)
-        self.reorder     = chanreorder.ChanReorder(self.fpga, 'chan_reorder', n_chans=2**12)
-        self.packetizer  = packetizer.Packetizer(self.fpga, 'packetizer')
-        self.eth         = eth.Eth(self.fpga, 'eth')
-        self.corr        = corr.Corr(self.fpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
+        self.fpga        = fpga.Fpga(self._cfpga, "")
+        self.adc         = adc.Adc(self._cfpga, 'adc')
+        self.sync        = sync.Sync(self._cfpga, 'sync')
+        self.noise       = noisegen.NoiseGen(self._cfpga, 'noise', n_noise=3, n_outputs=64)
+        self.input       = input.Input(self._cfpga, 'input', n_streams=64)
+        self.delay       = delay.Delay(self._cfpga, 'delay', n_streams=64)
+        self.pfb         = pfb.Pfb(self._cfpga, 'pfb')
+        self.autocorr    = autocorr.AutoCorr(self._cfpga, 'autocorr')
+        self.eq          = eq.Eq(self._cfpga, 'eq', n_streams=64, n_coeffs=2**9)
+        self.eq_tvg      = eqtvg.EqTvg(self._cfpga, 'post_eq_tvg', n_streams=64, n_chans=2**12)
+        self.reorder     = chanreorder.ChanReorder(self._cfpga, 'chan_reorder', n_chans=2**12)
+        self.packetizer  = packetizer.Packetizer(self._cfpga, 'packetizer')
+        self.eth         = eth.Eth(self._cfpga, 'eth')
+        self.corr        = corr.Corr(self._cfpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
 
-        self.ants = [None] * 64 # An attribute to store the antenna names of this board's inputs
-        self.ant_indices = ant_indices or range(64) # An attribute to store the antenna numbers used in packet headers
-        
         # The order here can be important, blocks are initialized in the
         # order they appear here
         self.blocks = {
+            'fpga'      : self.fpga,
             'adc'       : self.adc,
             'sync'      : self.sync,
             'noise'     : self.noise,
@@ -79,26 +66,16 @@ class Snap2Fengine(block.Block):
             'corr'      : self.corr,
         }
 
-    def is_programmed(self):
-        """
-        Lazy check to see if a board is programmed.
-        Check for the "version_version" register. If it exists, the board is deemed programmed.
-        Returns:
-            True if programmed, False otherwise
-        """
-        return 'version_version' in self.listdev()
-
     def initialize(self, read_only=True):
         for blockname, block in self.blocks.items():
             if read_only:
-                self._info("Initializing block (read only): %s" % blockname)
+                self.logger.info("Initializing block (read only): %s" % blockname)
             else:
-                self._info("Initializing block (writable): %s" % blockname)
+                self.logger.info("Initializing block (writable): %s" % blockname)
             block.initialize(read_only=read_only)
 
     def get_status_all(self):
         stats = {}
-        stats['feng'] = self.get_status()
         for blockname, block in self.blocks.items():
             stats[blockname] = block.get_status()
         return stats
@@ -110,37 +87,7 @@ class Snap2Fengine(block.Block):
             print('Block %s stats:' % blockname)
             block.print_status()
 
-    def get_status(self):
-        """
-        Get FPGA stats.
-        returns: Dictionary of stats
-        """
-        stats = {}
-        flags = {}
-        stats['programmed'] = self.is_programmed()
-        meta = self.fpga.transport.get_metadata()
-        stats['flash_firmware'] = meta['filename']
-        stats['flash_firmware_md5'] = meta['md5sum']
-        stats['timestamp'] = datetime.datetime.now().isoformat()
-        stats['serial'] = self.serial
-        stats['host'] = self.host
-        stats['sw_version'] = __version__
-        try:
-            stats.update(self.sysmon.get_all_sensors())
-            stats['sys_mon'] = 'reporting'
-            flags['sys_mon'] = FENG_OK
-        except:
-            stats['sys_mon'] = 'not reporting'
-            flags['sys_mon'] = FENG_ERROR
-        if not stats['programmed']:
-            flags['programmed'] = FENG_WARNING
-        if stats['sw_version'].endswith('dirty'):
-            flags['sw_version'] = FENG_WARNING
-        if stats['serial'] is None:
-            flags['serial'] = FENG_WARNING
-        return stats, flags
-
-    def configure_output(self, n_chans_per_packet, chans, ips, ports=None, ants=None):
+    def configure_output(self, base_ant, n_chans_per_packet, chans, ips, ports=None, ants=None):
         """
         """
         chans = np.array(chans)
@@ -154,7 +101,7 @@ class Snap2Fengine(block.Block):
         packet_starts = packet_starts[0:n_packets]
         packet_payloads = packet_payloads[0:n_packets]
         channel_indices = channel_indices[0:n_packets]
-        ports = ports or [10000]*n_packetrs
+        ports = ports or [10000]*n_packets
         assert n_packets == len(packet_starts)
         assert len(ips) == n_packets
         assert len(ports) == n_packets
@@ -169,10 +116,7 @@ class Snap2Fengine(block.Block):
                 i += 1
         self.reorder.set_channel_order(output_order)
             
-        if ants is None:
-            ant_indices = [self.ant_indices[0]] * n_packets # Only the first antenna number goes in the header
-        else:
-            ant_indices = ants
+        ant_indices = [base_ant] * n_packets # Only the first antenna number goes in the header
 
         self.packetizer.write_config(
             packet_starts,
