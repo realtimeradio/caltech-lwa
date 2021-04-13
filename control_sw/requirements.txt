@@ -1,5 +1,6 @@
+setuptools
 pdoc3
 numpy
 matplotlib
-python3-tk
+#python3-tk
 termcolor
