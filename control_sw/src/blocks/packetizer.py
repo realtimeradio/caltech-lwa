@@ -12,9 +12,28 @@ class Packetizer(Block):
     incoming data stream.
     It is up to the user to configure this block such that it
     behaves in a reasonable manner -- i.e.
+
        - Output data rate does not overflow the downstream Ethernet core
        - Packets have a reasonable size
        - EOFs and headers are correctly placed.
+
+    :param host: CasperFpga interface for host.
+    :type host: casperfpga.CasperFpga
+
+    :param name: Name of block in Simulink hierarchy.
+    :type name: str
+
+    :param logger: Logger instance to which log messages should be emitted.
+    :type logger: logging.Logger
+
+    :param n_chans: Number of frequency channels in the correlation output.
+    :type n_chans: int
+
+    :param n_pols: Number of independent analog streams in the system
+    :type n_pols: int
+
+    :param sample_rate_mhz: ADC sample rate in MHz. Used for data rate checks.
+    :type sample_rate_mhz: float
     """
     sample_width = 1 # Sample width in bytes: 4+4bit complex = 1 Byte
     word_width = 32 # Granularity of packet size in Bytes
@@ -32,39 +51,38 @@ class Packetizer(Block):
 
     def get_packet_info(self, n_pkt_chans, occupation=0.95, chan_block_size=8):
         """
-        Get the packet boundaries for packets with payload sizes
-        `n_bytes`.
+        Get the packet boundaries for packets containing a given number of
+        frequency channels.
         
-        Parameters
-        ----------
-        n_pkt_chans : int
-            The number of channels per packet.
-        occupation : float
-            The maximum allowed throughput capacity of the underlying link.
+
+        :param n_pkt_chans: The number of channels per packet.
+        :type n_pkt_chans: int
+
+        :param occupation: The maximum allowed throughput capacity of the underlying link.
             The calculation does not include application or protocol overhead,
             so must necessarily be < 1.
-        chan_block_size : int
-            The granularity with which we can start packets. I.e., packets
-            must start on an n*`chan_block` boundary.
+        :type occupation: float
 
-        Returns
-        -------
-        packet_starts, packet_payloads, channel_indices
+        :param chan_block_size: The granularity with which we can start packets.
+            I.e., packets must start on an n*`chan_block` boundary.
+        :type chan_block_size: int
 
-        packet_starts : list of ints
-            The word indexes where packets start -- i.e., where headers should be
-            written.
-            For example, a value [0, 1024, 2048, ...] indicates that headers
-            should be written into underlying brams at addresses 0, 1024, etc.
-        packet_payloads : list of range()
-            The range of indices where this packet's payload falls. Eg:
-            [range(1,257), range(1025,1281), range(2049,2305), ... etc]
-            These indices should be marked valid, and the last given an EOF.
-        channel_indices : list of range()
-            The range of channel indices this packet will send. Eg:
-            [range(1,129), range(1025,1153), range(2049,2177), ... etc]
-            Channels to be sent should be re-indexed so that they fall into
-            these ranges.
+        :return: packet_starts, packet_payloads, channel_indices
+
+            ``packet_starts`` : list of ints
+                The word indexes where packets start -- i.e., where headers should be
+                written.
+                For example, a value [0, 1024, 2048, ...] indicates that headers
+                should be written into underlying brams at addresses 0, 1024, etc.
+            ``packet_payloads`` : list of range()
+                The range of indices where this packet's payload falls. Eg:
+                [range(1,257), range(1025,1281), range(2049,2305), ... etc]
+                These indices should be marked valid, and the last given an EOF.
+            ``channel_indices`` : list of range()
+                The range of channel indices this packet will send. Eg:
+                [range(1,129), range(1025,1153), range(2049,2177), ... etc]
+                Channels to be sent should be re-indexed so that they fall into
+                these ranges.
         """
         assert occupation < 1, "Link occupation must be < 1"
         pkt_size = n_pkt_chans * self.n_words_per_chan * self.word_width
@@ -129,24 +147,35 @@ class Packetizer(Block):
         """
         Write the packetizer configuration BRAMs with appropriate entries.
 
-        Parameters
-        ----------
-        packet_starts : list of ints
+        :param packet_starts:
             Word-indices which are the first entry of a packet and should
             be populated with headers (see `get_packet_info()`)
-        packet_payloads : list of range()s
+        :type packet_starts: list of int
+
+        :param packet_payloads:
             Word-indices which are data payloads, and should be mared as
             valid (see `get_packet_info()`)
-        channel_indices : list of ints
+        :type packet_payloads: list of range()s
+
+        :param channel_indices:
             Header entries for the channel field of each packet to be sent
-        ant_indices : list of ints
+        :type channel_indices: list of ints
+
+        :param ant_indices:
             Header entries for the antenna field of each packet to be sent
-        dest_ips : list of str
+        :type ant_indices: list of ints
+
+        :param dest_ips: list of str
             IP addresses for each packet to be sent.
-        dest_ports : list of int
+        :type dest_ips:
+
+        :param dest_ports:
             UDP destination ports for each packet to be sent.
-        print : bool
+        :type dest_ports: list of int
+
+        :param print:
             If True, print config for debugging
+        :type print: bool
 
         All parameters should have identical lengths.
         """
