@@ -95,6 +95,7 @@ class Delay(Block):
         Status keys:
 
             - delay<``n``>: Currently loaded delay for ADC input index ``n``.
+              in units of ADC samples.
             - max_delay: The maximum delay supported by the firmware.
             - min_delay: The minimum delay supported by the firmware.
 

@@ -148,7 +148,7 @@ class Corr(Block):
 
         Status keys:
 
-            - acc_len : Currently loaded accumulation length
+            - acc_len : Currently loaded accumulation length in number of spectra.
 
         :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
             status key-value pairs. flags_dict is

@@ -437,6 +437,17 @@ Monitoring Interface
 | feng/programmed               | bool       | True if the board appears to be running  |
 |                               |            | DSP firmware. False otherwise.           |
 +-------------------------------+------------+------------------------------------------+
+| feng/fw_version               | string     | The version string of the currently      |
+|                               |            | running firmware, presented as ``major_v |
+|                               |            | ersion.minor_version.revision.bugfix``.  |
+|                               |            | Only available if the FPGA is currently  |
+|                               |            | programmed                               |
++-------------------------------+------------+------------------------------------------+
+| feng/fw_build_time            | int        | The time, in seconds since 00:00:00 on 1 |
+|                               |            | January 1970, that the currently running |
+|                               |            | firmware was built. Only available if    |
+|                               |            | the FPGA is currently programmed         |
++-------------------------------+------------+------------------------------------------+
 | feng/serial                   | string     | A notional "serial number" of this       |
 |                               |            | hardware. Not yet implemented.           |
 +-------------------------------+------------+------------------------------------------+
