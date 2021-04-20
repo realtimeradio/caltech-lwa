@@ -176,6 +176,6 @@ class Fpga(Block):
         if 'temp' in stats:
             if stats['temp'] < 0 or stats['temp'] > 85:
                 flags['temp'] = FENG_WARNING
-            if stats['temp'] > 125
+            if stats['temp'] > 125:
                 flags['temp'] = FENG_ERROR
         return stats, flags
