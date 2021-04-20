@@ -4,3 +4,4 @@ numpy
 matplotlib
 #python3-tk
 termcolor
+progressbar
