@@ -545,8 +545,8 @@ if __name__ == "__main__":
        s.write_int('err_cnt_rst', 0)
 
     if args.check_errors:
-       t = time.ctime()
        while(True):
+           t = time.ctime()
            logger.info("Checking for errors at time: %s:" % t)
            for adcn, adc in enumerate(fmcs):
                for i in range(32):
