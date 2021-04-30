@@ -4,11 +4,13 @@ import numpy as np
 import struct
 import time
 import datetime
+import os
 import casperfpga
 from . import helpers
 from . import __version__
 from .error_levels import *
 from .blocks import block
+from .blocks import fpga
 from .blocks import adc
 from .blocks import sync
 from .blocks import noisegen
@@ -36,11 +38,28 @@ class Snap2Fengine():
     """
     def __init__(self, host, logger=None):
         self.hostname = host #: hostname of the F-Engine's host SNAP2 board
+        #: Python Logger instance
+        self.logger = logger or helpers.add_default_log_handlers(logging.getLogger(__name__ + ":%s" % (host)))
         #: Underlying CasperFpga control instance
         self._cfpga = casperfpga.CasperFpga(
                         host=self.hostname,
                         transport=casperfpga.TapcpTransport,
                     )
+        try:
+            self._cfpga.get_system_information()
+        except:
+            self.logger.error("Failed to read and decode .fpg header from flash")
+        self.blocks = {}
+        try:
+            self._initialize_blocks()
+        except:
+            self.logger.error("Failed to inialize firmware blocks. "
+                              "Maybe the board needs programming.")
+
+    def _initialize_blocks(self):
+        """
+        Initialize firmware blocks, populating the ``blocks`` attribute.
+        """
 
         # blocks
         #: Control interface to high-level FPGA functionality
@@ -206,3 +225,41 @@ class Snap2Fengine():
             ports,
             print_config=True
         )
+
+    def program(self, fpgfile, force=False):
+        """
+        Program an .fpg file to a SNAP2 FPGA. If the name of the file
+        matches what is already in flash, this command will simply
+        reboot the FPGA. If the name of the file doesn't match, the
+        new bitstream will be uploaded. This will take <=5 minutes.
+
+        :param fpgfile: The .fpg file to be loaded. Should be a path to a
+            valid .fpg file.
+        :type fpgfile: str
+
+        :param force: If True, write the firmware to flash even if the SNAP claims
+            it is already loaded.
+        :type force: boolean
+
+        """
+
+        if not isinstance(fpgfile, str):
+            raise TypeError("wrong type for fpgfile")
+        if not isinstance(force, bool):
+            raise TypeError("wrong type for force")
+
+        if not os.path.exists(fpgfile):
+            raise RuntimeError("Path %s doesn't exist" % fpgfile)
+
+        self.logger.info("Loading firmware %s to %s" % (fpgfile, self.hostname))
+
+        try:
+            self._cfpga.transport.upload_to_ram_and_program(fpgfile, force=force)
+        except:
+            self.logger.exception("Exception when loading new firmware")
+            raise RuntimeError("Error during load")
+        try:
+            self._initialize_blocks()
+        except:
+            self.logger.exception("Exception when reinitializing firmware blocks")
+            raise RuntimeError("Error reinitializing blocks")

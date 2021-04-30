@@ -194,17 +194,6 @@ class Snap2FengineEtcdClient():
     :type fpg_tmp_dir: str
     """
 
-    # Received commands are checked against this list,
-    # prior to trying to call a method of the same name.
-    allowed_commands = [
-      'program',
-      'set_delay',
-      'set_fft_shift',
-      'set_eq_coeffs',
-      'set_output_configuration',
-      'resync',
-    ]
-
     def __init__(self, fhost, etcdhost="localhost", logger=None):
         self.fhost = fhost
         if logger is None:
@@ -380,10 +369,8 @@ class Snap2FengineEtcdClient():
 
             # Deal with a couple of special cases
             if block == "feng":
-                if command in ["get_fpga_stats", "configure_output"]:
+                if command in ["program", "get_fpga_stats", "configure_output"]:
                     block_obj = self.feng
-                elif command in ["program"]:
-                    block_obj = self
                 else:
                     self.logger.error("Received command invalid!")
                     err = "Command invalid"
@@ -452,55 +439,55 @@ class Snap2FengineEtcdClient():
     def __del__(self):
         self.cancel_command_watch()
 
-    def program(self, fpgfile, force=False):
-        """
-        Program an .fpg file to a SNAP2 FPGA. If the name of the file
-        matches what is already in flash, this command will simply
-        reboot the FPGA. If the name of the file doesn't match, the
-        new bitstream will be uploaded. This will take <=5 minutes.
+    #def program(self, fpgfile, force=False):
+    #    """
+    #    Program an .fpg file to a SNAP2 FPGA. If the name of the file
+    #    matches what is already in flash, this command will simply
+    #    reboot the FPGA. If the name of the file doesn't match, the
+    #    new bitstream will be uploaded. This will take <=5 minutes.
 
-        :param fpgfile: The .fpg file to be loaded.
-        :type fpgfile: str
+    #    :param fpgfile: The .fpg file to be loaded.
+    #    :type fpgfile: str
 
-        :param force: If True, write the firmware to flash even if the SNAP claims
-            it is already loaded.
-        :type force: boolean
+    #    :param force: If True, write the firmware to flash even if the SNAP claims
+    #        it is already loaded.
+    #    :type force: boolean
 
-        """
+    #    """
 
-        if not isinstance(fpgfile, str):
-            return False, "wrong type for fpgfile"
-        if not isinstance(force, bool):
-            return False, "wrong type for force"
+    #    if not isinstance(fpgfile, str):
+    #        return False, "wrong type for fpgfile"
+    #    if not isinstance(force, bool):
+    #        return False, "wrong type for force"
 
-        if not os.path.exists(fpgfile):
-            return False, "Path %s doesn't exist" % fpgfile
+    #    if not os.path.exists(fpgfile):
+    #        return False, "Path %s doesn't exist" % fpgfile
 
-        self.logger.info("Loading firmware %s to %s" % (fpgfile, self.fhost))
-        # If no FENG is yet connected, try to connect to a raw CasperFpga
-        # and then program it
-        if self.feng is None:
-            self.logger.debug("Using raw CasperFpga because no FEngine exists")
-            try:
-                fpga = snap2_fengine.casperfpga.CasperFpga(
-                           self.fhost,
-                           transport = snap2_fengine.casperfpga.TapcpTransport,
-                       )
-            except:
-                self.logger.exception("Exception when connecting to board")
-                return False, "Error during connection"
-        else:
-            fpga = self.feng.fpga
+    #    self.logger.info("Loading firmware %s to %s" % (fpgfile, self.fhost))
+    #    # If no FENG is yet connected, try to connect to a raw CasperFpga
+    #    # and then program it
+    #    if self.feng is None:
+    #        self.logger.debug("Using raw CasperFpga because no FEngine exists")
+    #        try:
+    #            fpga = snap2_fengine.casperfpga.CasperFpga(
+    #                       self.fhost,
+    #                       transport = snap2_fengine.casperfpga.TapcpTransport,
+    #                   )
+    #        except:
+    #            self.logger.exception("Exception when connecting to board")
+    #            return False, "Error during connection"
+    #    else:
+    #        fpga = self.feng.fpga
 
-        try:
-            fpga.transport.upload_to_ram_and_program(fpgfile, force=force)
-        except:
-            self.logger.exception("Exception when loading new firmware")
-            return False, "Error during load"
-        try:
-            self.feng = snap2_fengine.Snap2Fengine(self.fhost)
-        except:
-            self.logger.exception("Exception when instantiating F-Engine after firmware load")
-            return False, "Error after load"
-        return True, "image loaded"
+    #    try:
+    #        fpga.transport.upload_to_ram_and_program(fpgfile, force=force)
+    #    except:
+    #        self.logger.exception("Exception when loading new firmware")
+    #        return False, "Error during load"
+    #    try:
+    #        self.feng = snap2_fengine.Snap2Fengine(self.fhost)
+    #    except:
+    #        self.logger.exception("Exception when instantiating F-Engine after firmware load")
+    #        return False, "Error after load"
+    #    return True, "image loaded"
 
