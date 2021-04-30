@@ -11,7 +11,7 @@ Register Descriptions
 
 
 .. list-table::
-    :widths: 10 10 10 70
+    :widths: 25 10 10 55
     :header-rows: 1
 
     * - Register Name
