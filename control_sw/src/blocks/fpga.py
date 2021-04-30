@@ -1,3 +1,6 @@
+import socket
+import datetime
+
 from .block import Block
 from lwa_f.error_levels import *
 from lwa_f import __version__
@@ -25,9 +28,9 @@ class Fpga(Block):
         # Try and get the canonical name of the host
         # to use as a serial number
         try:
-            self.serial = socket.gethostbyaddr(self.host.hostname)[0]
+            self.serial = socket.gethostbyaddr(self.host.host)[0]
         except:
-            self._exception("Couldn't get host by address %s" % self.hostname)
+            self._exception("Couldn't get host by address %s" % self.host)
             self.serial = None
 
         self.sysmon = casperfpga.sysmon.Sysmon(self.host)
@@ -140,9 +143,9 @@ class Fpga(Block):
         stats['flash_firmware_md5'] = meta['md5sum']
         stats['timestamp'] = datetime.datetime.now().isoformat()
         stats['serial'] = self.serial
-        stats['host'] = self.host
+        stats['host'] = self.host.host
         stats['sw_version'] = __version__
-        if stats['is_programmed']:
+        if stats['programmed']:
             stats['fw_version'] = self.get_firmware_version()
             stats['fw_build_time'] = self.get_build_time()
         try:
