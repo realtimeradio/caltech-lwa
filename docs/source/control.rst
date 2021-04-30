@@ -304,30 +304,33 @@ Every command sent elicits the writing of JSON-encoded dictionary to the
 response key.
 This dictionary has the following fields:
 
-+-------------+--------------------+-----------------------------------------+
-| Field       | Type               | Description                             |
-+=============+====================+=========================================+
-| sequence_id | integer            | An integer matching the ``sequence_id`` |
-|             |                    | field of the command string to which    |
-|             |                    | this is a response                      |
-+-------------+--------------------+-----------------------------------------+
-| timestamp   | float              | The UNIX time when this response was    |
-|             |                    | issued                                  |
-+-------------+--------------------+-----------------------------------------+
-| status      | string             | The string "normal" if the              |
-|             |                    | corresponding command was processed     |
-|             |                    | without error, or "error" if it was     |
-|             |                    | not.                                    |
-+-------------+--------------------+-----------------------------------------+
-| response    | command-dependent  | The response of the command method, as  |
-|             |                    | determined by the command API. If a     |
-|             |                    | method would usually return a numpy     |
-|             |                    | array, when using the ``etcd``          |
-|             |                    | interface the response will be a list.  |
-|             |                    | In the event that the status field is   |
-|             |                    | ``"error"``, The response field will    |
-|             |                    | contain an error message string         |
-+-------------+--------------------+-----------------------------------------+
+.. table::
+    :widths: 20 20 60
+
++------------------+--------------------+-----------------------------------------+
+| Field            | Type               | Description                             |
++==================+====================+=========================================+
+| sequence_id      | integer            | An integer matching the ``sequence_id`` |
+|                  |                    | field of the command string to which    |
+|                  |                    | this is a response                      |
++------------------+--------------------+-----------------------------------------+
+| timestamp        | float              | The UNIX time when this response was    |
+|                  |                    | issued                                  |
++------------------+--------------------+-----------------------------------------+
+| status           | string             | The string "normal" if the              |
+|                  |                    | corresponding command was processed     |
+|                  |                    | without error, or "error" if it was     |
+|                  |                    | not.                                    |
++------------------+--------------------+-----------------------------------------+
+| response         | command-dependent  | The response of the command method, as  |
+|                  |                    | determined by the command API. If a     |
+|                  |                    | method would usually return a numpy     |
+|                  |                    | array, when using the ``etcd``          |
+|                  |                    | interface the response will be a list.  |
+|                  |                    | In the event that the status field is   |
+|                  |                    | ``"error"``, The response field will    |
+|                  |                    | contain an error message string         |
++------------------+--------------------+-----------------------------------------+
 
 Not all ``Snap2Fengine`` methods return values, in whice case the response
 field is ``null``.
@@ -385,6 +388,9 @@ In the event that a command fails, more information is available in the
 
 Monitoring Interface
 ~~~~~~~~~~~~~~~~~~~~
+
+.. table::
+    :widths: 30 20 50
 
 +-------------------------------+------------+------------------------------------------+
 | autocorr/acc_len              | int        | Accumulation length, in spectra, of the  |
