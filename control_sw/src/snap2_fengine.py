@@ -131,13 +131,17 @@ class Snap2Fengine():
         """
         Call the ``get_status`` methods of all blocks in ``self.blocks``.
 
-        :return: The contents of the underlying ``get_status`` calls, in a
-            dictionary keyed by the names of the blocks in ``self.blocks``.
+        :return: (status_dict, flags_dict) tuple.
+            Each is a dictionary, keyed by the names of the blocks in
+            ``self.blocks``. These dictionaries contain, respectively, the
+            status and flags returned by the ``get_status`` calls of
+            each of this F-Engine's blocks.
         """
         stats = {}
+        flags = {}
         for blockname, block in self.blocks.items():
-            stats[blockname] = block.get_status()
-        return stats
+            stats[blockname], flags[blockname] = block.get_status()
+        return stats, flags
 
     def print_status_all(self, use_color=True):
         """

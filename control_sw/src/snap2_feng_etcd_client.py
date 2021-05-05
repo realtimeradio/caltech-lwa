@@ -85,10 +85,12 @@ class Snap2FengineEtcdControl():
         """
         command_dict = {
             "command": command,
-            "block": block,
-            "sequence_id": sequence_id,
-            "timestamp": timestamp,
-            "kwargs": kwargs,
+            "val": {
+                "block": block,
+                "timestamp": timestamp,
+                "kwargs": kwargs,
+                },
+            "id": sequence_id,
         }
         try:
             command_json = json.dumps(command_dict)
@@ -146,7 +148,7 @@ class Snap2FengineEtcdControl():
                     self.logger.exception("Response JSON decode error")
                     continue
                 self.logger.debug("Response: %s" % response_dict)
-                resp_id = response_dict.get("sequence_id", None)
+                resp_id = response_dict.get("id", None)
                 if resp_id == sequence_id:
                     self._response = response_dict
                     self._response_received = True
@@ -161,11 +163,10 @@ class Snap2FengineEtcdControl():
         while(True):
             if self._response_received:
                 self.ec.cancel_watch(watch_id)
-                #try:
-                #    self._response['response'] = json.loads(self._response['response'])
-                #except:
-                #    self.logger.exception("Method response JSON decode error")
-                return self._response['response']
+                status = self._response['val']['status']
+                if status != 'normal':
+                    self.logger.info("Command status returned: '%s'" % status)
+                return self._response['val']['response']
             if time.time() > starttime + timeout:
                 self.ec.cancel_watch(watch_id)
                 return None
@@ -180,9 +181,16 @@ class Snap2FengineEtcdClient():
         of target F-Engine
     :type host: string
 
+    :param fid: SNAP ID, used to associate a service with an
+        etcd key "/cmd/snap/<ID>".
+    :type fid: int
+
     :param etcdhost: Hostname (or IP, in dotted quad notation)
         of target etcd server.
     :type etcdhost: string
+
+    :param etcdport: Port on which etcd is served
+    :type etcdport: int
 
     :param logger: Python `logging.Logger` instance to which
         this class's log messages should be emitted. If None,
@@ -194,8 +202,9 @@ class Snap2FengineEtcdClient():
     :type fpg_tmp_dir: str
     """
 
-    def __init__(self, fhost, etcdhost="localhost", logger=None):
+    def __init__(self, fhost, fid, etcdhost="etcdv3service.sas.pvt", etcdport=2379, logger=None):
         self.fhost = fhost
+        self.fid = fid
         if logger is None:
             self.logger = logging.getLogger("Snap2FengineEtcdClient:%s" % self.fhost)
             stderr_handler = logging.StreamHandler(sys.stderr)
@@ -208,31 +217,20 @@ class Snap2FengineEtcdClient():
         except:
             self.logger.exception("Couldn't initialize F-Engine on host %s" % self.fhost)
             self.feng = None
-        self.ec = etcd3.Etcd3Client(etcdhost)
+        self.ec = etcd3.Etcd3Client(host=etcdhost, port=etcdport)
         try:
             val, meta = self.ec.get('foo')
         except:
             self.logger.exception("Failed to connect to Etcd server on host %s" % etcdhost)
             raise
-        self.cmd_key = ETCD_CMD_ROOT + "%s/command" % self.fhost
-        self.cmd_resp_key = ETCD_RESP_ROOT + "%s/response" % self.fhost
-        self.mon_root = ETCD_MON_ROOT + "%s/" % self.fhost
+        self.cmd_key = ETCD_CMD_ROOT + "%d" % self.fid
+        self.cmd_resp_key = ETCD_RESP_ROOT + "%d" % self.fid
+        self.mon_key = ETCD_MON_ROOT + "%d" % self.fid
         self.logger.debug("Command key is %s" % self.cmd_key)
         self.logger.debug("Command response key is %s" % self.cmd_resp_key)
         self.logger.debug("Monitor key root is %s" % self.mon_root)
-        self._etcd_watch_id = None
+        self._etcd_watch_ids = []
 
-    def _make_mkey(self, key):
-        """
-        Expand a keyname with the self.mon_root prefix.
-
-        :param key: Key name
-        :type key: string
-
-        :return: Input key, prefixed with self.mon_root
-        """
-        return self.mon_root + key
-    
     def set_log_level(self, level):
         """
         Set the logging level.
@@ -261,30 +259,38 @@ class Snap2FengineEtcdClient():
 
     def start_command_watch(self):
         """
-        Listen for commands on this F-Engines command key.
+        Listen for commands on this F-Engine's command key, as well as the
+        "all SNAPs" key.
         Stop listening with `cancel_command_watch()`
 
-        Internally, this method sets the `_etcd_watch_id` attribute to
+        Internally, this method sets the `_etcd_watch_ids` attribute to
         allow a watch to later be cancelled.
         """
         self.logger.info("Beginning command watch on key %s" % self.cmd_key)
-        self._etcd_watch_id = self.ec.add_watch_prefix_callback(
+        self._etcd_watch_ids += [self.ec.add_watch_prefix_callback(
                                   self.cmd_key,
                                   self._etcd_callback,
-                              )
+                                 )]
+        # Also watch on the "all SNAPs" key
+        self._etcd_watch_ids += [self.ec.add_watch_prefix_callback(
+                                  ETCD_CMD_ROOT + "/0",
+                                  self._etcd_callback,
+                                )]
 
     def cancel_command_watch(self):
         """
-        Stop listening for commands on this F-Engine's command key.
+        Stop listening for commands on this F-Engine's command key, as well
+        as the "all SNAPs" key.
 
-        Internally, this method sets the `_etcd_watch_id` attribute to `None`.
+        Internally, this method sets the `_etcd_watch_ids` attribute to `[]`.
         """
-        if self._etcd_watch_id is None:
+        if self._etcd_watch_ids == []:
             self.logger.info("Trying to stop a non-existent command watch")
         else:
             self.logger.info("Stopping command watch")
-            self.ec.cancel_watch(self._etcd_watch_id)
-            self._etcd_watch_id = None
+            for watch_id in self._etcd_watch_ids:
+                self.ec.cancel_watch(watch_id)
+            self._etcd_watch_ids = []
 
     def _send_command_response(self, seq_id, processed_ok, response):
         """
@@ -307,10 +313,12 @@ class Snap2FengineEtcdClient():
         else:
             status = 'error'
         resp = {
-            'sequence_id': seq_id,
-            'status': status,
-            'response': response,
-            'timestamp': time.time(),
+            'id': seq_id,
+            'val': {
+                'status': status,
+                'response': response,
+                'timestamp': time.time(),
+            }
         }
         resp_json = json.dumps(resp)
         try:
@@ -344,7 +352,15 @@ class Snap2FengineEtcdClient():
                 self._send_command_response(-1, False, err)
                 return False
             self.logger.debug("Decoded command: %s" % command_dict)
-            seq_id = command_dict.get("sequence_id", -1)
+
+            for field in ["id", "cmd", "val"]:
+                if not field in command_dict:
+                    err = "No '%s' field in message" % field
+                    self.logger.error(err)
+                    self._send_command_response(-1, False, err)
+                    return False
+
+            seq_id = command_dict.get("id", -1)
             if not isinstance(seq_id, int):
                 err = "Sequence ID not integer"
                 self.logger.error(err)
@@ -353,14 +369,17 @@ class Snap2FengineEtcdClient():
             if seq_id < 0:
                 self.warning("Sequence ID %d is suspicious" % seq_id)
 
-            block = command_dict.get("block", None)
+            try:
+                block = command_dict["val"].get("block", None)
+            except:
+                block = None
             if block is None:
-                self.logger.error("Received block string with no 'block' key!")
+                self.logger.error("Received val string with no 'block' key!")
                 err = "Bad command format"
                 self._send_command_response(seq_id, False, err)
                 return False
 
-            command = command_dict.get("command", None)
+            command = command_dict.get("cmd", None)
             if command is None:
                 self.logger.error("Received command string with no 'command' key!")
                 err = "Bad command format"
@@ -429,12 +448,36 @@ class Snap2FengineEtcdClient():
             self.logger.debug("Responded to command '%s' (ID %d): %s" % (command, seq_id, resp))
             return ok
 
-    #def poll_stats(self):
-    #    """
-    #    Poll all statistics and push to etcd.
-    #    """
-    #    if self.feng is None:
-    #        self.logger.warning("F-Engine not initialized. Skipping polling")
+    def poll_stats(self):
+        """
+        Poll all statistics and push to etcd.
+
+        """
+        if self.feng is None:
+            self.logger.warning("F-Engine not initialized. Skipping polling")
+            time.sleep(10)
+        try:
+            stats, flags = self.feng.get_status_all()
+            etcd_dict = {
+                    "stats": stats,
+                    "flags": flags,
+                    "timestamp": time.time()
+                    }
+            self.ec.put(self.mon_key, etcd_dict)
+        except:
+            self.logger.exception("Stat polling failed!")
+
+    def start_poll_stats_loop(self, pollsecs=10):
+        """
+        Start a loop, calling ``poll_stats`` every ``pollsecs`` seconds.
+
+        :param pollsecs: Number of seconds between poll loops.
+        :type pollsecs: float
+
+        """
+        while(True):
+            self.poll_stats(pollsecs)
+            time.sleep(pollsecs)
 
     def __del__(self):
         self.cancel_command_watch()
