@@ -428,145 +428,147 @@ The monitor key contains a nested dictionary with the following keys:
 
 Entries in the ``stats`` dictionary are shown below
 
-+-----------------+------------------------+--------+------------------------------------+
-| Dictionary Key  | Dictionary sub-key     | type   | Description                        |
-+=================+========================+========+====================================+
-| autocorr        | acc_len                | int    | Accumulation length, in spectra,   |
-|                 |                        |        | of the internal autocorrelation    |
-|                 |                        |        | module.                            |
-+-----------------+------------------------+--------+------------------------------------+
-| corr            | acc_len                | int    | Accumulation length, in spectra,   |
-|                 |                        |        | of the internal correlation        |
-|                 |                        |        | module.                            |
-+-----------------+------------------------+--------+------------------------------------+
-| delay           | delay``n``             | int    | Delay of each of the ``n`` data    |
-|                 |                        |        | streams.                           |
-+-----------------+------------------------+--------+------------------------------------+
-| delay           | maxdelay               | int    | The maximum delay supported by the |
-|                 |                        |        | firmware.                          |
-+-----------------+------------------------+--------+------------------------------------+
-| eq              | binary_point           | int    | The position of the EQ coefficient |
-|                 |                        |        | binary point                       |
-+-----------------+------------------------+--------+------------------------------------+
-| eq              | width                  | int    | The bit width of the EQ            |
-|                 |                        |        | coefficients                       |
-+-----------------+------------------------+--------+------------------------------------+
-| eq              | clip_count             | int    | The number of clips when           |
-|                 |                        |        | requantizing spectra to 4-bit.     |
-|                 |                        |        | This counter resets every [TODO:   |
-|                 |                        |        | when??]                            |
-+-----------------+------------------------+--------+------------------------------------+
-| eq              | coefficients``n``      | list   | The currently loaded coefficients, |
-|                 |                        | (int)  | in integer form (i.e.,             |
-|                 |                        |        | interpretted with all bits above   |
-|                 |                        |        | the binary point)                  |
-+-----------------+------------------------+--------+------------------------------------+
-| eq_tvg          | tvg_enabled            | bool   | True if the post- FFT test vector  |
-|                 |                        |        | generator is enabled. False        |
-|                 |                        |        | otherwise.                         |
-+-----------------+------------------------+--------+------------------------------------+
-| eth             | tx_ctr                 | int    | Running count of number of packets |
-|                 |                        |        | transmitted.                       |
-+-----------------+------------------------+--------+------------------------------------+
-| eth             | tx_err                 | int    | Running count of number of packet  |
-|                 |                        |        | errors detected.                   |
-+-----------------+------------------------+--------+------------------------------------+
-| eth             | tx_full                | int    | Running count of number of         |
-|                 |                        |        | transmission buffer overflow       |
-|                 |                        |        | events.                            |
-+-----------------+------------------------+--------+------------------------------------+
-| eth             | tx_vld                 | int    | Running count of number of 256-bit |
-|                 |                        |        | words transmitted.                 |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | flash_firmware         | string | The current .fpg bitstream file    |
-|                 |                        |        | stored in flash memory             |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | flash_firmware_md5     | int    | The MD5 checksum of the .fpg       |
-|                 |                        |        | bitstream stored in flash          |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | host                   | string | The hostname of the SNAP2 board    |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | programmed             | bool   | True if the board appears to be    |
-|                 |                        |        | running DSP firmware. False        |
-|                 |                        |        | otherwise.                         |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | serial                 | string | A notional "serial number" of this |
-|                 |                        |        | hardware. Not yet implemented.     |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | sw_version             | string | The software version of the        |
-|                 |                        |        | ``lwa_f`` python library currently |
-|                 |                        |        | in use                             |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | sys_mon                | string | "reporting" if the current         |
-|                 |                        |        | firmware has a working system      |
-|                 |                        |        | monitor module. "not reporting" if |
-|                 |                        |        | no monitoring is available.        |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | temp                   | float  | FPGA junction temperature, in      |
-|                 |                        |        | degrees C, reported by system      |
-|                 |                        |        | monitor (if available)             |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | vccaux                 | float  | Voltage of the VCCAUX FPGA power   |
-|                 |                        |        | rail reported by system monitor    |
-|                 |                        |        | (if available)                     |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | vccbram                | float  | Voltage of the VCCBRAM FPGA power  |
-|                 |                        |        | rail reported by system monitor    |
-|                 |                        |        | (if available)                     |
-+-----------------+------------------------+--------+------------------------------------+
-| feng            | vccint                 | float  | Voltage of the VCCINT FPGA power   |
-|                 |                        |        | rail reported by system monitor    |
-|                 |                        |        | (if available)                     |
-+-----------------+------------------------+--------+------------------------------------+
-| input           | mean``n``              | float  | Mean of ADC sample values for      |
-|                 |                        |        | input ADC ``n``.                   |
-+-----------------+------------------------+--------+------------------------------------+
-| input           | rms``n``               | float  | RMS of ADC sample values for input |
-|                 |                        |        | ADC ``n``.                         |
-+-----------------+------------------------+--------+------------------------------------+
-| input           | power``n``             | float  | Mean of squares of ADC sample      |
-|                 |                        |        | values for input ADC ``n``.        |
-+-----------------+------------------------+--------+------------------------------------+
-| input           | switch_position``n``   | string | Switch position for input data     |
-|                 |                        |        | stream ``n``. ``noise`` for        |
-|                 |                        |        | internal noise generators, ``adc`` |
-|                 |                        |        | for analog inputs, ``zero`` for    |
-|                 |                        |        | zero.                              |
-+-----------------+------------------------+--------+------------------------------------+
-| noise           | noise_core00_seed      | int    | Seed value for internal noise      |
-|                 |                        |        | generator 0.                       |
-+-----------------+------------------------+--------+------------------------------------+
-| noise           | noise_core01_seed      | int    | Seed value for internal noise      |
-|                 |                        |        | generator 1.                       |
-+-----------------+------------------------+--------+------------------------------------+
-| noise           | noise_core02_seed      | int    | Seed value for internal noise      |
-|                 |                        |        | generator 2.                       |
-+-----------------+------------------------+--------+------------------------------------+
-| noise           | output_assignment``n`` | int    | Noise source (0 - 5) currently     |
-|                 |                        |        | assigned to data stream ``n``.     |
-+-----------------+------------------------+--------+------------------------------------+
-| pfb             | fft_shift              | int    | Currently loaded FFT shift         |
-|                 |                        |        | schedule.                          |
-+-----------------+------------------------+--------+------------------------------------+
-| pfb             | overflow_count         | int    | Running count of FFT overflow      |
-|                 |                        |        | events.                            |
-+-----------------+------------------------+--------+------------------------------------+
-| sync            | ext_count              | int    | Running count of number of         |
-|                 |                        |        | external sync pulses received      |
-|                 |                        |        | since FPGA was programmed.         |
-+-----------------+------------------------+--------+------------------------------------+
-| sync            | int_count              | int    | Running count of number of         |
-|                 |                        |        | internal sync pulses received      |
-|                 |                        |        | since FPGA was programmed.         |
-+-----------------+------------------------+--------+------------------------------------+
-| sync            | period_fpga_clks       | int    | Detected period of external sync   |
-|                 |                        |        | pulses in units of FPGA clock      |
-|                 |                        |        | cycles.                            |
-+-----------------+------------------------+--------+------------------------------------+
-| sync            | uptime_secs            | int    | Number of seconds since FPGA was   |
-|                 |                        |        | last programmed                    |
-+-----------------+------------------------+--------+------------------------------------+
+.. table::
+    :widths: 20 20 20 40
 
+    +-----------------+------------------------+--------+------------------------------------+
+    | Dictionary Key  | Dictionary sub-key     | type   | Description                        |
+    +=================+========================+========+====================================+
+    | autocorr        | acc_len                | int    | Accumulation length, in spectra,   |
+    |                 |                        |        | of the internal autocorrelation    |
+    |                 |                        |        | module.                            |
+    +-----------------+------------------------+--------+------------------------------------+
+    | corr            | acc_len                | int    | Accumulation length, in spectra,   |
+    |                 |                        |        | of the internal correlation        |
+    |                 |                        |        | module.                            |
+    +-----------------+------------------------+--------+------------------------------------+
+    | delay           | delay``n``             | int    | Delay of each of the ``n`` data    |
+    |                 |                        |        | streams.                           |
+    +-----------------+------------------------+--------+------------------------------------+
+    | delay           | maxdelay               | int    | The maximum delay supported by the |
+    |                 |                        |        | firmware.                          |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eq              | binary_point           | int    | The position of the EQ coefficient |
+    |                 |                        |        | binary point                       |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eq              | width                  | int    | The bit width of the EQ            |
+    |                 |                        |        | coefficients                       |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eq              | clip_count             | int    | The number of clips when           |
+    |                 |                        |        | requantizing spectra to 4-bit.     |
+    |                 |                        |        | This counter resets every [TODO:   |
+    |                 |                        |        | when??]                            |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eq              | coefficients``n``      | list   | The currently loaded coefficients, |
+    |                 |                        | (int)  | in integer form (i.e.,             |
+    |                 |                        |        | interpretted with all bits above   |
+    |                 |                        |        | the binary point)                  |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eq_tvg          | tvg_enabled            | bool   | True if the post- FFT test vector  |
+    |                 |                        |        | generator is enabled. False        |
+    |                 |                        |        | otherwise.                         |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eth             | tx_ctr                 | int    | Running count of number of packets |
+    |                 |                        |        | transmitted.                       |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eth             | tx_err                 | int    | Running count of number of packet  |
+    |                 |                        |        | errors detected.                   |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eth             | tx_full                | int    | Running count of number of         |
+    |                 |                        |        | transmission buffer overflow       |
+    |                 |                        |        | events.                            |
+    +-----------------+------------------------+--------+------------------------------------+
+    | eth             | tx_vld                 | int    | Running count of number of 256-bit |
+    |                 |                        |        | words transmitted.                 |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | flash_firmware         | string | The current .fpg bitstream file    |
+    |                 |                        |        | stored in flash memory             |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | flash_firmware_md5     | int    | The MD5 checksum of the .fpg       |
+    |                 |                        |        | bitstream stored in flash          |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | host                   | string | The hostname of the SNAP2 board    |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | programmed             | bool   | True if the board appears to be    |
+    |                 |                        |        | running DSP firmware. False        |
+    |                 |                        |        | otherwise.                         |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | serial                 | string | A notional "serial number" of this |
+    |                 |                        |        | hardware. Not yet implemented.     |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | sw_version             | string | The software version of the        |
+    |                 |                        |        | ``lwa_f`` python library currently |
+    |                 |                        |        | in use                             |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | sys_mon                | string | "reporting" if the current         |
+    |                 |                        |        | firmware has a working system      |
+    |                 |                        |        | monitor module. "not reporting" if |
+    |                 |                        |        | no monitoring is available.        |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | temp                   | float  | FPGA junction temperature, in      |
+    |                 |                        |        | degrees C, reported by system      |
+    |                 |                        |        | monitor (if available)             |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | vccaux                 | float  | Voltage of the VCCAUX FPGA power   |
+    |                 |                        |        | rail reported by system monitor    |
+    |                 |                        |        | (if available)                     |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | vccbram                | float  | Voltage of the VCCBRAM FPGA power  |
+    |                 |                        |        | rail reported by system monitor    |
+    |                 |                        |        | (if available)                     |
+    +-----------------+------------------------+--------+------------------------------------+
+    | feng            | vccint                 | float  | Voltage of the VCCINT FPGA power   |
+    |                 |                        |        | rail reported by system monitor    |
+    |                 |                        |        | (if available)                     |
+    +-----------------+------------------------+--------+------------------------------------+
+    | input           | mean``n``              | float  | Mean of ADC sample values for      |
+    |                 |                        |        | input ADC ``n``.                   |
+    +-----------------+------------------------+--------+------------------------------------+
+    | input           | rms``n``               | float  | RMS of ADC sample values for input |
+    |                 |                        |        | ADC ``n``.                         |
+    +-----------------+------------------------+--------+------------------------------------+
+    | input           | power``n``             | float  | Mean of squares of ADC sample      |
+    |                 |                        |        | values for input ADC ``n``.        |
+    +-----------------+------------------------+--------+------------------------------------+
+    | input           | switch_position``n``   | string | Switch position for input data     |
+    |                 |                        |        | stream ``n``. ``noise`` for        |
+    |                 |                        |        | internal noise generators, ``adc`` |
+    |                 |                        |        | for analog inputs, ``zero`` for    |
+    |                 |                        |        | zero.                              |
+    +-----------------+------------------------+--------+------------------------------------+
+    | noise           | noise_core00_seed      | int    | Seed value for internal noise      |
+    |                 |                        |        | generator 0.                       |
+    +-----------------+------------------------+--------+------------------------------------+
+    | noise           | noise_core01_seed      | int    | Seed value for internal noise      |
+    |                 |                        |        | generator 1.                       |
+    +-----------------+------------------------+--------+------------------------------------+
+    | noise           | noise_core02_seed      | int    | Seed value for internal noise      |
+    |                 |                        |        | generator 2.                       |
+    +-----------------+------------------------+--------+------------------------------------+
+    | noise           | output_assignment``n`` | int    | Noise source (0 - 5) currently     |
+    |                 |                        |        | assigned to data stream ``n``.     |
+    +-----------------+------------------------+--------+------------------------------------+
+    | pfb             | fft_shift              | int    | Currently loaded FFT shift         |
+    |                 |                        |        | schedule.                          |
+    +-----------------+------------------------+--------+------------------------------------+
+    | pfb             | overflow_count         | int    | Running count of FFT overflow      |
+    |                 |                        |        | events.                            |
+    +-----------------+------------------------+--------+------------------------------------+
+    | sync            | ext_count              | int    | Running count of number of         |
+    |                 |                        |        | external sync pulses received      |
+    |                 |                        |        | since FPGA was programmed.         |
+    +-----------------+------------------------+--------+------------------------------------+
+    | sync            | int_count              | int    | Running count of number of         |
+    |                 |                        |        | internal sync pulses received      |
+    |                 |                        |        | since FPGA was programmed.         |
+    +-----------------+------------------------+--------+------------------------------------+
+    | sync            | period_fpga_clks       | int    | Detected period of external sync   |
+    |                 |                        |        | pulses in units of FPGA clock      |
+    |                 |                        |        | cycles.                            |
+    +-----------------+------------------------+--------+------------------------------------+
+    | sync            | uptime_secs            | int    | Number of seconds since FPGA was   |
+    |                 |                        |        | last programmed                    |
+    +-----------------+------------------------+--------+------------------------------------+
 
 
 .. [1]

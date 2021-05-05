@@ -14,6 +14,7 @@ Contents:
 
    installation.rst
    control.rst
+   memory_map_doc.rst
 
 
 Indices and tables

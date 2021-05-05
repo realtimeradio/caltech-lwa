@@ -146,6 +146,33 @@ class Input(Block):
             self.write_int('rms_enable', 1)
 
     def get_status(self):
+        """
+        Get status and error flag dictionaries.
+
+        Status keys:
+
+            - switch_position<n> (str) : Switch position ('noise', 'adc' or 'zero')
+              for input stream ``n``, where ``n`` is a two-digit integer starting at 00.
+              Any input position other than 'adc' is flagged with "NOTIFY".
+
+            - power<n> (float) : Mean power of input stream ``n``, where ``n`` is a
+              two-digit integer starting at 00. In units of (ADC LSBs)**2.
+
+            - rms<n> (float) : RMS of input stream ``n``, where ``n`` is a
+              two-digit integer starting at 00. In units of ADC LSBs. Value is
+              flagged as a warning if it is >30 or <5.
+
+            - mean<n> (float) : Mean sample value of input stream ``n``, where ``n`` is a
+              two-digit integer starting at 00. In units of ADC LSBs. Value
+              is flagged as a warning if it is > 2.
+
+        :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
+            status key-value pairs. flags_dict is
+            a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
+            held in this dictionary are as defined in `error_levels.py` and indicate
+            that values in the status dictionary are outside normal ranges.
+
+        """
         stats = {}
         flags = {}
         switch_positions = self.get_switch_positions()
@@ -163,35 +190,35 @@ class Input(Block):
                 flags['mean%.2d' % i] = FENG_WARNING
         return stats, flags
 
-    def _set_histogram_input(self, i):
+    def _set_histogram_input(self, stream):
         """
-        Set input of histogram block.
-        Inputs:
-            i (int): Stream number to select.
-        """
-        assert (i < self.n_streams), "Can't switch stream >= self.n_streams" 
-        self.write_int('bit_stats_input_sel', i)
+        Set input of histogram block computation core.
 
-    def get_histogram(self, input, sum_cores=True):
+        :param stream: Stream number to select.
+        :type stream: int
         """
-        Get a histogram for an ADC input.
-        Inputs:
-            input (int): ADC input from which to get data.
-            sum_cores (Boolean): If True, compute one histogram from both A & B ADC cores. If False, compute separate histograms.
+        assert (stream < self.n_streams), "Can't switch stream >= self.n_streams" 
+        self.write_int('bit_stats_input_sel', stream)
 
-        Returns:
-            If sum_cores is True:
-                vals, hist
-                    vals (numpy array): histogram bin centers
-                    hist (numpy array): histogram data
-            If sum_cores is False:
-                vals, hist_a, hist_b
-                    vals (numpy array): histogram bin centers
-                    hist_a (numpy array): histogram data for "A" cores
-                    hist_b (numpy array): histogram data for "B" cores
+    def get_histogram(self, stream, sum_cores=True):
         """
-        self._info("Getting histogram for input %d" % input)
-        self._set_histogram_input(input)
+        Get a histogram for an ADC stream.
+        
+        :param stream: ADC stream from which to get data.
+        :type stream: int
+
+        :param sum_cores: If True, compute one histogram from both A & B ADC cores.
+            If False, compute separate histograms.
+        :type sum_cores: bool
+
+        :return: If ``sum_cores`` is True, return ``(vals, hist)``, where ``vals``
+            is a list of histogram bin centers, and ``hist`` is a list of
+            histogram data points. If ``sum_cores`` is False, return
+            ``(vals, hist_a, hist_b)``, where ``hist_a`` and ``hist_b``
+            are separate histogram data sets for the A and B ADC cores, respectively.
+        """
+        self._info("Getting histogram for stream %d" % stream)
+        self._set_histogram_stream(stream)
         time.sleep(0.1)
         v = np.array(struct.unpack('>%dH' % (2*2**self.n_bits), self.read('bit_stats_histogram_output', 2*2*2**self.n_bits)))
         a = v[0:2**self.n_bits]
@@ -200,26 +227,27 @@ class Input(Block):
         b = np.roll(b, 2**(self.n_bits - 1)) # roll so that array counts -128, -127, ..., 0, ..., 126, 127
         vals = np.arange(-2**(self.n_bits - 1), 2**(self.n_bits - 1))
         if sum_cores:
-            return vals, a+b
+            return vals.tolist(), (a+b).tolist()
         else:
-            return vals, a, b
+            return vals.tolist(), a.tolist(), b.tolist()
 
     def get_all_histograms(self):
         """
-        Get histograms for all antpols, summing over all interleaving
-        Input:
-            antpol (int): Antpol number (zero-indexed)
-        Returns:
-            vals, hist
-                vals (numpy array): histogram bin centers
-                hist (numpy array): histogram data
+        Get histograms for all antpols, summing over all interleaving cores.
+
+        :return: (vals, hists). ``vals`` is a list of histogram bin centers.
+            ``hists`` is an ``[n_stream x 2**n_bits]`` list of histogram
+            data.
         """
         out = np.zeros([self.n_streams, 2**self.n_bits])
         for stream in range(self.n_streams):
             x, out[stream,:] = self.get_histogram(stream, sum_cores=True)
-        return x, out
+        return x, out.tolist()
 
     def print_histograms(self):
+        """
+        Print histogram stats to screen.
+        """
         x, hist = self.get_all_histograms()
         hist /= 1024.*1024
         for vn, v in enumerate(x):
@@ -228,22 +256,15 @@ class Input(Block):
                 print('%.3f'%ant[vn], end=' ')
             print()
 
-    def plot_histogram(self, input, show=False):
-        from matplotlib import pyplot as plt
-        bins, d = self.get_histogram(input)
-        #plt.hist(d, bins=bins)
-        plt.bar(bins-0.5, d, width=1)
-        if show:
-            plt.show()
+    def plot_histogram(self, stream):
+        """
+        Plot a histogram.
 
-    def show_histogram_plot(self):
+        :param stream: ADC stream from which to get data.
+        :type stream: int
         """
-        A helper method for plotting multiple histograms
-        without importing your own pyplot.
-        eg.
-            for i in range(Input.n_streams):
-                Input.plot_histogram(i)
-            Input.show_histogram_plot()
-        """
+        
         from matplotlib import pyplot as plt
+        bins, d = self.get_histogram(stream)
+        plt.bar(bins-0.5, d, width=1)
         plt.show()

@@ -149,7 +149,7 @@ def do_bitslip(a):
             # concat two strings and turn to ints for comparison with shifts
             v2 = int(v_str + v_str, 2)
             for i in range(5):
-                logger.info(chip, chan, np.binary_repr((v2>>10)&1023, width=10))
+                logger.info("%d:%d: %s" % (chip, chan, np.binary_repr((v2>>10)&1023, width=10)))
                 if ((v2 >> 10) & 1023) == TEST_VAL:
                     # Word boundary OK
                     break
@@ -396,7 +396,7 @@ if __name__ == "__main__":
         for adc in fmcs:
             init(adc)
         time.sleep(0.1) # wait for Initialization. Probably not needed
-        for adc in fmcs:
+        for adc in fmcs[::-1]:
             for board in range(2):
                 adc.reset_mmcm(board)
         time.sleep(0.1) # wait for MMCM to come out of reset
@@ -483,12 +483,24 @@ if __name__ == "__main__":
     
     for adc in fmcs: 
         data_ok = True
-        #TEST_VAL = 0b0101010101
+        #TEST_VAL = 0b0011001100
         TEST_VAL = 0b0000010101
         if args.cal_data:
+            for board in range(2):
+                adc.set_bitslip_index(0, board)
             reset(s) # Flush FIFOs and begin reading after next sync
             sync(s) # Need to sync after moving fclk to re-lock deserializers
             errs = get_data_delays(adc, test_val=TEST_VAL)
+            if np.any(errs[0,:,:] == 0):
+                logger.info("Bitslipping because delay start too large")
+                for board in range(2):
+                    adc.increment_bitslip_index(board)
+                errs = get_data_delays(adc, test_val=TEST_VAL)
+            elif np.any(errs[-1,:,:] == 0):
+                logger.info("Bitslipping because delay end too small")
+                for board in range(2):
+                    adc.decrement_bitslip_index(board)
+                errs = get_data_delays(adc, test_val=TEST_VAL)
             best = get_best_delays(errs)
             logger.info("Data lane delays for FMC %d [chip x lane]" % adc.fmc)
             logger.info("%s" % best)
@@ -545,8 +557,8 @@ if __name__ == "__main__":
        s.write_int('err_cnt_rst', 0)
 
     if args.check_errors:
-       t = time.ctime()
        while(True):
+           t = time.ctime()
            logger.info("Checking for errors at time: %s:" % t)
            for adcn, adc in enumerate(fmcs):
                for i in range(32):

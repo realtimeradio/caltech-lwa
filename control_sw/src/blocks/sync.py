@@ -15,37 +15,45 @@ class Sync(Block):
     
     def uptime(self):
         """
-        Returns uptime in FPGA clock ticks. Resolution is 2**32 (21 seconds at 200 MHz)
+        :return: Time in FPGA clock ticks since the FPGA was last programmed.
+            Resolution is 2**32 (21 seconds at 200 MHz)
+
+        :rtype: int
         """
         return self.read_uint('uptime_msb') << 32
 
     def period(self):
         """
-        Returns the number of FPGA clock ticks between the last two external sync pulses.
+        :return: The number of FPGA clock ticks between the last two external sync pulses.
+        :rtype int:
         """
         return self.read_uint('ext_sync_period')
 
     def count_ext(self):
         """
-        Returns Number of external sync pulses received.
+        :return: Number of external sync pulses received.
+        :rtype int:
         """
         return self.read_uint('ext_sync_count')
 
     def count_int(self):
         """
-        Returns Number of internal sync pulses received.
+        :return: Number of internal sync pulses received.
+        :rtype int:
         """
         return self.read_uint('int_sync_count')
 
     def get_latency(self):
         """
-        Returns Number of FPGA clock ticks between sync transmission and reception
+        :return: Number of FPGA clock ticks between sync transmission and reception
+        :rtype int:
         """
         return self.read_uint('latency') & 0xff
 
     def get_error_count(self):
         """
-        Returns count of number of sync errors
+        :return: Number of sync errors.
+        :rtype int:
         """
         return self.read_uint('latency') >> 8
 
@@ -102,10 +110,12 @@ class Sync(Block):
         Load a new starting value into the telescope time counter on the
         next sync.
 
-        Parameters
-        ----------
-            tt (int) : Telescope time to load
-            software_load (bool) : If True, immediately load via a software trigger
+        :param tt: Telescope time to load
+        :type tt: int
+
+        :param software_load: If True, immediately load via a software trigger. Else
+            load on the next external sync pulse arrival.
+        :type software_load: bool
         """
         assert tt < 2**64 - 1
         self.write_int('tt_load_msb', tt >> 32)
@@ -130,11 +140,15 @@ class Sync(Block):
 
     def initialize(self, read_only=False):
         """
-        Initialize this block. Set sync period to 0.
+        Initialize block.
+
+        :param read_only: If False, initialize system control register to 0
+            and reset error counters. If True, do nothing.
+        :type read_only: bool
+
         """
         if read_only:
             pass
         else:
             self.write_int('ctrl', 0)
-        #self.change_period(2**16 * 9*7*6*5*3)
-        #self.change_period(self.PERIOD_BASE_DIVISOR * 256)
+            self.reset_error_count()
