@@ -168,7 +168,10 @@ Command
 
 The command key is:
 
-``/cmd/snap/<hostname>/command``
+``/cmd/snap/<id>``
+
+``id`` is the one-indexed ID number of the SNAP board which should respond
+to these commands. Commands issues to ``id=0`` are processed by all SNAP boards.
 
 Writing messages to this key results in the execution of ``Snap2Fengine``
 command methods.
@@ -179,7 +182,7 @@ Response
 Each command written to the command key will elicit a response published
 to the key:
 
-``/resp/snap/<hostname>/response``
+``/resp/snap/<id>``
 
 The response message will indicate the success of failure of the command,
 and may contain a command-dependent data payload. For example, a spectra, or
@@ -188,15 +191,18 @@ snapshot of ADC samples.
 Monitor
 ^^^^^^^
 
-In addition to the Command/Response control protocol, general telemetry
-relating to pipeline element ``blockname`` can be read from the keys beneath
-the path:
+In addition to the command/response interface described above, a set of basic status values
+are continuously-polled and written to etcd. This allows basic monitoring scripts to simply
+watch the etcd keystore to determine system health, rather than having to issue commands.
 
-``/mon/snap/<hostname>/<blockname>``
+Each SNAP board reports monitor information to the key:
 
-Such keys are indended to be continuously updated on a ~1 second time cadence,
-and contain low data-volume status information. For example, FPGA temperature,
+``/mon/snap/<id>``
+
+The monitor key is indended to be continuously updated on a ~1 second time cadence,
+and contains low data-volume status information. For example, FPGA temperature,
 ADC RMS, number of transmitted Ethernet packets, and similar.
+
 
 Command/Response Protocol
 +++++++++++++++++++++++++
@@ -214,24 +220,30 @@ Command Format
 Commands sent to the command key are JSON-encoded dictionaries, and should
 have the following fields:
 
-+-------------+-----------------+-----------------------------------------+
-| Field       | Type            | Description                             |
-+=============+=================+=========================================+
-| sequence_id | integer         | A unique integer associated with this   |
-|             |                 | command, used to identify the command's |
-|             |                 | response                                |
-+-------------+-----------------+-----------------------------------------+
-| timestamp   | float           | The UNIX time when this command was     |
-|             |                 | issued                                  |
-+-------------+-----------------+-----------------------------------------+
-| command     | string          | Command Name                            |
-+-------------+-----------------+-----------------------------------------+
-| block       | string          | Firmware block name to which command    |
-|             |                 | applies                                 |
-+-------------+-----------------+-----------------------------------------+
-| kwargs      | dictionary      | Dictionary of arguments required by the |
-|             |                 | ``block.command`` method                |
-+-------------+-----------------+-----------------------------------------+
+.. table:: Command Fields
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - Field
+      - Type
+      - Description
+
+    * - id
+      - integer
+      - A unique integer associated with this   
+        command, used to identify the command's
+        response
+
+    * - cmd
+      - string
+      - Command name
+
+    * - val
+      - dictionary
+      - A dictionary containing keys:
+          - timestamp (float) The UNIX time when this command was issued.
+          - block (string): The firmware block name to which this command applies.
+          - kwargs (dictionary): Dictionary of arguments required by the ``block.command`` method.
 
 Allowed values for **``block``** are any of the keys in the ``Snap2Fengine``
 blocks attribute. I.e.:
@@ -282,17 +294,16 @@ a command should be issued with:
   +--------------+-------------------------------------+
   | Field        | Value                               |
   +==============+=====================================+
-  | ``block``    | ``"delay"``                         |
-  +--------------+-------------------------------------+
   | ``command``  | ``"set_delay"``                     |
   +--------------+-------------------------------------+
-  | ``kwargs``   | ``{"stream": 5, "delay": 100}``     |
+  | ``val``      | ``{block: "delay", kwargs:          |
+  |              | {"stream": 5, "delay": 100}``       |
   +--------------+-------------------------------------+
 
 An example of a valid command JSON string, issued with the above parameters
 at UNIX time 1618060712.60 and with ``sequence_id=1`` is:
 
-``'{"block": "delay", "timestamp": 1618060712.6, "kwargs": {"delay": 100, "stream": 5}, "command": "set_delay", "sequence_id": 1}'``
+``'{"command": "set_delay", "val": {"block": "delay", "timestamp": 1618060712.6, "kwargs": {"stream": 5, "delay": 100}}, "id": 1}'``
 
 Consult the ``Snap2Fengine`` API details for a list of commands and their arguments.
 
@@ -304,30 +315,31 @@ Every command sent elicits the writing of JSON-encoded dictionary to the
 response key.
 This dictionary has the following fields:
 
-+-------------+--------------------+-----------------------------------------+
-| Field       | Type               | Description                             |
-+=============+====================+=========================================+
-| sequence_id | integer            | An integer matching the ``sequence_id`` |
-|             |                    | field of the command string to which    |
-|             |                    | this is a response                      |
-+-------------+--------------------+-----------------------------------------+
-| timestamp   | float              | The UNIX time when this response was    |
-|             |                    | issued                                  |
-+-------------+--------------------+-----------------------------------------+
-| status      | string             | The string "normal" if the              |
-|             |                    | corresponding command was processed     |
-|             |                    | without error, or "error" if it was     |
-|             |                    | not.                                    |
-+-------------+--------------------+-----------------------------------------+
-| response    | command-dependent  | The response of the command method, as  |
-|             |                    | determined by the command API. If a     |
-|             |                    | method would usually return a numpy     |
-|             |                    | array, when using the ``etcd``          |
-|             |                    | interface the response will be a list.  |
-|             |                    | In the event that the status field is   |
-|             |                    | ``"error"``, The response field will    |
-|             |                    | contain an error message string         |
-+-------------+--------------------+-----------------------------------------+
+.. table:: Response Fields
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - Field
+      - Type
+      - Description
+
+    * - id
+      - integer
+      - An integer matching the ``id`` field of
+        the command string to which this is a
+        response
+
+    * - val
+      - dictionary
+      - A dictionary containing keys:
+          - timestamp (float) The UNIX time when this response was issued.
+          - status (string): The string "normal" if the corresponding command was processed without error,
+            or "error" if it was not.
+          - response (dictionary): The response of the command method, as
+            determined by the command API. If a method would usually return a numpy
+            array, when using the ``etcd`` interface the response will be a list.
+            In the event that the status field is ``"error"``, The response field will
+            contain an error message string.
 
 Not all ``Snap2Fengine`` methods return values, in whice case the response
 field is ``null``.
@@ -336,21 +348,17 @@ The previous command example (setting a delay) results in the underlying API cal
 The response to the example command (assuming processing the command took
 0.2 milliseconds) is thus:
 
-  +-----------------+-------------------------------------+
-  | Field           | Value                               |
-  +=================+=====================================+
-  | ``sequence_id`` | ``1``                               |
-  +-----------------+-------------------------------------+
-  | ``timestamp``   | ``1618060712.8``                    |
-  +-----------------+-------------------------------------+
-  | ``status``      | ``"normal"``                        |
-  +-----------------+-------------------------------------+
-  | ``response``    | ``null``                            |
-  +-----------------+-------------------------------------+
+  +-----------------+-----------------------------------------------------------------+
+  | Field           | Value                                                           |
+  +=================+=================================================================+
+  | ``id``          | ``1``                                                           |
+  +-----------------+-----------------------------------------------------------------+
+  | ``val``         | ``{timestamp: 1618060712.8, status: "normal", response: null}`` |
+  +-----------------+-----------------------------------------------------------------+
 
 or, in JSON-encoded form:
 
-``'{"sequence_id": 1, "timestamp": 1618060712.8, "status": "normal", "response": null}'``
+``'{"sequence_id": 1, "val": {"timestamp": 1618060712.8, "status": "normal", "response": null}}'``
 
 If the response ``status`` field is "error", common ``response`` error messages,
 and their meanings are:
@@ -386,128 +394,178 @@ In the event that a command fails, more information is available in the
 Monitoring Interface
 ~~~~~~~~~~~~~~~~~~~~
 
-+-------------------------------+------------+------------------------------------------+
-| autocorr/acc_len              | int        | Accumulation length, in spectra, of the  |
-|                               |            | internal autocorrelation module.         |
-+===============================+============+==========================================+
-| corr/acc_len                  | int        | Accumulation length, in spectra, of the  |
-|                               |            | internal correlation module.             |
-+-------------------------------+------------+------------------------------------------+
-| delay/``n``/delay             | int        | Delay of each of the ``n`` data streams. |
-+-------------------------------+------------+------------------------------------------+
-| delay/maxdelay                | int        | The maximum delay supported by the       |
-|                               |            | firmware.                                |
-+-------------------------------+------------+------------------------------------------+
-| eq/binary_point               | int        | The position of the EQ coefficient       |
-|                               |            | binary point                             |
-+-------------------------------+------------+------------------------------------------+
-| eq/width                      | int        | The bit width of the EQ coefficients     |
-+-------------------------------+------------+------------------------------------------+
-| eq/clip_count                 | int        | The number of clips when requantizing    |
-|                               |            | spectra to 4-bit. This counter resets    |
-|                               |            | every [TODO: when??]                     |
-+-------------------------------+------------+------------------------------------------+
-| eq/``n``/coefficients         | list (int) | The currently loaded coefficients, in    |
-|                               |            | integer form (i.e., interpretted with    |
-|                               |            | all bits above the binary point)         |
-+-------------------------------+------------+------------------------------------------+
-| eq_tvg/tvg_enabled            | bool       | True if the post-FFT test vector         |
-|                               |            | generator is enabled. False otherwise.   |
-+-------------------------------+------------+------------------------------------------+
-| eth/tx_ctr                    | int        | Running count of number of packets       |
-|                               |            | transmitted.                             |
-+-------------------------------+------------+------------------------------------------+
-| eth/tx_err                    | int        | Running count of number of packet errors |
-|                               |            | detected.                                |
-+-------------------------------+------------+------------------------------------------+
-| eth/tx_full                   | int        | Running count of number of transmission  |
-|                               |            | buffer overflow events.                  |
-+-------------------------------+------------+------------------------------------------+
-| eth/tx_vld                    | int        | Running count of number of 256-bit words |
-|                               |            | transmitted.                             |
-+-------------------------------+------------+------------------------------------------+
-| feng/flash_firmware           | string     | The current .fpg bitstream file stored   |
-|                               |            | in flash memory                          |
-+-------------------------------+------------+------------------------------------------+
-| feng/flash_firmware_md5       | int        | The MD5 checksum of the .fpg bitstream   |
-|                               |            | stored in flash                          |
-+-------------------------------+------------+------------------------------------------+
-| feng/host                     | string     | The hostname of the SNAP2 board          |
-+-------------------------------+------------+------------------------------------------+
-| feng/programmed               | bool       | True if the board appears to be running  |
-|                               |            | DSP firmware. False otherwise.           |
-+-------------------------------+------------+------------------------------------------+
-| feng/serial                   | string     | A notional "serial number" of this       |
-|                               |            | hardware. Not yet implemented.           |
-+-------------------------------+------------+------------------------------------------+
-| feng/sw_version               | string     | The software version of the ``lwa_f``    |
-|                               |            | python library currently in use          |
-+-------------------------------+------------+------------------------------------------+
-| feng/sys_mon                  | string     | "reporting" if the current firmware has  |
-|                               |            | a working system monitor module. "not    |
-|                               |            | reporting" if no monitoring is           |
-|                               |            | available.                               |
-+-------------------------------+------------+------------------------------------------+
-| feng/temp                     | float      | FPGA junction temperature, in degrees C, |
-|                               |            | reported by system monitor (if           |
-|                               |            | available)                               |
-+-------------------------------+------------+------------------------------------------+
-| feng/vccaux                   | float      | Voltage of the VCCAUX FPGA power rail    |
-|                               |            | reported by system monitor (if           |
-|                               |            | available)                               |
-+-------------------------------+------------+------------------------------------------+
-| feng/vccbram                  | float      | Voltage of the VCCBRAM FPGA power rail   |
-|                               |            | reported by system monitor (if           |
-|                               |            | available)                               |
-+-------------------------------+------------+------------------------------------------+
-| feng/vccint                   | float      | Voltage of the VCCINT FPGA power rail    |
-|                               |            | reported by system monitor (if           |
-|                               |            | available)                               |
-+-------------------------------+------------+------------------------------------------+
-| input/``n``/mean              | float      | Mean of ADC sample values for input ADC  |
-|                               |            | ``n``.                                   |
-+-------------------------------+------------+------------------------------------------+
-| input/``n``/rms               | float      | RMS of ADC sample values for input ADC   |
-|                               |            | ``n``.                                   |
-+-------------------------------+------------+------------------------------------------+
-| input/``n``/power             | float      | Mean of squares of ADC sample values for |
-|                               |            | input ADC ``n``.                         |
-+-------------------------------+------------+------------------------------------------+
-| input/``n``/switch_position   | string     | Switch position for input data stream    |
-|                               |            | ``n``. ``noise`` for internal noise      |
-|                               |            | generators, ``adc`` for analog inputs,   |
-|                               |            | ``zero`` for zero.                       |
-+-------------------------------+------------+------------------------------------------+
-| noise/noise_core00_seed       | int        | Seed value for internal noise generator  |
-|                               |            | 0.                                       |
-+-------------------------------+------------+------------------------------------------+
-| noise/noise_core01_seed       | int        | Seed value for internal noise generator  |
-|                               |            | 1.                                       |
-+-------------------------------+------------+------------------------------------------+
-| noise/noise_core02_seed       | int        | Seed value for internal noise generator  |
-|                               |            | 2.                                       |
-+-------------------------------+------------+------------------------------------------+
-| noise/``n``/output_assignment | int        | Noise source (0 - 5) currently assigned  |
-|                               |            | to data stream ``n``.                    |
-+-------------------------------+------------+------------------------------------------+
-| pfb/fft_shift                 | int        | Currently loaded FFT shift schedule.     |
-+-------------------------------+------------+------------------------------------------+
-| pfb/overflow_count            | int        | Running count of FFT overflow events.    |
-+-------------------------------+------------+------------------------------------------+
-| sync/ext_count                | int        | Running count of number of external sync |
-|                               |            | pulses received since FPGA was           |
-|                               |            | programmed.                              |
-+-------------------------------+------------+------------------------------------------+
-| sync/int_count                | int        | Running count of number of internal sync |
-|                               |            | pulses received since FPGA was           |
-|                               |            | programmed.                              |
-+-------------------------------+------------+------------------------------------------+
-| sync/period_fpga_clks         | int        | Detected period of external sync pulses  |
-|                               |            | in units of FPGA clock cycles.           |
-+-------------------------------+------------+------------------------------------------+
-| sync/uptime_secs              | int        | Number of seconds since FPGA was last    |
-|                               |            | programmed                               |
-+-------------------------------+------------+------------------------------------------+
+The monitor key contains a nested dictionary with the following keys:
+
+.. table:: Monitor Fields
+    :widths: 20 20 60
+    :header-rows: 1
+
+    * - Field
+      - Type
+      - Description
+
+    * - timestamp
+      - float
+      - The UNIX timestamp at which the monitor key was last updated.
+
+    * - stats
+      - dictionary
+      - A nested dictionary containing status values, keyed first by block name 
+        (eg. ``delay``, ``eq`` or ``corr``) and then by status key.
+
+    * - flags
+      - dictionary
+      - A nested dictionary containing status values, keyed first by block name 
+        (eg. ``delay``, ``eq`` or ``corr``) and then by status key. This dictionary
+        contains a subset of the keys present in the ``stats`` field.
+        Where they exist, a value associated with a key indicates whether the
+        corresponding value in the ``stats`` dictionary is out of normal range.
+        Values in the flags dictionary are interpretted as in ``error_levels.py``; i.e.:
+          - 0: Value is OK
+          - 1: Value is different from operational normal
+          - 2: Value is outside expected range
+          - 3: Value represents an error condition
+
+Entries in the ``stats`` dictionary are shown below
+
++-----------------+------------------------+--------+------------------------------------+
+| Dictionary Key  | Dictionary sub-key     | type   | Description                        |
++=================+========================+========+====================================+
+| autocorr        | acc_len                | int    | Accumulation length, in spectra,   |
+|                 |                        |        | of the internal autocorrelation    |
+|                 |                        |        | module.                            |
++-----------------+------------------------+--------+------------------------------------+
+| corr            | acc_len                | int    | Accumulation length, in spectra,   |
+|                 |                        |        | of the internal correlation        |
+|                 |                        |        | module.                            |
++-----------------+------------------------+--------+------------------------------------+
+| delay           | delay``n``             | int    | Delay of each of the ``n`` data    |
+|                 |                        |        | streams.                           |
++-----------------+------------------------+--------+------------------------------------+
+| delay           | maxdelay               | int    | The maximum delay supported by the |
+|                 |                        |        | firmware.                          |
++-----------------+------------------------+--------+------------------------------------+
+| eq              | binary_point           | int    | The position of the EQ coefficient |
+|                 |                        |        | binary point                       |
++-----------------+------------------------+--------+------------------------------------+
+| eq              | width                  | int    | The bit width of the EQ            |
+|                 |                        |        | coefficients                       |
++-----------------+------------------------+--------+------------------------------------+
+| eq              | clip_count             | int    | The number of clips when           |
+|                 |                        |        | requantizing spectra to 4-bit.     |
+|                 |                        |        | This counter resets every [TODO:   |
+|                 |                        |        | when??]                            |
++-----------------+------------------------+--------+------------------------------------+
+| eq              | coefficients``n``      | list   | The currently loaded coefficients, |
+|                 |                        | (int)  | in integer form (i.e.,             |
+|                 |                        |        | interpretted with all bits above   |
+|                 |                        |        | the binary point)                  |
++-----------------+------------------------+--------+------------------------------------+
+| eq_tvg          | tvg_enabled            | bool   | True if the post- FFT test vector  |
+|                 |                        |        | generator is enabled. False        |
+|                 |                        |        | otherwise.                         |
++-----------------+------------------------+--------+------------------------------------+
+| eth             | tx_ctr                 | int    | Running count of number of packets |
+|                 |                        |        | transmitted.                       |
++-----------------+------------------------+--------+------------------------------------+
+| eth             | tx_err                 | int    | Running count of number of packet  |
+|                 |                        |        | errors detected.                   |
++-----------------+------------------------+--------+------------------------------------+
+| eth             | tx_full                | int    | Running count of number of         |
+|                 |                        |        | transmission buffer overflow       |
+|                 |                        |        | events.                            |
++-----------------+------------------------+--------+------------------------------------+
+| eth             | tx_vld                 | int    | Running count of number of 256-bit |
+|                 |                        |        | words transmitted.                 |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | flash_firmware         | string | The current .fpg bitstream file    |
+|                 |                        |        | stored in flash memory             |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | flash_firmware_md5     | int    | The MD5 checksum of the .fpg       |
+|                 |                        |        | bitstream stored in flash          |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | host                   | string | The hostname of the SNAP2 board    |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | programmed             | bool   | True if the board appears to be    |
+|                 |                        |        | running DSP firmware. False        |
+|                 |                        |        | otherwise.                         |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | serial                 | string | A notional "serial number" of this |
+|                 |                        |        | hardware. Not yet implemented.     |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | sw_version             | string | The software version of the        |
+|                 |                        |        | ``lwa_f`` python library currently |
+|                 |                        |        | in use                             |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | sys_mon                | string | "reporting" if the current         |
+|                 |                        |        | firmware has a working system      |
+|                 |                        |        | monitor module. "not reporting" if |
+|                 |                        |        | no monitoring is available.        |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | temp                   | float  | FPGA junction temperature, in      |
+|                 |                        |        | degrees C, reported by system      |
+|                 |                        |        | monitor (if available)             |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | vccaux                 | float  | Voltage of the VCCAUX FPGA power   |
+|                 |                        |        | rail reported by system monitor    |
+|                 |                        |        | (if available)                     |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | vccbram                | float  | Voltage of the VCCBRAM FPGA power  |
+|                 |                        |        | rail reported by system monitor    |
+|                 |                        |        | (if available)                     |
++-----------------+------------------------+--------+------------------------------------+
+| feng            | vccint                 | float  | Voltage of the VCCINT FPGA power   |
+|                 |                        |        | rail reported by system monitor    |
+|                 |                        |        | (if available)                     |
++-----------------+------------------------+--------+------------------------------------+
+| input           | mean``n``              | float  | Mean of ADC sample values for      |
+|                 |                        |        | input ADC ``n``.                   |
++-----------------+------------------------+--------+------------------------------------+
+| input           | rms``n``               | float  | RMS of ADC sample values for input |
+|                 |                        |        | ADC ``n``.                         |
++-----------------+------------------------+--------+------------------------------------+
+| input           | power``n``             | float  | Mean of squares of ADC sample      |
+|                 |                        |        | values for input ADC ``n``.        |
++-----------------+------------------------+--------+------------------------------------+
+| input           | switch_position``n``   | string | Switch position for input data     |
+|                 |                        |        | stream ``n``. ``noise`` for        |
+|                 |                        |        | internal noise generators, ``adc`` |
+|                 |                        |        | for analog inputs, ``zero`` for    |
+|                 |                        |        | zero.                              |
++-----------------+------------------------+--------+------------------------------------+
+| noise           | noise_core00_seed      | int    | Seed value for internal noise      |
+|                 |                        |        | generator 0.                       |
++-----------------+------------------------+--------+------------------------------------+
+| noise           | noise_core01_seed      | int    | Seed value for internal noise      |
+|                 |                        |        | generator 1.                       |
++-----------------+------------------------+--------+------------------------------------+
+| noise           | noise_core02_seed      | int    | Seed value for internal noise      |
+|                 |                        |        | generator 2.                       |
++-----------------+------------------------+--------+------------------------------------+
+| noise           | output_assignment``n`` | int    | Noise source (0 - 5) currently     |
+|                 |                        |        | assigned to data stream ``n``.     |
++-----------------+------------------------+--------+------------------------------------+
+| pfb             | fft_shift              | int    | Currently loaded FFT shift         |
+|                 |                        |        | schedule.                          |
++-----------------+------------------------+--------+------------------------------------+
+| pfb             | overflow_count         | int    | Running count of FFT overflow      |
+|                 |                        |        | events.                            |
++-----------------+------------------------+--------+------------------------------------+
+| sync            | ext_count              | int    | Running count of number of         |
+|                 |                        |        | external sync pulses received      |
+|                 |                        |        | since FPGA was programmed.         |
++-----------------+------------------------+--------+------------------------------------+
+| sync            | int_count              | int    | Running count of number of         |
+|                 |                        |        | internal sync pulses received      |
+|                 |                        |        | since FPGA was programmed.         |
++-----------------+------------------------+--------+------------------------------------+
+| sync            | period_fpga_clks       | int    | Detected period of external sync   |
+|                 |                        |        | pulses in units of FPGA clock      |
+|                 |                        |        | cycles.                            |
++-----------------+------------------------+--------+------------------------------------+
+| sync            | uptime_secs            | int    | Number of seconds since FPGA was   |
+|                 |                        |        | last programmed                    |
++-----------------+------------------------+--------+------------------------------------+
 
 
 
