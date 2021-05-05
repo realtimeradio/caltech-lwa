@@ -281,7 +281,8 @@ class Adc(Block):
             adc.enable_vtc_data(range(8), cs)
             adc.disable_vtc_data(range(8), cs)
         self._info("FMC %d Scanning data delays" % adc.fmc)
-        for dn, delay in enumerate(progressbar.progressbar(range(0, NTAPS, step_size))):
+        pb = progressbar.ProgressBar()
+        for dn, delay in enumerate(pb(range(0, NTAPS, step_size))):
             self._debug("FMC %d Scanning delay %d" % (adc.fmc, delay))
             for cs in range(8):
                 adc.load_delay_data(delay, range(8), cs)
