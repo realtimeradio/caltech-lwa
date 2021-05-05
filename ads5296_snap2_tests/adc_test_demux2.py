@@ -495,6 +495,7 @@ if __name__ == "__main__":
                 logger.info("Bitslipping because delay start too large")
                 for board in range(2):
                     adc.increment_bitslip_index(board)
+                errs = get_data_delays(adc, test_val=TEST_VAL)
             elif np.any(errs[-1,:,:] == 0):
                 logger.info("Bitslipping because delay end too small")
                 for board in range(2):

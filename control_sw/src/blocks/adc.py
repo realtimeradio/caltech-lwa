@@ -499,7 +499,19 @@ class Adc(Block):
         for adc in self.adcs:
             #self.reset() # Flush FIFOs and begin reading after next sync
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
+            for board in range(2):
+                adc.set_bitslip_index(0, board)
             errs = self._get_errs_by_delay(adc, test_val=TEST_VAL)
+            if np.any(errs[0,:,:] == 0):
+                self._info("Bitslipping because delay start too large")
+                for board in range(2):
+                    adc.increment_bitslip_index(board)
+                errs = self._get_errs_by_delay(adc, test_val=TEST_VAL)
+            elif np.any(errs[-1,:,:] == 0):
+                self._info("Bitslipping because delay end too small")
+                for board in range(2):
+                    adc.decrement_bitslip_index(board)
+                errs = self._get_errs_by_delay(adc, test_val=TEST_VAL)
             best, slack = self._get_best_delays(errs)
             self._info("FMC %d data lane delays:\n%s" % (adc.fmc, best))
             self._info("FMC %d data lane slacks:\n%s" % (adc.fmc, slack))
