@@ -130,6 +130,8 @@ class Snap2Fengine():
     def get_status_all(self):
         """
         Call the ``get_status`` methods of all blocks in ``self.blocks``.
+        If the FPGA is not programmed with F-engine firmware, will only
+        return basic FPGA status.
 
         :return: (status_dict, flags_dict) tuple.
             Each is a dictionary, keyed by the names of the blocks in
@@ -139,22 +141,31 @@ class Snap2Fengine():
         """
         stats = {}
         flags = {}
-        for blockname, block in self.blocks.items():
-            stats[blockname], flags[blockname] = block.get_status()
+        if not self.blocks['fpga'].is_programmed():
+            stats['fpga'], flags['fpga'] = self.blocks['fpga'].get_status()
+        else:
+            for blockname, block in self.blocks.items():
+                stats[blockname], flags[blockname] = block.get_status()
         return stats, flags
 
     def print_status_all(self, use_color=True):
         """
         Print the status returned by ``get_status`` for all blocks in the system.
+        If the FPGA is not programmed with F-engine firmware, will only
+        print basic FPGA status.
 
         :param use_color: If True, highlight values with colors based on
             error codes.
         :type use_color: bool
 
         """
-        for blockname, block in self.blocks.items():
-            print('Block %s stats:' % blockname)
-            block.print_status()
+        if not self.blocks['fpga'].is_programmed():
+            print('FPGA stats (not programmed with F-engine image):')
+            self.blocks['fpga'].print_status()
+        else:
+            for blockname, block in self.blocks.items():
+                print('Block %s stats:' % blockname)
+                block.print_status()
 
     def configure_output(self, base_ant, n_chans_per_packet, chans, ips, ports=None):
         """
