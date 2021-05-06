@@ -228,7 +228,7 @@ class Snap2FengineEtcdClient():
         self.mon_key = ETCD_MON_ROOT + "%d" % self.fid
         self.logger.debug("Command key is %s" % self.cmd_key)
         self.logger.debug("Command response key is %s" % self.cmd_resp_key)
-        self.logger.debug("Monitor key root is %s" % self.mon_root)
+        self.logger.debug("Monitor key root is %s" % self.mon_key)
         self._etcd_watch_ids = []
 
     def set_log_level(self, level):
