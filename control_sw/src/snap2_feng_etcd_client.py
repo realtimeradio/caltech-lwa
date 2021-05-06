@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import json
+import threading
 import numpy as np
 import etcd3
 from . import snap2_fengine
@@ -230,6 +231,22 @@ class Snap2FengineEtcdClient():
         self.logger.debug("Command response key is %s" % self.cmd_resp_key)
         self.logger.debug("Monitor key root is %s" % self.mon_key)
         self._etcd_watch_ids = []
+        #: Set trigger to stop polling
+        self._poll_stop_trigger = threading.Event()
+        #: Flag indicating polling is ongoing
+        self._is_polling = threading.Event()
+        #: Set trigger to pause polling (while executing a command)
+        self._poll_pause_trigger = threading.Event()
+        #: Flag indicating polling has paused
+        self._poll_is_paused = threading.Event()
+
+    def is_polling(self):
+        """
+        :return: True if the baground status polling thread is currently running.
+            False otherwise.
+        :rtype: bool
+        """
+        return self._is_polling.is_set()
 
     def set_log_level(self, level):
         """
@@ -422,7 +439,11 @@ class Snap2FengineEtcdClient():
             cmd_kwargs = command_dict.get("kwargs", {})
             ok = True
             try:
+                if self.is_polling():
+                    self._poll_pause_trigger.set()
+                    self._poll_is_paused.wait(timeout=10)
                 resp = cmd_method(**cmd_kwargs)
+                self._poll_pause_trigger.clear()
             except TypeError:
                 ok = False
                 err = "Command arguments invalid"
@@ -477,16 +498,48 @@ class Snap2FengineEtcdClient():
     def start_poll_stats_loop(self, pollsecs=10):
         """
         Start a loop, calling ``poll_stats`` every ``pollsecs`` seconds.
+        Internally, this method launches a background thread to poll
+        for stats, and sets the ``_is_polling`` Event attribute.
+        Stop polling with ``stop_poll_stats_loop()``.
+        Check for current polling state with ``is_polling()``.
 
         :param pollsecs: Number of seconds between poll loops.
         :type pollsecs: float
 
         """
-        while(True):
-            self.poll_stats(pollsecs)
-            time.sleep(pollsecs)
+        def poll_loop():
+            self.logger.info("Starting stats poll loop")
+            while(True):
+                self._is_polling.set()
+                if self._poll_stop_trigger.is_set():
+                    self.logger.info("Stopping stats poll loop")
+                    self._is_polling.clear()
+                    break
+                if not self._poll_pause_trigger.is_set():
+                    self.logger.info("Polling stats at %s" % time.ctime())
+                    self.poll_stats()
+                if self._poll_pause_trigger.is_set():
+                    self._poll_is_paused.set()
+                time.sleep(pollsecs)
+                self._poll_is_paused.clear()
+
+        self._poll_stop_trigger.clear()
+        poll_thread = threading.Thread(name='poll_loop', target=poll_loop)
+        poll_thread.start()
+
+    def stop_poll_stats_loop(self):
+        """
+        Stop the background polling loop. Will block until the polling
+        loop has closed gracefully.
+        """
+        self.logger.info("Triggering stats polling loop stop")
+        self._poll_stop_trigger.set()
+        while self.is_polling():
+            time.sleep(0.5)
+
 
     def __del__(self):
+        self.stop_poll_stats_loop()
         self.cancel_command_watch()
 
     #def program(self, fpgfile, force=False):
