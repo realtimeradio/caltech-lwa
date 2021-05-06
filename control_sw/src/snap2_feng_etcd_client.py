@@ -198,9 +198,6 @@ class Snap2FengineEtcdClient():
         log to stderr
     :type logger: logging.Logger
 
-    :param fpg_tmp_dir: Directory where fpg files should be temporarily
-        written prior to upload.
-    :type fpg_tmp_dir: str
     """
 
     def __init__(self, fhost, fid, etcdhost="etcdv3service.sas.pvt", etcdport=2379, logger=None):
