@@ -28,7 +28,7 @@ class Pfb(Block):
         return core_is_of
             
     def get_overflow_count(self):
-        return np.sum(self._get_overflow_count_per_core())
+        return sum(self._get_overflow_count_per_core())
 
     def get_status(self):
         stats = {}
