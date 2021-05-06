@@ -56,6 +56,13 @@ class Snap2Fengine():
             self.logger.error("Failed to inialize firmware blocks. "
                               "Maybe the board needs programming.")
 
+    def is_connected(self):
+        """
+        :return: True if there is a working connection to a SNAP2. False otherwise.
+        :rtype: bool
+        """
+        return self._cfpga.is_connected()
+
     def _initialize_blocks(self):
         """
         Initialize firmware blocks, populating the ``blocks`` attribute.

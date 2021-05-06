@@ -203,6 +203,16 @@ class Snap2FengineEtcdClient():
     def __init__(self, fhost, fid, etcdhost="etcdv3service.sas.pvt", etcdport=2379, logger=None):
         self.fhost = fhost
         self.fid = fid
+        #: Set trigger to stop polling
+        self._poll_stop_trigger = threading.Event()
+        #: Flag indicating polling is ongoing
+        self._is_polling = threading.Event()
+        #: Set trigger to pause polling (while executing a command)
+        self._poll_pause_trigger = threading.Event()
+        #: Flag indicating polling has paused
+        self._poll_is_paused = threading.Event()
+        #: List of etcd watch IDs, used to kill watch processes
+        self._etcd_watch_ids = []
         if logger is None:
             self.logger = logging.getLogger("Snap2FengineEtcdClient:%s" % self.fhost)
             stderr_handler = logging.StreamHandler(sys.stderr)
@@ -215,6 +225,16 @@ class Snap2FengineEtcdClient():
         except:
             self.logger.exception("Couldn't initialize F-Engine on host %s" % self.fhost)
             self.feng = None
+            raise RuntimeError("Couldn't initialize F-Engine on host %s" % self.fhost)
+        # If the SNAP isn't connected even though the instantiation worked, give up. TODO: be smarter
+        try:
+            is_connected = self.feng.is_connected()
+        except:
+            raise RuntimeError("Couldn't query SNAP connection status on host %s" % self.fhost)
+
+        if not is_connected:
+            raise RuntimeError("Couldn't connect to F-Engine on host %s" % self.fhost)
+
         self.ec = etcd3.Etcd3Client(host=etcdhost, port=etcdport)
         try:
             val, meta = self.ec.get('foo')
@@ -227,15 +247,6 @@ class Snap2FengineEtcdClient():
         self.logger.debug("Command key is %s" % self.cmd_key)
         self.logger.debug("Command response key is %s" % self.cmd_resp_key)
         self.logger.debug("Monitor key root is %s" % self.mon_key)
-        self._etcd_watch_ids = []
-        #: Set trigger to stop polling
-        self._poll_stop_trigger = threading.Event()
-        #: Flag indicating polling is ongoing
-        self._is_polling = threading.Event()
-        #: Set trigger to pause polling (while executing a command)
-        self._poll_pause_trigger = threading.Event()
-        #: Flag indicating polling has paused
-        self._poll_is_paused = threading.Event()
 
     def is_polling(self):
         """
@@ -537,7 +548,7 @@ class Snap2FengineEtcdClient():
 
     def __del__(self):
         self.stop_poll_stats_loop()
-        self.cancel_command_watch()
+        self.stop_command_watch()
 
     #def program(self, fpgfile, force=False):
     #    """
