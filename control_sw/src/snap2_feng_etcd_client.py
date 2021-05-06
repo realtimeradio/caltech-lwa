@@ -26,7 +26,7 @@ class Snap2FengineEtcdControl():
     :type logger: logging.Logger
 
     """
-    def __init__(self, etcdhost="localhost", logger=None):
+    def __init__(self, etcdhost="etcdv3service.sas.pvt", logger=None):
         if logger is None:
             self.logger = logging.getLogger("Snap2FengineEtcd")
             stderr_handler = logging.StreamHandler(sys.stderr)
