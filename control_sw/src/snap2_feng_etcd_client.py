@@ -463,9 +463,16 @@ class Snap2FengineEtcdClient():
                     "flags": flags,
                     "timestamp": time.time()
                     }
-            self.ec.put(self.mon_key, etcd_dict)
         except:
-            self.logger.exception("Stat polling failed!")
+            self.logger.exception("Error polling stats")
+        try:
+            etcd_dict_json = json.dumps(etcd_dict)
+        except:
+            self.logger.exception("Error JSON-encoding poll data")
+        try:
+            self.ec.put(self.mon_key, etcd_dict_json)
+        except:
+            self.logger.exception("Error pushing poll data to etcd")
 
     def start_poll_stats_loop(self, pollsecs=10):
         """
