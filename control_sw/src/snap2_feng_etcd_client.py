@@ -126,7 +126,7 @@ class Snap2FengineEtcdControl():
         cmd_key = ETCD_CMD_ROOT + "%d" % fid
         resp_key = ETCD_RESP_ROOT + "%d" % fid
         timestamp = time.time()
-        sequence_id = int(timestamp * 1e6)
+        sequence_id = str(int(timestamp * 1e6))
         command_json = self._format_command(
                            sequence_id,
                            timestamp,
@@ -323,7 +323,7 @@ class Snap2FengineEtcdClient():
         command response etcd channel.
 
         :param seq_id: Sequence ID of the command to which we are responding.
-        :type seq_id: int
+        :type seq_id: string
 
         :param processed_ok: Flag indicating the response is an error if False.
         :type status: bool
@@ -373,8 +373,8 @@ class Snap2FengineEtcdClient():
                 err = "JSON decode error"
                 self.logger.error(err)
                 # If decode fails, we don't even have a command ID, so send
-                # an error with seq_id -1
-                self._send_command_response(-1, False, err)
+                # an error with seq_id "Unknown"
+                self._send_command_response("Unknown", False, err)
                 return False
             self.logger.debug("Decoded command: %s" % command_dict)
 
@@ -382,17 +382,15 @@ class Snap2FengineEtcdClient():
                 if not field in command_dict:
                     err = "No '%s' field in message" % field
                     self.logger.error(err)
-                    self._send_command_response(-1, False, err)
+                    self._send_command_response("Unknown", False, err)
                     return False
 
-            seq_id = command_dict.get("id", -1)
-            if not isinstance(seq_id, int):
-                err = "Sequence ID not integer"
+            seq_id = command_dict.get("id", "Unknown")
+            if not isinstance(seq_id, str):
+                err = "Sequence ID not string"
                 self.logger.error(err)
-                self._send_command_response(-1, False, err)
+                self._send_command_response("Unknown", False, err)
                 return False
-            if seq_id < 0:
-                self.warning("Sequence ID %d is suspicious" % seq_id)
 
             try:
                 block = command_dict["val"].get("block", None)
@@ -462,7 +460,7 @@ class Snap2FengineEtcdClient():
                 self.logger.exception(err)
             if not ok:
                 self._send_command_response(seq_id, ok, err)
-                self.logger.error("Responded to command '%s' (ID %d): %s" % (command, seq_id, err))
+                self.logger.error("Responded to command '%s' (ID %s): %s" % (command, seq_id, err))
                 return False
             try:
                 if isinstance(resp, np.ndarray):
@@ -473,8 +471,8 @@ class Snap2FengineEtcdClient():
                 self.logger.exception("Failed to encode JSON")
                 resp = "JSON_ERROR"
             self._send_command_response(seq_id, ok, resp)
-            self.logger.info("Responded to command '%s' (ID %d): OK? %s" % (command, seq_id, ok))
-            self.logger.debug("Responded to command '%s' (ID %d): %s" % (command, seq_id, resp))
+            self.logger.info("Responded to command '%s' (ID %s): OK? %s" % (command, seq_id, ok))
+            self.logger.debug("Responded to command '%s' (ID %s): %s" % (command, seq_id, resp))
             return ok
 
     def poll_stats(self):
