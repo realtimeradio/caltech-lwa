@@ -1,0 +1,22 @@
+# Configuration file for systemd that keeps the LWA SNAP etcd <-> tftpy
+# gateway running
+#
+# Copy this file to /etc/systemd/system/. Then run
+# `systemctl enable lwa-feng-etcd@snaphostname`
+# and `systemctl start lwa-feng-etcd@snaphostname`.
+
+[Unit]
+Description=LWA SNAP etcd service for host %i
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=60
+User=ubuntu
+Group=ubuntu
+PIDFile=/var/run/lwa_feng_etcd_service.%i.pid
+ExecStart=/home/ubuntu/anaconda3/bin/lwa_start_feng_etcd_service.py --snaphost %i
+
+[Install]
+WantedBy=multi-user.target
+
