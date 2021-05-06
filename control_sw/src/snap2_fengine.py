@@ -239,7 +239,7 @@ class Snap2Fengine():
             print_config=True
         )
 
-    def program(self, fpgfile, force=False):
+    def program(self, fpgfile=None, force=False):
         """
         Program an .fpg file to a SNAP2 FPGA. If the name of the file
         matches what is already in flash, this command will simply
@@ -247,27 +247,37 @@ class Snap2Fengine():
         new bitstream will be uploaded. This will take <=5 minutes.
 
         :param fpgfile: The .fpg file to be loaded. Should be a path to a
-            valid .fpg file.
+            valid .fpg file. If None is given, the image currently in flash
+            will be loaded.
         :type fpgfile: str
 
         :param force: If True, write the firmware to flash even if the SNAP claims
-            it is already loaded.
+            it is already loaded. Has no effect if ``fpgfile=None``.
         :type force: boolean
 
         """
 
-        if not isinstance(fpgfile, str):
+        if fpgfile and not isinstance(fpgfile, str):
             raise TypeError("wrong type for fpgfile")
         if not isinstance(force, bool):
             raise TypeError("wrong type for force")
 
-        if not os.path.exists(fpgfile):
+        if fpgfile and not os.path.exists(fpgfile):
             raise RuntimeError("Path %s doesn't exist" % fpgfile)
 
-        self.logger.info("Loading firmware %s to %s" % (fpgfile, self.hostname))
-
         try:
-            self._cfpga.transport.upload_to_ram_and_program(fpgfile, force=force)
+            if fpgfile is None:
+                self.logger.info("Loading existing firmware to %s" % (self.hostname))
+                self._cfpga.transport.prog_user_image()
+                loaded_fpg = self._cfpga.transport.get_metadata()['filename']
+                self.logger.info("Loaded %s" % loaded_fpg)
+                try:
+                    self._cfpga.get_system_information()
+                except:
+                    self.logger.error("Failed to get firmware metadata from flash")
+            else:
+                self.logger.info("Loading firmware %s to %s" % (fpgfile, self.hostname))
+                self._cfpga.transport.upload_to_ram_and_program(fpgfile, force=force)
         except:
             self.logger.exception("Exception when loading new firmware")
             raise RuntimeError("Error during load")
