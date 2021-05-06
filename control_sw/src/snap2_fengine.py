@@ -152,8 +152,6 @@ class Snap2Fengine():
         :type use_color: bool
 
         """
-        print('Fengine stats:')
-        self.print_status(use_color)
         for blockname, block in self.blocks.items():
             print('Block %s stats:' % blockname)
             block.print_status()
