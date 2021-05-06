@@ -229,8 +229,8 @@ have the following fields:
       - Description
 
     * - id
-      - integer
-      - A unique integer associated with this   
+      - string
+      - A unique string associated with this   
         command, used to identify the command's
         response
 
@@ -301,9 +301,9 @@ a command should be issued with:
   +--------------+-------------------------------------+
 
 An example of a valid command JSON string, issued with the above parameters
-at UNIX time 1618060712.60 and with ``sequence_id=1`` is:
+at UNIX time 1618060712.60 and with ``id="1"`` is:
 
-``'{"command": "set_delay", "val": {"block": "delay", "timestamp": 1618060712.6, "kwargs": {"stream": 5, "delay": 100}}, "id": 1}'``
+``'{"command": "set_delay", "val": {"block": "delay", "timestamp": 1618060712.6, "kwargs": {"stream": 5, "delay": 100}}, "id": "1"}'``
 
 Consult the ``Snap2Fengine`` API details for a list of commands and their arguments.
 
@@ -324,8 +324,8 @@ This dictionary has the following fields:
       - Description
 
     * - id
-      - integer
-      - An integer matching the ``id`` field of
+      - string
+      - A string matching the ``id`` field of
         the command string to which this is a
         response
 
@@ -351,14 +351,14 @@ The response to the example command (assuming processing the command took
   +-----------------+-----------------------------------------------------------------+
   | Field           | Value                                                           |
   +=================+=================================================================+
-  | ``id``          | ``1``                                                           |
+  | ``id``          | ``"1"``                                                         |
   +-----------------+-----------------------------------------------------------------+
   | ``val``         | ``{timestamp: 1618060712.8, status: "normal", response: null}`` |
   +-----------------+-----------------------------------------------------------------+
 
 or, in JSON-encoded form:
 
-``'{"sequence_id": 1, "val": {"timestamp": 1618060712.8, "status": "normal", "response": null}}'``
+``'{"id": "1", "val": {"timestamp": 1618060712.8, "status": "normal", "response": null}}'``
 
 If the response ``status`` field is "error", common ``response`` error messages,
 and their meanings are:
@@ -366,8 +366,8 @@ and their meanings are:
 +-----------------------------+----------------------------------------------+
 | "JSON decode error"         | Command string could not be JSON-decoded.    |
 +=============================+==============================================+
-| "Sequence ID not integer"   | Sequence ID was not provided in the command  |
-|                             | string or decoded to a non-integer value.    |
+| "Sequence ID not string"    | Sequence ID was not provided in the command  |
+|                             | string or decoded to a non-string value.     |
 +-----------------------------+----------------------------------------------+
 | "Bad command format"        | Received command did not comply with         |
 |                             | formatting specifications. E.g. was missing  |
