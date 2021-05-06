@@ -85,7 +85,7 @@ class Snap2FengineEtcdControl():
             is an enoding error.
         """
         command_dict = {
-            "command": command,
+            "cmd": command,
             "val": {
                 "block": block,
                 "timestamp": timestamp,
@@ -101,12 +101,12 @@ class Snap2FengineEtcdControl():
             return
 
 
-    def send_command(self, host, block, command, kwargs={}, timeout=10.0):
+    def send_command(self, fid, block, command, kwargs={}, timeout=10.0):
         """
         Send a command to a SNAP2
 
-        :param host: Bost to which command should be sent.
-        :type host: str
+        :param fid: SNAP F-engine ID to which command should be sent.
+        :type fid: int
 
         :param block: Block to which command applies.
         :type block: str
@@ -123,8 +123,8 @@ class Snap2FengineEtcdControl():
 
         :return: Dictionary of values, dependent on the command response.
         """
-        cmd_key = ETCD_CMD_ROOT + "%s/command" % host
-        resp_key = ETCD_RESP_ROOT + "%s/response" % host
+        cmd_key = ETCD_CMD_ROOT + "%d" % fid
+        resp_key = ETCD_RESP_ROOT + "%d" % fid
         timestamp = time.time()
         sequence_id = int(timestamp * 1e6)
         command_json = self._format_command(
@@ -278,7 +278,7 @@ class Snap2FengineEtcdClient():
         """
         Listen for commands on this F-Engine's command key, as well as the
         "all SNAPs" key.
-        Stop listening with `cancel_command_watch()`
+        Stop listening with `stop_command_watch()`
 
         Internally, this method sets the `_etcd_watch_ids` attribute to
         allow a watch to later be cancelled.
@@ -294,7 +294,7 @@ class Snap2FengineEtcdClient():
                                   self._etcd_callback,
                                 )]
 
-    def cancel_command_watch(self):
+    def stop_command_watch(self):
         """
         Stop listening for commands on this F-Engine's command key, as well
         as the "all SNAPs" key.
@@ -436,7 +436,7 @@ class Snap2FengineEtcdClient():
                 else:
                     cmd_method = getattr(block_obj, command)
             # Process command
-            cmd_kwargs = command_dict.get("kwargs", {})
+            cmd_kwargs = command_dict["val"].get("kwargs", {})
             ok = True
             try:
                 if self.is_polling():
