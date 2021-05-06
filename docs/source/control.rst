@@ -220,7 +220,7 @@ Command Format
 Commands sent to the command key are JSON-encoded dictionaries, and should
 have the following fields:
 
-.. table:: Command Fields
+.. list-table::
     :widths: 20 20 60
     :header-rows: 1
 
@@ -315,7 +315,7 @@ Every command sent elicits the writing of JSON-encoded dictionary to the
 response key.
 This dictionary has the following fields:
 
-.. table:: Response Fields
+.. list-table::
     :widths: 20 20 60
     :header-rows: 1
 
@@ -396,7 +396,7 @@ Monitoring Interface
 
 The monitor key contains a nested dictionary with the following keys:
 
-.. table:: Monitor Fields
+.. list-table::
     :widths: 20 20 60
     :header-rows: 1
 
@@ -421,6 +421,7 @@ The monitor key contains a nested dictionary with the following keys:
         Where they exist, a value associated with a key indicates whether the
         corresponding value in the ``stats`` dictionary is out of normal range.
         Values in the flags dictionary are interpretted as in ``error_levels.py``; i.e.:
+
           - 0: Value is OK
           - 1: Value is different from operational normal
           - 2: Value is outside expected range
