@@ -14,58 +14,71 @@ class Eth(Block):
     :param logger: Logger instance to which log messages should be emitted.
     :type logger: logging.Logger
     """
-    _CORE_NAME = 'forty_gbe'
+    _CORE_NAME = 'forty_gbe' #: 40G core name in simulink
     def __init__(self, host, name, logger=None):
         super(Eth, self).__init__(host, name, logger)
+        self._get_eth_core()
 
-    def set_arp_table(self, macs):
+    def _get_eth_core(self):
         """
-        Set the ARP table with a list of MAC addresses.
-
-        :param macs: MAC addresses to be loaded into the ARP table. These
-            should be the form of a list of integers, such that the ``n``th
-            list entry contains the MAC address of the device with IP
-            `XXX.XXX.XXX.n`.
-        :type macs: list of int
-
+        Associate the CasperFpga GbE object associated with this block's Ethernet
+        interface with ``self.core``. Sets the ``core`` attribute to None
+        if the core can't be found.
         """
-        macs = list(macs)
-        macs_pack = struct.pack('>%dQ' % (len(macs)), *macs)
-        self.write(self._CORE_NAME, macs_pack, offset=0x3000)
+        self.core = host.gbes.get("%s_%s" % (name, self._CORE_NAME), None)
+        if self.core is None:
+            self._warning("Couldn't find Ethernet core. Will retry later")
 
     def add_arp_entry(self, ip, mac):
         """
         Set a single arp entry.
 
-        :param ip: The last octet of the IP address matching the given MAC.
-        :type ip: int
+        :param ip: The IP address matching the given MAC in dotted-quad
+            string notation. Eg. '10.10.10.1'.
+        :type ip: str
 
         :param mac: The MAC address to be loaded to the ARP cache.
         :type mac: int
         """
-        mac_pack = struct.pack('>Q', mac)
-        ip_offset = ip % 256
-        self.write(self._CORE_NAME, mac_pack, offset=0x3000 + ip_offset*8)
+        if self.core is None:
+            self._get_eth_core()
+        if self.core is None:
+            raise RuntimeError("Couldn't get Ethernet CasperFpga object")
+        self.core.set_single_arp_entry(ip, mac)
 
     def get_status(self):
-        #stat = self.read_uint('sw_txs_ss_status')
+        """
+        Get status and error flag dictionaries.
+        See also: ``status_reset``.
+
+        Status keys:
+
+            - tx_of : Count of TX buffer overflow events.
+            - tx_full : Count of TX buffer full events.
+            - tx_vld : Count of 64-bit words marked as valid for transmission.
+            - tx_ctr: Count of transmission End-of-Frames marked valid.
+
+        :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
+            status key-value pairs. flags_dict is
+            a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
+            held in this dictionary are as defined in `error_levels.py` and indicate
+            that values in the status dictionary are outside normal ranges.
+
+        """
         stats = {}
         flags = {}
-        #rv['rx_overrun'  ] =  (stat >> 0) & 1   
-        #rv['rx_bad_frame'] =  (stat >> 1) & 1
-        #rv['tx_of'       ] =  (stat >> 2) & 1   # Transmission FIFO overflow
-        #rv['tx_afull'    ] =  (stat >> 3) & 1   # Transmission FIFO almost full
-        #rv['tx_led'      ] =  (stat >> 4) & 1   # Transmission LED
-        #rv['rx_led'      ] =  (stat >> 5) & 1   # Receive LED
-        #rv['up'          ] =  (stat >> 6) & 1   # LED up
-        #rv['eof_cnt'     ] =  (stat >> 7) & (2**25-1)
-        stats['tx_of'        ] =  self.read_uint(self._CORE_NAME + '_txofctr')
-        stats['tx_full'      ] =  self.read_uint(self._CORE_NAME + '_txfullctr')
-        stats['tx_err'       ] =  self.read_uint(self._CORE_NAME + '_txerrctr')
-        stats['tx_vld'       ] =  self.read_uint(self._CORE_NAME + '_txvldctr')
-        stats['tx_ctr'       ] =  self.read_uint(self._CORE_NAME + '_txctr')
+        stats['tx_of'  ] = self.read_uint(self._CORE_NAME + '_txofctr')
+        stats['tx_full'] = self.read_uint(self._CORE_NAME + '_txfullctr')
+        stats['tx_vld' ] = self.read_uint(self._CORE_NAME + '_txvldctr')
+        stats['tx_ctr' ] = self.read_uint(self._CORE_NAME + '_txctr')
         if stats['tx_of'] > 0:
             flags['tx_of'] = FENG_ERROR
+        if stats['tx_full'] > 0:
+            flags['tx_full'] = FENG_WARNING
+        if stats['tx_ctr'] == 0:
+            flags['tx_ctr'] = FENG_WARNING
+        if stats['tx_vld'] == 0:
+            flags['tx_vld'] = FENG_WARNING
         return stats, flags
         
     def status_reset(self):
@@ -101,12 +114,35 @@ class Eth(Block):
         self.change_reg_bits('ctrl', 0, 1)
 
     def initialize(self, read_only=False):
+        """
+        Initialize the block.
+        See also: ``configure_source``, which sets transmission source attributes.
+
+        :param read_only: If False, reset error counters. If True, do nothing.
+        :type read_only: bool
+        """
         if read_only:
             return
-        #Set ip address of the SNAP
-        ipaddr = socket.inet_aton(socket.gethostbyname(self.host.host))
-        self.blindwrite(self._CORE_NAME, ipaddr, offset=0x10)
+        else:
+            self.status_reset()
 
-    def set_source_port(self, port):
+    def configure_source(self, mac, ip, port):
+        """
+        Configure the Ethernet interface source address parameters.
+
+        :param ip: IP address of the interface, in dotted-quad
+            string notation. Eg. '10.10.10.1'
+        :type ip: str
+
+        :param mac: MAC address of the interface.
+        :type mac: int
+
+        :param port: UDP source port for packets sent from the interface.
+        :type port: int
+        """
         # see config_10gbe_core in katcp_wrapper
-        self.blindwrite(self._CORE_NAME, struct.pack('>BBH', 0, 1, port), offset=0x20)
+        if self.core is None:
+            self._get_eth_core()
+        if self.core is None:
+            raise RuntimeError("Couldn't get Ethernet CasperFpga object")
+        self.core.configure_core(mac, ip, port)
