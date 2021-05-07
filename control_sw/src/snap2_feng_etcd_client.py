@@ -160,10 +160,13 @@ class Snap2FengineEtcdControl():
         if not hostname in self._fengs:
             self._fengs[hostname] = snap2_fengine.Snap2Fengine(hostname)
         feng = self._fengs[hostname]
-        if block not in feng.blocks:
+        if block == "feng":
+            block_obj = feng
+        elif block not in feng.blocks:
             raise RuntimeError("Block %s doesn't exist" % block)
-        block_obj = feng.blocks[block]
-        if not (hasattr(block_obj, cmd) and callable(getattr(block_obj, comd))):
+        else:
+            block_obj = feng.blocks[block]
+        if not (hasattr(block_obj, cmd) and callable(getattr(block_obj, cmd))):
             raise RuntimeError("Block %s doesn't have method %s" % (block, cmd))
         cmd_method = getattr(block_obj, cmd)
         try:
