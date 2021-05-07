@@ -25,7 +25,10 @@ class Eth(Block):
         interface with ``self.core``. Sets the ``core`` attribute to None
         if the core can't be found.
         """
-        self.core = host.gbes.get("%s_%s" % (name, self._CORE_NAME), None)
+        try:
+            self.core = self.host.gbes["%s_%s" % (self.name, self._CORE_NAME)]
+        except:
+            self.core = None
         if self.core is None:
             self._warning("Couldn't find Ethernet core. Will retry later")
 
