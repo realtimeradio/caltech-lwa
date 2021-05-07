@@ -26,11 +26,11 @@ if __name__ == "__main__":
                         help="Upload new bitstreams to flash, starting at address 0")
     parser.add_argument("--bootaddr", type=str, default=None,
                         help="Address from which booting should begin. "
-                             "Enter as binary string with no preceding '0x' "
+                             "Enter as a hex string with no preceding '0x' "
                              "If none is given, the FPGA will not be rebooted")
     parser.add_argument("--uploadaddr", type=str, default="0x0",
                         help="Address from which uploading or programming should begin. "
-                             "Enter as binary string with no preceding '0x'")
+                             "Enter as a hex string with with optional preceding '0x'")
     parser.add_argument("--host", type=str, default="snap2-rev2-10",
                         help="Snap hostname / IP address")
     parser.add_argument("--binaries", nargs='*',
