@@ -481,26 +481,44 @@ if __name__ == "__main__":
     #    reset(s) # Flush FIFOs and begin reading after next sync
     #    sync(s) # Need to sync after moving fclk to re-lock deserializers
     
-    for adc in fmcs: 
-        data_ok = True
-        #TEST_VAL = 0b0011001100
-        TEST_VAL = 0b0000010101
-        if args.cal_data:
+    if args.cal_data:
+        reset(s) # Flush FIFOs and begin reading after next sync
+        sync(s) # Need to sync after moving fclk to re-lock deserializers
+        for adc in fmcs: 
             for board in range(2):
                 adc.set_bitslip_index(0, board)
-            reset(s) # Flush FIFOs and begin reading after next sync
-            sync(s) # Need to sync after moving fclk to re-lock deserializers
+    for adc in fmcs: 
+        data_ok = True
+        #TEST_VAL = 0b1010101010
+        TEST_VAL = 0b0000010101
+        if args.cal_data:
             errs = get_data_delays(adc, test_val=TEST_VAL)
-            if np.any(errs[0,:,:] == 0):
-                logger.info("Bitslipping because delay start too large")
-                for board in range(2):
-                    adc.increment_bitslip_index(board)
-                errs = get_data_delays(adc, test_val=TEST_VAL)
-            elif np.any(errs[-1,:,:] == 0):
-                logger.info("Bitslipping because delay end too small")
-                for board in range(2):
-                    adc.decrement_bitslip_index(board)
-                errs = get_data_delays(adc, test_val=TEST_VAL)
+            for slip in range(2):
+                if not np.any(errs[:,:,:]==0):
+                    logger.info("Bitslipping because everywhere was bad")
+                    for board in range(2):
+                        adc.decrement_bitslip_index(board)
+                        adc.decrement_bitslip_index(board)
+                    errs = get_data_delays(adc, test_val=TEST_VAL)
+                else:
+                    break
+            for slip in range(5):
+                if np.any(errs[0:5,:,:] == 0):
+                    best = get_best_delays(errs)
+                    print_sweep(errs, best_delays=best)
+                    logger.info("Bitslipping because delay start too large")
+                    for board in range(2):
+                        adc.increment_bitslip_index(board)
+                    errs = get_data_delays(adc, test_val=TEST_VAL)
+                elif np.any(errs[-5:-1,:,:] == 0):
+                    logger.info("Bitslipping because delay end too small")
+                    best = get_best_delays(errs)
+                    print_sweep(errs, best_delays=best)
+                    for board in range(2):
+                        adc.decrement_bitslip_index(board)
+                    errs = get_data_delays(adc, test_val=TEST_VAL)
+                else:
+                    break
             best = get_best_delays(errs)
             logger.info("Data lane delays for FMC %d [chip x lane]" % adc.fmc)
             logger.info("%s" % best)
