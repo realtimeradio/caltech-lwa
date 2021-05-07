@@ -26,8 +26,12 @@ class Snap2FengineEtcdControl():
         log to stderr
     :type logger: logging.Logger
 
+    :param noetcd: If True, don't actually use the etcd interface --
+        just communicate with the SNAPs directly.
+    :param noetcd: bool
+
     """
-    def __init__(self, etcdhost="etcdv3service.sas.pvt", logger=None):
+    def __init__(self, etcdhost="etcdv3service.sas.pvt", logger=None, noetcd=False):
         if logger is None:
             self.logger = logging.getLogger("Snap2FengineEtcd")
             stderr_handler = logging.StreamHandler(sys.stderr)
@@ -36,13 +40,18 @@ class Snap2FengineEtcdControl():
         else:
             self.logger = logger
 
-        # Connect to ETCD and ping the connection
-        self.ec = etcd3.Etcd3Client(etcdhost)
-        try:
-            val, meta = self.ec.get('foo')
-        except:
-            self.logger.error("Failed to connect to Etcd server on host %s" % etcdhost)
-            raise
+        self.noetcd = noetcd
+        if not noetcd:
+            # Connect to ETCD and ping the connection
+            self.ec = etcd3.Etcd3Client(etcdhost)
+            try:
+                val, meta = self.ec.get('foo')
+            except:
+                self.logger.error("Failed to connect to Etcd server on host %s" % etcdhost)
+                raise
+        else:
+            self.ec = None  
+            self._fengs = {} #: List of active Fengine connections
 
     def set_log_level(self, level):
         """
@@ -102,6 +111,68 @@ class Snap2FengineEtcdControl():
 
 
     def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0):
+        """
+        Send a command to a SNAP2
+
+        :param fid: SNAP F-engine ID to which command should be sent.
+        :type fid: int
+
+        :param block: Block to which command applies.
+        :type block: str
+
+        :param cmd: Command to be sent
+        :type cmd: str
+
+        :param kwargs: Dictionary of key word arguments to be forwarded
+            to the chosen command method
+        :type kwargs: dict
+
+        :param timeout: Time, in seconds, to wait for a response to the command.
+        :type timeout: float
+
+        :return: Dictionary of values, dependent on the command response.
+        """
+        if self.noetcd:
+            return self._send_command_noetcd(fid, block, cmd, kwargs=kwargs)
+        else:
+            return self._send_command_etcd(fid, block, cmd, kwargs=kwargs, timeout=timeout)
+
+    def _send_command_noetcd(self, fid, block, cmd, kwargs):
+        """
+        Send a command to a SNAP2
+
+        :param fid: SNAP F-engine ID to which command should be sent.
+        :type fid: int
+
+        :param block: Block to which command applies.
+        :type block: str
+
+        :param cmd: Command to be sent
+        :type cmd: str
+
+        :param kwargs: Dictionary of key word arguments to be forwarded
+            to the chosen command method
+        :type kwargs: dict
+
+        :return: Dictionary of values, dependent on the command response.
+        """
+        hostname = "snap%.2d" % fid
+        if not hostname in self._fengs:
+            self._fengs[hostname] = snap2_fengine.Snap2Fengine(hostname)
+        feng = self._fengs[hostname]
+        if block not in feng.blocks:
+            raise RuntimeError("Block %s doesn't exist" % block)
+        block_obj = feng.blocks[block]
+        if not (hasattr(block_obj, cmd) and callable(getattr(block_obj, comd))):
+            raise RuntimeError("Block %s doesn't have method %s" % (block, cmd))
+        cmd_method = getattr(block_obj, cmd)
+        try:
+            return cmd_method(**kwargs)
+        except TypeError:
+            raise TypeError("Wrong command arguments")
+        
+
+    def _send_command_etcd(self, fid, block, cmd, kwargs={}, timeout=10.0):
         """
         Send a command to a SNAP2
 
