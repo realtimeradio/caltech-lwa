@@ -75,7 +75,7 @@ class Snap2FengineEtcdControl():
         """
         Format a command to be sent via ETCD
 
-        :param sequence_id: The ``sequence_id`` command field
+        :param sequence_id: The ``id`` command field
         :type block: int
 
         :param timestamp: The ``timestamp`` command field
