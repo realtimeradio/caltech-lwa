@@ -1,4 +1,5 @@
 import struct
+import numpy as np
 from .block import Block
 
 class ChanReorder(Block):
