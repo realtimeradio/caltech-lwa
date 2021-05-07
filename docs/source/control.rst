@@ -268,7 +268,7 @@ blocks attribute. I.e.:
   sync
 
 
-Allowed values for **``command``** are any of the methods which can be called
+Allowed values for **``cmd``** are any of the methods which can be called
 against ``Snap2Fengine.blocks[block]``.
 For example, for the ``delay`` block, allowed commands are:
 
@@ -294,7 +294,7 @@ a command should be issued with:
   +--------------+-------------------------------------+
   | Field        | Value                               |
   +==============+=====================================+
-  | ``command``  | ``"set_delay"``                     |
+  | ``cmd``      | ``"set_delay"``                     |
   +--------------+-------------------------------------+
   | ``val``      | ``{block: "delay", kwargs:          |
   |              | {"stream": 5, "delay": 100}``       |
@@ -303,7 +303,7 @@ a command should be issued with:
 An example of a valid command JSON string, issued with the above parameters
 at UNIX time 1618060712.60 and with ``id="1"`` is:
 
-``'{"command": "set_delay", "val": {"block": "delay", "timestamp": 1618060712.6, "kwargs": {"stream": 5, "delay": 100}}, "id": "1"}'``
+``'{"cmd": "set_delay", "val": {"block": "delay", "timestamp": 1618060712.6, "kwargs": {"stream": 5, "delay": 100}}, "id": "1"}'``
 
 Consult the ``Snap2Fengine`` API details for a list of commands and their arguments.
 
@@ -372,7 +372,7 @@ and their meanings are:
 | "Bad command format"        | Received command did not comply with         |
 |                             | formatting specifications. E.g. was missing  |
 |                             | a required field such as ``block`` or        |
-|                             | ``command``.                                 |
+|                             | ``cmd``.                                     |
 +-----------------------------+----------------------------------------------+
 | "Command invalid"           | Received command doesn't exist in the        |
 |                             | ``Snap2Fengine`` API, or is prohibited for   |

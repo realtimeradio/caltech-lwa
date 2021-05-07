@@ -62,7 +62,7 @@ class Snap2FengineEtcdControl():
         elif level == "warning":
             self.logger.setLevel(logging.WARNING)
 
-    def _format_command(self, sequence_id, timestamp, block, command, kwargs={}):
+    def _format_command(self, sequence_id, timestamp, block, cmd, kwargs={}):
         """
         Format a command to be sent via ETCD
 
@@ -75,8 +75,8 @@ class Snap2FengineEtcdControl():
         :param block: The ``block`` command field
         :type block: str
 
-        :param command: The ``command`` command field
-        :type command: str
+        :param cmd: The ``cmd`` command field
+        :type cmd: str
 
         :param kwargs: The ``kwargs`` command field
         :type kwargs: dict
@@ -85,7 +85,7 @@ class Snap2FengineEtcdControl():
             is an enoding error.
         """
         command_dict = {
-            "cmd": command,
+            "cmd": cmd,
             "val": {
                 "block": block,
                 "timestamp": timestamp,
@@ -101,7 +101,7 @@ class Snap2FengineEtcdControl():
             return
 
 
-    def send_command(self, fid, block, command, kwargs={}, timeout=10.0):
+    def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0):
         """
         Send a command to a SNAP2
 
@@ -111,8 +111,8 @@ class Snap2FengineEtcdControl():
         :param block: Block to which command applies.
         :type block: str
 
-        :param command: Command to be sent
-        :type command: str
+        :param cmd: Command to be sent
+        :type cmd: str
 
         :param kwargs: Dictionary of key word arguments to be forwarded
             to the chosen command method
@@ -131,7 +131,7 @@ class Snap2FengineEtcdControl():
                            sequence_id,
                            timestamp,
                            block,
-                           command,
+                           cmd,
                            kwargs = kwargs,
                        )
         if command_json is None:
