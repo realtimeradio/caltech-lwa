@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import datetime
 import json
 import threading
 import numpy as np
@@ -559,10 +560,11 @@ class Snap2FengineEtcdClient():
             time.sleep(10)
         try:
             stats, flags = self.feng.get_status_all()
+            t = datetime.datetime.utcnow().astimezone().isoformat()
             etcd_dict = {
                     "stats": stats,
                     "flags": flags,
-                    "timestamp": time.time()
+                    "time": t
                     }
         except:
             self.logger.exception("Error polling stats")
