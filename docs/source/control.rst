@@ -241,7 +241,7 @@ have the following fields:
     * - val
       - dictionary
       - A dictionary containing keys:
-          - timestamp (float) The UNIX time when this command was issued.
+          - time (string) The time these statistics were gathered, in ISO 3339 format.
           - block (string): The firmware block name to which this command applies.
           - kwargs (dictionary): Dictionary of arguments required by the ``block.command`` method.
 
