@@ -387,7 +387,7 @@ class Adc(Block):
                 self._debug("Chip %d, Lane %d: Best delay: %d (slack %d)" % (c, l, best_delay[c,l], best_slack[c,l]))
         return best_delay.tolist(), best_slack.tolist()
     
-    def set_delays(self, adc, delays):
+    def _set_delays(self, adc, delays):
         """
         Set IDELAY tap values for all ADC data lanes on an FMC port.
 
@@ -501,27 +501,27 @@ class Adc(Block):
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
             for board in range(2):
                 adc.set_bitslip_index(0, board)
-            errs = self._get_errs_by_delay(adc, test_val=TEST_VAL)
+            errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL))
             if np.any(errs[0,:,:] == 0):
                 self._info("Bitslipping because delay start too large")
                 for board in range(2):
                     adc.increment_bitslip_index(board)
-                errs = self._get_errs_by_delay(adc, test_val=TEST_VAL)
+                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL))
             elif np.any(errs[-1,:,:] == 0):
                 self._info("Bitslipping because delay end too small")
                 for board in range(2):
                     adc.decrement_bitslip_index(board)
-                errs = self._get_errs_by_delay(adc, test_val=TEST_VAL)
+                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL))
             best, slack = self._get_best_delays(errs)
             self._info("FMC %d data lane delays:\n%s" % (adc.fmc, best))
             self._info("FMC %d data lane slacks:\n%s" % (adc.fmc, slack))
-            if np.any(slack < 20):
-                self.warning("Delay solutions have small slack")
+            if np.any(np.array(slack) < 20):
+                self._warning("Delay solutions have small slack")
             self.print_sweep(errs, best_delays=best)
             #for cn, chipdelay in enumerate(best):
             #    data_delays_fh.write(",".join(map(str, chipdelay)))
             #    data_delays_fh.write("\n")
-            self.set_delays(adc, best)
+            self._set_delays(adc, best)
             #do_bitslip(adc)
             errs = np.array(self._get_errs(adc, use_ramp=use_ramp, test_val=TEST_VAL))
             adc_ok = (errs.sum() == 0)
