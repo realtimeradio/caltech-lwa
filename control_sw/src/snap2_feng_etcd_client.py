@@ -229,7 +229,7 @@ class Snap2FengineEtcdControl():
                     self._response = response_dict
                     self._response_received = True
                 else:
-                    self.logger.debug("Seq ID %d didn't match expected (%d)" % (resp_id, sequence_id))
+                    self.logger.debug("Seq ID %s didn't match expected (%s)" % (resp_id, sequence_id))
 
         # Begin watching response channel and then send message
         watch_id = self.ec.add_watch_callback(resp_key, response_callback)
