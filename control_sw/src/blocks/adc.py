@@ -128,7 +128,10 @@ class Adc(Block):
             #self.reset()
             #self.sync()
             #self.calibrate()
-        self.mmcm_is_locked()
+        is_locked = self.mmcm_is_locked()
+        if not is_locked:
+            self._error("MMCMs not locked!")
+            raise RuntimeError("MMCMs not locked!")
         # Flush FIFOs
         #for i in range(10): self.reset()
         #for i in range(10): self.sync()
@@ -480,7 +483,7 @@ class Adc(Block):
             for i in range(8):
                 adc.enable_test_pattern('data', i)
 
-    def calibrate(self, use_ramp=False):
+    def calibrate(self, use_ramp=False, fail_hard=True):
         """
         Compute and set all ADC data lane input delays to their optimal values.
         After this call, the ADCs are left in test mode.
@@ -490,6 +493,10 @@ class Adc(Block):
             If False, perform this verification with the same constant test
             value used for the calibration procedure.
         :type use_ramp: bool
+
+        :param fail_hard: If True, raise an exception if the calibration run
+            doesn't go to plan.
+        :type fail_hard: bool
 
         :return: True if the calibration procedure succeeded. False otherwise.
         :rtype: bool
@@ -527,6 +534,8 @@ class Adc(Block):
             adc_ok = (errs.sum() == 0)
             if not adc_ok:
                 self._error("FMC %d: Data calibration Failure!" % adc.fmc)
+                if fail_hard:
+                    raise RuntimeError("FMC %d: Data calibration Failure!" % adc.fmc)
                 ok = False
         return ok
 
