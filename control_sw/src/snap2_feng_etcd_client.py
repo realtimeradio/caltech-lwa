@@ -484,38 +484,30 @@ class Snap2FengineEtcdClient():
                 self._send_command_response(seq_id, False, err)
                 return False
 
-            # Deal with a couple of special cases
+            # Only allow commands to reference blocks which are in the
+            # Fengine.blocks dict, or Fengine itself
             if block == "feng":
-                if command in ["program", "get_fpga_stats", "configure_output"]:
-                    block_obj = self.feng
-                else:
-                    self.logger.error("Received command invalid!")
-                    err = "Command invalid"
-                    self._send_command_response(seq_id, False, err)
-                    return False
-                cmd_method = getattr(block_obj, command)
+                block_obj = self.feng
+            elif not block in self.feng.blocks:
+                self.logger.error("Received block %s not allowed!" % block)
+                err = "Wrong block"
+                self._send_command_response(seq_id, False, err)
+                return False
             else:
-                # Only allow commands to reference blocks which are in the Fengine.blocks dict
-                if not block in self.feng.blocks:
-                    self.logger.error("Received block %s not allowed!" % block)
-                    err = "Wrong block"
-                    self._send_command_response(seq_id, False, err)
-                    return False
-                else:
-                    block_obj = self.feng.blocks[block]
-                # Check command is valid
-                if command.startswith("_"):
-                    self.logger.error("Received command starting with underscore!")
-                    err = "Command not allowed"
-                    self._send_command_response(seq_id, False, err)
-                    return False
-                if not (hasattr(block_obj, command) and callable(getattr(block_obj, command))):
-                    self.logger.error("Received command invalid!")
-                    err = "Command invalid"
-                    self._send_command_response(seq_id, False, err)
-                    return False
-                else:
-                    cmd_method = getattr(block_obj, command)
+                block_obj = self.feng.blocks[block]
+            # Check command is valid
+            if command.startswith("_"):
+                self.logger.error("Received command starting with underscore!")
+                err = "Command not allowed"
+                self._send_command_response(seq_id, False, err)
+                return False
+            if not (hasattr(block_obj, command) and callable(getattr(block_obj, command))):
+                self.logger.error("Received command invalid!")
+                err = "Command invalid"
+                self._send_command_response(seq_id, False, err)
+                return False
+            else:
+                cmd_method = getattr(block_obj, command)
             # Process command
             cmd_kwargs = command_dict["val"].get("kwargs", {})
             ok = True
