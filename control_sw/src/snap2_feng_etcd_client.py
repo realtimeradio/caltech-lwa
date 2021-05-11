@@ -597,7 +597,11 @@ class Snap2FengineEtcdClient():
                     self.poll_stats()
                 if self._poll_pause_trigger.is_set():
                     self._poll_is_paused.set()
-                time.sleep(pollsecs)
+                # Check pause flag every 100ms
+                for i in range(int(pollsecs / 0.1)):
+                    time.sleep(0.1)
+                    if self._poll_pause_trigger.is_set():
+                        self._poll_is_paused.set()
                 self._poll_is_paused.clear()
 
         self._poll_stop_trigger.clear()
