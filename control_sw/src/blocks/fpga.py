@@ -112,7 +112,7 @@ class Fpga(Block):
               firmware. Available only if the board is programmed.
 
             - fw_build_time (int): The build time of the firmware,
-              as a ``time.ctime`` string. Available only if the board 
+              as an ISO format string. Available only if the board 
               is programmed.
 
             - sys_mon (str) : ``'reporting'`` if the current firmware has a
@@ -158,7 +158,7 @@ class Fpga(Block):
         stats['sw_version'] = __version__
         if stats['programmed']:
             stats['fw_version'] = self.get_firmware_version()
-            stats['fw_build_time'] = self.time.ctime(get_build_time())
+            stats['fw_build_time'] = datetime.datetime.fromtimestamp(get_build_time()).isoformat()
         try:
             stats.update(self.sysmon.get_all_sensors())
             stats['sys_mon'] = 'reporting'
