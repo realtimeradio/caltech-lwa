@@ -35,6 +35,16 @@ class Fpga(Block):
 
         self.sysmon = casperfpga.sysmon.Sysmon(self.host)
 
+    def get_fpga_clock(self):
+        """
+        Estimate the FPGA clock, by polling the ``sys_clkcounter`` register.
+        
+        :return: Estimated FPGA clock in MHz
+        :rtype: float
+
+        """
+        return self.host.estimate_fpga_clock()
+
     def get_firmware_version(self):
         """
         Read the firmware version register and return the contents as a string.
