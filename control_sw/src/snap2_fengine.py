@@ -246,6 +246,12 @@ class Snap2Fengine():
             print_config=True
         )
 
+    def deprogram(self):
+        """
+        Reprogram the FPGA into its default boot image.
+        """
+        self._cfpga.transport.progdev(0)
+
     def program(self, fpgfile=None, force=False):
         """
         Program an .fpg file to a SNAP2 FPGA. If the name of the file
