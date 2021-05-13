@@ -567,8 +567,8 @@ Entries in the ``stats`` dictionary are shown below
     |                 |                        |        | pulses in units of FPGA clock      |
     |                 |                        |        | cycles.                            |
     +-----------------+------------------------+--------+------------------------------------+
-    | sync            | uptime_secs            | int    | Number of seconds since FPGA was   |
-    |                 |                        |        | last programmed                    |
+    | sync            | uptime_fpga_clks       | int    | Number of FPGA clock ticks since   |
+    |                 |                        |        | the FPGA was last programmed       |
     +-----------------+------------------------+--------+------------------------------------+
 
 
