@@ -130,9 +130,32 @@ class Sync(Block):
             self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD)
 
     def get_status(self):
+        """
+        Get status and error flag dictionaries.
+
+        Status keys:
+
+            - uptime_fpga_clks (int) : Number of FPGA clock ticks (= ADC clock ticks)
+              since the FPGA was last programmed.
+
+            - period_fpga_clks (int) : Number of FPGA clock ticks (= ADC clock ticks)
+              between the last two internal sync pulses.
+
+            - ext_count (int) : The number of external sync pulses since the FPGA
+              was last programmed.
+
+            - int_count (int) : The number of internal sync pulses since the FPGA
+              was last programmed.
+
+        :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
+            status key-value pairs. flags_dict is
+            a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
+            held in this dictionary are as defined in `error_levels.py` and indicate
+            that values in the status dictionary are outside normal ranges.
+        """
         stats = {}
         flags = {}
-        stats['uptime_secs'] = self.uptime()
+        stats['uptime_fpga_clks'] = self.uptime()
         stats['period_fpga_clks'] = self.period()
         stats['ext_count'] = self.count_ext()
         stats['int_count'] = self.count_int()
