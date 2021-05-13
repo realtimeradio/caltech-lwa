@@ -101,8 +101,9 @@ class Fpga(Block):
             - fw_version (str): The version string of the currently running
               firmware. Available only if the board is programmed.
 
-            - fw_build_time (int): The build time, in seconds since the UNIX
-              epoch. Available only if the board is programmed.
+            - fw_build_time (int): The build time of the firmware,
+              as a ``time.ctime`` string. Available only if the board 
+              is programmed.
 
             - sys_mon (str) : ``'reporting'`` if the current firmware has a
               functioning system monitor module. Otherwise ``'not reporting'``,
@@ -147,7 +148,7 @@ class Fpga(Block):
         stats['sw_version'] = __version__
         if stats['programmed']:
             stats['fw_version'] = self.get_firmware_version()
-            stats['fw_build_time'] = self.get_build_time()
+            stats['fw_build_time'] = self.time.ctime(get_build_time())
         try:
             stats.update(self.sysmon.get_all_sensors())
             stats['sys_mon'] = 'reporting'
