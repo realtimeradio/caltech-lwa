@@ -56,7 +56,10 @@ def get_snapshot(adcs, signed=False, use_embedded=USE_EMBEDDED_BRAM):
     n_adcs = len(adcs)
     out = np.zeros([n_adcs, 8,8,NSAMPLES])
     if use_embedded:
-        trig_reg = 'snapshot_trig'
+        if args.fengine_regmap:
+            trig_reg = 'adc_snapshot_trigger'
+        else:
+            trig_reg = 'snapshot_trig'
     else:
         trig_reg = '%s_snapshot0_snapshot_ctrl' % FMC_NAMES[0]
     adcs[0].fpga.write_int(trig_reg, 0b0)          
@@ -127,7 +130,8 @@ def get_data_delays(a, step_size=TAP_STEP_SIZE, test_val=0b0000010101):
         a.enable_vtc_data(range(8), cs)
         a.disable_vtc_data(range(8), cs)
     logger.info("Scanning data delays")
-    for dn, delay in enumerate(progressbar.progressbar(range(0, NTAPS, step_size))):
+    pb = progressbar.ProgressBar()
+    for dn, delay in enumerate(pb(range(0, NTAPS, step_size))):
         for cs in range(8):
             a.load_delay_data(delay, range(8), cs)
         d[dn] = get_snapshot([a])[0]
@@ -266,15 +270,25 @@ def use_data(a):
     for i in range(8):
         a.enable_test_pattern('data', i)
 
-def sync(fpga):
-    fpga.write_int('sync', 0)
-    fpga.write_int('sync', 1)
-    fpga.write_int('sync', 0)
+def sync(fpga, f_firmware=False):
+    if f_firmware:
+        regname = 'adc_sync'
+    else:
+        regname = 'sync'
+    logger.debug("Issuing sync")
+    fpga.write_int(regname, 0)
+    fpga.write_int(regname, 1)
+    fpga.write_int(regname, 0)
 
-def reset(fpga):
-    fpga.write_int('rst', 0)
-    fpga.write_int('rst', 1)
-    fpga.write_int('rst', 0)
+def reset(fpga, f_firmware=False):
+    if f_firmware:
+        regname = 'adc_rst'
+    else:
+        regname = 'rst'
+    logger.debug("Issuing reset")
+    fpga.write_int(regname, 0)
+    fpga.write_int(regname, 1)
+    fpga.write_int(regname, 0)
 
 def cal_fclk(a):
     delay0, slack0 = a.calibrate_fclk(0)
@@ -304,6 +318,8 @@ if __name__ == "__main__":
                         help="Reset and initialize ADCs")
     parser.add_argument("--sync", action="store_true",
                         help="Strobe ADC sync line")
+    parser.add_argument("--fengine_regmap", action="store_true",
+                        help="Use register names appropriate for production F-engine firmware")
     parser.add_argument("--use_ramp", action="store_true",
                         help="Turn on ramp test mode")
     #parser.add_argument("--cal_fclk", action="store_true",
@@ -418,8 +434,8 @@ if __name__ == "__main__":
                     adc.disable_rst_data(range(8), cs)
                     adc.disable_rst_fclk(board)
         # Flush FIFOs
-        reset(s)
-        sync(s)
+        reset(s, f_firmware=args.fengine_regmap)
+        sync(s, f_firmware=args.fengine_regmap)
 
     for adc in fmcs:
         if args.use_ramp:
@@ -428,7 +444,7 @@ if __name__ == "__main__":
             use_data(adc)
             
     if args.sync:
-        sync(s)
+        sync(s, f_firmware=args.fengine_regmap)
 
     for adc in fmcs:
         for i in range(2):
@@ -445,9 +461,12 @@ if __name__ == "__main__":
         exit()
     else:
         # Only print these if the board is clocking. Otherwise they might be wrong and misleading.
-        logger.info("Test firmware version: %s" % s.read_uint("ver"))
-        fmc_clk_source = ["A", "B"][s.read_uint("clk_source")]
-        logger.info("Test firmware clock source: FMC %s" % fmc_clk_source)
+        if not args.fengine_regmap:
+            logger.info("Test firmware version: %d" % s.read_uint("ver"))
+            fmc_clk_source = ["A", "B"][s.read_uint("clk_source")]
+            logger.info("Test firmware clock source: FMC %s" % fmc_clk_source)
+        else:
+            logger.info("Test firmware version: 0x%x" % s.read_uint("version_version"))
 
 
    
@@ -482,8 +501,8 @@ if __name__ == "__main__":
     #    sync(s) # Need to sync after moving fclk to re-lock deserializers
     
     if args.cal_data:
-        reset(s) # Flush FIFOs and begin reading after next sync
-        sync(s) # Need to sync after moving fclk to re-lock deserializers
+        reset(s, f_firmware=args.fengine_regmap) # Flush FIFOs and begin reading after next sync
+        sync(s, f_firmware=args.fengine_regmap) # Need to sync after moving fclk to re-lock deserializers
         for adc in fmcs: 
             for board in range(2):
                 adc.set_bitslip_index(0, board)
@@ -555,8 +574,8 @@ if __name__ == "__main__":
             
     #if args.cal_data or args.cal_fclk:
     if args.cal_data:
-        reset(s)
-        sync(s)
+        reset(s, f_firmware=args.fengine_regmap)
+        sync(s, f_firmware=args.fengine_regmap)
         if ok:
             logger.info("#######################")
             logger.info("# Calibration SUCCESS #")
