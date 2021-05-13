@@ -158,7 +158,7 @@ class Fpga(Block):
         stats['sw_version'] = __version__
         if stats['programmed']:
             stats['fw_version'] = self.get_firmware_version()
-            stats['fw_build_time'] = datetime.datetime.fromtimestamp(get_build_time()).isoformat()
+            stats['fw_build_time'] = datetime.datetime.fromtimestamp(self.get_build_time()).isoformat()
         try:
             stats.update(self.sysmon.get_all_sensors())
             stats['sys_mon'] = 'reporting'
