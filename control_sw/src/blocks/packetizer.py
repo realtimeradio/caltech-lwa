@@ -229,9 +229,9 @@ class Packetizer(Block):
 
         for i in range(n_packets):
             channel_index = channel_indices[i]
-            print(channel_index)
+            #print(channel_index)
             channel_block_id = (channel_index % nchans_per_xeng ) // nchans_per_packet
-            print(channel_block_id)
+            #print(channel_block_id)
             chans[packet_starts[i]] = (channel_block_id << 16) + channel_index
             ants[packet_starts[i]]  = ant_indices[i]
             flags[packet_starts[i]] = format_flags(is_header=True, is_valid=True)
