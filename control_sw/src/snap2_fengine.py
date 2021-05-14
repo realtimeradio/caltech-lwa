@@ -174,7 +174,7 @@ class Snap2Fengine():
                 print('Block %s stats:' % blockname)
                 block.print_status()
 
-    def configure_output(self, base_ant, n_chans_per_packet, chans, ips, ports=None):
+    def configure_output(self, base_ant, n_chans_per_packet, chans, ips, ports=None, debug=False):
         """
         Configure channel reordering and packetizer modules to emit a selection
         of frequency channels.
@@ -207,18 +207,31 @@ class Snap2Fengine():
             transmitted. Addressing rules are the same as for ``ips``. If
             None, all packets are transmitted to UDP port 10000.
         :type ports: list of int
+
+        :param debug: Set to True to print extra diagnostic information.
+        :type debug: bool
         """
         chans = np.array(chans)
         assert chans.shape[0] % n_chans_per_packet == 0, \
-            "Number of chans to send must be an inter number of packets"
+            "Number of chans to send must be an integer number of packets"
         n_packets = chans.shape[0] // n_chans_per_packet
+
+        assert n_chans_per_packet % self.reorder.n_parallel_chans == 0, \
+            "Number of channels per packet must be an integer multiple of %d" % self.reorder.n_parallel_chans
 
         packet_starts, packet_payloads, channel_indices = \
             self.packetizer.get_packet_info(n_chans_per_packet, chan_block_size=self.reorder.n_parallel_chans)
 
+        self.logger.debug("Packet starts: %s" % packet_starts)
+        self.logger.debug("Packet payloads: %s" % packet_payloads)
+        self.logger.debug("Channel indices: %s" % channel_indices)
+
         packet_starts = packet_starts[0:n_packets]
         packet_payloads = packet_payloads[0:n_packets]
         channel_indices = channel_indices[0:n_packets]
+        self.logger.debug("Reduced Packet starts: %s" % packet_starts)
+        self.logger.debug("Reduced Packet payloads: %s" % packet_payloads)
+        self.logger.debug("Reduced Channel indices: %s" % channel_indices)
         ports = ports or [10000]*n_packets
         assert n_packets == len(packet_starts)
         assert len(ips) == n_packets
@@ -243,7 +256,7 @@ class Snap2Fengine():
             ant_indices,
             ips,
             ports,
-            print_config=True
+            print_config=debug,
         )
 
     def deprogram(self):

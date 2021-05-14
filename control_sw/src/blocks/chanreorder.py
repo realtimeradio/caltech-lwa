@@ -47,6 +47,7 @@ class ChanReorder(Block):
         :type order: list of int
         """
         order = list(order)
+        self._debug("Channel reorder map: %s" % order)
         if len(order) != self.n_chans:
             self._error("Tried to reorder channels, but map was the wrong length")
             raise ValueError
@@ -58,6 +59,10 @@ class ChanReorder(Block):
             start_chan = order[block_start]
             req_stop_chan = start_chan + self.n_parallel_chans
             if not (order[block_start : block_stop] == list(range(start_chan, req_stop_chan))):
+                self._info("order[block_start]: %d" % order[block_start])
+                self._info("order[block_stop]: %d" % order[block_stop])
+                self._info("start_chan: %d" % start_chan)
+                self._info("req_stop_chan: %d" % req_stop_chan)
                 self._error('Can only reorder channels in blocks of 8')
                 raise ValueError
         # The order to be written should reindex taking into account the parallel channels

@@ -1,15 +1,10 @@
 #! /usr/bin/env python
 
+import os
 import argparse
-from lwa_f import LwaF, helpers, __version__
-import numpy as np
-import struct
-import collections
-import casperfpga
-import redis
-import time
 import yaml
 import logging
+from lwa_f import snap2_fengine
 
 def main():
     parser = argparse.ArgumentParser(description='Interact with a programmed SNAP board for testing and '\
@@ -17,109 +12,129 @@ def main():
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--config_file', type=str, default=None,
                         help = 'YAML configuration file with hosts and channels list')
-    parser.add_argument('-r', dest='redishost', type=str, default='redishost',
-                        help ='Host servicing redis requests')
-    parser.add_argument('-s', dest='sync', action='store_true', default=False,
-                        help ='Use this flag to sync the F-engine(s) and Noise generators from PPS')
-    parser.add_argument('-m', dest='mansync', action='store_true', default=False,
-                        help ='Use this flag to manually sync the F-engines with an asynchronous software trigger')
-    parser.add_argument('-i', dest='initialize', action='store_true', default=None,
-                        help ='Use this flag to initialize all F-engine(s)')
-    parser.add_argument('-t', dest='tvg', action='store_true', default=False,
+    parser.add_argument('-s', dest='sync', action='store_true',
+                        help ='Use this flag to sync the F-engine and Noise generators from PPS')
+    parser.add_argument('-m', dest='mansync', action='store_true',
+                        help ='Use this flag to manually sync the F-engine with an asynchronous software trigger')
+    parser.add_argument('-i', dest='initialize', action='store_true',
+                        help ='Use this flag to initialize an F-engine')
+    parser.add_argument('-o', dest='outputconfig', type=str, default=None,
+                        help ='YAML output configuration used to set up data outputs')
+    parser.add_argument('-t', dest='tvg', action='store_true',
                         help ='Use this flag to switch to EQ TVG outputs')
-    parser.add_argument('-n', dest='noise', action='store_true', default=False,
+    parser.add_argument('-n', dest='noise', action='store_true',
                         help ='Use this flag to switch to Noise inputs')
-    parser.add_argument('-e', dest='eth', action='store_true', default=False,
+    parser.add_argument('-e', dest='eth', action='store_true',
                         help ='Use this flag to switch on the Ethernet outputs')
-    parser.add_argument('-p','--program', action='store_true', default=False,
-                        help='Program FPGAs with the fpgfile specified in the config file if not programmed already')
-    parser.add_argument('-P','--forceprogram', action='store_true', default=False,
-                        help='Program FPGAs with the fpgfile specified in the config file irrespective of whether they are programmed already')
-    parser.add_argument('--nomultithread', action='store_true', default=False,
-                        help='Don\'t multithread initialization')
+    parser.add_argument('-p','--program', action='store_true',
+                        help='Program FPGAs with the pre-loaded fpg file')
+    parser.add_argument('host', type=str,
+                        help='SNAP2 hostname (or IP address) to initialize')
     args = parser.parse_args()
 
-    logger = helpers.add_default_log_handlers(logging.getLogger(__file__))
-    helpers.log_notify(logger) # send a NOTIFY level message that this script has started
-    
-    corr = LwaF(redishost=args.redishost, config=args.config_file)
+    f = snap2_fengine.Snap2Fengine(args.host)
 
-    if len(corr.fengs) == 0:
-        logger.error("No F-Engines are connected. Is the power off?")
-        exit()
+    if args.program:
+        f.program()
+        if not args.initialize:
+            f.logger.warning('Programming but *NOT* initializing. This is unlikely to be what you want')
     
-    if not corr.config_is_valid:
-        logger.error('Currently loaded config is invalid')
-        exit()
-    
-    # Write the parameters this script used to redis
-    init_time = time.time()
-    corr.r.hmset('init_configuration', {
-        'lwa_f_version' : __version__,
-        'init_args' : args,
-        'init_time' : init_time,
-        'init_time_str' : time.ctime(init_time),
-        'config' : corr.config_str,
-        'config_time' : corr.config_time,
-        'config_time_str' : corr.config_time_str,
-        'config_name' : corr.config_name,
-        'md5'    : corr.config_hash,
-        }
-    )
-    
-    # Before we start manipulating boards, prevent monitoing scripts from
-    # sending TFTP traffic. Expire the key after 5 minutes to lazily account for
-    # issues with this script crashing.
-    corr.disable_monitoring(expiry=600, wait=True)
-    
-    if args.program or args.forceprogram:
-        corr.program(unprogrammed_only=(not args.forceprogram)) # This should multithread the programming process.
-        if args.fast_initialize is None:
-            logger.warning('Programming but *NOT* initializing. This is unlikely to be what you want')
-    
-    if args.fast_initialize is not None:
-        corr.disable_output()
-        corr.initialize(multithread=(not args.nomultithread), uninitialized_only=args.fast_initialize)
+    if args.initialize:
+        f.initialize(read_only=False)
     
     if args.tvg:
-        logger.info('Enabling EQ TVGs...')
-        corr.do_for_all_f("write_freq_ramp", block="eq_tvg")
-        corr.do_for_all_f("tvg_enable", block="eq_tvg")
+        f.logger.info('Enabling EQ TVGs...')
+        f.eq_tvg.write_freq_ramp()
+        f.eq_tvg.tvg_enable()
+    else:
+        f.logger.info('Disabling EQ TVGs...')
+        f.eq_tvg.tvg_disable()
     
     if args.noise:
-        logger.info('Setting noise TVGs...')
-        seed = 23
-        for stream in range(fengine.noise.nstreams): 
-            corr.do_for_all_f("set_seed", block="noise", args=[stream, seed])
-        corr.do_for_all_f("use_noise", block="input")
+        f.logger.info("Pointing all inputs to noise generator 0")
+        #seed = 23
+        #for i in range(f.noise.n_noise):
+        #    f.noise.set_seed(seed)
+        for stream in range(fengine.noise.noutputs): 
+            f.assign_output(stream, 0) # point all data paths to noise generator 0
+        f.input.use_noise()
+    else:
+        f.logger.info("Pointing all inputs to ADC data streams")
+        f.input.use_adc()
     
     # Now assign frequency slots to different X-engines as 
     # per the config file. A total of 32 Xengs are assumed for 
     # assigning slots- 16 for the even bank, 16 for the odd.  
     # Channels not assigned to Xengs in the config file are 
     # ignored. Following are the assumed globals:
-    if not corr.configure_freq_slots():
-        logger.error('Configuring frequency slots failed!')
-        exit()
+    if args.outputconfig is not None:
+        f.logger.info("Trying to configure output with config file %s" % args.outputconfig)
+        # Always disable TX before messing with config
+        f.eth.disable_tx()
+        if not os.path.exists(args.outputconfig):
+            f.logger.error("Output configuration file %s doesn't exist. Skipping configuration" % args.outputconfig)
+        else:
+            try:
+                with open(args.outputconfig, 'r') as fh:
+                    conf = yaml.load(fh, Loader=yaml.CSafeLoader)
+                if 'fengines' not in conf:
+                    f.logger.error("No 'fengines' key in output configuration!")
+                if 'xengines' not in conf:
+                    f.logger.error("No 'xengines' key in output configuration!")
+                # first configure core local parameters
+                localconf = conf['fengines'].get(args.host, None)
+                if localconf is None:
+                    f.logger.error("No configuration for F-engine host %s" % args.host)
+                ip = localconf['gbe']
+                source_port = localconf['source_port']
+                mac = 0x020203030400 + int(ip.split('.')[-1])
+                f.eth.configure_source(mac, ip, source_port)
+                # then configure arp table
+                for ip, mac in conf['xengines']['arp'].items():
+                    f.eth.add_arp_entry(ip, mac)
+                # Finally, configure packetizer
+                chans_per_packet = conf['fengines']['chans_per_packet']
+                dest_port = localconf['dest_port']
+                base_ant = localconf['ants'][0]
+                chans_to_send = []
+                ips = []
+                ports = []
+                for xeng, chans in conf['xengines']['chans'].items():
+                    this_x_chans = list(range(chans[0], chans[1]))
+                    this_x_packets = len(this_x_chans) // chans_per_packet
+                    ips += [xeng] * this_x_packets
+                    ports += [dest_port] * this_x_packets
+                    chans_to_send += list(range(chans[0], chans[1]))
+                ok = True
+            except:
+                f.logger.exception("Failed to parse output configuration file %s" % args.outputconfig)
+                ok = False
+            if ok:
+                f.configure_output(base_ant, chans_per_packet, chans_to_send, ips, ports)
+            else:
+                f.logger.error("Not configuring Ethernet output because configuration builder failed")
+    else:
+        f.logger.info("Skipping Ethernet output config because no configuration file supplied")
     
     # Sync logic. Do global sync first, and then noise generators
     # wait for a PPS to pass then arm all the boards
     if args.sync:
-        corr.disable_output()
-        corr.do_for_all_f("change_period", block="sync", args=[0])
-        corr.resync(manual=args.mansync)
-        corr.sync_noise(manual=args.mansync)
+        f.logger.info("Arming sync generators")
+        f.eth.disable_tx()
+        f.sync.arm_sync()
+        f.sync.arm_noise()
+        if args.mansync:
+            f.logger.info("Issuing software sync")
+            f.sync.sw_sync()
     
     if args.eth:
-        corr.enable_output()
+        f.logger.info("Enabling Ethernet output")
+        f.eth.enable_tx()
     else:
-        corr.disable_output()
-    
-    
-    # Re-enable the monitoring process
-    corr.enable_monitoring()
-    
-    print 'Initialization complete'
+        f.logger.info("Disabling Ethernet output")
+        f.eth.disable_tx()
+
+    f.logger.info("Initialization of %s complete" % args.host)
 
 if __name__ == "__main__":
     main()

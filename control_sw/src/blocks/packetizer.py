@@ -91,14 +91,14 @@ class Packetizer(Block):
         # Figure out what fraction of channels we can fit on the link
         self._info("Full data rate is %.2f Gbps" % self.full_data_rate_gbps)
         chan_frac = occupation * self.line_rate_gbps / self.full_data_rate_gbps
-        self._info("%.2f link occupation => %.2f bandwidth sent" % (occupation, chan_frac))
+        self._info("%.2f link occupation => Max %.2f bandwidth sent" % (occupation, chan_frac))
         # Round down to an integer number of channels
         n_sent_chans = int(np.floor(chan_frac * self.n_chans))
-        self._info("%.2f link occupation => %.d channels sent" % (occupation, n_sent_chans))
+        self._info("%.2f link occupation => Max %.d channels sent" % (occupation, n_sent_chans))
         # Round down to a whole number of packets
         n_pkts = (n_sent_chans // n_pkt_chans)
         n_sent_chans = n_pkt_chans * n_pkts
-        self._info("Will send %d channels in %d packets" % (n_sent_chans, n_pkts))
+        self._info("Will allocate %d channels in %d packets" % (n_sent_chans, n_pkts))
 
         # Channels can only be sent in positions which are a multiple of chan_block_size
         possible_chan_starts = range(0, self.n_chans, chan_block_size)
@@ -220,7 +220,7 @@ class Packetizer(Block):
                 flags[w] = format_flags(is_header=False, is_valid=True)
             # Insert the Destination IP synchronous with the EOF
             ips[w]   = ip2int(dest_ips[i])
-            ports[w]   = ip2int(dest_ports[i])
+            ports[w]   = dest_ports[i]
             # Overwrite the last entry with the EOF
             flags[w] = format_flags(is_header=False, is_valid=True, is_eof=True)
 
