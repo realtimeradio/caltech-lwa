@@ -25,6 +25,7 @@ from .blocks import packetizer
 from .blocks import eth
 from .blocks import corr
 
+
 class Snap2Fengine():
     """
     A control class for LWA352's SNAP2 F-Engine firmware.
@@ -36,6 +37,8 @@ class Snap2Fengine():
     :type logger: logging.Logger
 
     """
+    n_pols_per_board = 64   #: Number of analog inputs per FPGA
+    n_pols_per_xeng = 352*2 #: Number of analog inputs per X-engine
     def __init__(self, host, logger=None):
         self.hostname = host #: hostname of the F-Engine's host SNAP2 board
         #: Python Logger instance
@@ -174,18 +177,17 @@ class Snap2Fengine():
                 print('Block %s stats:' % blockname)
                 block.print_status()
 
-    def configure_output(self, base_ant, n_chans_per_packet, chans, ips, ports=None, debug=False):
+    def configure_output(self, antenna_ids, n_chans_per_packet, n_chans_per_xeng, chans, ips, ports=None, debug=False):
         """
         Configure channel reordering and packetizer modules to emit a selection
         of frequency channels.
 
-        :param base_ant: Antenna ID which should be written to output packet
-            headers. In general this should be the first antenna
-            on this F-engine board.
-        :type base_ant: int
 
         :param n_chans_per_packet: Number of channels per packet.
         :type n_chans_per_packet: int
+
+        :param n_chans_per_xeng: Number of channels per xeng.
+        :type n_chans_per_xeng: int
 
         :param chans: A list of channel indices to be sent, e.g. ``range(0,1024)``.
             The number of channels in this list should be an integer multiple
@@ -208,8 +210,17 @@ class Snap2Fengine():
             None, all packets are transmitted to UDP port 10000.
         :type ports: list of int
 
+        :param antenna_ids: A list of Antenna IDs which should be written to output packet
+            headers. Addressing rules are the same as for ``ips``.
+        :type antenna_ids: list
+
         :param debug: Set to True to print extra diagnostic information.
         :type debug: bool
+
+        :param n_boards: Transmit packets with headers indicating they came from
+            this many different boards. For example, if n_boards=2, the board
+            will transmit two streams of packets with antenna IDs ``base_ant``
+            and ``base_ant+64``
         """
         chans = np.array(chans)
         assert chans.shape[0] % n_chans_per_packet == 0, \
@@ -236,6 +247,7 @@ class Snap2Fengine():
         assert n_packets == len(packet_starts)
         assert len(ips) == n_packets
         assert len(ports) == n_packets
+        assert len(antenna_ids) == n_packets
 
         # channel_indices above gives the channel IDs which will
         # be sent. Remap the ones we _want_ into these slots
@@ -247,15 +259,17 @@ class Snap2Fengine():
                 i += 1
         self.reorder.set_channel_order(output_order)
             
-        ant_indices = [base_ant] * n_packets # Only the first antenna number goes in the header
-
         self.packetizer.write_config(
             packet_starts,
             packet_payloads,
             chans[::n_chans_per_packet],
-            ant_indices,
+            antenna_ids,
             ips,
             ports,
+            n_chans_per_packet,
+            n_chans_per_xeng,
+            self.n_pols_per_board,
+            self.n_pols_per_xeng,
             print_config=debug,
         )
 

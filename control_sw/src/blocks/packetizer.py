@@ -143,7 +143,9 @@ class Packetizer(Block):
             w_cnt += spare_chans_per_packet * self.n_words_per_chan
         return packet_starts, packet_payloads, channel_indices
         
-    def write_config(self, packet_starts, packet_payloads, channel_indices, ant_indices, dest_ips, dest_ports, print_config=False):
+    def write_config(self, packet_starts, packet_payloads, channel_indices,
+            ant_indices, dest_ips, dest_ports, nchans_per_packet, nchans_per_xeng,
+            npols_per_packet, npols_per_xeng, print_config=False):
         """
         Write the packetizer configuration BRAMs with appropriate entries.
 
@@ -172,6 +174,19 @@ class Packetizer(Block):
         :param dest_ports:
             UDP destination ports for each packet to be sent.
         :type dest_ports: list of int
+
+        :param nchans_per_packet: Number of frequency channels per packet sent.
+        :type nchans_per_packet: int
+
+        :param nchans_per_xeng: Total number of frequency channels sent to each
+            destination IP.
+        :type nchans_per_xeng: int
+
+        :param npols_per_packet: Number of antpols in each packet sent.
+        :type npols_per_packet: int
+
+        :param npols_per_xeng: Number of antpols expected by each destination IP.
+        :type npols_per_xeng: int
 
         :param print:
             If True, print config for debugging
@@ -213,7 +228,11 @@ class Packetizer(Block):
         flags = [0] * self.n_total_words 
 
         for i in range(n_packets):
-            chans[packet_starts[i]] = channel_indices[i]
+            channel_index = channel_indices[i]
+            print(channel_index)
+            channel_block_id = (channel_index % nchans_per_xeng ) // nchans_per_packet
+            print(channel_block_id)
+            chans[packet_starts[i]] = (channel_block_id << 16) + channel_index
             ants[packet_starts[i]]  = ant_indices[i]
             flags[packet_starts[i]] = format_flags(is_header=True, is_valid=True)
             for w in packet_payloads[i]:
@@ -229,6 +248,9 @@ class Packetizer(Block):
         self.write('ips',   struct.pack('>%dL' % self.n_total_words, *ips))
         self.write('ports', struct.pack('>%dL' % self.n_total_words, *ports))
         self.write('flags', struct.pack('>%dL' % self.n_total_words, *flags))
+
+        self.write_int('n_pols', (npols_per_packet<<16) + npols_per_xeng)
+        self.write_int('n_chans', (nchans_per_packet<<16) + nchans_per_xeng)
 
         if print_config:
             for i in range(self.n_total_words):

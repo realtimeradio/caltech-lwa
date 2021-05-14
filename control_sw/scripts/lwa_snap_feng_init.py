@@ -6,6 +6,8 @@ import yaml
 import logging
 from lwa_f import snap2_fengine
 
+N_ANTS_PER_BOARD = 32
+
 def main():
     parser = argparse.ArgumentParser(description='Interact with a programmed SNAP board for testing and '\
                                      'networking. FLAGS OVERRIDE CONFIG FILE!',
@@ -95,22 +97,31 @@ def main():
                 # Finally, configure packetizer
                 chans_per_packet = conf['fengines']['chans_per_packet']
                 dest_port = localconf['dest_port']
-                base_ant = localconf['ants'][0]
+                localants = range(localconf['ants'][0], localconf['ants'][1])
                 chans_to_send = []
                 ips = []
                 ports = []
+                antenna_ids = []
+                this_x_packets = None
                 for xeng, chans in conf['xengines']['chans'].items():
-                    this_x_chans = list(range(chans[0], chans[1]))
-                    this_x_packets = len(this_x_chans) // chans_per_packet
-                    ips += [xeng] * this_x_packets
-                    ports += [dest_port] * this_x_packets
-                    chans_to_send += list(range(chans[0], chans[1]))
+                    for ant in localants[::(f.n_pols_per_board // 2)]:
+                        this_x_chans = list(range(chans[0], chans[1]))
+                        if this_x_packets is None:
+                            this_x_packets = len(this_x_chans) // chans_per_packet
+                        else:
+                            if this_x_packets != len(this_x_chans) // chans_per_packet:
+                                self.logger.error("Can't have different total numbers of channels per X-engine")
+                                ok = False
+                        antenna_ids += [ant] * this_x_packets
+                        ips += [xeng] * this_x_packets
+                        ports += [dest_port] * this_x_packets
+                        chans_to_send += list(range(chans[0], chans[1]))
                 ok = True
             except:
                 f.logger.exception("Failed to parse output configuration file %s" % args.outputconfig)
                 ok = False
             if ok:
-                f.configure_output(base_ant, chans_per_packet, chans_to_send, ips, ports)
+                f.configure_output(antenna_ids, chans_per_packet, chans_per_packet*this_x_packets, chans_to_send, ips, ports)
             else:
                 f.logger.error("Not configuring Ethernet output because configuration builder failed")
     else:
