@@ -229,10 +229,9 @@ class Packetizer(Block):
 
         for i in range(n_packets):
             channel_index = channel_indices[i]
-            #print(channel_index)
             channel_block_id = (channel_index % nchans_per_xeng ) // nchans_per_packet
-            #print(channel_block_id)
-            chans[packet_starts[i]] = (channel_block_id << 16) + channel_index
+            chans[packet_starts[i]] = (channel_block_id << 24) + channel_index
+            #print(channel_index, channel_block_id, chans[packet_starts[i]])
             ants[packet_starts[i]]  = ant_indices[i]
             flags[packet_starts[i]] = format_flags(is_header=True, is_valid=True)
             for w in packet_payloads[i]:
@@ -243,11 +242,11 @@ class Packetizer(Block):
             # Overwrite the last entry with the EOF
             flags[w] = format_flags(is_header=False, is_valid=True, is_eof=True)
 
-        self.write('chans', struct.pack('>%dL' % self.n_total_words, *chans))
-        self.write('ants',  struct.pack('>%dL' % self.n_total_words, *ants))
-        self.write('ips',   struct.pack('>%dL' % self.n_total_words, *ips))
-        self.write('ports', struct.pack('>%dL' % self.n_total_words, *ports))
-        self.write('flags', struct.pack('>%dL' % self.n_total_words, *flags))
+        self.write('chans', struct.pack('>%dI' % self.n_total_words, *chans))
+        self.write('ants',  struct.pack('>%dI' % self.n_total_words, *ants))
+        self.write('ips',   struct.pack('>%dI' % self.n_total_words, *ips))
+        self.write('ports', struct.pack('>%dI' % self.n_total_words, *ports))
+        self.write('flags', struct.pack('>%dI' % self.n_total_words, *flags))
 
         self.write_int('n_pols', (npols_per_packet<<16) + npols_per_xeng)
         self.write_int('n_chans', (nchans_per_packet<<16) + nchans_per_xeng)

@@ -101,7 +101,7 @@ def main():
                 chans_to_send = []
                 ips = []
                 ports = []
-                antenna_ids = []
+                antpol_ids = []
                 this_x_packets = None
                 for xeng, chans in conf['xengines']['chans'].items():
                     for ant in localants[::(f.n_pols_per_board // 2)]:
@@ -112,7 +112,7 @@ def main():
                             if this_x_packets != len(this_x_chans) // chans_per_packet:
                                 self.logger.error("Can't have different total numbers of channels per X-engine")
                                 ok = False
-                        antenna_ids += [ant] * this_x_packets
+                        antpol_ids += [2*ant] * this_x_packets
                         ips += [xeng] * this_x_packets
                         ports += [dest_port] * this_x_packets
                         chans_to_send += list(range(chans[0], chans[1]))
@@ -121,7 +121,7 @@ def main():
                 f.logger.exception("Failed to parse output configuration file %s" % args.outputconfig)
                 ok = False
             if ok:
-                f.configure_output(antenna_ids, chans_per_packet, chans_per_packet*this_x_packets, chans_to_send, ips, ports)
+                f.configure_output(antpol_ids, chans_per_packet, chans_per_packet*this_x_packets, chans_to_send, ips, ports)
             else:
                 f.logger.error("Not configuring Ethernet output because configuration builder failed")
     else:
