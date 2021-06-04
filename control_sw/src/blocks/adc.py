@@ -137,10 +137,10 @@ class Adc(Block):
         #for i in range(10): self.sync()
         self.reset()
         self.sync()
-        self.calibrate()
+        ok, delays, slacks = self.calibrate()
         # Return ADC to analog sampling mode
         self._use_data()
-        return True
+        return ok
 
     def mmcm_is_locked(self):
         """
