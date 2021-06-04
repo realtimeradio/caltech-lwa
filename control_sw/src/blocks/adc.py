@@ -455,7 +455,7 @@ class Adc(Block):
                             msg += "%s" % char[int(errs[s, c, l] != 0)]
                     else: 
                         msg += "%s" % char[int(errs[s, c, l] != 0)]
-                self._debug(msg)
+                self._info(msg)
     
     def _init(self):
         """
