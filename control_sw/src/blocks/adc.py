@@ -449,7 +449,7 @@ class Adc(Block):
                 msg = "Chip %d, Lane %d:    " % (c, l)
                 for s in range(nsteps):
                     if best_delays is not None:
-                        if s == best_delays[c,l] // TAP_STEP_SIZE:
+                        if s == best_delays[c,l] // step_size:
                             msg += "|"
                         else:
                             msg += "%s" % char[int(errs[s, c, l] != 0)]
@@ -485,7 +485,7 @@ class Adc(Block):
             for i in range(8):
                 adc.enable_test_pattern('data', i)
 
-    def calibrate(self, use_ramp=False, fail_hard=True):
+    def calibrate(self, use_ramp=False, fail_hard=True, step_size=TAP_STEP_SIZE):
         """
         Compute and set all ADC data lane input delays to their optimal values.
         After this call, the ADCs are left in test mode.
@@ -500,46 +500,63 @@ class Adc(Block):
             doesn't go to plan.
         :type fail_hard: bool
 
-        :return: True if the calibration procedure succeeded. False otherwise.
-        :rtype: bool
+        :param step_size: Number of IDELAY tap steps between error counts.
+        :type step_size: int
+
+        :return: (status, delays, slack) tuple.
+            ``status`` is True if the calibration procedure succeeded. False otherwise.
+            ``delays`` is an N_ADC_BOARD x N_ADC_CHIP x DATA_LANES_PER_CHIP array of
+            chosen delays.
+            ``slack`` is an N_ADC_BOARD x N_ADC_CHIP x DATA_LANES_PER_CHIP array of
+            slacks -- the number of delay taps between the chosen delay and the
+            nearest delay which showed ADC errors.
+        :rtype: bool, list, list
         """
         ok = True
         TEST_VAL = 0b0000010101
+        best_by_adc = []
+        slack_by_adc = []
         for adc in self.adcs:
             #self.reset() # Flush FIFOs and begin reading after next sync
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
             for board in range(2):
                 adc.set_bitslip_index(0, board)
-            errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL))
+            errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
+                                                    step_size=step_size))
             if np.any(errs[0,:,:] == 0):
                 self._info("Bitslipping because delay start too large")
                 for board in range(2):
                     adc.increment_bitslip_index(board)
-                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL))
+                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
+                                                        step_size=step_size))
             elif np.any(errs[-1,:,:] == 0):
                 self._info("Bitslipping because delay end too small")
                 for board in range(2):
                     adc.decrement_bitslip_index(board)
-                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL))
-            best, slack = self._get_best_delays(errs)
+                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
+                                                        step_size=step_size))
+            best, slack = self._get_best_delays(errs, step_size=step_size)
+            best_by_adc += [best]
+            slack_by_adc += [slack]
             self._info("FMC %d data lane delays:\n%s" % (adc.fmc, best))
             self._info("FMC %d data lane slacks:\n%s" % (adc.fmc, slack))
             if np.any(np.array(slack) < 20):
                 self._warning("Delay solutions have small slack")
-            self.print_sweep(errs, best_delays=best)
+            self.print_sweep(errs, best_delays=best, step_size=step_size)
             #for cn, chipdelay in enumerate(best):
             #    data_delays_fh.write(",".join(map(str, chipdelay)))
             #    data_delays_fh.write("\n")
             self._set_delays(adc, best)
             #do_bitslip(adc)
-            errs = np.array(self._get_errs(adc, use_ramp=use_ramp, test_val=TEST_VAL))
+            errs = np.array(self._get_errs(adc, use_ramp=use_ramp,
+                                           test_val=TEST_VAL, step_size=step_size))
             adc_ok = (errs.sum() == 0)
             if not adc_ok:
                 self._error("FMC %d: Data calibration Failure!" % adc.fmc)
                 if fail_hard:
                     raise RuntimeError("FMC %d: Data calibration Failure!" % adc.fmc)
                 ok = False
-        return ok
+        return ok, best_by_adc, slack_by_adc
 
     def sync(self):
         """
