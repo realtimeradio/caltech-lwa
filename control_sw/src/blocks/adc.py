@@ -39,7 +39,7 @@ class Adc(Block):
         self.adcs = []
         self._connect_to_adcs()
 
-    def _connect_to_adcs(self):
+    def _connect_to_adcs(self, try_reset=True):
         """
         Populate the self.adcs attribute.
 
@@ -48,6 +48,10 @@ class Adc(Block):
         ADS5296 chips. If any of the chips associated with an FMC
         port responds, consider this FMC port populated with an ADC,
         and add it to the self.adcs list.
+
+        :param try_reset: If True, try resetting the ADCs if they are
+          uncommunicative.
+        :type try_reset: bool
         """
         for fmc in range(NFMCS):
             adc = ads5296.ADS5296fw(self.host, fmc)
@@ -55,6 +59,7 @@ class Adc(Block):
                 connected_chips = adc.is_connected()
             except:
                 self._error("Failed to check ADC control register on fmc %d" % fmc)
+                connected_chips = [False]
                 continue
             if np.any(connected_chips):
                 self._info("Detected FMC ADC board on port %d" % fmc)
@@ -62,7 +67,12 @@ class Adc(Block):
                     self._warning("Not all chips responded on port %d" % fmc)
                 self.adcs += [adc]
             else:
-                self._warning("Did not detect FMC ADC board on port %d" % fmc)
+                self._warning("Did not detect FMC ADC board on port %d." % fmc)
+                if try_reset:
+                    self._info("Resetting ADCs on FMC %d and trying detection again" % fmc)
+                    for chip in range(8):
+                        adc.reset(chip)
+                    self._connect_to_adcs(try_reset=False)
 
     def initialize(self, read_only=False, clocksource=1):
         """
