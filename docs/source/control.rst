@@ -31,8 +31,47 @@ underlying ``Snap2Fengine`` method calls.
     The top-level control architecture. 
 
 
-``SNAP2Fengine`` Python Interface
+``Snap2Fengine`` Python Interface
 ---------------------------------
+
+The ``Snap2Fengine`` class can be instantiated and used to control
+a single SNAP2 board running LWA's F-Engine firmware. An example is below:
+
+
+.. code-block:: python
+
+  # Import the SNAP2 F-Engine library
+  from lwa_f import snap2_fengine
+
+  # Instantiate a Snap2Fengine instance to a board with
+  # hostname 'snap2-rev2-11'
+  f = snap2_fengine.Snap2Fengine('snap2-rev2-11')
+
+  # Program a board (if it is not already programmed)
+  # and initialize all the firmware blocks
+  if not f.fpga.is_programmed():
+    f.program() # Load whatever firmware is in flash
+    # Wait 30 seconds for the board to reboot...
+    # Initialize firmware blocks, including ADC link training
+    f.initialize(read_only=False)
+
+  # Blocks are available as items in the Snap2Fengine `blocks`
+  # dictionary, or can be accessed directly as attributes
+  # of the Snap2Fengine.
+
+  # Print available block names
+  print(sorted(f.blocks.keys()))
+  # Returns:
+  # ['adc', 'autocorr', 'corr', 'delay', 'eq', 'eq_tvg', 'eth',
+  # 'fpga', 'input', 'noise', 'packetizer', 'pfb', 'reorder', 'sync']
+
+  # Grab some ADC data from the ADC card(s) on FMC 1
+  adc_data = f.adc.get_snapshot_interleaved(1, signed=True)
+  print(adc_data.shape) # returns (32 [channels], 512 [time samples]
+
+Details of the methods provided by individual blocks are given in the next
+section.
+
 
 Top-Level Control
 +++++++++++++++++
