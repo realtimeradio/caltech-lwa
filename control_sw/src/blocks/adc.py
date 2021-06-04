@@ -548,8 +548,7 @@ class Adc(Block):
             #    data_delays_fh.write("\n")
             self._set_delays(adc, best)
             #do_bitslip(adc)
-            errs = np.array(self._get_errs(adc, use_ramp=use_ramp,
-                                           test_val=TEST_VAL, step_size=step_size))
+            errs = np.array(self._get_errs(adc, use_ramp=use_ramp, test_val=TEST_VAL))
             adc_ok = (errs.sum() == 0)
             if not adc_ok:
                 self._error("FMC %d: Data calibration Failure!" % adc.fmc)
