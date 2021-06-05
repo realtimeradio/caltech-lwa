@@ -72,19 +72,7 @@ class Adc(Block):
                     self._info("Resetting ADCs on FMC %d and trying detection again" % fmc)
                     for chip in range(8):
                         adc.reset(chip)
-                    try:
-                        connected_chips = adc.is_connected()
-                    except:
-                        self._error("Failed to check ADC control register on fmc %d" % fmc)
-                        connected_chips = [False]
-                        continue
-                    if np.any(connected_chips):
-                        self._info("Detected FMC ADC board on port %d after reset" % fmc)
-                        if not np.all(connected_chips):
-                            self._warning("Not all chips responded on port %d" % fmc)
-                        self.adcs += [adc]
-                     else:
-                         self._warning("Did not detect FMC ADC board on port %d after reset." % fmc)
+                    self._connect_to_adcs(try_reset=False)
 
     def initialize(self, read_only=False, clocksource=1):
         """
