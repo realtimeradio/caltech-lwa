@@ -83,8 +83,8 @@ class Adc(Block):
                         if not np.all(connected_chips):
                             self._warning("Not all chips responded on port %d" % fmc)
                         self.adcs += [adc]
-                     else:
-                         self._warning("Did not detect FMC ADC board on port %d after reset." % fmc)
+                    else:
+                        self._warning("Did not detect FMC ADC board on port %d after reset." % fmc)
 
     def initialize(self, read_only=False, clocksource=1):
         """
