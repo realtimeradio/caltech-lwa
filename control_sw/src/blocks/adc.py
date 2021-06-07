@@ -466,6 +466,26 @@ class Adc(Block):
             for i in range(8):
                 adc.init(i) # includes reset
     
+    def use_toggle(self, val0, val1):
+        """
+        Set all ADCs into the "toggle" test mode, in which ADC
+        samples are replaced with a toggling pattern of two
+        10-bit values.
+
+        :param val0: First value ADCs should output.
+        :type val0: int
+
+        :param val1: Second value ADCs should output.
+        :type val1: int
+
+        """
+
+        val0 = val0 & 0x3ff
+        val1 = val1 & 0x3ff
+        for adc in self.adcs:
+            for i in range(8):
+                adc.enable_test_pattern('toggle', i, val0=val0, val1=val1)
+    
     def use_ramp(self):
         """
         Set all ADCs into the "ramp" test mode, in which ADC
