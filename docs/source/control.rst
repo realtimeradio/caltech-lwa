@@ -76,12 +76,24 @@ section.
 Top-Level Control
 +++++++++++++++++
 
+The Top-level ``Snap2Fengine`` instance can be used to perform high-level
+control of the firmware, such as programming and de-programming FPGA boards.
+It can also be used to apply configurations which affect multiple firmware
+subsystems, such as configuring channel selection and packet destination.
+
+Finally, a ``Snap2Fengine`` instance can be used to initialize, or get status
+from, all underlying firmware modules.
+
 .. autoclass:: lwa_f.snap2_fengine.Snap2Fengine
   :no-show-inheritance:
   :members:
 
 FPGA Control
 ++++++++++++
+
+The ``FPGA`` control interface allows gathering of FPGA statistics such
+as temperature and voltage levels. Its methods are functional regardless of
+whether the FPGA is programmed with an LWA F-Engine firmware design.
 
 .. autoclass:: lwa_f.blocks.fpga.Fpga
   :no-show-inheritance:
@@ -90,12 +102,18 @@ FPGA Control
 Timing Control
 ++++++++++++++
 
+The ``Sync`` control interface provides an interface to configure and monitor the
+multi-SNAP2 timing distribution system.
+
 .. autoclass:: lwa_f.blocks.sync.Sync
   :no-show-inheritance:
   :members:
 
 ADC Control
 +++++++++++
+
+The ``Adc`` control interface allows link training (aka "calibration") of
+the ADC->FPGA data link.
 
 .. autoclass:: lwa_f.blocks.adc.Adc
   :no-show-inheritance:

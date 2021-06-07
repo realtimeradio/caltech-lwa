@@ -139,7 +139,7 @@ class Adc(Block):
         self.sync()
         ok, delays, slacks = self.calibrate()
         # Return ADC to analog sampling mode
-        self._use_data()
+        self.use_data()
         return ok
 
     def mmcm_is_locked(self):
@@ -466,7 +466,27 @@ class Adc(Block):
             for i in range(8):
                 adc.init(i) # includes reset
     
-    def _use_ramp(self):
+    def use_toggle(self, val0, val1):
+        """
+        Set all ADCs into the "toggle" test mode, in which ADC
+        samples are replaced with a toggling pattern of two
+        10-bit values.
+
+        :param val0: First value ADCs should output.
+        :type val0: int
+
+        :param val1: Second value ADCs should output.
+        :type val1: int
+
+        """
+
+        val0 = val0 & 0x3ff
+        val1 = val1 & 0x3ff
+        for adc in self.adcs:
+            for i in range(8):
+                adc.enable_test_pattern('toggle', i, val0=val0, val1=val1)
+    
+    def use_ramp(self):
         """
         Set all ADCs into the "ramp" test mode, in which ADC
         samples are replaced with a 10-bit counter which
@@ -476,7 +496,7 @@ class Adc(Block):
             for i in range(8):
                 adc.enable_test_pattern('ramp', i)
     
-    def _use_data(self):
+    def use_data(self):
         """
         Set all ADCs into normal operating mode, in which analog inputs
         are digitized and transmitted.
@@ -548,8 +568,7 @@ class Adc(Block):
             #    data_delays_fh.write("\n")
             self._set_delays(adc, best)
             #do_bitslip(adc)
-            errs = np.array(self._get_errs(adc, use_ramp=use_ramp,
-                                           test_val=TEST_VAL, step_size=step_size))
+            errs = np.array(self._get_errs(adc, use_ramp=use_ramp, test_val=TEST_VAL))
             adc_ok = (errs.sum() == 0)
             if not adc_ok:
                 self._error("FMC %d: Data calibration Failure!" % adc.fmc)
