@@ -35,6 +35,10 @@ class AutoCorr(Block):
     :param n_pols: Number of individual data streams.
     :type n_pols: int
 
+    :param n_parallel_streams: Number of streams processed by the firmware
+        module in parallel.
+    :type n_parallel_streams: int
+
     :param n_cores: Number of accumulation cores in firmware design.
     :type n_cores: int
 
@@ -51,6 +55,7 @@ class AutoCorr(Block):
                  logger=None,
                  n_chans=4096,
                  n_pols=64,
+                 n_parallel_streams=8,
                  n_cores=4,
                  use_mux=True,
                 ):
@@ -58,6 +63,7 @@ class AutoCorr(Block):
         self.n_chans = n_chans
         self._acc_len = acc_len
         self.n_pols = n_pols
+        self._n_parallel_streams = n_parallel_streams
         self._n_cores = n_cores
         self._use_mux = use_mux
         self.n_pols_per_block = self.n_pols // self._n_cores
@@ -123,13 +129,16 @@ class AutoCorr(Block):
             data from all inputs will be returned.
             When multiplexing, Each call will return data for inputs
             ``self.n_pols_per_block x pol_block`` to
-            ``self.n_pols_per_block x (pol_block+1) - 1 ``.
+            ``self.n_pols_per_block x (pol_block+1) - 1``.
+
         :type pol_block: int
 
         :return: Float32 array of dimensions [POLARIZATION, FREQUENCY CHANNEL]
             containing autocorrelations with accumulation length divided out.
         :rtype: numpy.array
+
         """
+
         if self._use_mux:
             self._set_mux(pol_block)
         self._wait_for_acc()
@@ -146,7 +155,8 @@ class AutoCorr(Block):
             data from all inputs will be plotted.
             When multiplexing, Each call will plot data for inputs
             ``self.n_pols_per_block x pol_block`` to
-            ``self.n_pols_per_block x (pol_block+1) - 1 ``.
+            ``self.n_pols_per_block x (pol_block+1) - 1``.
+
         :type pol_block: int
 
         :param db: If True, plot 10log10(power). Else, plot linear.
@@ -156,6 +166,7 @@ class AutoCorr(Block):
         :type show: bool
 
         :return: matplotlib.Figure
+
         """
         from matplotlib import pyplot as plt
         specs = self.get_new_spectra(pol_block)
