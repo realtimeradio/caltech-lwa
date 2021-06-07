@@ -6,7 +6,12 @@ from lwa_f.error_levels import *
 
 class Input(Block):
     """
-    Instantiate a control interface for an Input block.
+    Instantiate a control interface for an Input block. This block
+    allows switching data streams between constant-zeros, digital noise,
+    and ADC streams.
+
+    A statistics interface is also provided, providing bit statistics and
+    histograms.
 
     :param host: CasperFpga interface for host.
     :type host: casperfpga.CasperFpga
@@ -210,7 +215,8 @@ class Input(Block):
         :param stream: ADC stream from which to get data.
         :type stream: int
 
-        :param sum_cores: If True, compute one histogram from both A & B ADC cores.
+        :param sum_cores: If True, compute one histogram from both pairs of
+            interleaved ADC cores associated with an analog input.
             If False, compute separate histograms.
         :type sum_cores: bool
 
@@ -218,7 +224,8 @@ class Input(Block):
             is a list of histogram bin centers, and ``hist`` is a list of
             histogram data points. If ``sum_cores`` is False, return
             ``(vals, hist_a, hist_b)``, where ``hist_a`` and ``hist_b``
-            are separate histogram data sets for the A and B ADC cores, respectively.
+            are separate histogram data sets for the even-sample and odd-sample
+            ADC cores, respectively.
         """
         self._info("Getting histogram for stream %d" % stream)
         self._set_histogram_stream(stream)
