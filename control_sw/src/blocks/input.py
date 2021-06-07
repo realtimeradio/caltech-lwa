@@ -22,6 +22,9 @@ class Input(Block):
 
     :param n_bits: Number of bits per ADC sample.
     :type n_bits: int
+
+    :ivar n_streams: Number of streams this interface handles
+    :ivar n_bits: Number of bits per ADC sample
     """
     _USE_NOISE = 0
     _USE_ADC   = 1
@@ -34,8 +37,8 @@ class Input(Block):
 
     def __init__(self, host, name, n_streams=64, n_bits=10, logger=None):
         super(Input, self).__init__(host, name, logger)
-        self.n_streams = n_streams #: Number of streams this interface handles
-        self.n_bits = n_bits #: Number of bits per ADC sample
+        self.n_streams = n_streams
+        self.n_bits = n_bits
 
     def get_switch_positions(self):
         """
