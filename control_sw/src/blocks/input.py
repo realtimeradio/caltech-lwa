@@ -34,8 +34,8 @@ class Input(Block):
 
     def __init__(self, host, name, n_streams=64, n_bits=10, logger=None):
         super(Input, self).__init__(host, name, logger)
-        self.n_streams = n_streams
-        self.n_bits = n_bits
+        self.n_streams = n_streams #: Number of streams this interface handles
+        self.n_bits = n_bits #: Number of bits per ADC sample
 
     def get_switch_positions(self):
         """
