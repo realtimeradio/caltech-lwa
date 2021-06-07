@@ -139,7 +139,7 @@ class Adc(Block):
         self.sync()
         ok, delays, slacks = self.calibrate()
         # Return ADC to analog sampling mode
-        self._use_data()
+        self.use_data()
         return ok
 
     def mmcm_is_locked(self):
@@ -466,7 +466,7 @@ class Adc(Block):
             for i in range(8):
                 adc.init(i) # includes reset
     
-    def _use_ramp(self):
+    def use_ramp(self):
         """
         Set all ADCs into the "ramp" test mode, in which ADC
         samples are replaced with a 10-bit counter which
@@ -476,7 +476,7 @@ class Adc(Block):
             for i in range(8):
                 adc.enable_test_pattern('ramp', i)
     
-    def _use_data(self):
+    def use_data(self):
         """
         Set all ADCs into normal operating mode, in which analog inputs
         are digitized and transmitted.
