@@ -60,7 +60,7 @@ class AutoCorr(Block):
         self.n_pols = n_pols
         self._n_cores = n_cores
         self._use_mux = use_mux
-        self n_pols_per_block = self.n_pols // self._n_cores
+        self.n_pols_per_block = self.n_pols // self._n_cores
    
     def _wait_for_acc(self):
         """
