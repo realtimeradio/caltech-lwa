@@ -528,7 +528,9 @@ if __name__ == "__main__":
                     best = get_best_delays(errs)
                     print_sweep(errs, best_delays=best)
                     for board in range(2):
-                        if np.any(errs[0:5, 4*board:4*(board+1), :] == 0):
+                        # Make the error search wider here, to encourage boards to
+                        # be slipped together
+                        if np.any(errs[0:20, 4*board:4*(board+1), :] == 0):
                             logger.info("Bitslipping board %d because delay start too large" % board)
                             adc.increment_bitslip_index(board)
                     errs = get_data_delays(adc, test_val=TEST_VAL)
@@ -537,7 +539,9 @@ if __name__ == "__main__":
                     best = get_best_delays(errs)
                     print_sweep(errs, best_delays=best)
                     for board in range(2):
-                        if np.any(errs[-5:-1, 4*board:4*(board+1), :] == 0):
+                        # Make the error search wider here, to encourage boards to
+                        # be slipped together
+                        if np.any(errs[-20:-1, 4*board:4*(board+1), :] == 0):
                             logger.info("Bitslipping board %d because delay end too small" % board)
                             adc.decrement_bitslip_index(board)
                     errs = get_data_delays(adc, test_val=TEST_VAL)
