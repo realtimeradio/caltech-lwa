@@ -7,7 +7,15 @@ from lwa_f.error_levels import *
 
 class AutoCorr(Block):
     """
-    Instantiate a control interface for an Auto-Correlation block.
+    Instantiate a control interface for an Auto-Correlation block. This
+    provides auto-correlation spectra of post-FFT data.
+
+    In order to save FPGA resourece, the auto-correlation block may use a single
+    correlation core to compute the auto-correlation of a subset of the total
+    number of ADC channels at any given time. This is the case when the
+    block is instantiated with ``n_cores > 1`` and ``use_mux=True``.
+    In this case, auto-correlation spectra are captured ``n_pols / n_cores``
+    channels at a time. 
 
     :param host: CasperFpga interface for host.
     :type host: casperfpga.CasperFpga
@@ -27,10 +35,6 @@ class AutoCorr(Block):
     :param n_pols: Number of individual data streams.
     :type n_pols: int
 
-    :param n_parallel_streams: Number of streams processed by the firmware
-        module in parallel.
-    :type n_parallel_streams: int
-
     :param n_cores: Number of accumulation cores in firmware design.
     :type n_cores: int
 
@@ -38,13 +42,15 @@ class AutoCorr(Block):
         is used to switch different inputs into it. If False, multiple
         cores are instantiated simultaneously in firmware.
     :type use_mux: bool
+
+    :ivar n_pols_per_block: Number of polarization streams handled by a
+        single correlation core.
     """
     def __init__(self, host, name,
                  acc_len=2**15,
                  logger=None,
                  n_chans=4096,
                  n_pols=64,
-                 n_parallel_streams=8,
                  n_cores=4,
                  use_mux=True,
                 ):
@@ -52,9 +58,9 @@ class AutoCorr(Block):
         self.n_chans = n_chans
         self._acc_len = acc_len
         self.n_pols = n_pols
-        self._n_parallel_streams = n_parallel_streams
         self._n_cores = n_cores
         self._use_mux = use_mux
+        self n_pols_per_block = self.n_pols // self._n_cores
    
     def _wait_for_acc(self):
         """
@@ -108,32 +114,40 @@ class AutoCorr(Block):
                         x[subpol*n_chans_per_stream:(subpol+1)*n_chans_per_stream]
         return dout
     
-    def get_new_spectra(self, core=0):
+    def get_new_spectra(self, pol_block=0):
         """
         Get a new average power spectra.
 
-        :param core: If using multiplexing, read data for this core. If not
-            using multiplexing, read data from all cores.
-        :type core: int
+        :param pol_block: If using multiplexing, read data for this polarization
+            block. If not using multiplexing, this parameter does nothing, and
+            data from all inputs will be returned.
+            When multiplexing, Each call will return data for inputs
+            ``self.n_pols_per_block x pol_block`` to
+            ``self.n_pols_per_block x (pol_block+1) - 1 ``.
+        :type pol_block: int
 
         :return: Float32 array of dimensions [POLARIZATION, FREQUENCY CHANNEL]
             containing autocorrelations with accumulation length divided out.
         :rtype: numpy.array
         """
         if self._use_mux:
-            self._set_mux(core)
+            self._set_mux(pol_block)
         self._wait_for_acc()
         spec = self._read_bram() / float(self.get_acc_len())
         return spec
 
-    def plot_spectra(self, core=0, db=True, show=True):
+    def plot_spectra(self, pol_block=0, db=True, show=True):
         """
-        Plot the spectra of all polarizations in a single core,
+        Plot the spectra of all polarizations in a single pol_block,
         with accumulation length divided out
         
-        :param core: If using multiplexing, read data for this core. If not
-            using multiplexing, read data from all cores.
-        :type core: int
+        :param pol_block: If using multiplexing, plot data for this polarization
+            block. If not using multiplexing, this parameter does nothing, and
+            data from all inputs will be plotted.
+            When multiplexing, Each call will plot data for inputs
+            ``self.n_pols_per_block x pol_block`` to
+            ``self.n_pols_per_block x (pol_block+1) - 1 ``.
+        :type pol_block: int
 
         :param db: If True, plot 10log10(power). Else, plot linear.
         :type db: bool
@@ -144,7 +158,7 @@ class AutoCorr(Block):
         :return: matplotlib.Figure
         """
         from matplotlib import pyplot as plt
-        specs = self.get_new_spectra(core)
+        specs = self.get_new_spectra(pol_block)
         f, ax = plt.subplots(1,1)
         if db:
             ax.set_ylabel('Power [dB]')
@@ -153,7 +167,7 @@ class AutoCorr(Block):
             ax.set_ylabel('Power [linear]')
         ax.set_xlabel('Frequency Channel')
         if self._use_mux:
-            channel_offset = core * self.n_pols // self._n_cores
+            channel_offset = pol_block * self.n_pols // self._n_pol_blocks
         else:
             channel_offset = 0
         for speci, spec in enumerate(specs):
