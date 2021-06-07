@@ -522,21 +522,26 @@ if __name__ == "__main__":
                 else:
                     break
             for slip in range(5):
+                slip_done = True
                 if np.any(errs[0:5,:,:] == 0):
-                    best = get_best_delays(errs)
-                    print_sweep(errs, best_delays=best)
-                    logger.info("Bitslipping because delay start too large")
-                    for board in range(2):
-                        adc.increment_bitslip_index(board)
-                    errs = get_data_delays(adc, test_val=TEST_VAL)
-                elif np.any(errs[-5:-1,:,:] == 0):
-                    logger.info("Bitslipping because delay end too small")
+                    slip_done = False
                     best = get_best_delays(errs)
                     print_sweep(errs, best_delays=best)
                     for board in range(2):
-                        adc.decrement_bitslip_index(board)
+                        if np.any(errs[0:5, 4*board:4*(board+1), :] == 0):
+                            logger.info("Bitslipping board %d because delay start too large" % board)
+                            adc.increment_bitslip_index(board)
                     errs = get_data_delays(adc, test_val=TEST_VAL)
-                else:
+                if np.any(errs[-5:-1,:,:] == 0):
+                    slip_done = False
+                    best = get_best_delays(errs)
+                    print_sweep(errs, best_delays=best)
+                    for board in range(2):
+                        if np.any(errs[-5:-1, 4*board:4*(board+1), :] == 0):
+                            logger.info("Bitslipping board %d because delay end too small" % board)
+                            adc.decrement_bitslip_index(board)
+                    errs = get_data_delays(adc, test_val=TEST_VAL)
+                if slip_done:
                     break
             best = get_best_delays(errs)
             logger.info("Data lane delays for FMC %d [chip x lane]" % adc.fmc)
