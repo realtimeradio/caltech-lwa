@@ -83,8 +83,8 @@ class Corr(Block):
         """
         self._set_input(pol1,pol2)
         if flush_vacc:
-            self.wait_for_acc()      # Wait two acc_len for new spectra to load
-        self.wait_for_acc()
+            self._wait_for_acc()      # Wait two acc_len for new spectra to load
+        self._wait_for_acc()
         spec = self._read_bram()/float(self.acc_len*self.spec_per_acc)
         return spec
 
