@@ -178,7 +178,7 @@ class AutoCorr(Block):
             ax.set_ylabel('Power [linear]')
         ax.set_xlabel('Frequency Channel')
         if self._use_mux:
-            channel_offset = pol_block * self.n_pols // self._n_pol_blocks
+            channel_offset = pol_block * self.n_pols_per_block
         else:
             channel_offset = 0
         for speci, spec in enumerate(specs):
