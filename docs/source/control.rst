@@ -1,3 +1,5 @@
+.. _control-interface:
+
 Control Interface
 =================
 
@@ -88,6 +90,8 @@ from, all underlying firmware modules.
   :no-show-inheritance:
   :members:
 
+.. _control-fpga:
+
 FPGA Control
 ++++++++++++
 
@@ -108,6 +112,8 @@ multi-SNAP2 timing distribution system.
 .. autoclass:: lwa_f.blocks.sync.Sync
   :no-show-inheritance:
   :members:
+
+.. _control-adc:
 
 ADC Control
 +++++++++++

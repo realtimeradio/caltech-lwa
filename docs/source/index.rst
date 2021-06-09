@@ -9,10 +9,11 @@ Welcome to LWA352 SNAP2 F-Engine's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    installation.rst
+   system_overview.rst
    control.rst
    memory_map_doc.rst
 
