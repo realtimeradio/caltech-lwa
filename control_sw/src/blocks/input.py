@@ -228,7 +228,7 @@ class Input(Block):
             ADC cores, respectively.
         """
         self._info("Getting histogram for stream %d" % stream)
-        self._set_histogram_stream(stream)
+        self._set_histogram_input(stream)
         time.sleep(0.1)
         v = np.array(struct.unpack('>%dH' % (2*2**self.n_bits), self.read('bit_stats_histogram_output', 2*2*2**self.n_bits)))
         a = v[0:2**self.n_bits]
