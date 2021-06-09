@@ -28,7 +28,7 @@ class Corr(Block):
         super(Corr, self).__init__(host, name, logger)
         self.n_chans = n_chans
         self.acc_len = acc_len
-        self.spec_per_acc = 8
+        self.chan_sum_factor = 8 #: Number of adjacent frequency channels internally summed
    
     def _set_input(self, pol1, pol2):
         """
@@ -77,7 +77,7 @@ class Corr(Block):
         :type flush_vacc: bool
 
         :return: Complex-valued cross-correlation spectra of `pol1` and `pol2` with
-            accumulation length divided out.
+            accumulation length and frequency summing factor divided out.
         :rtype: numpy.array
 
         """
@@ -85,12 +85,13 @@ class Corr(Block):
         if flush_vacc:
             self._wait_for_acc()      # Wait two acc_len for new spectra to load
         self._wait_for_acc()
-        spec = self._read_bram()/float(self.acc_len*self.spec_per_acc)
+        spec = self._read_bram()/float(self.acc_len*self.chan_sum_factor)
         return spec
 
     def plot_corr(self, pol1, pol2, show=False):
         """
-        Plot a correlation spectra.
+        Plot a correlation spectra, with accumulation length and frequency
+        summing factor divided out.
 
         :param pol1: First (unconjugated) polarization index.
         :type pol1: int
@@ -126,7 +127,7 @@ class Corr(Block):
         :return: Current accumulation length
         :rtype: int
         """
-        #Convert to spectra from clocks. See Firmware for reasoning behind 1024
+        #Convert to spectra from clocks.
         self.acc_len = self.read_int('acc_len') // self.n_chans
         return self.acc_len
 
