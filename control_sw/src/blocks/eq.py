@@ -133,7 +133,7 @@ class Eq(Block):
         :type read_only: bool
 
         """
-        COEFF = 100.
+        COEFF = 300.
         if read_only:
             return
         for stream in range(self.n_streams):

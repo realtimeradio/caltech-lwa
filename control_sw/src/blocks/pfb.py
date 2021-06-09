@@ -5,7 +5,7 @@ from lwa_f.error_levels import *
 
 class Pfb(Block):
     _N_CORES = 4 #: Number of FFT sub-cores per PFB block
-    DEFAULT_FFT_SHIFT = 0b110101010101 #: Default FFT shift
+    DEFAULT_FFT_SHIFT = 2**16-1 #: Default FFT shift
     def __init__(self, host, name, logger=None):
         super(Pfb, self).__init__(host, name, logger)
         self.SHIFT_OFFSET = 0
