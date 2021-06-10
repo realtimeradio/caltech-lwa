@@ -37,42 +37,6 @@
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
----------------------------------------------------------------------
---
---  Filename      : xlslice.vhd
---
---  Description   : VHDL description of a block that sets the output to a
---                  specified range of the input bits. The output is always
---                  set to an unsigned type with it's binary point at zero.
---
----------------------------------------------------------------------
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.std_logic_arith.all;
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-
-entity pfb_fir_4096c_16i_core_xlslice is
-    generic (
-        new_msb      : integer := 9;           -- position of new msb
-        new_lsb      : integer := 1;           -- position of new lsb
-        x_width      : integer := 16;          -- Width of x input
-        y_width      : integer := 8);          -- Width of y output
-    port (
-        x : in std_logic_vector (x_width-1 downto 0);
-        y : out std_logic_vector (y_width-1 downto 0));
-end pfb_fir_4096c_16i_core_xlslice;
-
-architecture behavior of pfb_fir_4096c_16i_core_xlslice is
-begin
-    y <= x(new_msb downto new_lsb);
-end  behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
 --$Header: /devl/xcs/repo/env/Jobs/sysgen/src/xbs/blocks/xlconvert/hdl/xlconvert.vhd,v 1.1 2004/11/22 00:17:30 rosty Exp $
 ---------------------------------------------------------------------
 --
@@ -245,6 +209,42 @@ begin
         dout <= result;
     end generate latency0;
 
+end  behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+---------------------------------------------------------------------
+--
+--  Filename      : xlslice.vhd
+--
+--  Description   : VHDL description of a block that sets the output to a
+--                  specified range of the input bits. The output is always
+--                  set to an unsigned type with it's binary point at zero.
+--
+---------------------------------------------------------------------
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+
+entity pfb_fir_4096c_16i_core_xlslice is
+    generic (
+        new_msb      : integer := 9;           -- position of new msb
+        new_lsb      : integer := 1;           -- position of new lsb
+        x_width      : integer := 16;          -- Width of x input
+        y_width      : integer := 8);          -- Width of y output
+    port (
+        x : in std_logic_vector (x_width-1 downto 0);
+        y : out std_logic_vector (y_width-1 downto 0));
+end pfb_fir_4096c_16i_core_xlslice;
+
+architecture behavior of pfb_fir_4096c_16i_core_xlslice is
+begin
+    y <= x(new_msb downto new_lsb);
 end  behavior;
 
 library xil_defaultlib;
@@ -1173,36 +1173,36 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_counter_ab43f31f4f is
+entity sysgen_counter_7aeb6a6be8 is
   port (
-    op : out std_logic_vector((9 - 1) downto 0);
+    op : out std_logic_vector((13 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_counter_ab43f31f4f;
-architecture behavior of sysgen_counter_ab43f31f4f
+end sysgen_counter_7aeb6a6be8;
+architecture behavior of sysgen_counter_7aeb6a6be8
 is
-  signal count_reg_20_23: unsigned((9 - 1) downto 0) := "000000000";
+  signal count_reg_20_23: unsigned((13 - 1) downto 0) := "0000000000000";
   signal count_reg_20_23_rst: std_logic;
   signal rel_34_8: boolean;
   signal rst_limit_join_34_5: boolean;
   signal bool_44_4: boolean;
-  signal rst_limit_join_44_1: boolean;
-  signal count_reg_join_44_1: unsigned((10 - 1) downto 0);
+  signal count_reg_join_44_1: unsigned((14 - 1) downto 0);
   signal count_reg_join_44_1_rst: std_logic;
+  signal rst_limit_join_44_1: boolean;
 begin
   proc_count_reg_20_23: process (clk)
   is
   begin
     if (clk'event and (clk = '1')) then
       if ((ce = '1') and (count_reg_20_23_rst = '1')) then
-        count_reg_20_23 <= "000000000";
+        count_reg_20_23 <= "0000000000000";
       elsif (ce = '1') then 
-        count_reg_20_23 <= count_reg_20_23 + std_logic_vector_to_unsigned("000000001");
+        count_reg_20_23 <= count_reg_20_23 + std_logic_vector_to_unsigned("0000000000001");
       end if;
     end if;
   end process proc_count_reg_20_23;
-  rel_34_8 <= count_reg_20_23 = std_logic_vector_to_unsigned("111111101");
+  rel_34_8 <= count_reg_20_23 = std_logic_vector_to_unsigned("1111111111101");
   proc_if_34_5: process (rel_34_8)
   is
   begin
@@ -1229,6 +1229,47 @@ begin
   end process proc_if_44_1;
   count_reg_20_23_rst <= count_reg_join_44_1_rst;
   op <= unsigned_to_std_logic_vector(count_reg_20_23);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_f4d17c9e21 is
+  port (
+    d : in std_logic_vector((9 - 1) downto 0);
+    q : out std_logic_vector((9 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_f4d17c9e21;
+architecture behavior of sysgen_delay_f4d17c9e21
+is
+  signal d_1_22: std_logic_vector((9 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (1 - 1)) of std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    0 => "000000000");
+  signal op_mem_20_24_front_din: std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(0);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
 end behavior;
 
 library xil_defaultlib;
@@ -1330,39 +1371,17 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_delay_f4d17c9e21 is
+entity sysgen_constant_fce50b36e0 is
   port (
-    d : in std_logic_vector((9 - 1) downto 0);
-    q : out std_logic_vector((9 - 1) downto 0);
+    op : out std_logic_vector((14 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_delay_f4d17c9e21;
-architecture behavior of sysgen_delay_f4d17c9e21
+end sysgen_constant_fce50b36e0;
+architecture behavior of sysgen_constant_fce50b36e0
 is
-  signal d_1_22: std_logic_vector((9 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (1 - 1)) of std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    0 => "000000000");
-  signal op_mem_20_24_front_din: std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
 begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(0);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
+  op <= "00000000000001";
 end behavior;
 
 library xil_defaultlib;
@@ -1371,17 +1390,17 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_10f45bb0ac is
+entity sysgen_constant_09918a51d2 is
   port (
-    op : out std_logic_vector((10 - 1) downto 0);
+    op : out std_logic_vector((14 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_constant_10f45bb0ac;
-architecture behavior of sysgen_constant_10f45bb0ac
+end sysgen_constant_09918a51d2;
+architecture behavior of sysgen_constant_09918a51d2
 is
 begin
-  op <= "0000000001";
+  op <= "00000000000000";
 end behavior;
 
 library xil_defaultlib;
@@ -1390,36 +1409,17 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_d9c2ed976e is
+entity sysgen_constant_22d3decfb6 is
   port (
-    op : out std_logic_vector((10 - 1) downto 0);
+    op : out std_logic_vector((14 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_constant_d9c2ed976e;
-architecture behavior of sysgen_constant_d9c2ed976e
+end sysgen_constant_22d3decfb6;
+architecture behavior of sysgen_constant_22d3decfb6
 is
 begin
-  op <= "0000000000";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_0e144c1df4 is
-  port (
-    op : out std_logic_vector((10 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_0e144c1df4;
-architecture behavior of sysgen_constant_0e144c1df4
-is
-begin
-  op <= "1000000000";
+  op <= "10000000000000";
 end behavior;
 
 library xil_defaultlib;
@@ -1486,181 +1486,6 @@ begin
     end case;
   end process proc_switch_6_1;
   y <= std_logic_to_vector(unregy_join_6_1);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_relational_62e959fa88 is
-  port (
-    a : in std_logic_vector((10 - 1) downto 0);
-    b : in std_logic_vector((10 - 1) downto 0);
-    op : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_relational_62e959fa88;
-architecture behavior of sysgen_relational_62e959fa88
-is
-  signal a_1_31: unsigned((10 - 1) downto 0);
-  signal b_1_34: unsigned((10 - 1) downto 0);
-  signal result_12_3_rel: boolean;
-begin
-  a_1_31 <= std_logic_vector_to_unsigned(a);
-  b_1_34 <= std_logic_vector_to_unsigned(b);
-  result_12_3_rel <= a_1_31 = b_1_34;
-  op <= boolean_to_vector(result_12_3_rel);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_relational_7ac219fc01 is
-  port (
-    a : in std_logic_vector((10 - 1) downto 0);
-    b : in std_logic_vector((10 - 1) downto 0);
-    op : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_relational_7ac219fc01;
-architecture behavior of sysgen_relational_7ac219fc01
-is
-  signal a_1_31: unsigned((10 - 1) downto 0);
-  signal b_1_34: unsigned((10 - 1) downto 0);
-  signal result_14_3_rel: boolean;
-begin
-  a_1_31 <= std_logic_vector_to_unsigned(a);
-  b_1_34 <= std_logic_vector_to_unsigned(b);
-  result_14_3_rel <= a_1_31 /= b_1_34;
-  op <= boolean_to_vector(result_14_3_rel);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_counter_f81855309d is
-  port (
-    op : out std_logic_vector((13 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_counter_f81855309d;
-architecture behavior of sysgen_counter_f81855309d
-is
-  signal count_reg_20_23: unsigned((13 - 1) downto 0) := "0000000000000";
-  signal count_reg_20_23_rst: std_logic;
-  signal rel_34_8: boolean;
-  signal rst_limit_join_34_5: boolean;
-  signal bool_44_4: boolean;
-  signal rst_limit_join_44_1: boolean;
-  signal count_reg_join_44_1: unsigned((14 - 1) downto 0);
-  signal count_reg_join_44_1_rst: std_logic;
-begin
-  proc_count_reg_20_23: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (count_reg_20_23_rst = '1')) then
-        count_reg_20_23 <= "0000000000000";
-      elsif (ce = '1') then 
-        count_reg_20_23 <= count_reg_20_23 + std_logic_vector_to_unsigned("0000000000001");
-      end if;
-    end if;
-  end process proc_count_reg_20_23;
-  rel_34_8 <= count_reg_20_23 = std_logic_vector_to_unsigned("1111111111101");
-  proc_if_34_5: process (rel_34_8)
-  is
-  begin
-    if rel_34_8 then
-      rst_limit_join_34_5 <= true;
-    else 
-      rst_limit_join_34_5 <= false;
-    end if;
-  end process proc_if_34_5;
-  bool_44_4 <= false or rst_limit_join_34_5;
-  proc_if_44_1: process (bool_44_4, count_reg_20_23, rst_limit_join_34_5)
-  is
-  begin
-    if bool_44_4 then
-      count_reg_join_44_1_rst <= '1';
-    else 
-      count_reg_join_44_1_rst <= '0';
-    end if;
-    if bool_44_4 then
-      rst_limit_join_44_1 <= false;
-    else 
-      rst_limit_join_44_1 <= rst_limit_join_34_5;
-    end if;
-  end process proc_if_44_1;
-  count_reg_20_23_rst <= count_reg_join_44_1_rst;
-  op <= unsigned_to_std_logic_vector(count_reg_20_23);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_fce50b36e0 is
-  port (
-    op : out std_logic_vector((14 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_fce50b36e0;
-architecture behavior of sysgen_constant_fce50b36e0
-is
-begin
-  op <= "00000000000001";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_09918a51d2 is
-  port (
-    op : out std_logic_vector((14 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_09918a51d2;
-architecture behavior of sysgen_constant_09918a51d2
-is
-begin
-  op <= "00000000000000";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_22d3decfb6 is
-  port (
-    op : out std_logic_vector((14 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_22d3decfb6;
-architecture behavior of sysgen_constant_22d3decfb6
-is
-begin
-  op <= "10000000000000";
 end behavior;
 
 library xil_defaultlib;
@@ -2023,17 +1848,6 @@ entity pfb_fir_4096c_16i_core_xlcounter_free is
  		  ); 
  end component;
 
- component pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i2
-    port ( 
-      clk: in std_logic;
-      ce: in std_logic;
-      SINIT: in std_logic;
-      load: in std_logic;
-      l: in std_logic_vector(op_width - 1 downto 0);
-      q: out std_logic_vector(op_width - 1 downto 0) 
- 		  ); 
- end component;
-
 -- synthesis translate_off
    constant zeroVec: std_logic_vector(op_width - 1 downto 0) := (others => '0');
    constant oneVec: std_logic_vector(op_width - 1 downto 0) := (others => '1');
@@ -2064,18 +1878,6 @@ entity pfb_fir_4096c_16i_core_xlcounter_free is
 
  comp1: if ((core_name0 = "pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i1")) generate 
   core_instance1:pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i1
-   port map ( 
-        clk => clk,
-        ce => core_ce,
-        SINIT => core_sinit,
-        load => load(0),
-        l => din,
-        q => op_net
-  ); 
-   end generate;
-
- comp2: if ((core_name0 = "pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i2")) generate 
-  core_instance2:pfb_fir_4096c_16i_core_c_counter_binary_v12_0_i2
    port map ( 
         clk => clk,
         ce => core_ce,
