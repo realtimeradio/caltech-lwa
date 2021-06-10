@@ -60,7 +60,8 @@ class Input(Block):
         for regn in range(self.n_streams // 16):
             reg_val = self.read_uint('source_sel%d' % regn)
             for i in range(16):
-                v = (reg_val >> (2*i)) & 0b11
+                # MSBs of control signals are for first input
+                v = (reg_val >> (2*(15-i))) & 0b11
                 pos += [self._INT_TO_POS[v]]
         return pos
                 
@@ -80,7 +81,7 @@ class Input(Block):
         if stream is not None:
             assert (stream < self.n_streams), "Can't switch stream >= self.n_streams" 
             reg = 'source_sel%d' % (stream // 16) # one register per 16 streams
-            reg_pos = stream % 16
+            reg_pos = 15 - (stream % 16) # First input controlled by MSBs
             self.change_reg_bits(reg, val, 2*reg_pos, 2)
         else:
             for stream in range(self.n_streams):
