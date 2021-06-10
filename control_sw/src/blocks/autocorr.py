@@ -99,12 +99,12 @@ class AutoCorr(Block):
         :rtype: numpy.array
         """
         if self._use_mux:
-            dout = np.zeros([self.n_pols_per_core, self.n_chans], dtype=np.float32)
+            dout = np.zeros([self.n_pols_per_block, self.n_chans], dtype=np.float32)
             read_loop_range = range(1)
         else:
             dout = np.zeros([self.n_pols, self.n_chans], dtype=np.float32)
             read_loop_range = range(self._n_cores)
-        n_words_per_stream = self.n_pols_per_core * self.n_chans // self._n_parallel_streams
+        n_words_per_stream = self.n_pols_per_block * self.n_chans // self._n_parallel_streams
         n_chans_per_stream = self.n_chans // self._n_parallel_streams
         for core in read_loop_range:
             for stream in range(self._n_parallel_streams):
@@ -114,8 +114,8 @@ class AutoCorr(Block):
                     ramname = '%d_dout%d_bram' % (core, stream)
                 raw = self.read(ramname, 4*n_words_per_stream)
                 x = struct.unpack('>%df' % n_words_per_stream, raw)
-                for subpol in range(self.n_pols_per_n_cores):
-                    dout[core*self.n_pols_per_core + subpol, stream::self._n_parallel_streams] = \
+                for subpol in range(self.n_pols_per_block):
+                    dout[core*self.n_pols_per_block + subpol, stream::self._n_parallel_streams] = \
                         x[subpol*n_chans_per_stream:(subpol+1)*n_chans_per_stream]
         return dout
     

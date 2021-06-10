@@ -543,18 +543,40 @@ class Adc(Block):
                 adc.set_bitslip_index(0, board)
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
-            if np.any(errs[0,:,:] == 0):
-                self._info("Bitslipping because delay start too large")
-                for board in range(2):
-                    adc.increment_bitslip_index(board)
-                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
-                                                        step_size=step_size))
-            elif np.any(errs[-1,:,:] == 0):
-                self._info("Bitslipping because delay end too small")
-                for board in range(2):
-                    adc.decrement_bitslip_index(board)
-                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
-                                                        step_size=step_size))
+            for slip in range(2):
+                if not np.any(errs[:,:,:]==0):
+                    self._info("Bitslipping because everywhere was bad")
+                    for board in range(2):
+                        adc.decrement_bitslip_index(board)
+                        adc.decrement_bitslip_index(board)
+                    errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
+                                                            step_size=step_size))
+            for slip in range(5):
+                slip_done = True
+                if np.any(errs[0:5,:,:] == 0):
+                    slip_done = False
+                    #self.print_sweep(errs, best_delays=best)
+                    for board in range(2):
+                        # Make the error search wider here, to encourage boards to
+                        # be slipped together
+                        if np.any(errs[0:20, 4*board:4*(board+1), :] == 0):
+                            self._info("Bitslipping board %d because delay start too large" % board)
+                            adc.increment_bitslip_index(board)
+                    errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
+                                                            step_size=step_size))
+                if np.any(errs[-5:-1,:,:] == 0):
+                    slip_done = False
+                    #self.print_sweep(errs, best_delays=best)
+                    for board in range(2):
+                        # Make the error search wider here, to encourage boards to
+                        # be slipped together
+                        if np.any(errs[-20:-1, 4*board:4*(board+1), :] == 0):
+                            self._info("Bitslipping board %d because delay end too small" % board)
+                            adc.decrement_bitslip_index(board)
+                    errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
+                                                            step_size=step_size))
+                if slip_done:
+                    break
             best, slack = self._get_best_delays(errs, step_size=step_size)
             best_by_adc += [best]
             slack_by_adc += [slack]
