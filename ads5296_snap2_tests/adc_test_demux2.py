@@ -513,7 +513,7 @@ if __name__ == "__main__":
         if args.cal_data:
             errs = get_data_delays(adc, test_val=TEST_VAL)
             for slip in range(2):
-                if not np.any(errs[:,:,:]==0):
+                if not np.any(errs[1:-2,:,:]==0):
                     logger.info("Bitslipping because everywhere was bad")
                     for board in range(2):
                         adc.decrement_bitslip_index(board)

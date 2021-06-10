@@ -544,7 +544,7 @@ class Adc(Block):
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
             for slip in range(2):
-                if not np.any(errs[:,:,:]==0):
+                if not np.any(errs[1:-2,:,:]==0):
                     self._info("Bitslipping because everywhere was bad")
                     for board in range(2):
                         adc.decrement_bitslip_index(board)
