@@ -1,0 +1,6 @@
+//arch = zynq; split = false; format = BIN
+the_ROM_image:
+{
+	[bootloader]/home/jackh/src/caltech-lwa/zynq/snap2_zynq_gpio/snap2_zynq_gpio.sdk/fsbl/Debug/fsbl.elf
+	/home/jackh/src/caltech-lwa/zynq/snap2_zynq_gpio/snap2_zynq_gpio.sdk/top_hw_platform_0/top.bit
+}
