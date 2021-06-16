@@ -17,3 +17,5 @@ snap2_f_200msps_64i_4096c_test/
 !snap2_f_200msps_64i_4096c_test/outputs/*
 snap2_forty_gbe_test/
 !snap2_forty_gbe_test/outputs/*
+snap2_zynq_bridge/
+!snap2_zynq_bridge/outputs/*
