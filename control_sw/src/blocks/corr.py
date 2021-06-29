@@ -27,8 +27,9 @@ class Corr(Block):
     def __init__(self, host, name, acc_len=1024, logger=None, n_chans=1024):
         super(Corr, self).__init__(host, name, logger)
         self.n_chans = n_chans
-        self.acc_len = acc_len
+        self.initial_acc_len = acc_len
         self._chan_sum_factor = 8 #: Number of adjacent frequency channels internally summed
+        self._input_binary_point = 3 #: Input binary point
    
     def _set_input(self, pol1, pol2):
         """
@@ -64,6 +65,8 @@ class Corr(Block):
     def get_new_corr(self, pol1, pol2, flush_vacc=True):
         """
         Get a new correlation.
+        Data are returned with summing factor divided out, and normalized to correspond to an input
+        signal with real and imaginary parts each having a range of +/- 0.875
 
         :param pol1: First (unconjugated) polarization index.
         :type pol1: int
@@ -85,13 +88,15 @@ class Corr(Block):
         if flush_vacc:
             self._wait_for_acc()      # Wait two acc_len for new spectra to load
         self._wait_for_acc()
-        spec = self._read_bram()/float(self.acc_len*self._chan_sum_factor)
+        acc_len = self.get_acc_len()
+        spec = self._read_bram()/float(acc_len*self._chan_sum_factor)/(2**(2*self._input_binary_point))
         return spec
 
     def plot_corr(self, pol1, pol2, show=False):
         """
         Plot a correlation spectra, with accumulation length and frequency
-        summing factor divided out.
+        summing factor divided out, and normalized to correspond to an input
+        signal with real and imaginary parts each having a range of +/- 0.875
 
         :param pol1: First (unconjugated) polarization index.
         :type pol1: int
@@ -128,8 +133,8 @@ class Corr(Block):
         :rtype: int
         """
         #Convert to spectra from clocks.
-        self.acc_len = self.read_int('acc_len') // self.n_chans
-        return self.acc_len
+        acc_len = self.read_int('acc_len') // self.n_chans
+        return acc_len
 
     def set_acc_len(self,acc_len):
         """
@@ -139,7 +144,6 @@ class Corr(Block):
         :type acc_len: int
         """
         assert isinstance(acc_len, int), "Cannot set accumulation length to type %r" % type(acc_len)
-        self.acc_len = acc_len
         acc_len = self.n_chans*acc_len  # Convert from spectra to FPGA clocks
         self.write_int('acc_len',acc_len)
 
@@ -176,4 +180,4 @@ class Corr(Block):
         if read_only:
             self.get_acc_len()
         else:
-            self.set_acc_len(self.acc_len)
+            self.set_acc_len(self.initial_acc_len)
