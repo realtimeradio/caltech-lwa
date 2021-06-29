@@ -91,7 +91,7 @@ class Snap2Fengine():
         #: Control interface to Equalization block
         self.eq          = eq.Eq(self._cfpga, 'eq', n_streams=64, n_coeffs=2**9)
         #: Control interface to post-equalization Test Vector Generator block
-        self.eq_tvg      = eqtvg.EqTvg(self._cfpga, 'post_eq_tvg', n_streams=64, n_chans=2**12)
+        self.eqtvg       = eqtvg.EqTvg(self._cfpga, 'post_eq_tvg', n_streams=64, n_chans=2**12)
         #: Control interface to Channel Reorder block
         self.reorder     = chanreorder.ChanReorder(self._cfpga, 'chan_reorder', n_chans=2**12)
         #: Control interface to Packetizer block
@@ -114,7 +114,7 @@ class Snap2Fengine():
             'delay'     : self.delay,
             'pfb'       : self.pfb,
             'eq'        : self.eq,
-            'eq_tvg'    : self.eq_tvg,
+            'eqtvg'     : self.eqtvg,
             'reorder'   : self.reorder,
             'packetizer': self.packetizer,
             'eth'       : self.eth,
