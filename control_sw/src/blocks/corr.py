@@ -28,7 +28,7 @@ class Corr(Block):
         super(Corr, self).__init__(host, name, logger)
         self.n_chans = n_chans
         self.acc_len = acc_len
-        self.chan_sum_factor = 8 #: Number of adjacent frequency channels internally summed
+        self._chan_sum_factor = 8 #: Number of adjacent frequency channels internally summed
    
     def _set_input(self, pol1, pol2):
         """
@@ -85,7 +85,7 @@ class Corr(Block):
         if flush_vacc:
             self._wait_for_acc()      # Wait two acc_len for new spectra to load
         self._wait_for_acc()
-        spec = self._read_bram()/float(self.acc_len*self.chan_sum_factor)
+        spec = self._read_bram()/float(self.acc_len*self._chan_sum_factor)
         return spec
 
     def plot_corr(self, pol1, pol2, show=False):
