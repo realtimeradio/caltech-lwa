@@ -1,3 +1,5 @@
+import time
+
 from .block import Block
 
 class Sync(Block):
@@ -91,11 +93,31 @@ class Sync(Block):
 
     def sw_sync(self):
         """
-        Issue a software sync pulse
+        Issue a software sync pulse.
         """
         self.change_reg_bits('ctrl', 0, self.OFFSET_SW_SYNC)
         self.change_reg_bits('ctrl', 1, self.OFFSET_SW_SYNC)
         self.change_reg_bits('ctrl', 0, self.OFFSET_SW_SYNC)
+
+    def update_telescope_time(self, fs_hz=196e6):
+        """
+        Arm sync generators, and issue a software sync pulse on the next second,
+        having loaded an appropriate telescope time.
+
+        :param fs_hz: The ADC clock rate, in Hz. Used to set the
+            telescope time counter.
+        :type fs_hz: int
+        """
+        now = time.time()
+        now_round_up = int(now) + 2
+        self._info("Loading new telescope time at %s" % time.ctime(now_round_up))
+        target_tt = int(now_round_up * fs_hz)
+        delay = now_round_up - time.time()
+        if delay > 0:
+            time.sleep(delay)
+        else:
+            self._error("Took too long to generate software sync")
+        self.load_telescope_time(target_tt, software_load=True)
 
     def reset_telescope_time(self):
         """
@@ -125,9 +147,9 @@ class Sync(Block):
             self.change_reg_bits('ctrl', 1, self.OFFSET_MAN_LOAD)
             self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD)
         else:
+            self.change_reg_bits('ctrl', 0, self.OFFSET_EXT_LOAD)
             self.change_reg_bits('ctrl', 1, self.OFFSET_EXT_LOAD)
-            self.wait_for_sync()
-            self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD)
+            self.change_reg_bits('ctrl', 0, self.OFFSET_EXT_LOAD)
 
     def get_status(self):
         """
