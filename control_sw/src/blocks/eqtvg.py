@@ -119,10 +119,8 @@ class EqTvg(Block):
             assert self._FORMAT == 'B', "Don't know how to make '%s' format values complex" % self._FORMAT
             tvg_r = tvg.view(dtype=np.int8) >> 4
             tvg_r[tvg_r > 7] -= 16
-            tvg_r[tvg_r < -7] = -7 # Do the same saturation the FPGA does
             tvg_i = tvg.view(dtype=np.int8) & 0xf
             tvg_i[tvg_i > 7] -= 16
-            tvg_i[tvg_i < -7] = -7 # Do the same saturation the FPGA does
             tvg = tvg_r + 1j*tvg_i
 
         return tvg
