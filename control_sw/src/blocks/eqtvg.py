@@ -94,15 +94,19 @@ class EqTvg(Block):
         for stream in range(self.n_streams):
             self.write_stream_tvg(stream, ramp)
 
-    def read_stream_tvg(self, stream):
+    def read_stream_tvg(self, stream, makecomplex=False):
         """
         Read the test vector loaded to an ADC stream.
         
         :param stream: Index of stream from which test vectors should be read.
         :type stream: int
 
-        :return: Test vector array, as loaded to the FPGA in 8-bit unsigned
-            integer representation.
+        :param makecomplex: If True, return an array of 4+4 bit complex numbers,
+           as interpretted by the correlator. If False, return the raw unsigned 8-bit
+           values loaded in FPGA memory.
+        :type makecomplex: Bool
+
+        :return: Test vector array
         :rtype: numpy.ndarray
 
         """
@@ -110,6 +114,17 @@ class EqTvg(Block):
         sub_index = stream % 16
         s = self.read(core_name, self._stream_size, offset=sub_index*self._stream_size)
         tvg = np.fromstring(s, dtype='>%s' %self._FORMAT)
+
+        if makecomplex:
+            assert self._FORMAT == 'B', "Don't know how to make '%s' format values complex" % self._FORMAT
+            tvg_r = tvg.view(dtype=np.int8) >> 4
+            tvg_r[tvg_r > 7] -= 16
+            tvg_r[tvg_r < -7] = -7 # Do the same saturation the FPGA does
+            tvg_i = tvg.view(dtype=np.int8) & 0xf
+            tvg_i[tvg_i > 7] -= 16
+            tvg_i[tvg_i < -7] = -7 # Do the same saturation the FPGA does
+            tvg = tvg_r + 1j*tvg_i
+
         return tvg
 
     def get_status(self):
