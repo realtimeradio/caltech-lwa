@@ -41,8 +41,8 @@ time.sleep(1)
 feng.eq.print_status()
 
 
-feng.eq_tvg.write_freq_ramp()
-feng.eq_tvg.tvg_enable()
+feng.eqtvg.write_freq_ramp()
+feng.eqtvg.tvg_enable()
 
 #feng.corr.initialize()
 #feng.corr.plot_corr(0, 0, show=True)

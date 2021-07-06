@@ -12,8 +12,6 @@ def main():
     parser = argparse.ArgumentParser(description='Interact with a programmed SNAP board for testing and '\
                                      'networking. FLAGS OVERRIDE CONFIG FILE!',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--config_file', type=str, default=None,
-                        help = 'YAML configuration file with hosts and channels list')
     parser.add_argument('-s', dest='sync', action='store_true',
                         help ='Use this flag to sync the F-engine and Noise generators from PPS')
     parser.add_argument('-m', dest='mansync', action='store_true',
@@ -46,11 +44,11 @@ def main():
     
     if args.tvg:
         f.logger.info('Enabling EQ TVGs...')
-        f.eq_tvg.write_freq_ramp()
-        f.eq_tvg.tvg_enable()
+        f.eqtvg.write_freq_ramp()
+        f.eqtvg.tvg_enable()
     else:
         f.logger.info('Disabling EQ TVGs...')
-        f.eq_tvg.tvg_disable()
+        f.eqtvg.tvg_disable()
     
     if args.noise:
         f.logger.info("Pointing all inputs to noise generator 0")
