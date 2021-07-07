@@ -252,11 +252,26 @@ class Snap2Fengine():
         # channel_indices above gives the channel IDs which will
         # be sent. Remap the ones we _want_ into these slots
         i = 0
-        output_order = list(range(self.reorder.n_chans))
+        # initialize map to all -1
+        output_order = [-1 for _ in range(self.reorder.n_chans)]
         for chan_range in channel_indices:
             for chan in chan_range:
                 output_order[chan] = chans[i]
                 i += 1
+        # Fill gaps in the map with unused channels. All channels _must_
+        # be used somewhere, since the underlying reorder is not double
+        # buffered.
+        # 1. Make a list of unused channels
+        possible_channels = list(range(self.reorder.n_chans))
+        for i, chan in enumerate(output_order):
+            if chan == -1:
+                continue
+            possible_channels.remove(chan)
+        # 2. Insert the unused channels in the map
+        for i, chan in enumerate(output_order):
+            if chan == -1:
+                output_order[i] = possible_channels.pop(0)
+
         self.reorder.set_channel_order(output_order)
             
         self.packetizer.write_config(
