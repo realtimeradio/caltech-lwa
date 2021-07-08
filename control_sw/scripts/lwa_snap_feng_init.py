@@ -41,6 +41,8 @@ def main():
     
     if args.initialize:
         f.initialize(read_only=False)
+        f.logger.warning('Updating telescope time')
+        f.sync.update_telescope_time()
     
     if args.tvg:
         f.logger.info('Enabling EQ TVGs...')
