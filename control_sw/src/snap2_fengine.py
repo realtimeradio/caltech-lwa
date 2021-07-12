@@ -102,7 +102,7 @@ class Snap2Fengine():
         #: Control interface to Correlation block
         self.corr        = corr.Corr(self._cfpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
         #: Control interface to Power Monitor block
-        self.powermon    = powermon.PowerMon('powermon')
+        self.powermon    = powermon.PowerMon(self._cfpga, 'powermon')
 
         # The order here can be important, blocks are initialized in the
         # order they appear here
