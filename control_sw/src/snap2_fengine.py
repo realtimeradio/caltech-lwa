@@ -24,6 +24,7 @@ from .blocks import chanreorder
 from .blocks import packetizer
 from .blocks import eth
 from .blocks import corr
+from .blocks import powermon
 
 
 class Snap2Fengine():
@@ -100,6 +101,8 @@ class Snap2Fengine():
         self.eth         = eth.Eth(self._cfpga, 'eth')
         #: Control interface to Correlation block
         self.corr        = corr.Corr(self._cfpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
+        #: Control interface to Power Monitor block
+        self.powermon    = powermon.PowerMon('powermon')
 
         # The order here can be important, blocks are initialized in the
         # order they appear here
@@ -120,6 +123,7 @@ class Snap2Fengine():
             'eth'       : self.eth,
             'autocorr'  : self.autocorr,
             'corr'      : self.corr,
+            'powermon'  : self.powermon,
         }
 
     def initialize(self, read_only=True):
