@@ -96,7 +96,7 @@ class Snap2Fengine():
         #: Control interface to Channel Reorder block
         self.reorder     = chanreorder.ChanReorder(self._cfpga, 'chan_reorder', n_chans=2**12)
         #: Control interface to Packetizer block
-        self.packetizer  = packetizer.Packetizer(self._cfpga, 'packetizer')
+        self.packetizer  = packetizer.Packetizer(self._cfpga, 'packetizer', sample_rate_mhz=196.608)
         #: Control interface to 40GbE interface block
         self.eth         = eth.Eth(self._cfpga, 'eth')
         #: Control interface to Correlation block
