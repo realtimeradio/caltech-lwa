@@ -270,7 +270,10 @@ class Snap2Fengine():
         for i, chan in enumerate(output_order):
             if chan == -1:
                 continue
-            possible_channels.remove(chan)
+            if chan not in possible_channels:
+                self.logger.critical("Failed to remove channel %d from order map! Your data _will_ be nonsense" % chan)
+            else:
+                possible_channels.remove(chan)
         # 2. Insert the unused channels in the map
         for i, chan in enumerate(output_order):
             if chan == -1:
