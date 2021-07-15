@@ -117,7 +117,7 @@ class PowerMon(Block):
             return
 
         try:
-            self.i2c = i2c.I2C(self.host, self.I2C_NAME)
+            self.i2c = i2c.I2C(self, self.I2C_NAME)
             if not read_only:
                 self.i2c.setClock(self.I2C_CLK_KHZ, self.I2C_REF_CLK_MHZ)
                 self._configure_mux()

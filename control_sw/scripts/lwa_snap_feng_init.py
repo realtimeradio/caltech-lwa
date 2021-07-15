@@ -96,7 +96,6 @@ def main():
                     f.eth.add_arp_entry(ip, mac)
                 # Finally, configure packetizer
                 chans_per_packet = conf['fengines']['chans_per_packet']
-                dest_port = localconf['dest_port']
                 localants = range(localconf['ants'][0], localconf['ants'][1])
                 chans_to_send = []
                 ips = []
@@ -105,6 +104,8 @@ def main():
                 this_x_packets = None
                 for xeng, chans in conf['xengines']['chans'].items():
                     for ant in localants[::(f.n_pols_per_board // 2)]:
+                        dest_ip = xeng.split('-')[0]
+                        dest_port = int(xeng.split('-')[1])
                         this_x_chans = list(range(chans[0], chans[1]))
                         if this_x_packets is None:
                             this_x_packets = len(this_x_chans) // chans_per_packet
@@ -113,7 +114,7 @@ def main():
                                 self.logger.error("Can't have different total numbers of channels per X-engine")
                                 ok = False
                         antpol_ids += [2*ant] * this_x_packets
-                        ips += [xeng] * this_x_packets
+                        ips += [dest_ip] * this_x_packets
                         ports += [dest_port] * this_x_packets
                         chans_to_send += list(range(chans[0], chans[1]))
                 ok = True
