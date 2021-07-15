@@ -103,6 +103,16 @@ whether the FPGA is programmed with an LWA F-Engine firmware design.
   :no-show-inheritance:
   :members:
 
+Power Monitoring
+++++++++++++++++
+
+The ``PowerMon`` interface allows gathering of power supply statistics such
+as voltage and currnt levels.
+
+.. autoclass:: lwa_f.blocks.powermon.PowerMon
+  :no-show-inheritance:
+  :members:
+
 Timing Control
 ++++++++++++++
 
