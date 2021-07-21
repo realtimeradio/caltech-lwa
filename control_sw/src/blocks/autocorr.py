@@ -67,18 +67,37 @@ class AutoCorr(Block):
         self._n_cores = n_cores
         self._use_mux = use_mux
         self.n_pols_per_block = self.n_pols // self._n_cores
+
+    def get_acc_cnt(self):
+        """
+        Get the current accumulation count.
+
+        :return count: Current accumulation count
+        :rtype count: int
+        """
+        return self.read_uint('acc_cnt')
    
     def _wait_for_acc(self):
         """
-        Block until a new accumulation completes.
+        Block until a new accumulation completes, then return
+        the count index.
+
+        :return count: Current accumulation count
+        :rtype count: int
         """
-        cnt = self.read_uint('acc_cnt')
-        while self.read_uint('acc_cnt') < (cnt+1):
+        cnt0 = self.get_acc_cnt()
+        cnt1 = self.get_acc_cnt()
+        # Counter overflow protection
+        if cnt1 < cnt0:
+            cnt1 += 2**32
+        while cnt1 < ((cnt0+1) % (2**32)):
             time.sleep(0.1)
+            cnt1 = self.get_acc_cnt()
+        return cnt1
 
     def _set_mux(self, sel):
         """
-        Set the core input multiplexer.
+        Set the core input multiplexer select value.
 
         :param sel: Multiplexer select value.
         :type sel: int
@@ -89,6 +108,16 @@ class AutoCorr(Block):
             self.logger.error("Cannot select input %d when there are only %d cores" % (sel, self._n_cores))
             return
         self.write_int('mux_sel', sel)
+
+    def _get_mux(self):
+        """
+        Get the core input multiplexer select value.
+
+        :return sel: Current multiplexer select value
+        :rtype sel: int
+
+        """
+        return self.read_uint('mux_sel')
 
     def _read_bram(self):
         """ 
@@ -119,7 +148,7 @@ class AutoCorr(Block):
                         x[subpol*n_chans_per_stream:(subpol+1)*n_chans_per_stream]
         return dout
     
-    def get_new_spectra(self, pol_block=0):
+    def get_new_spectra(self, pol_block=0, flush_vacc='auto'):
         """
         Get a new average power spectra.
 
@@ -132,17 +161,77 @@ class AutoCorr(Block):
 
         :type pol_block: int
 
+        :param flush_vacc: If ``True``, throw away a spectra before grabbing a valid
+            one. This can be useful if the upstream analog settings may have changed
+            during the last integration. If ``False``, return the first spectra
+            available. If ``'auto'`` perform a flush if the input multiplexer has
+            changed positions.
+        :type flush_vacc: Bool or string
+
         :return: Float32 array of dimensions [POLARIZATION, FREQUENCY CHANNEL]
             containing autocorrelations with accumulation length divided out.
         :rtype: numpy.array
 
         """
 
+        assert flush_vacc in [True, False, 'auto'], "Don't understand value of `flush_vacc`"
+
+        auto_flush = False
         if self._use_mux:
+            if flush_vacc == 'auto':
+                old_mux_state = self._get_mux()
             self._set_mux(pol_block)
-        self._wait_for_acc()
+            if flush_vacc == 'auto' and pol_block != old_mux_state:
+                self._debug("Will auto-flush vacc because multiplexer changed state")
+                auto_flush = True
+        if flush_vacc == True or auto_flush:
+            self._debug("Flushing accumulation")
+            self._wait_for_acc()
+        acc_cnt = self._wait_for_acc()
         spec = self._read_bram() / float(self.get_acc_len())
+        # Read the accumulation counter again. If it has incremented, then two
+        # integrations have probably been mangled together
+        post_read_count = self.get_acc_cnt()
+        if acc_cnt != post_read_count:
+            self._warning("Accumulation counter incremented during read. "
+                    "Data may me a mixture of multiple different accumulations.")
         return spec
+
+    def plot_all_spectra(self, db=True, show=True):
+        """
+        Plot the spectra of all polarizations,
+        with accumulation length divided out
+        
+        :param db: If True, plot 10log10(power). Else, plot linear.
+        :type db: bool
+
+        :param show: If True, call matplotlib's `show` after plotting
+        :type show: bool
+
+        :return: matplotlib.Figure
+
+        """
+        from matplotlib import pyplot as plt
+        specs = np.zeros([self.n_pols, self.n_chans], dtype=float)
+        if self._use_mux:
+            for i in range(self._n_cores):
+                specs[i*self.n_pols_per_block:(i+1)*self.n_pols_per_block] = \
+                    self.get_new_spectra(i)
+        else:
+            specs = self.get_new_spectra()
+        f, ax = plt.subplots(1,1)
+        if db:
+            ax.set_ylabel('Power [dB]')
+            specs = 10*np.log10(specs)
+        else:
+            ax.set_ylabel('Power [linear]')
+        ax.set_xlabel('Frequency Channel')
+        for speci, spec in enumerate(specs):
+            ax.plot(spec, label="pol_%d" % (speci))
+        ax.legend()
+        if show:
+            plt.show()
+        return f
 
     def plot_spectra(self, pol_block=0, db=True, show=True):
         """
