@@ -147,6 +147,16 @@ class AutoCorr(Block):
                     dout[core*self.n_pols_per_block + subpol, stream::self._n_parallel_streams] = \
                         x[subpol*n_chans_per_stream:(subpol+1)*n_chans_per_stream]
         return dout
+
+    def _arm_readout(self):
+        """
+        Arm readout buffers to capture the next valid accumlation.
+        Once this occurs, the buffers will not be overwritten until
+        another arm is issued.
+        """
+        self.write_int('trig', 0)
+        self.write_int('trig', 1)
+        self.write_int('trig', 0)
     
     def get_new_spectra(self, pol_block=0, flush_vacc='auto'):
         """
@@ -187,14 +197,9 @@ class AutoCorr(Block):
         if flush_vacc == True or auto_flush:
             self._debug("Flushing accumulation")
             self._wait_for_acc()
+        self._arm_readout()
         acc_cnt = self._wait_for_acc()
         spec = self._read_bram() / float(self.get_acc_len())
-        # Read the accumulation counter again. If it has incremented, then two
-        # integrations have probably been mangled together
-        post_read_count = self.get_acc_cnt()
-        if acc_cnt != post_read_count:
-            self._warning("Accumulation counter incremented during read. "
-                    "Data may me a mixture of multiple different accumulations.")
         return spec
 
     def plot_all_spectra(self, db=True, show=True):
