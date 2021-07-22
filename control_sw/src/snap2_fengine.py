@@ -24,6 +24,7 @@ from .blocks import chanreorder
 from .blocks import packetizer
 from .blocks import eth
 from .blocks import corr
+from .blocks import powermon
 
 
 class Snap2Fengine():
@@ -95,11 +96,13 @@ class Snap2Fengine():
         #: Control interface to Channel Reorder block
         self.reorder     = chanreorder.ChanReorder(self._cfpga, 'chan_reorder', n_chans=2**12)
         #: Control interface to Packetizer block
-        self.packetizer  = packetizer.Packetizer(self._cfpga, 'packetizer')
+        self.packetizer  = packetizer.Packetizer(self._cfpga, 'packetizer', sample_rate_mhz=196.608)
         #: Control interface to 40GbE interface block
         self.eth         = eth.Eth(self._cfpga, 'eth')
         #: Control interface to Correlation block
         self.corr        = corr.Corr(self._cfpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
+        #: Control interface to Power Monitor block
+        self.powermon    = powermon.PowerMon(self._cfpga, 'powermon')
 
         # The order here can be important, blocks are initialized in the
         # order they appear here
@@ -120,6 +123,7 @@ class Snap2Fengine():
             'eth'       : self.eth,
             'autocorr'  : self.autocorr,
             'corr'      : self.corr,
+            'powermon'  : self.powermon,
         }
 
     def initialize(self, read_only=True):
@@ -266,7 +270,10 @@ class Snap2Fengine():
         for i, chan in enumerate(output_order):
             if chan == -1:
                 continue
-            possible_channels.remove(chan)
+            if chan not in possible_channels:
+                self.logger.critical("Failed to remove channel %d from order map! Your data _will_ be nonsense" % chan)
+            else:
+                possible_channels.remove(chan)
         # 2. Insert the unused channels in the map
         for i, chan in enumerate(output_order):
             if chan == -1:

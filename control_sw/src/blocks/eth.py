@@ -1,3 +1,5 @@
+import time
+
 from .block import Block
 from lwa_f.error_levels import *
 
@@ -103,6 +105,20 @@ class Eth(Block):
         self.change_reg_bits('ctrl', 0, 0)
         self.change_reg_bits('ctrl', 1, 0)
         self.change_reg_bits('ctrl', 0, 0)
+
+    def get_packet_rate(self):
+        """
+        Get the approximate packet rate, in packets-per-second.
+
+        :return pps: Approximate number of packets sent in the last second.
+        :rtype pps: int
+        """
+        v, _ = self.get_status()
+        c0 = v['tx_ctr']
+        time.sleep(1)
+        v, _ = self.get_status()
+        c1 = v['tx_ctr']
+        return c1 - c0
 
     def enable_tx(self):
         """
