@@ -251,17 +251,36 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_d2ba3cc4d6 is
+entity sysgen_constant_dd238c45e9 is
   port (
-    op : out std_logic_vector((1 - 1) downto 0);
+    op : out std_logic_vector((9 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_constant_d2ba3cc4d6;
-architecture behavior of sysgen_constant_d2ba3cc4d6
+end sysgen_constant_dd238c45e9;
+architecture behavior of sysgen_constant_dd238c45e9
 is
 begin
-  op <= "1";
+  op <= "100000000";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_d55a320a9d is
+  port (
+    op : out std_logic_vector((9 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_d55a320a9d;
+architecture behavior of sysgen_constant_d55a320a9d
+is
+begin
+  op <= "000000000";
 end behavior;
 
 library xil_defaultlib;
@@ -317,71 +336,6 @@ begin
   end process proc_if_44_1;
   count_reg_20_23_rst <= count_reg_join_44_1_rst;
   op <= unsigned_to_std_logic_vector(count_reg_20_23);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_dd238c45e9 is
-  port (
-    op : out std_logic_vector((9 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_dd238c45e9;
-architecture behavior of sysgen_constant_dd238c45e9
-is
-begin
-  op <= "100000000";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_relational_53025ccc0d is
-  port (
-    a : in std_logic_vector((9 - 1) downto 0);
-    b : in std_logic_vector((9 - 1) downto 0);
-    op : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_relational_53025ccc0d;
-architecture behavior of sysgen_relational_53025ccc0d
-is
-  signal a_1_31: unsigned((9 - 1) downto 0);
-  signal b_1_34: unsigned((9 - 1) downto 0);
-  signal result_12_3_rel: boolean;
-begin
-  a_1_31 <= std_logic_vector_to_unsigned(a);
-  b_1_34 <= std_logic_vector_to_unsigned(b);
-  result_12_3_rel <= a_1_31 = b_1_34;
-  op <= boolean_to_vector(result_12_3_rel);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_d55a320a9d is
-  port (
-    op : out std_logic_vector((9 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_d55a320a9d;
-architecture behavior of sysgen_constant_d55a320a9d
-is
-begin
-  op <= "000000000";
 end behavior;
 
 library xil_defaultlib;
@@ -477,6 +431,25 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+entity sysgen_constant_d2ba3cc4d6 is
+  port (
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_d2ba3cc4d6;
+architecture behavior of sysgen_constant_d2ba3cc4d6
+is
+begin
+  op <= "1";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 entity sysgen_mux_597493b326 is
   port (
     sel : in std_logic_vector((1 - 1) downto 0);
@@ -537,23 +510,50 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_counter_9fd0b682fb is
+entity sysgen_relational_53025ccc0d is
+  port (
+    a : in std_logic_vector((9 - 1) downto 0);
+    b : in std_logic_vector((9 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_relational_53025ccc0d;
+architecture behavior of sysgen_relational_53025ccc0d
+is
+  signal a_1_31: unsigned((9 - 1) downto 0);
+  signal b_1_34: unsigned((9 - 1) downto 0);
+  signal result_12_3_rel: boolean;
+begin
+  a_1_31 <= std_logic_vector_to_unsigned(a);
+  b_1_34 <= std_logic_vector_to_unsigned(b);
+  result_12_3_rel <= a_1_31 = b_1_34;
+  op <= boolean_to_vector(result_12_3_rel);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_counter_9c44b7c328 is
   port (
     op : out std_logic_vector((8 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_counter_9fd0b682fb;
-architecture behavior of sysgen_counter_9fd0b682fb
+end sysgen_counter_9c44b7c328;
+architecture behavior of sysgen_counter_9c44b7c328
 is
   signal count_reg_20_23: unsigned((8 - 1) downto 0) := "00000000";
   signal count_reg_20_23_rst: std_logic;
   signal rel_34_8: boolean;
   signal rst_limit_join_34_5: boolean;
   signal bool_44_4: boolean;
-  signal rst_limit_join_44_1: boolean;
   signal count_reg_join_44_1: unsigned((9 - 1) downto 0);
   signal count_reg_join_44_1_rst: std_logic;
+  signal rst_limit_join_44_1: boolean;
 begin
   proc_count_reg_20_23: process (clk)
   is
@@ -1249,85 +1249,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_delay_195ed972b3 is
-  port (
-    d : in std_logic_vector((1 - 1) downto 0);
-    q : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_195ed972b3;
-architecture behavior of sysgen_delay_195ed972b3
-is
-  signal d_1_22: std_logic;
-  type array_type_op_mem_20_24 is array (0 to (9 - 1)) of std_logic;
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0');
-  signal op_mem_20_24_front_din: std_logic;
-  signal op_mem_20_24_back: std_logic;
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d(0);
-  op_mem_20_24_back <= op_mem_20_24(8);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 8 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= std_logic_to_vector(op_mem_20_24_back);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_relational_92f527a333 is
-  port (
-    a : in std_logic_vector((9 - 1) downto 0);
-    b : in std_logic_vector((9 - 1) downto 0);
-    op : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_relational_92f527a333;
-architecture behavior of sysgen_relational_92f527a333
-is
-  signal a_1_31: unsigned((9 - 1) downto 0);
-  signal b_1_34: unsigned((9 - 1) downto 0);
-  signal result_18_3_rel: boolean;
-begin
-  a_1_31 <= std_logic_vector_to_unsigned(a);
-  b_1_34 <= std_logic_vector_to_unsigned(b);
-  result_18_3_rel <= a_1_31 > b_1_34;
-  op <= boolean_to_vector(result_18_3_rel);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_delay_df2d8ada36 is
   port (
     d : in std_logic_vector((144 - 1) downto 0);
@@ -1374,6 +1295,85 @@ begin
   op_mem_20_24_front_din <= d_1_22;
   op_mem_20_24_push_front_pop_back_en <= '1';
   q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_relational_92f527a333 is
+  port (
+    a : in std_logic_vector((9 - 1) downto 0);
+    b : in std_logic_vector((9 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_relational_92f527a333;
+architecture behavior of sysgen_relational_92f527a333
+is
+  signal a_1_31: unsigned((9 - 1) downto 0);
+  signal b_1_34: unsigned((9 - 1) downto 0);
+  signal result_18_3_rel: boolean;
+begin
+  a_1_31 <= std_logic_vector_to_unsigned(a);
+  b_1_34 <= std_logic_vector_to_unsigned(b);
+  result_18_3_rel <= a_1_31 > b_1_34;
+  op <= boolean_to_vector(result_18_3_rel);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_195ed972b3 is
+  port (
+    d : in std_logic_vector((1 - 1) downto 0);
+    q : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_195ed972b3;
+architecture behavior of sysgen_delay_195ed972b3
+is
+  signal d_1_22: std_logic;
+  type array_type_op_mem_20_24 is array (0 to (9 - 1)) of std_logic;
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0');
+  signal op_mem_20_24_front_din: std_logic;
+  signal op_mem_20_24_back: std_logic;
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d(0);
+  op_mem_20_24_back <= op_mem_20_24(8);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 8 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= std_logic_to_vector(op_mem_20_24_back);
 end behavior;
 
 library xil_defaultlib;
@@ -1739,176 +1739,7 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_delay_8e2d6fa551 is
-  port (
-    d : in std_logic_vector((1 - 1) downto 0);
-    q : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_8e2d6fa551;
-architecture behavior of sysgen_delay_8e2d6fa551
-is
-  signal d_1_22: std_logic;
-  type array_type_op_mem_20_24 is array (0 to (4 - 1)) of std_logic;
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    '0',
-    '0',
-    '0',
-    '0');
-  signal op_mem_20_24_front_din: std_logic;
-  signal op_mem_20_24_back: std_logic;
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d(0);
-  op_mem_20_24_back <= op_mem_20_24(3);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 3 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= std_logic_to_vector(op_mem_20_24_back);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_7a535deffe is
-  port (
-    d : in std_logic_vector((1 - 1) downto 0);
-    q : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_7a535deffe;
-architecture behavior of sysgen_delay_7a535deffe
-is
-  signal d_1_22: std_logic;
-  type array_type_op_mem_20_24 is array (0 to (5 - 1)) of std_logic;
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    '0',
-    '0',
-    '0',
-    '0',
-    '0');
-  signal op_mem_20_24_front_din: std_logic;
-  signal op_mem_20_24_back: std_logic;
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d(0);
-  op_mem_20_24_back <= op_mem_20_24(4);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 4 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= std_logic_to_vector(op_mem_20_24_back);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_logical_869f920295 is
-  port (
-    d0 : in std_logic_vector((1 - 1) downto 0);
-    d1 : in std_logic_vector((1 - 1) downto 0);
-    y : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_logical_869f920295;
-architecture behavior of sysgen_logical_869f920295
-is
-  signal d0_1_24: std_logic;
-  signal d1_1_27: std_logic;
-  signal fully_2_1_bit: std_logic;
-begin
-  d0_1_24 <= d0(0);
-  d1_1_27 <= d1(0);
-  fully_2_1_bit <= d0_1_24 or d1_1_27;
-  y <= std_logic_to_vector(fully_2_1_bit);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_17afc3674d is
-  port (
-    d : in std_logic_vector((144 - 1) downto 0);
-    q : out std_logic_vector((144 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_17afc3674d;
-architecture behavior of sysgen_delay_17afc3674d
-is
-  signal d_1_22: std_logic_vector((144 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (4 - 1)) of std_logic_vector((144 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-  signal op_mem_20_24_front_din: std_logic_vector((144 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((144 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(3);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 3 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_counter_b3591c7018 is
+entity sysgen_counter_a052cf2b11 is
   port (
     rst : in std_logic_vector((1 - 1) downto 0);
     en : in std_logic_vector((1 - 1) downto 0);
@@ -1916,8 +1747,8 @@ entity sysgen_counter_b3591c7018 is
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_counter_b3591c7018;
-architecture behavior of sysgen_counter_b3591c7018
+end sysgen_counter_a052cf2b11;
+architecture behavior of sysgen_counter_a052cf2b11
 is
   signal rst_1_40: boolean;
   signal en_1_45: boolean;
@@ -1925,10 +1756,10 @@ is
   signal count_reg_20_23_rst: std_logic;
   signal count_reg_20_23_en: std_logic;
   signal bool_44_4: boolean;
-  signal rst_limit_join_44_1: boolean;
   signal count_reg_join_44_1: unsigned((10 - 1) downto 0);
   signal count_reg_join_44_1_en: std_logic;
   signal count_reg_join_44_1_rst: std_logic;
+  signal rst_limit_join_44_1: boolean;
 begin
   rst_1_40 <= ((rst) = "1");
   en_1_45 <= ((en) = "1");
@@ -1970,98 +1801,6 @@ begin
   count_reg_20_23_rst <= count_reg_join_44_1_rst;
   count_reg_20_23_en <= count_reg_join_44_1_en;
   op <= unsigned_to_std_logic_vector(count_reg_20_23);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_8709247c54 is
-  port (
-    d : in std_logic_vector((1 - 1) downto 0);
-    q : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_8709247c54;
-architecture behavior of sysgen_delay_8709247c54
-is
-  signal d_1_22: std_logic_vector((1 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (3 - 1)) of std_logic_vector((1 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    "0",
-    "0",
-    "0");
-  signal op_mem_20_24_front_din: std_logic_vector((1 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((1 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(2);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 2 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_fe13cad870 is
-  port (
-    d : in std_logic_vector((8 - 1) downto 0);
-    q : out std_logic_vector((8 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_fe13cad870;
-architecture behavior of sysgen_delay_fe13cad870
-is
-  signal d_1_22: std_logic_vector((8 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (3 - 1)) of std_logic_vector((8 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    "00000000",
-    "00000000",
-    "00000000");
-  signal op_mem_20_24_front_din: std_logic_vector((8 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((8 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(2);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 2 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
 end behavior;
 
 library xil_defaultlib;
@@ -2120,6 +1859,262 @@ begin
   pipe_16_22_front_din <= unregy_join_6_1;
   pipe_16_22_push_front_pop_back_en <= '1';
   y <= pipe_16_22_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_fe13cad870 is
+  port (
+    d : in std_logic_vector((8 - 1) downto 0);
+    q : out std_logic_vector((8 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_fe13cad870;
+architecture behavior of sysgen_delay_fe13cad870
+is
+  signal d_1_22: std_logic_vector((8 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (3 - 1)) of std_logic_vector((8 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    "00000000",
+    "00000000",
+    "00000000");
+  signal op_mem_20_24_front_din: std_logic_vector((8 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((8 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(2);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 2 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_17afc3674d is
+  port (
+    d : in std_logic_vector((144 - 1) downto 0);
+    q : out std_logic_vector((144 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_17afc3674d;
+architecture behavior of sysgen_delay_17afc3674d
+is
+  signal d_1_22: std_logic_vector((144 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (4 - 1)) of std_logic_vector((144 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+  signal op_mem_20_24_front_din: std_logic_vector((144 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((144 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(3);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 3 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_ff8c7ed0c4 is
+  port (
+    d : in std_logic_vector((8 - 1) downto 0);
+    q : out std_logic_vector((8 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_ff8c7ed0c4;
+architecture behavior of sysgen_delay_ff8c7ed0c4
+is
+  signal d_1_22: std_logic_vector((8 - 1) downto 0);
+begin
+  d_1_22 <= d;
+  q <= d_1_22;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_8709247c54 is
+  port (
+    d : in std_logic_vector((1 - 1) downto 0);
+    q : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_8709247c54;
+architecture behavior of sysgen_delay_8709247c54
+is
+  signal d_1_22: std_logic_vector((1 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (3 - 1)) of std_logic_vector((1 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    "0",
+    "0",
+    "0");
+  signal op_mem_20_24_front_din: std_logic_vector((1 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((1 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(2);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 2 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_7a535deffe is
+  port (
+    d : in std_logic_vector((1 - 1) downto 0);
+    q : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_7a535deffe;
+architecture behavior of sysgen_delay_7a535deffe
+is
+  signal d_1_22: std_logic;
+  type array_type_op_mem_20_24 is array (0 to (5 - 1)) of std_logic;
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    '0',
+    '0',
+    '0',
+    '0',
+    '0');
+  signal op_mem_20_24_front_din: std_logic;
+  signal op_mem_20_24_back: std_logic;
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d(0);
+  op_mem_20_24_back <= op_mem_20_24(4);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 4 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= std_logic_to_vector(op_mem_20_24_back);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_8e2d6fa551 is
+  port (
+    d : in std_logic_vector((1 - 1) downto 0);
+    q : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_8e2d6fa551;
+architecture behavior of sysgen_delay_8e2d6fa551
+is
+  signal d_1_22: std_logic;
+  type array_type_op_mem_20_24 is array (0 to (4 - 1)) of std_logic;
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    '0',
+    '0',
+    '0',
+    '0');
+  signal op_mem_20_24_front_din: std_logic;
+  signal op_mem_20_24_back: std_logic;
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d(0);
+  op_mem_20_24_back <= op_mem_20_24(3);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 3 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= std_logic_to_vector(op_mem_20_24_back);
 end behavior;
 
 library xil_defaultlib;
@@ -2197,20 +2192,25 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_delay_ff8c7ed0c4 is
+entity sysgen_logical_869f920295 is
   port (
-    d : in std_logic_vector((8 - 1) downto 0);
-    q : out std_logic_vector((8 - 1) downto 0);
+    d0 : in std_logic_vector((1 - 1) downto 0);
+    d1 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((1 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_delay_ff8c7ed0c4;
-architecture behavior of sysgen_delay_ff8c7ed0c4
+end sysgen_logical_869f920295;
+architecture behavior of sysgen_logical_869f920295
 is
-  signal d_1_22: std_logic_vector((8 - 1) downto 0);
+  signal d0_1_24: std_logic;
+  signal d1_1_27: std_logic;
+  signal fully_2_1_bit: std_logic;
 begin
-  d_1_22 <= d;
-  q <= d_1_22;
+  d0_1_24 <= d0(0);
+  d1_1_27 <= d1(0);
+  fully_2_1_bit <= d0_1_24 or d1_1_27;
+  y <= std_logic_to_vector(fully_2_1_bit);
 end behavior;
 
 library xil_defaultlib;
@@ -2431,55 +2431,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_delay_dbfd41c0bd is
-  port (
-    d : in std_logic_vector((1 - 1) downto 0);
-    q : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_dbfd41c0bd;
-architecture behavior of sysgen_delay_dbfd41c0bd
-is
-  signal d_1_22: std_logic;
-  type array_type_op_mem_20_24 is array (0 to (6 - 1)) of std_logic;
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0');
-  signal op_mem_20_24_front_din: std_logic;
-  signal op_mem_20_24_back: std_logic;
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d(0);
-  op_mem_20_24_back <= op_mem_20_24(5);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 5 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= std_logic_to_vector(op_mem_20_24_back);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_delay_4ebb982c0b is
   port (
     d : in std_logic_vector((144 - 1) downto 0);
@@ -2529,6 +2480,55 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+entity sysgen_delay_dbfd41c0bd is
+  port (
+    d : in std_logic_vector((1 - 1) downto 0);
+    q : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_dbfd41c0bd;
+architecture behavior of sysgen_delay_dbfd41c0bd
+is
+  signal d_1_22: std_logic;
+  type array_type_op_mem_20_24 is array (0 to (6 - 1)) of std_logic;
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0');
+  signal op_mem_20_24_front_din: std_logic;
+  signal op_mem_20_24_back: std_logic;
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d(0);
+  op_mem_20_24_back <= op_mem_20_24(5);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 5 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= std_logic_to_vector(op_mem_20_24_back);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 entity sysgen_constant_a40b4c4fd3 is
   port (
     op : out std_logic_vector((4 - 1) downto 0);
@@ -2562,6 +2562,73 @@ is
 begin
   d_1_22 <= d;
   q <= d_1_22;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_2eb5298a74 is
+  port (
+    d : in std_logic_vector((1 - 1) downto 0);
+    q : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_2eb5298a74;
+architecture behavior of sysgen_delay_2eb5298a74
+is
+  signal d_1_22: std_logic;
+begin
+  d_1_22 <= d(0);
+  q <= std_logic_to_vector(d_1_22);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_661cb748dd is
+  port (
+    d : in std_logic_vector((1 - 1) downto 0);
+    q : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_661cb748dd;
+architecture behavior of sysgen_delay_661cb748dd
+is
+  signal d_1_22: std_logic;
+  type array_type_op_mem_20_24 is array (0 to (2 - 1)) of std_logic;
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    '0',
+    '0');
+  signal op_mem_20_24_front_din: std_logic;
+  signal op_mem_20_24_back: std_logic;
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d(0);
+  op_mem_20_24_back <= op_mem_20_24(1);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 1 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= std_logic_to_vector(op_mem_20_24_back);
 end behavior;
 
 library xil_defaultlib;
@@ -2608,28 +2675,6 @@ begin
   latency_pipe_5_26_front_din <= fully_2_1_bit;
   latency_pipe_5_26_push_front_pop_back_en <= '1';
   y <= latency_pipe_5_26_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_2eb5298a74 is
-  port (
-    d : in std_logic_vector((1 - 1) downto 0);
-    q : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_2eb5298a74;
-architecture behavior of sysgen_delay_2eb5298a74
-is
-  signal d_1_22: std_logic;
-begin
-  d_1_22 <= d(0);
-  q <= std_logic_to_vector(d_1_22);
 end behavior;
 
 library xil_defaultlib;
@@ -2692,51 +2737,6 @@ begin
   pipe_16_22_front_din <= unregy_join_6_1;
   pipe_16_22_push_front_pop_back_en <= '1';
   y <= pipe_16_22_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_661cb748dd is
-  port (
-    d : in std_logic_vector((1 - 1) downto 0);
-    q : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_661cb748dd;
-architecture behavior of sysgen_delay_661cb748dd
-is
-  signal d_1_22: std_logic;
-  type array_type_op_mem_20_24 is array (0 to (2 - 1)) of std_logic;
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    '0',
-    '0');
-  signal op_mem_20_24_front_din: std_logic;
-  signal op_mem_20_24_back: std_logic;
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d(0);
-  op_mem_20_24_back <= op_mem_20_24(1);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 1 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= std_logic_to_vector(op_mem_20_24_back);
 end behavior;
 
 library xil_defaultlib;
@@ -2905,163 +2905,17 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_logical_eaa0afbd30 is
+entity sysgen_constant_f9662b8b5c is
   port (
-    d0 : in std_logic_vector((1 - 1) downto 0);
-    d1 : in std_logic_vector((1 - 1) downto 0);
-    y : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_logical_eaa0afbd30;
-architecture behavior of sysgen_logical_eaa0afbd30
-is
-  signal d0_1_24: std_logic;
-  signal d1_1_27: std_logic;
-  type array_type_latency_pipe_5_26 is array (0 to (1 - 1)) of std_logic;
-  signal latency_pipe_5_26: array_type_latency_pipe_5_26 := (
-    0 => '0');
-  signal latency_pipe_5_26_front_din: std_logic;
-  signal latency_pipe_5_26_back: std_logic;
-  signal latency_pipe_5_26_push_front_pop_back_en: std_logic;
-  signal bit_2_27: std_logic;
-  signal fully_2_1_bitnot: std_logic;
-begin
-  d0_1_24 <= d0(0);
-  d1_1_27 <= d1(0);
-  latency_pipe_5_26_back <= latency_pipe_5_26(0);
-  proc_latency_pipe_5_26: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (latency_pipe_5_26_push_front_pop_back_en = '1')) then
-        latency_pipe_5_26(0) <= latency_pipe_5_26_front_din;
-      end if;
-    end if;
-  end process proc_latency_pipe_5_26;
-  bit_2_27 <= d0_1_24 and d1_1_27;
-  fully_2_1_bitnot <= not bit_2_27;
-  latency_pipe_5_26_front_din <= fully_2_1_bitnot;
-  latency_pipe_5_26_push_front_pop_back_en <= '1';
-  y <= std_logic_to_vector(latency_pipe_5_26_back);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_inverter_f00c005c9c is
-  port (
-    ip : in std_logic_vector((1 - 1) downto 0);
     op : out std_logic_vector((1 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_inverter_f00c005c9c;
-architecture behavior of sysgen_inverter_f00c005c9c
+end sysgen_constant_f9662b8b5c;
+architecture behavior of sysgen_constant_f9662b8b5c
 is
-  signal ip_1_26: boolean;
-  type array_type_op_mem_22_20 is array (0 to (1 - 1)) of boolean;
-  signal op_mem_22_20: array_type_op_mem_22_20 := (
-    0 => false);
-  signal op_mem_22_20_front_din: boolean;
-  signal op_mem_22_20_back: boolean;
-  signal op_mem_22_20_push_front_pop_back_en: std_logic;
-  signal internal_ip_12_1_bitnot: boolean;
 begin
-  ip_1_26 <= ((ip) = "1");
-  op_mem_22_20_back <= op_mem_22_20(0);
-  proc_op_mem_22_20: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_22_20_push_front_pop_back_en = '1')) then
-        op_mem_22_20(0) <= op_mem_22_20_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_22_20;
-  internal_ip_12_1_bitnot <= ((not boolean_to_vector(ip_1_26)) = "1");
-  op_mem_22_20_push_front_pop_back_en <= '0';
-  op <= boolean_to_vector(internal_ip_12_1_bitnot);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_concat_26828fb09b is
-  port (
-    in0 : in std_logic_vector((20 - 1) downto 0);
-    in1 : in std_logic_vector((1 - 1) downto 0);
-    y : out std_logic_vector((21 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_concat_26828fb09b;
-architecture behavior of sysgen_concat_26828fb09b
-is
-  signal in0_1_23: unsigned((20 - 1) downto 0);
-  signal in1_1_27: unsigned((1 - 1) downto 0);
-  signal y_2_1_concat: unsigned((21 - 1) downto 0);
-begin
-  in0_1_23 <= std_logic_vector_to_unsigned(in0);
-  in1_1_27 <= std_logic_vector_to_unsigned(in1);
-  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27));
-  y <= unsigned_to_std_logic_vector(y_2_1_concat);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_reinterpret_372f09cabf is
-  port (
-    input_port : in std_logic_vector((20 - 1) downto 0);
-    output_port : out std_logic_vector((20 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_reinterpret_372f09cabf;
-architecture behavior of sysgen_reinterpret_372f09cabf
-is
-  signal input_port_1_40: signed((20 - 1) downto 0);
-  signal output_port_5_5_force: unsigned((20 - 1) downto 0);
-begin
-  input_port_1_40 <= std_logic_vector_to_signed(input_port);
-  output_port_5_5_force <= signed_to_unsigned(input_port_1_40);
-  output_port <= unsigned_to_std_logic_vector(output_port_5_5_force);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_reinterpret_176ad74dcc is
-  port (
-    input_port : in std_logic_vector((21 - 1) downto 0);
-    output_port : out std_logic_vector((21 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_reinterpret_176ad74dcc;
-architecture behavior of sysgen_reinterpret_176ad74dcc
-is
-  signal input_port_1_40: unsigned((21 - 1) downto 0);
-  signal output_port_5_5_force: signed((21 - 1) downto 0);
-begin
-  input_port_1_40 <= std_logic_vector_to_unsigned(input_port);
-  output_port_5_5_force <= unsigned_to_signed(input_port_1_40);
-  output_port <= signed_to_std_logic_vector(output_port_5_5_force);
+  op <= "0";
 end behavior;
 
 library xil_defaultlib;
@@ -3131,300 +2985,6 @@ begin
   in15_1_88 <= std_logic_vector_to_unsigned(in15);
   y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27) & unsigned_to_std_logic_vector(in2_1_31) & unsigned_to_std_logic_vector(in3_1_35) & unsigned_to_std_logic_vector(in4_1_39) & unsigned_to_std_logic_vector(in5_1_43) & unsigned_to_std_logic_vector(in6_1_47) & unsigned_to_std_logic_vector(in7_1_51) & unsigned_to_std_logic_vector(in8_1_55) & unsigned_to_std_logic_vector(in9_1_59) & unsigned_to_std_logic_vector(in10_1_63) & unsigned_to_std_logic_vector(in11_1_68) & unsigned_to_std_logic_vector(in12_1_73) & unsigned_to_std_logic_vector(in13_1_78) & unsigned_to_std_logic_vector(in14_1_83) & unsigned_to_std_logic_vector(in15_1_88));
   y <= unsigned_to_std_logic_vector(y_2_1_concat);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
---$Header: /devl/xcs/repo/env/Jobs/sysgen/src/xbs/blocks/xlconvert/hdl/xlconvert.vhd,v 1.1 2004/11/22 00:17:30 rosty Exp $
----------------------------------------------------------------------
---
---  Filename      : xlconvert.vhd
---
---  Description   : VHDL description of a fixed point converter block that
---                  converts the input to a new output type.
-
---
----------------------------------------------------------------------
-
-
----------------------------------------------------------------------
---
---  Entity        : xlconvert
---
---  Architecture  : behavior
---
---  Description   : Top level VHDL description of fixed point conver block.
---
----------------------------------------------------------------------
-
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-
-entity convert_func_call_fft_4096c_1i_core_xlconvert is
-    generic (
-        din_width    : integer := 16;            -- Width of input
-        din_bin_pt   : integer := 4;             -- Binary point of input
-        din_arith    : integer := xlUnsigned;    -- Type of arith of input
-        dout_width   : integer := 8;             -- Width of output
-        dout_bin_pt  : integer := 2;             -- Binary point of output
-        dout_arith   : integer := xlUnsigned;    -- Type of arith of output
-        quantization : integer := xlTruncate;    -- xlRound or xlTruncate
-        overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
-    port (
-        din : in std_logic_vector (din_width-1 downto 0);
-        result : out std_logic_vector (dout_width-1 downto 0));
-end convert_func_call_fft_4096c_1i_core_xlconvert ;
-
-architecture behavior of convert_func_call_fft_4096c_1i_core_xlconvert is
-begin
-    -- Convert to output type and do saturation arith.
-    result <= convert_type(din, din_width, din_bin_pt, din_arith,
-                           dout_width, dout_bin_pt, dout_arith,
-                           quantization, overflow);
-end behavior;
-
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-
-entity fft_4096c_1i_core_xlconvert  is
-    generic (
-        din_width    : integer := 16;            -- Width of input
-        din_bin_pt   : integer := 4;             -- Binary point of input
-        din_arith    : integer := xlUnsigned;    -- Type of arith of input
-        dout_width   : integer := 8;             -- Width of output
-        dout_bin_pt  : integer := 2;             -- Binary point of output
-        dout_arith   : integer := xlUnsigned;    -- Type of arith of output
-        en_width     : integer := 1;
-        en_bin_pt    : integer := 0;
-        en_arith     : integer := xlUnsigned;
-        bool_conversion : integer :=0;           -- if one, convert ufix_1_0 to
-                                                 -- bool
-        latency      : integer := 0;             -- Ouput delay clk cycles
-        quantization : integer := xlTruncate;    -- xlRound or xlTruncate
-        overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
-    port (
-        din : in std_logic_vector (din_width-1 downto 0);
-        en  : in std_logic_vector (en_width-1 downto 0);
-        ce  : in std_logic;
-        clr : in std_logic;
-        clk : in std_logic;
-        dout : out std_logic_vector (dout_width-1 downto 0));
-
-end fft_4096c_1i_core_xlconvert ;
-
-architecture behavior of fft_4096c_1i_core_xlconvert  is
-
-    component synth_reg
-        generic (width       : integer;
-                 latency     : integer);
-        port (i       : in std_logic_vector(width-1 downto 0);
-              ce      : in std_logic;
-              clr     : in std_logic;
-              clk     : in std_logic;
-              o       : out std_logic_vector(width-1 downto 0));
-    end component;
-
-    component convert_func_call_fft_4096c_1i_core_xlconvert 
-        generic (
-            din_width    : integer := 16;            -- Width of input
-            din_bin_pt   : integer := 4;             -- Binary point of input
-            din_arith    : integer := xlUnsigned;    -- Type of arith of input
-            dout_width   : integer := 8;             -- Width of output
-            dout_bin_pt  : integer := 2;             -- Binary point of output
-            dout_arith   : integer := xlUnsigned;    -- Type of arith of output
-            quantization : integer := xlTruncate;    -- xlRound or xlTruncate
-            overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
-        port (
-            din : in std_logic_vector (din_width-1 downto 0);
-            result : out std_logic_vector (dout_width-1 downto 0));
-    end component;
-
-
-    -- synthesis translate_off
---    signal real_din, real_dout : real;    -- For debugging info ports
-    -- synthesis translate_on
-    signal result : std_logic_vector(dout_width-1 downto 0);
-    signal internal_ce : std_logic;
-
-begin
-
-    -- Debugging info for internal full precision variables
-    -- synthesis translate_off
---     real_din <= to_real(din, din_bin_pt, din_arith);
---     real_dout <= to_real(dout, dout_bin_pt, dout_arith);
-    -- synthesis translate_on
-
-    internal_ce <= ce and en(0);
-
-    bool_conversion_generate : if (bool_conversion = 1)
-    generate
-      result <= din;
-    end generate; --bool_conversion_generate
-
-    std_conversion_generate : if (bool_conversion = 0)
-    generate
-      -- Workaround for XST bug
-      convert : convert_func_call_fft_4096c_1i_core_xlconvert 
-        generic map (
-          din_width   => din_width,
-          din_bin_pt  => din_bin_pt,
-          din_arith   => din_arith,
-          dout_width  => dout_width,
-          dout_bin_pt => dout_bin_pt,
-          dout_arith  => dout_arith,
-          quantization => quantization,
-          overflow     => overflow)
-        port map (
-          din => din,
-          result => result);
-    end generate; --std_conversion_generate
-
-    latency_test : if (latency > 0) generate
-        reg : synth_reg
-            generic map (
-              width => dout_width,
-              latency => latency
-            )
-            port map (
-              i => result,
-              ce => internal_ce,
-              clr => clr,
-              clk => clk,
-              o => dout
-            );
-    end generate;
-
-    latency0 : if (latency = 0)
-    generate
-        dout <= result;
-    end generate latency0;
-
-end  behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_concat_81a0e3b4b9 is
-  port (
-    in0 : in std_logic_vector((20 - 1) downto 0);
-    in1 : in std_logic_vector((20 - 1) downto 0);
-    in2 : in std_logic_vector((20 - 1) downto 0);
-    in3 : in std_logic_vector((20 - 1) downto 0);
-    in4 : in std_logic_vector((20 - 1) downto 0);
-    in5 : in std_logic_vector((20 - 1) downto 0);
-    in6 : in std_logic_vector((20 - 1) downto 0);
-    in7 : in std_logic_vector((20 - 1) downto 0);
-    in8 : in std_logic_vector((20 - 1) downto 0);
-    in9 : in std_logic_vector((20 - 1) downto 0);
-    in10 : in std_logic_vector((20 - 1) downto 0);
-    in11 : in std_logic_vector((20 - 1) downto 0);
-    in12 : in std_logic_vector((20 - 1) downto 0);
-    in13 : in std_logic_vector((20 - 1) downto 0);
-    in14 : in std_logic_vector((20 - 1) downto 0);
-    in15 : in std_logic_vector((20 - 1) downto 0);
-    y : out std_logic_vector((320 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_concat_81a0e3b4b9;
-architecture behavior of sysgen_concat_81a0e3b4b9
-is
-  signal in0_1_23: unsigned((20 - 1) downto 0);
-  signal in1_1_27: unsigned((20 - 1) downto 0);
-  signal in2_1_31: unsigned((20 - 1) downto 0);
-  signal in3_1_35: unsigned((20 - 1) downto 0);
-  signal in4_1_39: unsigned((20 - 1) downto 0);
-  signal in5_1_43: unsigned((20 - 1) downto 0);
-  signal in6_1_47: unsigned((20 - 1) downto 0);
-  signal in7_1_51: unsigned((20 - 1) downto 0);
-  signal in8_1_55: unsigned((20 - 1) downto 0);
-  signal in9_1_59: unsigned((20 - 1) downto 0);
-  signal in10_1_63: unsigned((20 - 1) downto 0);
-  signal in11_1_68: unsigned((20 - 1) downto 0);
-  signal in12_1_73: unsigned((20 - 1) downto 0);
-  signal in13_1_78: unsigned((20 - 1) downto 0);
-  signal in14_1_83: unsigned((20 - 1) downto 0);
-  signal in15_1_88: unsigned((20 - 1) downto 0);
-  signal y_2_1_concat: unsigned((320 - 1) downto 0);
-begin
-  in0_1_23 <= std_logic_vector_to_unsigned(in0);
-  in1_1_27 <= std_logic_vector_to_unsigned(in1);
-  in2_1_31 <= std_logic_vector_to_unsigned(in2);
-  in3_1_35 <= std_logic_vector_to_unsigned(in3);
-  in4_1_39 <= std_logic_vector_to_unsigned(in4);
-  in5_1_43 <= std_logic_vector_to_unsigned(in5);
-  in6_1_47 <= std_logic_vector_to_unsigned(in6);
-  in7_1_51 <= std_logic_vector_to_unsigned(in7);
-  in8_1_55 <= std_logic_vector_to_unsigned(in8);
-  in9_1_59 <= std_logic_vector_to_unsigned(in9);
-  in10_1_63 <= std_logic_vector_to_unsigned(in10);
-  in11_1_68 <= std_logic_vector_to_unsigned(in11);
-  in12_1_73 <= std_logic_vector_to_unsigned(in12);
-  in13_1_78 <= std_logic_vector_to_unsigned(in13);
-  in14_1_83 <= std_logic_vector_to_unsigned(in14);
-  in15_1_88 <= std_logic_vector_to_unsigned(in15);
-  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27) & unsigned_to_std_logic_vector(in2_1_31) & unsigned_to_std_logic_vector(in3_1_35) & unsigned_to_std_logic_vector(in4_1_39) & unsigned_to_std_logic_vector(in5_1_43) & unsigned_to_std_logic_vector(in6_1_47) & unsigned_to_std_logic_vector(in7_1_51) & unsigned_to_std_logic_vector(in8_1_55) & unsigned_to_std_logic_vector(in9_1_59) & unsigned_to_std_logic_vector(in10_1_63) & unsigned_to_std_logic_vector(in11_1_68) & unsigned_to_std_logic_vector(in12_1_73) & unsigned_to_std_logic_vector(in13_1_78) & unsigned_to_std_logic_vector(in14_1_83) & unsigned_to_std_logic_vector(in15_1_88));
-  y <= unsigned_to_std_logic_vector(y_2_1_concat);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_bbfac35ed2 is
-  port (
-    op : out std_logic_vector((19 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_bbfac35ed2;
-architecture behavior of sysgen_constant_bbfac35ed2
-is
-begin
-  op <= "0000000000000000000";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_logical_90cdc36be7 is
-  port (
-    d0 : in std_logic_vector((1 - 1) downto 0);
-    d1 : in std_logic_vector((1 - 1) downto 0);
-    y : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_logical_90cdc36be7;
-architecture behavior of sysgen_logical_90cdc36be7
-is
-  signal d0_1_24: std_logic_vector((1 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((1 - 1) downto 0);
-  signal bit_2_26: std_logic_vector((1 - 1) downto 0);
-  signal fully_2_1_bitnot: std_logic_vector((1 - 1) downto 0);
-begin
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  bit_2_26 <= d0_1_24 or d1_1_27;
-  fully_2_1_bitnot <= not bit_2_26;
-  y <= fully_2_1_bitnot;
 end behavior;
 
 library xil_defaultlib;
@@ -3667,90 +3227,6 @@ end sysgen_reinterpret_6b04c70b02;
 architecture behavior of sysgen_reinterpret_6b04c70b02
 is
   signal input_port_1_40: unsigned((2 - 1) downto 0);
-begin
-  input_port_1_40 <= std_logic_vector_to_unsigned(input_port);
-  output_port <= unsigned_to_std_logic_vector(input_port_1_40);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_mux_7b383392e9 is
-  port (
-    sel : in std_logic_vector((1 - 1) downto 0);
-    d0 : in std_logic_vector((20 - 1) downto 0);
-    d1 : in std_logic_vector((20 - 1) downto 0);
-    y : out std_logic_vector((20 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_mux_7b383392e9;
-architecture behavior of sysgen_mux_7b383392e9
-is
-  signal sel_1_20: std_logic_vector((1 - 1) downto 0);
-  signal d0_1_24: std_logic_vector((20 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((20 - 1) downto 0);
-  type array_type_pipe_16_22 is array (0 to (2 - 1)) of std_logic_vector((20 - 1) downto 0);
-  signal pipe_16_22: array_type_pipe_16_22 := (
-    "00000000000000000000",
-    "00000000000000000000");
-  signal pipe_16_22_front_din: std_logic_vector((20 - 1) downto 0);
-  signal pipe_16_22_back: std_logic_vector((20 - 1) downto 0);
-  signal pipe_16_22_push_front_pop_back_en: std_logic;
-  signal unregy_join_6_1: std_logic_vector((20 - 1) downto 0);
-begin
-  sel_1_20 <= sel;
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  pipe_16_22_back <= pipe_16_22(1);
-  proc_pipe_16_22: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (pipe_16_22_push_front_pop_back_en = '1')) then
-        for i in 1 downto 1 loop 
-          pipe_16_22(i) <= pipe_16_22(i-1);
-        end loop;
-        pipe_16_22(0) <= pipe_16_22_front_din;
-      end if;
-    end if;
-  end process proc_pipe_16_22;
-  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_1_20)
-  is
-  begin
-    case sel_1_20 is 
-      when "0" =>
-        unregy_join_6_1 <= d0_1_24;
-      when others =>
-        unregy_join_6_1 <= d1_1_27;
-    end case;
-  end process proc_switch_6_1;
-  pipe_16_22_front_din <= unregy_join_6_1;
-  pipe_16_22_push_front_pop_back_en <= '1';
-  y <= pipe_16_22_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_reinterpret_846314a21c is
-  port (
-    input_port : in std_logic_vector((20 - 1) downto 0);
-    output_port : out std_logic_vector((20 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_reinterpret_846314a21c;
-architecture behavior of sysgen_reinterpret_846314a21c
-is
-  signal input_port_1_40: unsigned((20 - 1) downto 0);
 begin
   input_port_1_40 <= std_logic_vector_to_unsigned(input_port);
   output_port <= unsigned_to_std_logic_vector(input_port_1_40);
@@ -4061,103 +3537,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_delay_e4b3b3cae8 is
-  port (
-    d : in std_logic_vector((72 - 1) downto 0);
-    q : out std_logic_vector((72 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_e4b3b3cae8;
-architecture behavior of sysgen_delay_e4b3b3cae8
-is
-  signal d_1_22: std_logic_vector((72 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (3 - 1)) of std_logic_vector((72 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    "000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000");
-  signal op_mem_20_24_front_din: std_logic_vector((72 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((72 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(2);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 2 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_97ed07f0c8 is
-  port (
-    d : in std_logic_vector((144 - 1) downto 0);
-    q : out std_logic_vector((144 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_97ed07f0c8;
-architecture behavior of sysgen_delay_97ed07f0c8
-is
-  signal d_1_22: std_logic_vector((144 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (8 - 1)) of std_logic_vector((144 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-  signal op_mem_20_24_front_din: std_logic_vector((144 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((144 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(7);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 7 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_counter_3425933bc6 is
   port (
     rst : in std_logic_vector((1 - 1) downto 0);
@@ -4213,63 +3592,49 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_mux_02389f0dfa is
+entity sysgen_delay_97ed07f0c8 is
   port (
-    sel : in std_logic_vector((1 - 1) downto 0);
-    d0 : in std_logic_vector((72 - 1) downto 0);
-    d1 : in std_logic_vector((72 - 1) downto 0);
-    y : out std_logic_vector((72 - 1) downto 0);
+    d : in std_logic_vector((144 - 1) downto 0);
+    q : out std_logic_vector((144 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_mux_02389f0dfa;
-architecture behavior of sysgen_mux_02389f0dfa
+end sysgen_delay_97ed07f0c8;
+architecture behavior of sysgen_delay_97ed07f0c8
 is
-  signal sel_1_20: std_logic_vector((1 - 1) downto 0);
-  signal d0_1_24: std_logic_vector((72 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((72 - 1) downto 0);
-  type array_type_pipe_16_22 is array (0 to (5 - 1)) of std_logic_vector((72 - 1) downto 0);
-  signal pipe_16_22: array_type_pipe_16_22 := (
-    "000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000",
-    "000000000000000000000000000000000000000000000000000000000000000000000000");
-  signal pipe_16_22_front_din: std_logic_vector((72 - 1) downto 0);
-  signal pipe_16_22_back: std_logic_vector((72 - 1) downto 0);
-  signal pipe_16_22_push_front_pop_back_en: std_logic;
-  signal unregy_join_6_1: std_logic_vector((72 - 1) downto 0);
+  signal d_1_22: std_logic_vector((144 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (8 - 1)) of std_logic_vector((144 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+  signal op_mem_20_24_front_din: std_logic_vector((144 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((144 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
 begin
-  sel_1_20 <= sel;
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  pipe_16_22_back <= pipe_16_22(4);
-  proc_pipe_16_22: process (clk)
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(7);
+  proc_op_mem_20_24: process (clk)
   is
     variable i: integer;
   begin
     if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (pipe_16_22_push_front_pop_back_en = '1')) then
-        for i in 4 downto 1 loop 
-          pipe_16_22(i) <= pipe_16_22(i-1);
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 7 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
         end loop;
-        pipe_16_22(0) <= pipe_16_22_front_din;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
       end if;
     end if;
-  end process proc_pipe_16_22;
-  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_1_20)
-  is
-  begin
-    case sel_1_20 is 
-      when "0" =>
-        unregy_join_6_1 <= d0_1_24;
-      when others =>
-        unregy_join_6_1 <= d1_1_27;
-    end case;
-  end process proc_switch_6_1;
-  pipe_16_22_front_din <= unregy_join_6_1;
-  pipe_16_22_push_front_pop_back_en <= '1';
-  y <= pipe_16_22_back;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
 end behavior;
 
 library xil_defaultlib;
@@ -4412,6 +3777,117 @@ begin
   op_mem_20_24_front_din <= d_1_22;
   op_mem_20_24_push_front_pop_back_en <= '1';
   q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_e4b3b3cae8 is
+  port (
+    d : in std_logic_vector((72 - 1) downto 0);
+    q : out std_logic_vector((72 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_e4b3b3cae8;
+architecture behavior of sysgen_delay_e4b3b3cae8
+is
+  signal d_1_22: std_logic_vector((72 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (3 - 1)) of std_logic_vector((72 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    "000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000");
+  signal op_mem_20_24_front_din: std_logic_vector((72 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((72 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(2);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 2 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_02389f0dfa is
+  port (
+    sel : in std_logic_vector((1 - 1) downto 0);
+    d0 : in std_logic_vector((72 - 1) downto 0);
+    d1 : in std_logic_vector((72 - 1) downto 0);
+    y : out std_logic_vector((72 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_02389f0dfa;
+architecture behavior of sysgen_mux_02389f0dfa
+is
+  signal sel_1_20: std_logic_vector((1 - 1) downto 0);
+  signal d0_1_24: std_logic_vector((72 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((72 - 1) downto 0);
+  type array_type_pipe_16_22 is array (0 to (5 - 1)) of std_logic_vector((72 - 1) downto 0);
+  signal pipe_16_22: array_type_pipe_16_22 := (
+    "000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000",
+    "000000000000000000000000000000000000000000000000000000000000000000000000");
+  signal pipe_16_22_front_din: std_logic_vector((72 - 1) downto 0);
+  signal pipe_16_22_back: std_logic_vector((72 - 1) downto 0);
+  signal pipe_16_22_push_front_pop_back_en: std_logic;
+  signal unregy_join_6_1: std_logic_vector((72 - 1) downto 0);
+begin
+  sel_1_20 <= sel;
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  pipe_16_22_back <= pipe_16_22(4);
+  proc_pipe_16_22: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (pipe_16_22_push_front_pop_back_en = '1')) then
+        for i in 4 downto 1 loop 
+          pipe_16_22(i) <= pipe_16_22(i-1);
+        end loop;
+        pipe_16_22(0) <= pipe_16_22_front_din;
+      end if;
+    end if;
+  end process proc_pipe_16_22;
+  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_1_20)
+  is
+  begin
+    case sel_1_20 is 
+      when "0" =>
+        unregy_join_6_1 <= d0_1_24;
+      when others =>
+        unregy_join_6_1 <= d1_1_27;
+    end case;
+  end process proc_switch_6_1;
+  pipe_16_22_front_din <= unregy_join_6_1;
+  pipe_16_22_push_front_pop_back_en <= '1';
+  y <= pipe_16_22_back;
 end behavior;
 
 library xil_defaultlib;
@@ -4981,21 +4457,43 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_logical_359f48fa86 is
+entity sysgen_reinterpret_372f09cabf is
+  port (
+    input_port : in std_logic_vector((20 - 1) downto 0);
+    output_port : out std_logic_vector((20 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_reinterpret_372f09cabf;
+architecture behavior of sysgen_reinterpret_372f09cabf
+is
+  signal input_port_1_40: signed((20 - 1) downto 0);
+  signal output_port_5_5_force: unsigned((20 - 1) downto 0);
+begin
+  input_port_1_40 <= std_logic_vector_to_signed(input_port);
+  output_port_5_5_force <= signed_to_unsigned(input_port_1_40);
+  output_port <= unsigned_to_std_logic_vector(output_port_5_5_force);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_logical_eaa0afbd30 is
   port (
     d0 : in std_logic_vector((1 - 1) downto 0);
     d1 : in std_logic_vector((1 - 1) downto 0);
-    d2 : in std_logic_vector((1 - 1) downto 0);
     y : out std_logic_vector((1 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_logical_359f48fa86;
-architecture behavior of sysgen_logical_359f48fa86
+end sysgen_logical_eaa0afbd30;
+architecture behavior of sysgen_logical_eaa0afbd30
 is
   signal d0_1_24: std_logic;
   signal d1_1_27: std_logic;
-  signal d2_1_30: std_logic;
   type array_type_latency_pipe_5_26 is array (0 to (1 - 1)) of std_logic;
   signal latency_pipe_5_26: array_type_latency_pipe_5_26 := (
     0 => '0');
@@ -5007,7 +4505,6 @@ is
 begin
   d0_1_24 <= d0(0);
   d1_1_27 <= d1(0);
-  d2_1_30 <= d2(0);
   latency_pipe_5_26_back <= latency_pipe_5_26(0);
   proc_latency_pipe_5_26: process (clk)
   is
@@ -5019,7 +4516,7 @@ begin
       end if;
     end if;
   end process proc_latency_pipe_5_26;
-  bit_2_27 <= d0_1_24 and d1_1_27 and d2_1_30;
+  bit_2_27 <= d0_1_24 and d1_1_27;
   fully_2_1_bitnot <= not bit_2_27;
   latency_pipe_5_26_front_din <= fully_2_1_bitnot;
   latency_pipe_5_26_push_front_pop_back_en <= '1';
@@ -5032,20 +4529,62 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_concat_037a4ca1f3 is
+entity sysgen_inverter_f00c005c9c is
   port (
-    in0 : in std_logic_vector((21 - 1) downto 0);
-    in1 : in std_logic_vector((1 - 1) downto 0);
-    y : out std_logic_vector((22 - 1) downto 0);
+    ip : in std_logic_vector((1 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_concat_037a4ca1f3;
-architecture behavior of sysgen_concat_037a4ca1f3
+end sysgen_inverter_f00c005c9c;
+architecture behavior of sysgen_inverter_f00c005c9c
 is
-  signal in0_1_23: unsigned((21 - 1) downto 0);
+  signal ip_1_26: boolean;
+  type array_type_op_mem_22_20 is array (0 to (1 - 1)) of boolean;
+  signal op_mem_22_20: array_type_op_mem_22_20 := (
+    0 => false);
+  signal op_mem_22_20_front_din: boolean;
+  signal op_mem_22_20_back: boolean;
+  signal op_mem_22_20_push_front_pop_back_en: std_logic;
+  signal internal_ip_12_1_bitnot: boolean;
+begin
+  ip_1_26 <= ((ip) = "1");
+  op_mem_22_20_back <= op_mem_22_20(0);
+  proc_op_mem_22_20: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_22_20_push_front_pop_back_en = '1')) then
+        op_mem_22_20(0) <= op_mem_22_20_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_22_20;
+  internal_ip_12_1_bitnot <= ((not boolean_to_vector(ip_1_26)) = "1");
+  op_mem_22_20_push_front_pop_back_en <= '0';
+  op <= boolean_to_vector(internal_ip_12_1_bitnot);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_concat_26828fb09b is
+  port (
+    in0 : in std_logic_vector((20 - 1) downto 0);
+    in1 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((21 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_concat_26828fb09b;
+architecture behavior of sysgen_concat_26828fb09b
+is
+  signal in0_1_23: unsigned((20 - 1) downto 0);
   signal in1_1_27: unsigned((1 - 1) downto 0);
-  signal y_2_1_concat: unsigned((22 - 1) downto 0);
+  signal y_2_1_concat: unsigned((21 - 1) downto 0);
 begin
   in0_1_23 <= std_logic_vector_to_unsigned(in0);
   in1_1_27 <= std_logic_vector_to_unsigned(in1);
@@ -5059,115 +4598,22 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_reinterpret_0b023fedc4 is
+entity sysgen_reinterpret_176ad74dcc is
   port (
     input_port : in std_logic_vector((21 - 1) downto 0);
     output_port : out std_logic_vector((21 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_reinterpret_0b023fedc4;
-architecture behavior of sysgen_reinterpret_0b023fedc4
+end sysgen_reinterpret_176ad74dcc;
+architecture behavior of sysgen_reinterpret_176ad74dcc
 is
-  signal input_port_1_40: signed((21 - 1) downto 0);
-  signal output_port_5_5_force: unsigned((21 - 1) downto 0);
-begin
-  input_port_1_40 <= std_logic_vector_to_signed(input_port);
-  output_port_5_5_force <= signed_to_unsigned(input_port_1_40);
-  output_port <= unsigned_to_std_logic_vector(output_port_5_5_force);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_reinterpret_5cbf8885a4 is
-  port (
-    input_port : in std_logic_vector((22 - 1) downto 0);
-    output_port : out std_logic_vector((22 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_reinterpret_5cbf8885a4;
-architecture behavior of sysgen_reinterpret_5cbf8885a4
-is
-  signal input_port_1_40: unsigned((22 - 1) downto 0);
-  signal output_port_5_5_force: signed((22 - 1) downto 0);
+  signal input_port_1_40: unsigned((21 - 1) downto 0);
+  signal output_port_5_5_force: signed((21 - 1) downto 0);
 begin
   input_port_1_40 <= std_logic_vector_to_unsigned(input_port);
   output_port_5_5_force <= unsigned_to_signed(input_port_1_40);
   output_port <= signed_to_std_logic_vector(output_port_5_5_force);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_concat_72c700661f is
-  port (
-    in0 : in std_logic_vector((21 - 1) downto 0);
-    in1 : in std_logic_vector((21 - 1) downto 0);
-    in2 : in std_logic_vector((21 - 1) downto 0);
-    in3 : in std_logic_vector((21 - 1) downto 0);
-    in4 : in std_logic_vector((21 - 1) downto 0);
-    in5 : in std_logic_vector((21 - 1) downto 0);
-    in6 : in std_logic_vector((21 - 1) downto 0);
-    in7 : in std_logic_vector((21 - 1) downto 0);
-    in8 : in std_logic_vector((21 - 1) downto 0);
-    in9 : in std_logic_vector((21 - 1) downto 0);
-    in10 : in std_logic_vector((21 - 1) downto 0);
-    in11 : in std_logic_vector((21 - 1) downto 0);
-    in12 : in std_logic_vector((21 - 1) downto 0);
-    in13 : in std_logic_vector((21 - 1) downto 0);
-    in14 : in std_logic_vector((21 - 1) downto 0);
-    in15 : in std_logic_vector((21 - 1) downto 0);
-    y : out std_logic_vector((336 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_concat_72c700661f;
-architecture behavior of sysgen_concat_72c700661f
-is
-  signal in0_1_23: unsigned((21 - 1) downto 0);
-  signal in1_1_27: unsigned((21 - 1) downto 0);
-  signal in2_1_31: unsigned((21 - 1) downto 0);
-  signal in3_1_35: unsigned((21 - 1) downto 0);
-  signal in4_1_39: unsigned((21 - 1) downto 0);
-  signal in5_1_43: unsigned((21 - 1) downto 0);
-  signal in6_1_47: unsigned((21 - 1) downto 0);
-  signal in7_1_51: unsigned((21 - 1) downto 0);
-  signal in8_1_55: unsigned((21 - 1) downto 0);
-  signal in9_1_59: unsigned((21 - 1) downto 0);
-  signal in10_1_63: unsigned((21 - 1) downto 0);
-  signal in11_1_68: unsigned((21 - 1) downto 0);
-  signal in12_1_73: unsigned((21 - 1) downto 0);
-  signal in13_1_78: unsigned((21 - 1) downto 0);
-  signal in14_1_83: unsigned((21 - 1) downto 0);
-  signal in15_1_88: unsigned((21 - 1) downto 0);
-  signal y_2_1_concat: unsigned((336 - 1) downto 0);
-begin
-  in0_1_23 <= std_logic_vector_to_unsigned(in0);
-  in1_1_27 <= std_logic_vector_to_unsigned(in1);
-  in2_1_31 <= std_logic_vector_to_unsigned(in2);
-  in3_1_35 <= std_logic_vector_to_unsigned(in3);
-  in4_1_39 <= std_logic_vector_to_unsigned(in4);
-  in5_1_43 <= std_logic_vector_to_unsigned(in5);
-  in6_1_47 <= std_logic_vector_to_unsigned(in6);
-  in7_1_51 <= std_logic_vector_to_unsigned(in7);
-  in8_1_55 <= std_logic_vector_to_unsigned(in8);
-  in9_1_59 <= std_logic_vector_to_unsigned(in9);
-  in10_1_63 <= std_logic_vector_to_unsigned(in10);
-  in11_1_68 <= std_logic_vector_to_unsigned(in11);
-  in12_1_73 <= std_logic_vector_to_unsigned(in12);
-  in13_1_78 <= std_logic_vector_to_unsigned(in13);
-  in14_1_83 <= std_logic_vector_to_unsigned(in14);
-  in15_1_88 <= std_logic_vector_to_unsigned(in15);
-  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27) & unsigned_to_std_logic_vector(in2_1_31) & unsigned_to_std_logic_vector(in3_1_35) & unsigned_to_std_logic_vector(in4_1_39) & unsigned_to_std_logic_vector(in5_1_43) & unsigned_to_std_logic_vector(in6_1_47) & unsigned_to_std_logic_vector(in7_1_51) & unsigned_to_std_logic_vector(in8_1_55) & unsigned_to_std_logic_vector(in9_1_59) & unsigned_to_std_logic_vector(in10_1_63) & unsigned_to_std_logic_vector(in11_1_68) & unsigned_to_std_logic_vector(in12_1_73) & unsigned_to_std_logic_vector(in13_1_78) & unsigned_to_std_logic_vector(in14_1_83) & unsigned_to_std_logic_vector(in15_1_88));
-  y <= unsigned_to_std_logic_vector(y_2_1_concat);
 end behavior;
 
 library xil_defaultlib;
@@ -5190,6 +4636,75 @@ is
 begin
   ip_17_23 <= std_logic_vector_to_signed(ip);
   op <= signed_to_std_logic_vector(ip_17_23);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_concat_81a0e3b4b9 is
+  port (
+    in0 : in std_logic_vector((20 - 1) downto 0);
+    in1 : in std_logic_vector((20 - 1) downto 0);
+    in2 : in std_logic_vector((20 - 1) downto 0);
+    in3 : in std_logic_vector((20 - 1) downto 0);
+    in4 : in std_logic_vector((20 - 1) downto 0);
+    in5 : in std_logic_vector((20 - 1) downto 0);
+    in6 : in std_logic_vector((20 - 1) downto 0);
+    in7 : in std_logic_vector((20 - 1) downto 0);
+    in8 : in std_logic_vector((20 - 1) downto 0);
+    in9 : in std_logic_vector((20 - 1) downto 0);
+    in10 : in std_logic_vector((20 - 1) downto 0);
+    in11 : in std_logic_vector((20 - 1) downto 0);
+    in12 : in std_logic_vector((20 - 1) downto 0);
+    in13 : in std_logic_vector((20 - 1) downto 0);
+    in14 : in std_logic_vector((20 - 1) downto 0);
+    in15 : in std_logic_vector((20 - 1) downto 0);
+    y : out std_logic_vector((320 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_concat_81a0e3b4b9;
+architecture behavior of sysgen_concat_81a0e3b4b9
+is
+  signal in0_1_23: unsigned((20 - 1) downto 0);
+  signal in1_1_27: unsigned((20 - 1) downto 0);
+  signal in2_1_31: unsigned((20 - 1) downto 0);
+  signal in3_1_35: unsigned((20 - 1) downto 0);
+  signal in4_1_39: unsigned((20 - 1) downto 0);
+  signal in5_1_43: unsigned((20 - 1) downto 0);
+  signal in6_1_47: unsigned((20 - 1) downto 0);
+  signal in7_1_51: unsigned((20 - 1) downto 0);
+  signal in8_1_55: unsigned((20 - 1) downto 0);
+  signal in9_1_59: unsigned((20 - 1) downto 0);
+  signal in10_1_63: unsigned((20 - 1) downto 0);
+  signal in11_1_68: unsigned((20 - 1) downto 0);
+  signal in12_1_73: unsigned((20 - 1) downto 0);
+  signal in13_1_78: unsigned((20 - 1) downto 0);
+  signal in14_1_83: unsigned((20 - 1) downto 0);
+  signal in15_1_88: unsigned((20 - 1) downto 0);
+  signal y_2_1_concat: unsigned((320 - 1) downto 0);
+begin
+  in0_1_23 <= std_logic_vector_to_unsigned(in0);
+  in1_1_27 <= std_logic_vector_to_unsigned(in1);
+  in2_1_31 <= std_logic_vector_to_unsigned(in2);
+  in3_1_35 <= std_logic_vector_to_unsigned(in3);
+  in4_1_39 <= std_logic_vector_to_unsigned(in4);
+  in5_1_43 <= std_logic_vector_to_unsigned(in5);
+  in6_1_47 <= std_logic_vector_to_unsigned(in6);
+  in7_1_51 <= std_logic_vector_to_unsigned(in7);
+  in8_1_55 <= std_logic_vector_to_unsigned(in8);
+  in9_1_59 <= std_logic_vector_to_unsigned(in9);
+  in10_1_63 <= std_logic_vector_to_unsigned(in10);
+  in11_1_68 <= std_logic_vector_to_unsigned(in11);
+  in12_1_73 <= std_logic_vector_to_unsigned(in12);
+  in13_1_78 <= std_logic_vector_to_unsigned(in13);
+  in14_1_83 <= std_logic_vector_to_unsigned(in14);
+  in15_1_88 <= std_logic_vector_to_unsigned(in15);
+  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27) & unsigned_to_std_logic_vector(in2_1_31) & unsigned_to_std_logic_vector(in3_1_35) & unsigned_to_std_logic_vector(in4_1_39) & unsigned_to_std_logic_vector(in5_1_43) & unsigned_to_std_logic_vector(in6_1_47) & unsigned_to_std_logic_vector(in7_1_51) & unsigned_to_std_logic_vector(in8_1_55) & unsigned_to_std_logic_vector(in9_1_59) & unsigned_to_std_logic_vector(in10_1_63) & unsigned_to_std_logic_vector(in11_1_68) & unsigned_to_std_logic_vector(in12_1_73) & unsigned_to_std_logic_vector(in13_1_78) & unsigned_to_std_logic_vector(in14_1_83) & unsigned_to_std_logic_vector(in15_1_88));
+  y <= unsigned_to_std_logic_vector(y_2_1_concat);
 end behavior;
 
 library xil_defaultlib;
@@ -5278,90 +4793,6 @@ begin
   cout_mem_92_22_push_front_pop_back_en <= '1';
   prev_mode_93_22_next <= std_logic_vector_to_unsigned("000");
   s <= signed_to_std_logic_vector(op_mem_91_20_back);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_mux_e5d0943728 is
-  port (
-    sel : in std_logic_vector((1 - 1) downto 0);
-    d0 : in std_logic_vector((21 - 1) downto 0);
-    d1 : in std_logic_vector((21 - 1) downto 0);
-    y : out std_logic_vector((21 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_mux_e5d0943728;
-architecture behavior of sysgen_mux_e5d0943728
-is
-  signal sel_1_20: std_logic_vector((1 - 1) downto 0);
-  signal d0_1_24: std_logic_vector((21 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((21 - 1) downto 0);
-  type array_type_pipe_16_22 is array (0 to (2 - 1)) of std_logic_vector((21 - 1) downto 0);
-  signal pipe_16_22: array_type_pipe_16_22 := (
-    "000000000000000000000",
-    "000000000000000000000");
-  signal pipe_16_22_front_din: std_logic_vector((21 - 1) downto 0);
-  signal pipe_16_22_back: std_logic_vector((21 - 1) downto 0);
-  signal pipe_16_22_push_front_pop_back_en: std_logic;
-  signal unregy_join_6_1: std_logic_vector((21 - 1) downto 0);
-begin
-  sel_1_20 <= sel;
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  pipe_16_22_back <= pipe_16_22(1);
-  proc_pipe_16_22: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (pipe_16_22_push_front_pop_back_en = '1')) then
-        for i in 1 downto 1 loop 
-          pipe_16_22(i) <= pipe_16_22(i-1);
-        end loop;
-        pipe_16_22(0) <= pipe_16_22_front_din;
-      end if;
-    end if;
-  end process proc_pipe_16_22;
-  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_1_20)
-  is
-  begin
-    case sel_1_20 is 
-      when "0" =>
-        unregy_join_6_1 <= d0_1_24;
-      when others =>
-        unregy_join_6_1 <= d1_1_27;
-    end case;
-  end process proc_switch_6_1;
-  pipe_16_22_front_din <= unregy_join_6_1;
-  pipe_16_22_push_front_pop_back_en <= '1';
-  y <= pipe_16_22_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_reinterpret_00e258bea6 is
-  port (
-    input_port : in std_logic_vector((21 - 1) downto 0);
-    output_port : out std_logic_vector((21 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_reinterpret_00e258bea6;
-architecture behavior of sysgen_reinterpret_00e258bea6
-is
-  signal input_port_1_40: unsigned((21 - 1) downto 0);
-begin
-  input_port_1_40 <= std_logic_vector_to_unsigned(input_port);
-  output_port <= unsigned_to_std_logic_vector(input_port_1_40);
 end behavior;
 
 library xil_defaultlib;
@@ -5708,49 +5139,86 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_mult_ae356e6724 is
+entity sysgen_addsub_118f1b6a84 is
   port (
-    a : in std_logic_vector((18 - 1) downto 0);
-    b : in std_logic_vector((18 - 1) downto 0);
-    p : out std_logic_vector((36 - 1) downto 0);
+    a : in std_logic_vector((36 - 1) downto 0);
+    b : in std_logic_vector((36 - 1) downto 0);
+    s : out std_logic_vector((37 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_mult_ae356e6724;
-architecture behavior of sysgen_mult_ae356e6724
+end sysgen_addsub_118f1b6a84;
+architecture behavior of sysgen_addsub_118f1b6a84
 is
-  signal a_1_22: signed((18 - 1) downto 0);
-  signal b_1_25: signed((18 - 1) downto 0);
-  type array_type_op_mem_65_20 is array (0 to (3 - 1)) of signed((36 - 1) downto 0);
-  signal op_mem_65_20: array_type_op_mem_65_20 := (
-    "000000000000000000000000000000000000",
-    "000000000000000000000000000000000000",
-    "000000000000000000000000000000000000");
-  signal op_mem_65_20_front_din: signed((36 - 1) downto 0);
-  signal op_mem_65_20_back: signed((36 - 1) downto 0);
-  signal op_mem_65_20_push_front_pop_back_en: std_logic;
-  signal mult_46_56: signed((36 - 1) downto 0);
+  signal a_17_32: signed((36 - 1) downto 0);
+  signal b_17_35: signed((36 - 1) downto 0);
+  type array_type_op_mem_91_20 is array (0 to (1 - 1)) of signed((37 - 1) downto 0);
+  signal op_mem_91_20: array_type_op_mem_91_20 := (
+    0 => "0000000000000000000000000000000000000");
+  signal op_mem_91_20_front_din: signed((37 - 1) downto 0);
+  signal op_mem_91_20_back: signed((37 - 1) downto 0);
+  signal op_mem_91_20_push_front_pop_back_en: std_logic;
+  type array_type_cout_mem_92_22 is array (0 to (1 - 1)) of unsigned((1 - 1) downto 0);
+  signal cout_mem_92_22: array_type_cout_mem_92_22 := (
+    0 => "0");
+  signal cout_mem_92_22_front_din: unsigned((1 - 1) downto 0);
+  signal cout_mem_92_22_back: unsigned((1 - 1) downto 0);
+  signal cout_mem_92_22_push_front_pop_back_en: std_logic;
+  signal prev_mode_93_22_next: unsigned((3 - 1) downto 0);
+  signal prev_mode_93_22: unsigned((3 - 1) downto 0);
+  signal prev_mode_93_22_reg_i: std_logic_vector((3 - 1) downto 0);
+  signal prev_mode_93_22_reg_o: std_logic_vector((3 - 1) downto 0);
+  signal cast_69_18: signed((37 - 1) downto 0);
+  signal cast_69_22: signed((37 - 1) downto 0);
+  signal internal_s_69_5_addsub: signed((37 - 1) downto 0);
 begin
-  a_1_22 <= std_logic_vector_to_signed(a);
-  b_1_25 <= std_logic_vector_to_signed(b);
-  op_mem_65_20_back <= op_mem_65_20(2);
-  proc_op_mem_65_20: process (clk)
+  a_17_32 <= std_logic_vector_to_signed(a);
+  b_17_35 <= std_logic_vector_to_signed(b);
+  op_mem_91_20_back <= op_mem_91_20(0);
+  proc_op_mem_91_20: process (clk)
   is
     variable i: integer;
   begin
     if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_65_20_push_front_pop_back_en = '1')) then
-        for i in 2 downto 1 loop 
-          op_mem_65_20(i) <= op_mem_65_20(i-1);
-        end loop;
-        op_mem_65_20(0) <= op_mem_65_20_front_din;
+      if ((ce = '1') and (op_mem_91_20_push_front_pop_back_en = '1')) then
+        op_mem_91_20(0) <= op_mem_91_20_front_din;
       end if;
     end if;
-  end process proc_op_mem_65_20;
-  mult_46_56 <= (a_1_22 * b_1_25);
-  op_mem_65_20_front_din <= mult_46_56;
-  op_mem_65_20_push_front_pop_back_en <= '1';
-  p <= signed_to_std_logic_vector(op_mem_65_20_back);
+  end process proc_op_mem_91_20;
+  cout_mem_92_22_back <= cout_mem_92_22(0);
+  proc_cout_mem_92_22: process (clk)
+  is
+    variable i_x_000000: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (cout_mem_92_22_push_front_pop_back_en = '1')) then
+        cout_mem_92_22(0) <= cout_mem_92_22_front_din;
+      end if;
+    end if;
+  end process proc_cout_mem_92_22;
+  prev_mode_93_22_reg_i <= unsigned_to_std_logic_vector(prev_mode_93_22_next);
+  prev_mode_93_22 <= std_logic_vector_to_unsigned(prev_mode_93_22_reg_o);
+  prev_mode_93_22_reg_inst: entity work.synth_reg_w_init
+    generic map (
+      init_index => 2, 
+      init_value => b"010", 
+      latency => 1, 
+      width => 3)
+    port map (
+      ce => ce, 
+      clk => clk, 
+      clr => clr, 
+      i => prev_mode_93_22_reg_i, 
+      o => prev_mode_93_22_reg_o);
+  cast_69_18 <= s2s_cast(a_17_32, 34, 37, 34);
+  cast_69_22 <= s2s_cast(b_17_35, 34, 37, 34);
+  internal_s_69_5_addsub <= cast_69_18 + cast_69_22;
+  op_mem_91_20_front_din <= internal_s_69_5_addsub;
+  op_mem_91_20_push_front_pop_back_en <= '1';
+  cout_mem_92_22_front_din <= std_logic_vector_to_unsigned("0");
+  cout_mem_92_22_push_front_pop_back_en <= '1';
+  prev_mode_93_22_next <= std_logic_vector_to_unsigned("000");
+  s <= signed_to_std_logic_vector(op_mem_91_20_back);
 end behavior;
 
 library xil_defaultlib;
@@ -5844,89 +5312,229 @@ end behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+--$Header: /devl/xcs/repo/env/Jobs/sysgen/src/xbs/blocks/xlconvert/hdl/xlconvert.vhd,v 1.1 2004/11/22 00:17:30 rosty Exp $
+---------------------------------------------------------------------
+--
+--  Filename      : xlconvert.vhd
+--
+--  Description   : VHDL description of a fixed point converter block that
+--                  converts the input to a new output type.
+
+--
+---------------------------------------------------------------------
+
+
+---------------------------------------------------------------------
+--
+--  Entity        : xlconvert
+--
+--  Architecture  : behavior
+--
+--  Description   : Top level VHDL description of fixed point conver block.
+--
+---------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+
+entity convert_func_call_fft_4096c_1i_core_xlconvert is
+    generic (
+        din_width    : integer := 16;            -- Width of input
+        din_bin_pt   : integer := 4;             -- Binary point of input
+        din_arith    : integer := xlUnsigned;    -- Type of arith of input
+        dout_width   : integer := 8;             -- Width of output
+        dout_bin_pt  : integer := 2;             -- Binary point of output
+        dout_arith   : integer := xlUnsigned;    -- Type of arith of output
+        quantization : integer := xlTruncate;    -- xlRound or xlTruncate
+        overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
+    port (
+        din : in std_logic_vector (din_width-1 downto 0);
+        result : out std_logic_vector (dout_width-1 downto 0));
+end convert_func_call_fft_4096c_1i_core_xlconvert ;
+
+architecture behavior of convert_func_call_fft_4096c_1i_core_xlconvert is
+begin
+    -- Convert to output type and do saturation arith.
+    result <= convert_type(din, din_width, din_bin_pt, din_arith,
+                           dout_width, dout_bin_pt, dout_arith,
+                           quantization, overflow);
+end behavior;
+
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+
+entity fft_4096c_1i_core_xlconvert  is
+    generic (
+        din_width    : integer := 16;            -- Width of input
+        din_bin_pt   : integer := 4;             -- Binary point of input
+        din_arith    : integer := xlUnsigned;    -- Type of arith of input
+        dout_width   : integer := 8;             -- Width of output
+        dout_bin_pt  : integer := 2;             -- Binary point of output
+        dout_arith   : integer := xlUnsigned;    -- Type of arith of output
+        en_width     : integer := 1;
+        en_bin_pt    : integer := 0;
+        en_arith     : integer := xlUnsigned;
+        bool_conversion : integer :=0;           -- if one, convert ufix_1_0 to
+                                                 -- bool
+        latency      : integer := 0;             -- Ouput delay clk cycles
+        quantization : integer := xlTruncate;    -- xlRound or xlTruncate
+        overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
+    port (
+        din : in std_logic_vector (din_width-1 downto 0);
+        en  : in std_logic_vector (en_width-1 downto 0);
+        ce  : in std_logic;
+        clr : in std_logic;
+        clk : in std_logic;
+        dout : out std_logic_vector (dout_width-1 downto 0));
+
+end fft_4096c_1i_core_xlconvert ;
+
+architecture behavior of fft_4096c_1i_core_xlconvert  is
+
+    component synth_reg
+        generic (width       : integer;
+                 latency     : integer);
+        port (i       : in std_logic_vector(width-1 downto 0);
+              ce      : in std_logic;
+              clr     : in std_logic;
+              clk     : in std_logic;
+              o       : out std_logic_vector(width-1 downto 0));
+    end component;
+
+    component convert_func_call_fft_4096c_1i_core_xlconvert 
+        generic (
+            din_width    : integer := 16;            -- Width of input
+            din_bin_pt   : integer := 4;             -- Binary point of input
+            din_arith    : integer := xlUnsigned;    -- Type of arith of input
+            dout_width   : integer := 8;             -- Width of output
+            dout_bin_pt  : integer := 2;             -- Binary point of output
+            dout_arith   : integer := xlUnsigned;    -- Type of arith of output
+            quantization : integer := xlTruncate;    -- xlRound or xlTruncate
+            overflow     : integer := xlWrap);       -- xlSaturate or xlWrap
+        port (
+            din : in std_logic_vector (din_width-1 downto 0);
+            result : out std_logic_vector (dout_width-1 downto 0));
+    end component;
+
+
+    -- synthesis translate_off
+--    signal real_din, real_dout : real;    -- For debugging info ports
+    -- synthesis translate_on
+    signal result : std_logic_vector(dout_width-1 downto 0);
+    signal internal_ce : std_logic;
+
+begin
+
+    -- Debugging info for internal full precision variables
+    -- synthesis translate_off
+--     real_din <= to_real(din, din_bin_pt, din_arith);
+--     real_dout <= to_real(dout, dout_bin_pt, dout_arith);
+    -- synthesis translate_on
+
+    internal_ce <= ce and en(0);
+
+    bool_conversion_generate : if (bool_conversion = 1)
+    generate
+      result <= din;
+    end generate; --bool_conversion_generate
+
+    std_conversion_generate : if (bool_conversion = 0)
+    generate
+      -- Workaround for XST bug
+      convert : convert_func_call_fft_4096c_1i_core_xlconvert 
+        generic map (
+          din_width   => din_width,
+          din_bin_pt  => din_bin_pt,
+          din_arith   => din_arith,
+          dout_width  => dout_width,
+          dout_bin_pt => dout_bin_pt,
+          dout_arith  => dout_arith,
+          quantization => quantization,
+          overflow     => overflow)
+        port map (
+          din => din,
+          result => result);
+    end generate; --std_conversion_generate
+
+    latency_test : if (latency > 0) generate
+        reg : synth_reg
+            generic map (
+              width => dout_width,
+              latency => latency
+            )
+            port map (
+              i => result,
+              ce => internal_ce,
+              clr => clr,
+              clk => clk,
+              o => dout
+            );
+    end generate;
+
+    latency0 : if (latency = 0)
+    generate
+        dout <= result;
+    end generate latency0;
+
+end  behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_addsub_118f1b6a84 is
+entity sysgen_mult_ae356e6724 is
   port (
-    a : in std_logic_vector((36 - 1) downto 0);
-    b : in std_logic_vector((36 - 1) downto 0);
-    s : out std_logic_vector((37 - 1) downto 0);
+    a : in std_logic_vector((18 - 1) downto 0);
+    b : in std_logic_vector((18 - 1) downto 0);
+    p : out std_logic_vector((36 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_addsub_118f1b6a84;
-architecture behavior of sysgen_addsub_118f1b6a84
+end sysgen_mult_ae356e6724;
+architecture behavior of sysgen_mult_ae356e6724
 is
-  signal a_17_32: signed((36 - 1) downto 0);
-  signal b_17_35: signed((36 - 1) downto 0);
-  type array_type_op_mem_91_20 is array (0 to (1 - 1)) of signed((37 - 1) downto 0);
-  signal op_mem_91_20: array_type_op_mem_91_20 := (
-    0 => "0000000000000000000000000000000000000");
-  signal op_mem_91_20_front_din: signed((37 - 1) downto 0);
-  signal op_mem_91_20_back: signed((37 - 1) downto 0);
-  signal op_mem_91_20_push_front_pop_back_en: std_logic;
-  type array_type_cout_mem_92_22 is array (0 to (1 - 1)) of unsigned((1 - 1) downto 0);
-  signal cout_mem_92_22: array_type_cout_mem_92_22 := (
-    0 => "0");
-  signal cout_mem_92_22_front_din: unsigned((1 - 1) downto 0);
-  signal cout_mem_92_22_back: unsigned((1 - 1) downto 0);
-  signal cout_mem_92_22_push_front_pop_back_en: std_logic;
-  signal prev_mode_93_22_next: unsigned((3 - 1) downto 0);
-  signal prev_mode_93_22: unsigned((3 - 1) downto 0);
-  signal prev_mode_93_22_reg_i: std_logic_vector((3 - 1) downto 0);
-  signal prev_mode_93_22_reg_o: std_logic_vector((3 - 1) downto 0);
-  signal cast_69_18: signed((37 - 1) downto 0);
-  signal cast_69_22: signed((37 - 1) downto 0);
-  signal internal_s_69_5_addsub: signed((37 - 1) downto 0);
+  signal a_1_22: signed((18 - 1) downto 0);
+  signal b_1_25: signed((18 - 1) downto 0);
+  type array_type_op_mem_65_20 is array (0 to (3 - 1)) of signed((36 - 1) downto 0);
+  signal op_mem_65_20: array_type_op_mem_65_20 := (
+    "000000000000000000000000000000000000",
+    "000000000000000000000000000000000000",
+    "000000000000000000000000000000000000");
+  signal op_mem_65_20_front_din: signed((36 - 1) downto 0);
+  signal op_mem_65_20_back: signed((36 - 1) downto 0);
+  signal op_mem_65_20_push_front_pop_back_en: std_logic;
+  signal mult_46_56: signed((36 - 1) downto 0);
 begin
-  a_17_32 <= std_logic_vector_to_signed(a);
-  b_17_35 <= std_logic_vector_to_signed(b);
-  op_mem_91_20_back <= op_mem_91_20(0);
-  proc_op_mem_91_20: process (clk)
+  a_1_22 <= std_logic_vector_to_signed(a);
+  b_1_25 <= std_logic_vector_to_signed(b);
+  op_mem_65_20_back <= op_mem_65_20(2);
+  proc_op_mem_65_20: process (clk)
   is
     variable i: integer;
   begin
     if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_91_20_push_front_pop_back_en = '1')) then
-        op_mem_91_20(0) <= op_mem_91_20_front_din;
+      if ((ce = '1') and (op_mem_65_20_push_front_pop_back_en = '1')) then
+        for i in 2 downto 1 loop 
+          op_mem_65_20(i) <= op_mem_65_20(i-1);
+        end loop;
+        op_mem_65_20(0) <= op_mem_65_20_front_din;
       end if;
     end if;
-  end process proc_op_mem_91_20;
-  cout_mem_92_22_back <= cout_mem_92_22(0);
-  proc_cout_mem_92_22: process (clk)
-  is
-    variable i_x_000000: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (cout_mem_92_22_push_front_pop_back_en = '1')) then
-        cout_mem_92_22(0) <= cout_mem_92_22_front_din;
-      end if;
-    end if;
-  end process proc_cout_mem_92_22;
-  prev_mode_93_22_reg_i <= unsigned_to_std_logic_vector(prev_mode_93_22_next);
-  prev_mode_93_22 <= std_logic_vector_to_unsigned(prev_mode_93_22_reg_o);
-  prev_mode_93_22_reg_inst: entity work.synth_reg_w_init
-    generic map (
-      init_index => 2, 
-      init_value => b"010", 
-      latency => 1, 
-      width => 3)
-    port map (
-      ce => ce, 
-      clk => clk, 
-      clr => clr, 
-      i => prev_mode_93_22_reg_i, 
-      o => prev_mode_93_22_reg_o);
-  cast_69_18 <= s2s_cast(a_17_32, 34, 37, 34);
-  cast_69_22 <= s2s_cast(b_17_35, 34, 37, 34);
-  internal_s_69_5_addsub <= cast_69_18 + cast_69_22;
-  op_mem_91_20_front_din <= internal_s_69_5_addsub;
-  op_mem_91_20_push_front_pop_back_en <= '1';
-  cout_mem_92_22_front_din <= std_logic_vector_to_unsigned("0");
-  cout_mem_92_22_push_front_pop_back_en <= '1';
-  prev_mode_93_22_next <= std_logic_vector_to_unsigned("000");
-  s <= signed_to_std_logic_vector(op_mem_91_20_back);
+  end process proc_op_mem_65_20;
+  mult_46_56 <= (a_1_22 * b_1_25);
+  op_mem_65_20_front_din <= mult_46_56;
+  op_mem_65_20_push_front_pop_back_en <= '1';
+  p <= signed_to_std_logic_vector(op_mem_65_20_back);
 end behavior;
 
 library xil_defaultlib;
@@ -6054,64 +5662,20 @@ end behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
---$Header: /devl/xcs/repo/env/Jobs/sysgen/src/xbs/hdl_pkg/xlpassthrough.vhd,v 1.1 2005/07/11 00:50:55 alexc Exp $
----------------------------------------------------------------------
---
---  Filename      : xlpassthrough.vhd
---
---  Created       : 07/09/05
---
---  Description   : VHDL description of a passthrough block
---
----------------------------------------------------------------------
-
-
----------------------------------------------------------------------
---
---  Entity        : xlpassthrough
---
---  Architecture  : passthrough_arch
---
---  Description   : Top level VHDL description of passthrough block. 
---
----------------------------------------------------------------------
-library IEEE;
-use IEEE.std_logic_1164.all;
-use work.conv_pkg.all;
-
-entity xlpassthrough is
-    generic (
-        din_width    : integer := 16;            -- Width of input
-        dout_width   : integer := 16             -- Width of output
-        );
-    port (
-        din : in std_logic_vector (din_width-1 downto 0);
-        dout : out std_logic_vector (dout_width-1 downto 0));
-end xlpassthrough;
-
-architecture passthrough_arch of xlpassthrough is
-begin
-  dout <= din;
-end passthrough_arch;
-
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_f9662b8b5c is
+entity sysgen_constant_21dfad3afb is
   port (
-    op : out std_logic_vector((1 - 1) downto 0);
+    op : out std_logic_vector((18 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_constant_f9662b8b5c;
-architecture behavior of sysgen_constant_f9662b8b5c
+end sysgen_constant_21dfad3afb;
+architecture behavior of sysgen_constant_21dfad3afb
 is
 begin
-  op <= "0";
+  op <= "000000000000000000";
 end behavior;
 
 library xil_defaultlib;
@@ -6163,21 +5727,46 @@ end behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+--$Header: /devl/xcs/repo/env/Jobs/sysgen/src/xbs/hdl_pkg/xlpassthrough.vhd,v 1.1 2005/07/11 00:50:55 alexc Exp $
+---------------------------------------------------------------------
+--
+--  Filename      : xlpassthrough.vhd
+--
+--  Created       : 07/09/05
+--
+--  Description   : VHDL description of a passthrough block
+--
+---------------------------------------------------------------------
+
+
+---------------------------------------------------------------------
+--
+--  Entity        : xlpassthrough
+--
+--  Architecture  : passthrough_arch
+--
+--  Description   : Top level VHDL description of passthrough block. 
+--
+---------------------------------------------------------------------
 library IEEE;
 use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_21dfad3afb is
-  port (
-    op : out std_logic_vector((18 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_21dfad3afb;
-architecture behavior of sysgen_constant_21dfad3afb
-is
+use work.conv_pkg.all;
+
+entity xlpassthrough is
+    generic (
+        din_width    : integer := 16;            -- Width of input
+        dout_width   : integer := 16             -- Width of output
+        );
+    port (
+        din : in std_logic_vector (din_width-1 downto 0);
+        dout : out std_logic_vector (dout_width-1 downto 0));
+end xlpassthrough;
+
+architecture passthrough_arch of xlpassthrough is
 begin
-  op <= "000000000000000000";
-end behavior;
+  dout <= din;
+end passthrough_arch;
+
 
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
@@ -7582,6 +7171,333 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+entity sysgen_logical_359f48fa86 is
+  port (
+    d0 : in std_logic_vector((1 - 1) downto 0);
+    d1 : in std_logic_vector((1 - 1) downto 0);
+    d2 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_logical_359f48fa86;
+architecture behavior of sysgen_logical_359f48fa86
+is
+  signal d0_1_24: std_logic;
+  signal d1_1_27: std_logic;
+  signal d2_1_30: std_logic;
+  type array_type_latency_pipe_5_26 is array (0 to (1 - 1)) of std_logic;
+  signal latency_pipe_5_26: array_type_latency_pipe_5_26 := (
+    0 => '0');
+  signal latency_pipe_5_26_front_din: std_logic;
+  signal latency_pipe_5_26_back: std_logic;
+  signal latency_pipe_5_26_push_front_pop_back_en: std_logic;
+  signal bit_2_27: std_logic;
+  signal fully_2_1_bitnot: std_logic;
+begin
+  d0_1_24 <= d0(0);
+  d1_1_27 <= d1(0);
+  d2_1_30 <= d2(0);
+  latency_pipe_5_26_back <= latency_pipe_5_26(0);
+  proc_latency_pipe_5_26: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (latency_pipe_5_26_push_front_pop_back_en = '1')) then
+        latency_pipe_5_26(0) <= latency_pipe_5_26_front_din;
+      end if;
+    end if;
+  end process proc_latency_pipe_5_26;
+  bit_2_27 <= d0_1_24 and d1_1_27 and d2_1_30;
+  fully_2_1_bitnot <= not bit_2_27;
+  latency_pipe_5_26_front_din <= fully_2_1_bitnot;
+  latency_pipe_5_26_push_front_pop_back_en <= '1';
+  y <= std_logic_to_vector(latency_pipe_5_26_back);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_concat_037a4ca1f3 is
+  port (
+    in0 : in std_logic_vector((21 - 1) downto 0);
+    in1 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((22 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_concat_037a4ca1f3;
+architecture behavior of sysgen_concat_037a4ca1f3
+is
+  signal in0_1_23: unsigned((21 - 1) downto 0);
+  signal in1_1_27: unsigned((1 - 1) downto 0);
+  signal y_2_1_concat: unsigned((22 - 1) downto 0);
+begin
+  in0_1_23 <= std_logic_vector_to_unsigned(in0);
+  in1_1_27 <= std_logic_vector_to_unsigned(in1);
+  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27));
+  y <= unsigned_to_std_logic_vector(y_2_1_concat);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_reinterpret_0b023fedc4 is
+  port (
+    input_port : in std_logic_vector((21 - 1) downto 0);
+    output_port : out std_logic_vector((21 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_reinterpret_0b023fedc4;
+architecture behavior of sysgen_reinterpret_0b023fedc4
+is
+  signal input_port_1_40: signed((21 - 1) downto 0);
+  signal output_port_5_5_force: unsigned((21 - 1) downto 0);
+begin
+  input_port_1_40 <= std_logic_vector_to_signed(input_port);
+  output_port_5_5_force <= signed_to_unsigned(input_port_1_40);
+  output_port <= unsigned_to_std_logic_vector(output_port_5_5_force);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_reinterpret_5cbf8885a4 is
+  port (
+    input_port : in std_logic_vector((22 - 1) downto 0);
+    output_port : out std_logic_vector((22 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_reinterpret_5cbf8885a4;
+architecture behavior of sysgen_reinterpret_5cbf8885a4
+is
+  signal input_port_1_40: unsigned((22 - 1) downto 0);
+  signal output_port_5_5_force: signed((22 - 1) downto 0);
+begin
+  input_port_1_40 <= std_logic_vector_to_unsigned(input_port);
+  output_port_5_5_force <= unsigned_to_signed(input_port_1_40);
+  output_port <= signed_to_std_logic_vector(output_port_5_5_force);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_concat_72c700661f is
+  port (
+    in0 : in std_logic_vector((21 - 1) downto 0);
+    in1 : in std_logic_vector((21 - 1) downto 0);
+    in2 : in std_logic_vector((21 - 1) downto 0);
+    in3 : in std_logic_vector((21 - 1) downto 0);
+    in4 : in std_logic_vector((21 - 1) downto 0);
+    in5 : in std_logic_vector((21 - 1) downto 0);
+    in6 : in std_logic_vector((21 - 1) downto 0);
+    in7 : in std_logic_vector((21 - 1) downto 0);
+    in8 : in std_logic_vector((21 - 1) downto 0);
+    in9 : in std_logic_vector((21 - 1) downto 0);
+    in10 : in std_logic_vector((21 - 1) downto 0);
+    in11 : in std_logic_vector((21 - 1) downto 0);
+    in12 : in std_logic_vector((21 - 1) downto 0);
+    in13 : in std_logic_vector((21 - 1) downto 0);
+    in14 : in std_logic_vector((21 - 1) downto 0);
+    in15 : in std_logic_vector((21 - 1) downto 0);
+    y : out std_logic_vector((336 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_concat_72c700661f;
+architecture behavior of sysgen_concat_72c700661f
+is
+  signal in0_1_23: unsigned((21 - 1) downto 0);
+  signal in1_1_27: unsigned((21 - 1) downto 0);
+  signal in2_1_31: unsigned((21 - 1) downto 0);
+  signal in3_1_35: unsigned((21 - 1) downto 0);
+  signal in4_1_39: unsigned((21 - 1) downto 0);
+  signal in5_1_43: unsigned((21 - 1) downto 0);
+  signal in6_1_47: unsigned((21 - 1) downto 0);
+  signal in7_1_51: unsigned((21 - 1) downto 0);
+  signal in8_1_55: unsigned((21 - 1) downto 0);
+  signal in9_1_59: unsigned((21 - 1) downto 0);
+  signal in10_1_63: unsigned((21 - 1) downto 0);
+  signal in11_1_68: unsigned((21 - 1) downto 0);
+  signal in12_1_73: unsigned((21 - 1) downto 0);
+  signal in13_1_78: unsigned((21 - 1) downto 0);
+  signal in14_1_83: unsigned((21 - 1) downto 0);
+  signal in15_1_88: unsigned((21 - 1) downto 0);
+  signal y_2_1_concat: unsigned((336 - 1) downto 0);
+begin
+  in0_1_23 <= std_logic_vector_to_unsigned(in0);
+  in1_1_27 <= std_logic_vector_to_unsigned(in1);
+  in2_1_31 <= std_logic_vector_to_unsigned(in2);
+  in3_1_35 <= std_logic_vector_to_unsigned(in3);
+  in4_1_39 <= std_logic_vector_to_unsigned(in4);
+  in5_1_43 <= std_logic_vector_to_unsigned(in5);
+  in6_1_47 <= std_logic_vector_to_unsigned(in6);
+  in7_1_51 <= std_logic_vector_to_unsigned(in7);
+  in8_1_55 <= std_logic_vector_to_unsigned(in8);
+  in9_1_59 <= std_logic_vector_to_unsigned(in9);
+  in10_1_63 <= std_logic_vector_to_unsigned(in10);
+  in11_1_68 <= std_logic_vector_to_unsigned(in11);
+  in12_1_73 <= std_logic_vector_to_unsigned(in12);
+  in13_1_78 <= std_logic_vector_to_unsigned(in13);
+  in14_1_83 <= std_logic_vector_to_unsigned(in14);
+  in15_1_88 <= std_logic_vector_to_unsigned(in15);
+  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27) & unsigned_to_std_logic_vector(in2_1_31) & unsigned_to_std_logic_vector(in3_1_35) & unsigned_to_std_logic_vector(in4_1_39) & unsigned_to_std_logic_vector(in5_1_43) & unsigned_to_std_logic_vector(in6_1_47) & unsigned_to_std_logic_vector(in7_1_51) & unsigned_to_std_logic_vector(in8_1_55) & unsigned_to_std_logic_vector(in9_1_59) & unsigned_to_std_logic_vector(in10_1_63) & unsigned_to_std_logic_vector(in11_1_68) & unsigned_to_std_logic_vector(in12_1_73) & unsigned_to_std_logic_vector(in13_1_78) & unsigned_to_std_logic_vector(in14_1_83) & unsigned_to_std_logic_vector(in15_1_88));
+  y <= unsigned_to_std_logic_vector(y_2_1_concat);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_bbfac35ed2 is
+  port (
+    op : out std_logic_vector((19 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_bbfac35ed2;
+architecture behavior of sysgen_constant_bbfac35ed2
+is
+begin
+  op <= "0000000000000000000";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_logical_90cdc36be7 is
+  port (
+    d0 : in std_logic_vector((1 - 1) downto 0);
+    d1 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_logical_90cdc36be7;
+architecture behavior of sysgen_logical_90cdc36be7
+is
+  signal d0_1_24: std_logic_vector((1 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((1 - 1) downto 0);
+  signal bit_2_26: std_logic_vector((1 - 1) downto 0);
+  signal fully_2_1_bitnot: std_logic_vector((1 - 1) downto 0);
+begin
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  bit_2_26 <= d0_1_24 or d1_1_27;
+  fully_2_1_bitnot <= not bit_2_26;
+  y <= fully_2_1_bitnot;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_e5d0943728 is
+  port (
+    sel : in std_logic_vector((1 - 1) downto 0);
+    d0 : in std_logic_vector((21 - 1) downto 0);
+    d1 : in std_logic_vector((21 - 1) downto 0);
+    y : out std_logic_vector((21 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_e5d0943728;
+architecture behavior of sysgen_mux_e5d0943728
+is
+  signal sel_1_20: std_logic_vector((1 - 1) downto 0);
+  signal d0_1_24: std_logic_vector((21 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((21 - 1) downto 0);
+  type array_type_pipe_16_22 is array (0 to (2 - 1)) of std_logic_vector((21 - 1) downto 0);
+  signal pipe_16_22: array_type_pipe_16_22 := (
+    "000000000000000000000",
+    "000000000000000000000");
+  signal pipe_16_22_front_din: std_logic_vector((21 - 1) downto 0);
+  signal pipe_16_22_back: std_logic_vector((21 - 1) downto 0);
+  signal pipe_16_22_push_front_pop_back_en: std_logic;
+  signal unregy_join_6_1: std_logic_vector((21 - 1) downto 0);
+begin
+  sel_1_20 <= sel;
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  pipe_16_22_back <= pipe_16_22(1);
+  proc_pipe_16_22: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (pipe_16_22_push_front_pop_back_en = '1')) then
+        for i in 1 downto 1 loop 
+          pipe_16_22(i) <= pipe_16_22(i-1);
+        end loop;
+        pipe_16_22(0) <= pipe_16_22_front_din;
+      end if;
+    end if;
+  end process proc_pipe_16_22;
+  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_1_20)
+  is
+  begin
+    case sel_1_20 is 
+      when "0" =>
+        unregy_join_6_1 <= d0_1_24;
+      when others =>
+        unregy_join_6_1 <= d1_1_27;
+    end case;
+  end process proc_switch_6_1;
+  pipe_16_22_front_din <= unregy_join_6_1;
+  pipe_16_22_push_front_pop_back_en <= '1';
+  y <= pipe_16_22_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_reinterpret_00e258bea6 is
+  port (
+    input_port : in std_logic_vector((21 - 1) downto 0);
+    output_port : out std_logic_vector((21 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_reinterpret_00e258bea6;
+architecture behavior of sysgen_reinterpret_00e258bea6
+is
+  signal input_port_1_40: unsigned((21 - 1) downto 0);
+begin
+  input_port_1_40 <= std_logic_vector_to_unsigned(input_port);
+  output_port <= unsigned_to_std_logic_vector(input_port_1_40);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 entity sysgen_concat_35f31cc9e6 is
   port (
     in0 : in std_logic_vector((1 - 1) downto 0);
@@ -8614,62 +8530,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_logical_a2db21d149 is
-  port (
-    d0 : in std_logic_vector((8 - 1) downto 0);
-    d1 : in std_logic_vector((8 - 1) downto 0);
-    d2 : in std_logic_vector((8 - 1) downto 0);
-    d3 : in std_logic_vector((8 - 1) downto 0);
-    y : out std_logic_vector((8 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_logical_a2db21d149;
-architecture behavior of sysgen_logical_a2db21d149
-is
-  signal d0_1_24: std_logic_vector((8 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((8 - 1) downto 0);
-  signal d2_1_30: std_logic_vector((8 - 1) downto 0);
-  signal d3_1_33: std_logic_vector((8 - 1) downto 0);
-  type array_type_latency_pipe_5_26 is array (0 to (2 - 1)) of std_logic_vector((8 - 1) downto 0);
-  signal latency_pipe_5_26: array_type_latency_pipe_5_26 := (
-    "00000000",
-    "00000000");
-  signal latency_pipe_5_26_front_din: std_logic_vector((8 - 1) downto 0);
-  signal latency_pipe_5_26_back: std_logic_vector((8 - 1) downto 0);
-  signal latency_pipe_5_26_push_front_pop_back_en: std_logic;
-  signal fully_2_1_bit: std_logic_vector((8 - 1) downto 0);
-begin
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  d2_1_30 <= d2;
-  d3_1_33 <= d3;
-  latency_pipe_5_26_back <= latency_pipe_5_26(1);
-  proc_latency_pipe_5_26: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (latency_pipe_5_26_push_front_pop_back_en = '1')) then
-        for i in 1 downto 1 loop 
-          latency_pipe_5_26(i) <= latency_pipe_5_26(i-1);
-        end loop;
-        latency_pipe_5_26(0) <= latency_pipe_5_26_front_din;
-      end if;
-    end if;
-  end process proc_latency_pipe_5_26;
-  fully_2_1_bit <= d0_1_24 or d1_1_27 or d2_1_30 or d3_1_33;
-  latency_pipe_5_26_front_din <= fully_2_1_bit;
-  latency_pipe_5_26_push_front_pop_back_en <= '1';
-  y <= latency_pipe_5_26_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_logical_5f111e67ce is
   port (
     d0 : in std_logic_vector((1 - 1) downto 0);
@@ -8790,6 +8650,62 @@ begin
   in3_1_35 <= std_logic_vector_to_unsigned(in3);
   y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27) & unsigned_to_std_logic_vector(in2_1_31) & unsigned_to_std_logic_vector(in3_1_35));
   y <= unsigned_to_std_logic_vector(y_2_1_concat);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_logical_a2db21d149 is
+  port (
+    d0 : in std_logic_vector((8 - 1) downto 0);
+    d1 : in std_logic_vector((8 - 1) downto 0);
+    d2 : in std_logic_vector((8 - 1) downto 0);
+    d3 : in std_logic_vector((8 - 1) downto 0);
+    y : out std_logic_vector((8 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_logical_a2db21d149;
+architecture behavior of sysgen_logical_a2db21d149
+is
+  signal d0_1_24: std_logic_vector((8 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((8 - 1) downto 0);
+  signal d2_1_30: std_logic_vector((8 - 1) downto 0);
+  signal d3_1_33: std_logic_vector((8 - 1) downto 0);
+  type array_type_latency_pipe_5_26 is array (0 to (2 - 1)) of std_logic_vector((8 - 1) downto 0);
+  signal latency_pipe_5_26: array_type_latency_pipe_5_26 := (
+    "00000000",
+    "00000000");
+  signal latency_pipe_5_26_front_din: std_logic_vector((8 - 1) downto 0);
+  signal latency_pipe_5_26_back: std_logic_vector((8 - 1) downto 0);
+  signal latency_pipe_5_26_push_front_pop_back_en: std_logic;
+  signal fully_2_1_bit: std_logic_vector((8 - 1) downto 0);
+begin
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  d2_1_30 <= d2;
+  d3_1_33 <= d3;
+  latency_pipe_5_26_back <= latency_pipe_5_26(1);
+  proc_latency_pipe_5_26: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (latency_pipe_5_26_push_front_pop_back_en = '1')) then
+        for i in 1 downto 1 loop 
+          latency_pipe_5_26(i) <= latency_pipe_5_26(i-1);
+        end loop;
+        latency_pipe_5_26(0) <= latency_pipe_5_26_front_din;
+      end if;
+    end if;
+  end process proc_latency_pipe_5_26;
+  fully_2_1_bit <= d0_1_24 or d1_1_27 or d2_1_30 or d3_1_33;
+  latency_pipe_5_26_front_din <= fully_2_1_bit;
+  latency_pipe_5_26_push_front_pop_back_en <= '1';
+  y <= latency_pipe_5_26_back;
 end behavior;
 
 library xil_defaultlib;
@@ -9685,189 +9601,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_delay_7a31510f7c is
-  port (
-    d : in std_logic_vector((1 - 1) downto 0);
-    q : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_7a31510f7c;
-architecture behavior of sysgen_delay_7a31510f7c
-is
-  signal d_1_22: std_logic;
-  type array_type_op_mem_20_24 is array (0 to (7 - 1)) of std_logic;
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0');
-  signal op_mem_20_24_front_din: std_logic;
-  signal op_mem_20_24_back: std_logic;
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d(0);
-  op_mem_20_24_back <= op_mem_20_24(6);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 6 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= std_logic_to_vector(op_mem_20_24_back);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_feec83b8b7 is
-  port (
-    d : in std_logic_vector((4 - 1) downto 0);
-    q : out std_logic_vector((4 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_feec83b8b7;
-architecture behavior of sysgen_delay_feec83b8b7
-is
-  signal d_1_22: std_logic_vector((4 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (1 - 1)) of std_logic_vector((4 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    0 => "0000");
-  signal op_mem_20_24_front_din: std_logic_vector((4 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((4 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(0);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_33ac43650f is
-  port (
-    d : in std_logic_vector((4 - 1) downto 0);
-    q : out std_logic_vector((4 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_33ac43650f;
-architecture behavior of sysgen_delay_33ac43650f
-is
-  signal d_1_22: std_logic_vector((4 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (11 - 1)) of std_logic_vector((4 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    "0000",
-    "0000",
-    "0000",
-    "0000",
-    "0000",
-    "0000",
-    "0000",
-    "0000",
-    "0000",
-    "0000",
-    "0000");
-  signal op_mem_20_24_front_din: std_logic_vector((4 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((4 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(10);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 10 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_e414bd3b43 is
-  port (
-    op : out std_logic_vector((25 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_e414bd3b43;
-architecture behavior of sysgen_constant_e414bd3b43
-is
-begin
-  op <= "0111111101100010001101101";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_d2009352cd is
-  port (
-    op : out std_logic_vector((25 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_d2009352cd;
-architecture behavior of sysgen_constant_d2009352cd
-is
-begin
-  op <= "1111001101110100001011001";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_delay_7ef35a31ca is
   port (
     d : in std_logic_vector((1 - 1) downto 0);
@@ -10032,49 +9765,269 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_mult_ce5a414fcb is
+entity sysgen_delay_feec83b8b7 is
   port (
-    a : in std_logic_vector((18 - 1) downto 0);
-    b : in std_logic_vector((25 - 1) downto 0);
-    p : out std_logic_vector((43 - 1) downto 0);
+    d : in std_logic_vector((4 - 1) downto 0);
+    q : out std_logic_vector((4 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_mult_ce5a414fcb;
-architecture behavior of sysgen_mult_ce5a414fcb
+end sysgen_delay_feec83b8b7;
+architecture behavior of sysgen_delay_feec83b8b7
 is
-  signal a_1_22: signed((18 - 1) downto 0);
-  signal b_1_25: signed((25 - 1) downto 0);
-  type array_type_op_mem_65_20 is array (0 to (3 - 1)) of signed((43 - 1) downto 0);
-  signal op_mem_65_20: array_type_op_mem_65_20 := (
-    "0000000000000000000000000000000000000000000",
-    "0000000000000000000000000000000000000000000",
-    "0000000000000000000000000000000000000000000");
-  signal op_mem_65_20_front_din: signed((43 - 1) downto 0);
-  signal op_mem_65_20_back: signed((43 - 1) downto 0);
-  signal op_mem_65_20_push_front_pop_back_en: std_logic;
-  signal mult_46_56: signed((43 - 1) downto 0);
+  signal d_1_22: std_logic_vector((4 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (1 - 1)) of std_logic_vector((4 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    0 => "0000");
+  signal op_mem_20_24_front_din: std_logic_vector((4 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((4 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
 begin
-  a_1_22 <= std_logic_vector_to_signed(a);
-  b_1_25 <= std_logic_vector_to_signed(b);
-  op_mem_65_20_back <= op_mem_65_20(2);
-  proc_op_mem_65_20: process (clk)
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(0);
+  proc_op_mem_20_24: process (clk)
   is
     variable i: integer;
   begin
     if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_65_20_push_front_pop_back_en = '1')) then
-        for i in 2 downto 1 loop 
-          op_mem_65_20(i) <= op_mem_65_20(i-1);
-        end loop;
-        op_mem_65_20(0) <= op_mem_65_20_front_din;
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
       end if;
     end if;
-  end process proc_op_mem_65_20;
-  mult_46_56 <= (a_1_22 * b_1_25);
-  op_mem_65_20_front_din <= mult_46_56;
-  op_mem_65_20_push_front_pop_back_en <= '1';
-  p <= signed_to_std_logic_vector(op_mem_65_20_back);
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_33ac43650f is
+  port (
+    d : in std_logic_vector((4 - 1) downto 0);
+    q : out std_logic_vector((4 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_33ac43650f;
+architecture behavior of sysgen_delay_33ac43650f
+is
+  signal d_1_22: std_logic_vector((4 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (11 - 1)) of std_logic_vector((4 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    "0000",
+    "0000",
+    "0000",
+    "0000",
+    "0000",
+    "0000",
+    "0000",
+    "0000",
+    "0000",
+    "0000",
+    "0000");
+  signal op_mem_20_24_front_din: std_logic_vector((4 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((4 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(10);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 10 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_7a31510f7c is
+  port (
+    d : in std_logic_vector((1 - 1) downto 0);
+    q : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_7a31510f7c;
+architecture behavior of sysgen_delay_7a31510f7c
+is
+  signal d_1_22: std_logic;
+  type array_type_op_mem_20_24 is array (0 to (7 - 1)) of std_logic;
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0');
+  signal op_mem_20_24_front_din: std_logic;
+  signal op_mem_20_24_back: std_logic;
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d(0);
+  op_mem_20_24_back <= op_mem_20_24(6);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 6 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= std_logic_to_vector(op_mem_20_24_back);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_d2009352cd is
+  port (
+    op : out std_logic_vector((25 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_d2009352cd;
+architecture behavior of sysgen_constant_d2009352cd
+is
+begin
+  op <= "1111001101110100001011001";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_e414bd3b43 is
+  port (
+    op : out std_logic_vector((25 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_e414bd3b43;
+architecture behavior of sysgen_constant_e414bd3b43
+is
+begin
+  op <= "0111111101100010001101101";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_addsub_3258073e3a is
+  port (
+    a : in std_logic_vector((43 - 1) downto 0);
+    b : in std_logic_vector((43 - 1) downto 0);
+    s : out std_logic_vector((44 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_addsub_3258073e3a;
+architecture behavior of sysgen_addsub_3258073e3a
+is
+  signal a_17_32: signed((43 - 1) downto 0);
+  signal b_17_35: signed((43 - 1) downto 0);
+  type array_type_op_mem_91_20 is array (0 to (1 - 1)) of signed((44 - 1) downto 0);
+  signal op_mem_91_20: array_type_op_mem_91_20 := (
+    0 => "00000000000000000000000000000000000000000000");
+  signal op_mem_91_20_front_din: signed((44 - 1) downto 0);
+  signal op_mem_91_20_back: signed((44 - 1) downto 0);
+  signal op_mem_91_20_push_front_pop_back_en: std_logic;
+  type array_type_cout_mem_92_22 is array (0 to (1 - 1)) of unsigned((1 - 1) downto 0);
+  signal cout_mem_92_22: array_type_cout_mem_92_22 := (
+    0 => "0");
+  signal cout_mem_92_22_front_din: unsigned((1 - 1) downto 0);
+  signal cout_mem_92_22_back: unsigned((1 - 1) downto 0);
+  signal cout_mem_92_22_push_front_pop_back_en: std_logic;
+  signal prev_mode_93_22_next: unsigned((3 - 1) downto 0);
+  signal prev_mode_93_22: unsigned((3 - 1) downto 0);
+  signal prev_mode_93_22_reg_i: std_logic_vector((3 - 1) downto 0);
+  signal prev_mode_93_22_reg_o: std_logic_vector((3 - 1) downto 0);
+  signal cast_69_18: signed((44 - 1) downto 0);
+  signal cast_69_22: signed((44 - 1) downto 0);
+  signal internal_s_69_5_addsub: signed((44 - 1) downto 0);
+begin
+  a_17_32 <= std_logic_vector_to_signed(a);
+  b_17_35 <= std_logic_vector_to_signed(b);
+  op_mem_91_20_back <= op_mem_91_20(0);
+  proc_op_mem_91_20: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_91_20_push_front_pop_back_en = '1')) then
+        op_mem_91_20(0) <= op_mem_91_20_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_91_20;
+  cout_mem_92_22_back <= cout_mem_92_22(0);
+  proc_cout_mem_92_22: process (clk)
+  is
+    variable i_x_000000: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (cout_mem_92_22_push_front_pop_back_en = '1')) then
+        cout_mem_92_22(0) <= cout_mem_92_22_front_din;
+      end if;
+    end if;
+  end process proc_cout_mem_92_22;
+  prev_mode_93_22_reg_i <= unsigned_to_std_logic_vector(prev_mode_93_22_next);
+  prev_mode_93_22 <= std_logic_vector_to_unsigned(prev_mode_93_22_reg_o);
+  prev_mode_93_22_reg_inst: entity work.synth_reg_w_init
+    generic map (
+      init_index => 2, 
+      init_value => b"010", 
+      latency => 1, 
+      width => 3)
+    port map (
+      ce => ce, 
+      clk => clk, 
+      clr => clr, 
+      i => prev_mode_93_22_reg_i, 
+      o => prev_mode_93_22_reg_o);
+  cast_69_18 <= s2s_cast(a_17_32, 41, 44, 41);
+  cast_69_22 <= s2s_cast(b_17_35, 41, 44, 41);
+  internal_s_69_5_addsub <= cast_69_18 + cast_69_22;
+  op_mem_91_20_front_din <= internal_s_69_5_addsub;
+  op_mem_91_20_push_front_pop_back_en <= '1';
+  cout_mem_92_22_front_din <= std_logic_vector_to_unsigned("0");
+  cout_mem_92_22_push_front_pop_back_en <= '1';
+  prev_mode_93_22_next <= std_logic_vector_to_unsigned("000");
+  s <= signed_to_std_logic_vector(op_mem_91_20_back);
 end behavior;
 
 library xil_defaultlib;
@@ -10171,86 +10124,49 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_addsub_3258073e3a is
+entity sysgen_mult_ce5a414fcb is
   port (
-    a : in std_logic_vector((43 - 1) downto 0);
-    b : in std_logic_vector((43 - 1) downto 0);
-    s : out std_logic_vector((44 - 1) downto 0);
+    a : in std_logic_vector((18 - 1) downto 0);
+    b : in std_logic_vector((25 - 1) downto 0);
+    p : out std_logic_vector((43 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_addsub_3258073e3a;
-architecture behavior of sysgen_addsub_3258073e3a
+end sysgen_mult_ce5a414fcb;
+architecture behavior of sysgen_mult_ce5a414fcb
 is
-  signal a_17_32: signed((43 - 1) downto 0);
-  signal b_17_35: signed((43 - 1) downto 0);
-  type array_type_op_mem_91_20 is array (0 to (1 - 1)) of signed((44 - 1) downto 0);
-  signal op_mem_91_20: array_type_op_mem_91_20 := (
-    0 => "00000000000000000000000000000000000000000000");
-  signal op_mem_91_20_front_din: signed((44 - 1) downto 0);
-  signal op_mem_91_20_back: signed((44 - 1) downto 0);
-  signal op_mem_91_20_push_front_pop_back_en: std_logic;
-  type array_type_cout_mem_92_22 is array (0 to (1 - 1)) of unsigned((1 - 1) downto 0);
-  signal cout_mem_92_22: array_type_cout_mem_92_22 := (
-    0 => "0");
-  signal cout_mem_92_22_front_din: unsigned((1 - 1) downto 0);
-  signal cout_mem_92_22_back: unsigned((1 - 1) downto 0);
-  signal cout_mem_92_22_push_front_pop_back_en: std_logic;
-  signal prev_mode_93_22_next: unsigned((3 - 1) downto 0);
-  signal prev_mode_93_22: unsigned((3 - 1) downto 0);
-  signal prev_mode_93_22_reg_i: std_logic_vector((3 - 1) downto 0);
-  signal prev_mode_93_22_reg_o: std_logic_vector((3 - 1) downto 0);
-  signal cast_69_18: signed((44 - 1) downto 0);
-  signal cast_69_22: signed((44 - 1) downto 0);
-  signal internal_s_69_5_addsub: signed((44 - 1) downto 0);
+  signal a_1_22: signed((18 - 1) downto 0);
+  signal b_1_25: signed((25 - 1) downto 0);
+  type array_type_op_mem_65_20 is array (0 to (3 - 1)) of signed((43 - 1) downto 0);
+  signal op_mem_65_20: array_type_op_mem_65_20 := (
+    "0000000000000000000000000000000000000000000",
+    "0000000000000000000000000000000000000000000",
+    "0000000000000000000000000000000000000000000");
+  signal op_mem_65_20_front_din: signed((43 - 1) downto 0);
+  signal op_mem_65_20_back: signed((43 - 1) downto 0);
+  signal op_mem_65_20_push_front_pop_back_en: std_logic;
+  signal mult_46_56: signed((43 - 1) downto 0);
 begin
-  a_17_32 <= std_logic_vector_to_signed(a);
-  b_17_35 <= std_logic_vector_to_signed(b);
-  op_mem_91_20_back <= op_mem_91_20(0);
-  proc_op_mem_91_20: process (clk)
+  a_1_22 <= std_logic_vector_to_signed(a);
+  b_1_25 <= std_logic_vector_to_signed(b);
+  op_mem_65_20_back <= op_mem_65_20(2);
+  proc_op_mem_65_20: process (clk)
   is
     variable i: integer;
   begin
     if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_91_20_push_front_pop_back_en = '1')) then
-        op_mem_91_20(0) <= op_mem_91_20_front_din;
+      if ((ce = '1') and (op_mem_65_20_push_front_pop_back_en = '1')) then
+        for i in 2 downto 1 loop 
+          op_mem_65_20(i) <= op_mem_65_20(i-1);
+        end loop;
+        op_mem_65_20(0) <= op_mem_65_20_front_din;
       end if;
     end if;
-  end process proc_op_mem_91_20;
-  cout_mem_92_22_back <= cout_mem_92_22(0);
-  proc_cout_mem_92_22: process (clk)
-  is
-    variable i_x_000000: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (cout_mem_92_22_push_front_pop_back_en = '1')) then
-        cout_mem_92_22(0) <= cout_mem_92_22_front_din;
-      end if;
-    end if;
-  end process proc_cout_mem_92_22;
-  prev_mode_93_22_reg_i <= unsigned_to_std_logic_vector(prev_mode_93_22_next);
-  prev_mode_93_22 <= std_logic_vector_to_unsigned(prev_mode_93_22_reg_o);
-  prev_mode_93_22_reg_inst: entity work.synth_reg_w_init
-    generic map (
-      init_index => 2, 
-      init_value => b"010", 
-      latency => 1, 
-      width => 3)
-    port map (
-      ce => ce, 
-      clk => clk, 
-      clr => clr, 
-      i => prev_mode_93_22_reg_i, 
-      o => prev_mode_93_22_reg_o);
-  cast_69_18 <= s2s_cast(a_17_32, 41, 44, 41);
-  cast_69_22 <= s2s_cast(b_17_35, 41, 44, 41);
-  internal_s_69_5_addsub <= cast_69_18 + cast_69_22;
-  op_mem_91_20_front_din <= internal_s_69_5_addsub;
-  op_mem_91_20_push_front_pop_back_en <= '1';
-  cout_mem_92_22_front_din <= std_logic_vector_to_unsigned("0");
-  cout_mem_92_22_push_front_pop_back_en <= '1';
-  prev_mode_93_22_next <= std_logic_vector_to_unsigned("000");
-  s <= signed_to_std_logic_vector(op_mem_91_20_back);
+  end process proc_op_mem_65_20;
+  mult_46_56 <= (a_1_22 * b_1_25);
+  op_mem_65_20_front_din <= mult_46_56;
+  op_mem_65_20_push_front_pop_back_en <= '1';
+  p <= signed_to_std_logic_vector(op_mem_65_20_back);
 end behavior;
 
 library xil_defaultlib;
@@ -10445,44 +10361,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_3a9a123b9f is
-  port (
-    op : out std_logic_vector((25 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_3a9a123b9f;
-architecture behavior of sysgen_constant_3a9a123b9f
-is
-begin
-  op <= "0111111111011000100001111";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_8b176aec32 is
-  port (
-    op : out std_logic_vector((25 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_8b176aec32;
-architecture behavior of sysgen_constant_8b176aec32
-is
-begin
-  op <= "1111100110111000001001101";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_delay_4874643f3c is
   port (
     d : in std_logic_vector((289 - 1) downto 0);
@@ -10530,6 +10408,44 @@ begin
   op_mem_20_24_front_din <= d_1_22;
   op_mem_20_24_push_front_pop_back_en <= '1';
   q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_8b176aec32 is
+  port (
+    op : out std_logic_vector((25 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_8b176aec32;
+architecture behavior of sysgen_constant_8b176aec32
+is
+begin
+  op <= "1111100110111000001001101";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_3a9a123b9f is
+  port (
+    op : out std_logic_vector((25 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_3a9a123b9f;
+architecture behavior of sysgen_constant_3a9a123b9f
+is
+begin
+  op <= "0111111111011000100001111";
 end behavior;
 
 library xil_defaultlib;
@@ -10812,44 +10728,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_cec0c0267a is
-  port (
-    op : out std_logic_vector((25 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_cec0c0267a;
-architecture behavior of sysgen_constant_cec0c0267a
-is
-begin
-  op <= "0111111111110110001000011";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_670bd06203 is
-  port (
-    op : out std_logic_vector((25 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_670bd06203;
-architecture behavior of sysgen_constant_670bd06203
-is
-begin
-  op <= "1111110011011011110101011";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_delay_0f2ab4a8aa is
   port (
     d : in std_logic_vector((145 - 1) downto 0);
@@ -10897,6 +10775,44 @@ begin
   op_mem_20_24_front_din <= d_1_22;
   op_mem_20_24_push_front_pop_back_en <= '1';
   q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_670bd06203 is
+  port (
+    op : out std_logic_vector((25 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_670bd06203;
+architecture behavior of sysgen_constant_670bd06203
+is
+begin
+  op <= "1111110011011011110101011";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_cec0c0267a is
+  port (
+    op : out std_logic_vector((25 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_cec0c0267a;
+architecture behavior of sysgen_constant_cec0c0267a
+is
+begin
+  op <= "0111111111110110001000011";
 end behavior;
 
 library xil_defaultlib;
@@ -11160,44 +11076,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_95259297e9 is
-  port (
-    op : out std_logic_vector((25 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_95259297e9;
-architecture behavior of sysgen_constant_95259297e9
-is
-begin
-  op <= "0111111111111101100010001";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_ffeaa27c1f is
-  port (
-    op : out std_logic_vector((25 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_ffeaa27c1f;
-architecture behavior of sysgen_constant_ffeaa27c1f
-is
-begin
-  op <= "1111111001101101111000110";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_delay_7c74b27711 is
   port (
     d : in std_logic_vector((73 - 1) downto 0);
@@ -11236,6 +11114,130 @@ begin
     if (clk'event and (clk = '1')) then
       if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
         for i in 11 downto 1 loop 
+          op_mem_20_24(i) <= op_mem_20_24(i-1);
+        end loop;
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_ffeaa27c1f is
+  port (
+    op : out std_logic_vector((25 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_ffeaa27c1f;
+architecture behavior of sysgen_constant_ffeaa27c1f
+is
+begin
+  op <= "1111111001101101111000110";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_95259297e9 is
+  port (
+    op : out std_logic_vector((25 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_95259297e9;
+architecture behavior of sysgen_constant_95259297e9
+is
+begin
+  op <= "0111111111111101100010001";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_45dcf713b1 is
+  port (
+    d : in std_logic_vector((9 - 1) downto 0);
+    q : out std_logic_vector((9 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_45dcf713b1;
+architecture behavior of sysgen_delay_45dcf713b1
+is
+  signal d_1_22: std_logic_vector((9 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (1 - 1)) of std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    0 => "000000000");
+  signal op_mem_20_24_front_din: std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(0);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        op_mem_20_24(0) <= op_mem_20_24_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_20_24;
+  op_mem_20_24_front_din <= d_1_22;
+  op_mem_20_24_push_front_pop_back_en <= '1';
+  q <= op_mem_20_24_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_9f737cf47a is
+  port (
+    d : in std_logic_vector((9 - 1) downto 0);
+    q : out std_logic_vector((9 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_9f737cf47a;
+architecture behavior of sysgen_delay_9f737cf47a
+is
+  signal d_1_22: std_logic_vector((9 - 1) downto 0);
+  type array_type_op_mem_20_24 is array (0 to (2 - 1)) of std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24: array_type_op_mem_20_24 := (
+    "000000000",
+    "000000000");
+  signal op_mem_20_24_front_din: std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24_back: std_logic_vector((9 - 1) downto 0);
+  signal op_mem_20_24_push_front_pop_back_en: std_logic;
+begin
+  d_1_22 <= d;
+  op_mem_20_24_back <= op_mem_20_24(1);
+  proc_op_mem_20_24: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
+        for i in 1 downto 1 loop 
           op_mem_20_24(i) <= op_mem_20_24(i-1);
         end loop;
         op_mem_20_24(0) <= op_mem_20_24_front_din;
@@ -11341,6 +11343,66 @@ end behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_3e0704e159 is
+  port (
+    sel : in std_logic_vector((1 - 1) downto 0);
+    d0 : in std_logic_vector((9 - 1) downto 0);
+    d1 : in std_logic_vector((9 - 1) downto 0);
+    y : out std_logic_vector((9 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_3e0704e159;
+architecture behavior of sysgen_mux_3e0704e159
+is
+  signal sel_1_20: std_logic;
+  signal d0_1_24: std_logic_vector((9 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((9 - 1) downto 0);
+  type array_type_pipe_16_22 is array (0 to (1 - 1)) of std_logic_vector((9 - 1) downto 0);
+  signal pipe_16_22: array_type_pipe_16_22 := (
+    0 => "000000000");
+  signal pipe_16_22_front_din: std_logic_vector((9 - 1) downto 0);
+  signal pipe_16_22_back: std_logic_vector((9 - 1) downto 0);
+  signal pipe_16_22_push_front_pop_back_en: std_logic;
+  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
+  signal unregy_join_6_1: std_logic_vector((9 - 1) downto 0);
+begin
+  sel_1_20 <= sel(0);
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  pipe_16_22_back <= pipe_16_22(0);
+  proc_pipe_16_22: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (pipe_16_22_push_front_pop_back_en = '1')) then
+        pipe_16_22(0) <= pipe_16_22_front_din;
+      end if;
+    end if;
+  end process proc_pipe_16_22;
+  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
+  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
+  is
+  begin
+    case sel_internal_2_1_convert is 
+      when "0" =>
+        unregy_join_6_1 <= d0_1_24;
+      when others =>
+        unregy_join_6_1 <= d1_1_27;
+    end case;
+  end process proc_switch_6_1;
+  pipe_16_22_front_din <= unregy_join_6_1;
+  pipe_16_22_push_front_pop_back_en <= '1';
+  y <= pipe_16_22_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
 ---------------------------------------------------------------------
 --
 --  Filename      : xlregister.vhd
@@ -11415,152 +11477,6 @@ begin
 
 end architecture behavior;
 
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_mux_3e0704e159 is
-  port (
-    sel : in std_logic_vector((1 - 1) downto 0);
-    d0 : in std_logic_vector((9 - 1) downto 0);
-    d1 : in std_logic_vector((9 - 1) downto 0);
-    y : out std_logic_vector((9 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_mux_3e0704e159;
-architecture behavior of sysgen_mux_3e0704e159
-is
-  signal sel_1_20: std_logic;
-  signal d0_1_24: std_logic_vector((9 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((9 - 1) downto 0);
-  type array_type_pipe_16_22 is array (0 to (1 - 1)) of std_logic_vector((9 - 1) downto 0);
-  signal pipe_16_22: array_type_pipe_16_22 := (
-    0 => "000000000");
-  signal pipe_16_22_front_din: std_logic_vector((9 - 1) downto 0);
-  signal pipe_16_22_back: std_logic_vector((9 - 1) downto 0);
-  signal pipe_16_22_push_front_pop_back_en: std_logic;
-  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
-  signal unregy_join_6_1: std_logic_vector((9 - 1) downto 0);
-begin
-  sel_1_20 <= sel(0);
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  pipe_16_22_back <= pipe_16_22(0);
-  proc_pipe_16_22: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (pipe_16_22_push_front_pop_back_en = '1')) then
-        pipe_16_22(0) <= pipe_16_22_front_din;
-      end if;
-    end if;
-  end process proc_pipe_16_22;
-  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
-  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
-  is
-  begin
-    case sel_internal_2_1_convert is 
-      when "0" =>
-        unregy_join_6_1 <= d0_1_24;
-      when others =>
-        unregy_join_6_1 <= d1_1_27;
-    end case;
-  end process proc_switch_6_1;
-  pipe_16_22_front_din <= unregy_join_6_1;
-  pipe_16_22_push_front_pop_back_en <= '1';
-  y <= pipe_16_22_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_45dcf713b1 is
-  port (
-    d : in std_logic_vector((9 - 1) downto 0);
-    q : out std_logic_vector((9 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_45dcf713b1;
-architecture behavior of sysgen_delay_45dcf713b1
-is
-  signal d_1_22: std_logic_vector((9 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (1 - 1)) of std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    0 => "000000000");
-  signal op_mem_20_24_front_din: std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(0);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_9f737cf47a is
-  port (
-    d : in std_logic_vector((9 - 1) downto 0);
-    q : out std_logic_vector((9 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_9f737cf47a;
-architecture behavior of sysgen_delay_9f737cf47a
-is
-  signal d_1_22: std_logic_vector((9 - 1) downto 0);
-  type array_type_op_mem_20_24 is array (0 to (2 - 1)) of std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24: array_type_op_mem_20_24 := (
-    "000000000",
-    "000000000");
-  signal op_mem_20_24_front_din: std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24_back: std_logic_vector((9 - 1) downto 0);
-  signal op_mem_20_24_push_front_pop_back_en: std_logic;
-begin
-  d_1_22 <= d;
-  op_mem_20_24_back <= op_mem_20_24(1);
-  proc_op_mem_20_24: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_20_24_push_front_pop_back_en = '1')) then
-        for i in 1 downto 1 loop 
-          op_mem_20_24(i) <= op_mem_20_24(i-1);
-        end loop;
-        op_mem_20_24(0) <= op_mem_20_24_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_20_24;
-  op_mem_20_24_front_din <= d_1_22;
-  op_mem_20_24_push_front_pop_back_en <= '1';
-  q <= op_mem_20_24_back;
-end behavior;
 
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
@@ -11673,28 +11589,6 @@ begin
   op_mem_20_24_front_din <= d_1_22;
   op_mem_20_24_push_front_pop_back_en <= '1';
   q <= op_mem_20_24_back;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_delay_ccd603f812 is
-  port (
-    d : in std_logic_vector((9 - 1) downto 0);
-    q : out std_logic_vector((9 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_delay_ccd603f812;
-architecture behavior of sysgen_delay_ccd603f812
-is
-  signal d_1_22: std_logic_vector((9 - 1) downto 0);
-begin
-  d_1_22 <= d;
-  q <= d_1_22;
 end behavior;
 
 library xil_defaultlib;
@@ -11815,6 +11709,28 @@ generic map (
 	  dbiterrb       =>  open  --do not change
 );
 end behavior;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_delay_ccd603f812 is
+  port (
+    d : in std_logic_vector((9 - 1) downto 0);
+    q : out std_logic_vector((9 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_delay_ccd603f812;
+architecture behavior of sysgen_delay_ccd603f812
+is
+  signal d_1_22: std_logic_vector((9 - 1) downto 0);
+begin
+  d_1_22 <= d;
+  q <= d_1_22;
+end behavior;
+
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
@@ -12247,13 +12163,23 @@ entity fft_4096c_1i_core_xladdsub is
 
  component fft_4096c_1i_core_c_addsub_v12_0_i4
     port ( 
-    a: in std_logic_vector(21 - 1 downto 0);
+    a: in std_logic_vector(39 - 1 downto 0);
+    clk: in std_logic:= '0';
+    ce: in std_logic:= '0';
     s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(21 - 1 downto 0) 
+    b: in std_logic_vector(39 - 1 downto 0) 
  		  ); 
  end component;
 
  component fft_4096c_1i_core_c_addsub_v12_0_i5
+    port ( 
+    a: in std_logic_vector(3 - 1 downto 0);
+    s: out std_logic_vector(c_output_width - 1 downto 0);
+    b: in std_logic_vector(3 - 1 downto 0) 
+ 		  ); 
+ end component;
+
+ component fft_4096c_1i_core_c_addsub_v12_0_i6
     port ( 
     a: in std_logic_vector(23 - 1 downto 0);
     clk: in std_logic:= '0';
@@ -12263,29 +12189,11 @@ entity fft_4096c_1i_core_xladdsub is
  		  ); 
  end component;
 
- component fft_4096c_1i_core_c_addsub_v12_0_i6
+ component fft_4096c_1i_core_c_addsub_v12_0_i7
     port ( 
     a: in std_logic_vector(22 - 1 downto 0);
     s: out std_logic_vector(c_output_width - 1 downto 0);
     b: in std_logic_vector(22 - 1 downto 0) 
- 		  ); 
- end component;
-
- component fft_4096c_1i_core_c_addsub_v12_0_i7
-    port ( 
-    a: in std_logic_vector(39 - 1 downto 0);
-    clk: in std_logic:= '0';
-    ce: in std_logic:= '0';
-    s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(39 - 1 downto 0) 
- 		  ); 
- end component;
-
- component fft_4096c_1i_core_c_addsub_v12_0_i8
-    port ( 
-    a: in std_logic_vector(3 - 1 downto 0);
-    s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(3 - 1 downto 0) 
  		  ); 
  end component;
 
@@ -12352,6 +12260,8 @@ begin
   core_instance4:fft_4096c_1i_core_c_addsub_v12_0_i4
    port map ( 
          a => full_a,
+         clk => clk,
+         ce => internal_ce,
          s => core_s,
          b => full_b
   ); 
@@ -12361,8 +12271,6 @@ begin
   core_instance5:fft_4096c_1i_core_c_addsub_v12_0_i5
    port map ( 
          a => full_a,
-         clk => clk,
-         ce => internal_ce,
          s => core_s,
          b => full_b
   ); 
@@ -12372,15 +12280,6 @@ begin
   core_instance6:fft_4096c_1i_core_c_addsub_v12_0_i6
    port map ( 
          a => full_a,
-         s => core_s,
-         b => full_b
-  ); 
-   end generate;
-
- comp7: if ((core_name0 = "fft_4096c_1i_core_c_addsub_v12_0_i7")) generate 
-  core_instance7:fft_4096c_1i_core_c_addsub_v12_0_i7
-   port map ( 
-         a => full_a,
          clk => clk,
          ce => internal_ce,
          s => core_s,
@@ -12388,8 +12287,8 @@ begin
   ); 
    end generate;
 
- comp8: if ((core_name0 = "fft_4096c_1i_core_c_addsub_v12_0_i8")) generate 
-  core_instance8:fft_4096c_1i_core_c_addsub_v12_0_i8
+ comp7: if ((core_name0 = "fft_4096c_1i_core_c_addsub_v12_0_i7")) generate 
+  core_instance7:fft_4096c_1i_core_c_addsub_v12_0_i7
    port map ( 
          a => full_a,
          s => core_s,

@@ -353,10 +353,6 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>fft_4096c_1i_core_c_addsub_v12_0_i8/fft_4096c_1i_core_c_addsub_v12_0_i8.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>fft_4096c_1i_core_c_counter_binary_v12_0_i0/fft_4096c_1i_core_c_counter_binary_v12_0_i0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
@@ -680,7 +676,7 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
       <spirit:file>
         <spirit:name>hdl/fft_4096c_1i_core.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ee1341ff</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_f4e56bc9</spirit:userFileType>
         <spirit:logicalName>xil_defaultlib</spirit:logicalName>
       </spirit:file>
     </spirit:fileSet>
@@ -716,10 +712,6 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
       </spirit:file>
       <spirit:file>
         <spirit:name>fft_4096c_1i_core_c_addsub_v12_0_i7/fft_4096c_1i_core_c_addsub_v12_0_i7.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_c_addsub_v12_0_i8/fft_4096c_1i_core_c_addsub_v12_0_i8.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1095,8 +1087,8 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <xilinx:xpmLibrary>XPM_FIFO</xilinx:xpmLibrary>
         <xilinx:xpmLibrary>XPM_CDC</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
-      <xilinx:coreRevision>245267149</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-02-26T17:49:42Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>257862449</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-07-22T12:30:53Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2019.1.3</xilinx:xilinxVersion>
