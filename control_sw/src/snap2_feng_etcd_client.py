@@ -574,7 +574,7 @@ class Snap2FengineEtcdClient():
             self.logger.exception("Error pushing poll data to etcd")
             return
 
-    def start_poll_stats_loop(self, pollsecs=10, expiresecs=None):
+    def start_poll_stats_loop(self, pollsecs=10, expiresecs=-1):
         """
         Start a loop, calling ``poll_stats`` every ``pollsecs`` seconds
         for a duration of ``expiresecs`` seconds.
@@ -614,6 +614,11 @@ class Snap2FengineEtcdClient():
                     time.sleep(0.1)
                     if self._poll_pause_trigger.is_set():
                         self._poll_is_paused.set()
+                    if self._poll_stop_trigger.is_set():
+                        self.logger.info("Stopping stats poll loop")
+                        self._is_polling.clear()
+                        self._poll_is_paused.clear()
+                        break
                 self._poll_is_paused.clear()
 
         self._poll_stop_trigger.clear()

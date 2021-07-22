@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import time
 import argparse
 import logging
 import logging.handlers
@@ -53,9 +54,16 @@ def main():
     
     logger.info("Starting command watch")
     ec.start_command_watch()
-    logger.info("Starting status poll loop")
     if args.polltime is not None:
+        logger.info("Starting status poll loop with poll interval %f seconds" % args.polltime)
         ec.start_poll_stats_loop(args.polltime)
+
+    logger.info("Going into infinite loop")
+    while(True):
+        try:
+            time.sleep(60)
+        except KeyboardInterrupt:
+            break
 
 if __name__ == "__main__":
     main()
