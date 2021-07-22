@@ -331,15 +331,20 @@ blocks attribute. I.e.:
   corr
   delay
   eq
-  eq_tvg
+  eqtvg
   eth
+  fpga
   input
   noise
   packetizer
   pfb
+  powermon
   reorder
   sync
 
+Additionally, the block name ``feng`` may be used to refer to the ``Snap2Fengine``
+instance, and the block name ``controller`` may be used to refer to special
+commands associated with the ``etcd`` service process.
 
 Allowed values for **``cmd``** are any of the methods which can be called
 against ``Snap2Fengine.blocks[block]``.
@@ -466,6 +471,28 @@ In the event that a command fails, more information is available in the
 
 Monitoring Interface
 ~~~~~~~~~~~~~~~~~~~~
+
+The ``etcd`` F-engine control service can be commanded to periodically
+push status data to monitoring keys using the following commands.
+
+.. autoclass:: lwa_f.snap2_feng_etcd_client.Snap2FengineEtcdClient
+  :no-show-inheritance:
+  :members:
+
+These should be invoked similarly to commands against firmware
+blocks, but use the ``block`` name ``controller``.
+
+For example, to turn the monitoring poll loop on for 1 hour, with a polling
+interval of 30 seconds, issue the command:
+
+  +--------------+--------------------------------------------+
+  | Field        | Value                                      |
+  +==============+============================================+
+  | ``cmd``      | ``"start_poll_stats_loop"``                |
+  +--------------+--------------------------------------------+
+  | ``val``      | ``{block: "controller", kwargs:            |
+  |              | {"pollsecs": 30, "expiresecs": 3600}``     |
+  +--------------+--------------------------------------------+
 
 The monitor key contains a nested dictionary with the following keys:
 
