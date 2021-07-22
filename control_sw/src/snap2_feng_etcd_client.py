@@ -488,6 +488,8 @@ class Snap2FengineEtcdClient():
             # Fengine.blocks dict, or Fengine itself
             if block == "feng":
                 block_obj = self.feng
+            elif block == "controller":
+                block_obj = self # This could cause chaos!
             elif not block in self.feng.blocks:
                 self.logger.error("Received block %s not allowed!" % block)
                 err = "Wrong block"
@@ -572,9 +574,10 @@ class Snap2FengineEtcdClient():
             self.logger.exception("Error pushing poll data to etcd")
             return
 
-    def start_poll_stats_loop(self, pollsecs=10):
+    def start_poll_stats_loop(self, pollsecs=10, expiresecs=None):
         """
-        Start a loop, calling ``poll_stats`` every ``pollsecs`` seconds.
+        Start a loop, calling ``poll_stats`` every ``pollsecs`` seconds
+        for a duration of ``expiresecs`` seconds.
         Internally, this method launches a background thread to poll
         for stats, and sets the ``_is_polling`` Event attribute.
         Stop polling with ``stop_poll_stats_loop()``.
@@ -583,11 +586,20 @@ class Snap2FengineEtcdClient():
         :param pollsecs: Number of seconds between poll loops.
         :type pollsecs: float
 
+        :param expiresecs: Number of seconds for while poll loop should run.
+            If <0, run forever.
+        :type expiresecs: int 
+
         """
         def poll_loop():
             self.logger.info("Starting stats poll loop")
+            starttime = time.time()
             while(True):
                 self._is_polling.set()
+                if expiresecs >= 0:
+                    if time.time() - starttime > expiresecs:
+                        self.logger.info("Stats poll loop duration has expired")
+                        self.stop_poll_stats_loop(wait=False)
                 if self._poll_stop_trigger.is_set():
                     self.logger.info("Stopping stats poll loop")
                     self._is_polling.clear()
@@ -608,14 +620,24 @@ class Snap2FengineEtcdClient():
         poll_thread = threading.Thread(name='poll_loop', target=poll_loop)
         poll_thread.start()
 
-    def stop_poll_stats_loop(self):
+    def stop_poll_stats_loop(self, wait=True):
         """
-        Stop the background polling loop. Will block until the polling
-        loop has closed gracefully.
+        Stop the background polling loop.
+
+        :param wait: If True, block until polling loop has closed gracefully.
+            If False, set the stop trigger and return immediately.
+        :type wait: Bool
         """
+        TIMEOUT = 60
         self.logger.info("Triggering stats polling loop stop")
         self._poll_stop_trigger.set()
+        if not wait:
+            return
+        t0 = time.time()
         while self.is_polling():
+            if time.time() - t0 > TIMEOUT:
+                self.logger.warning("Timed out waiting for polling to stop")
+                return
             time.sleep(0.5)
 
 

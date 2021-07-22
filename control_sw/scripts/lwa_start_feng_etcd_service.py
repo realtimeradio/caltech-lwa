@@ -12,8 +12,9 @@ def main():
                         help ='Host serving etcd')
     parser.add_argument('-p', dest='port', type=int, default=2379,
                         help ='Port on which etcd is served')
-    parser.add_argument('-t', dest='polltime', type=int, default=10,
-                        help ='Time, in seconds, between FPGA status polls')
+    parser.add_argument('-t', dest='polltime', type=int, default=None,
+                        help ='Time, in seconds, between FPGA status polls. '
+                              'If None, don\'t start poll loop')
     parser.add_argument('--snaphost', dest='snaphost', type=str, default='snap01',
                         help ='Hostname of SNAP2 board being controlled')
     args = parser.parse_args()
@@ -53,7 +54,8 @@ def main():
     logger.info("Starting command watch")
     ec.start_command_watch()
     logger.info("Starting status poll loop")
-    ec.start_poll_stats_loop(args.polltime)
+    if args.polltime is not None:
+        ec.start_poll_stats_loop(args.polltime)
 
 if __name__ == "__main__":
     main()
