@@ -19,6 +19,9 @@ class Pfb(Block):
         :param shift: Shift schedule to be applied.
         :type shift: int
         """
+        if shift & 31 != 31:
+            self._warning("Shifting must occur on firt 5 FFT stages")
+        shift = shift | 31 # always shift first 5 stages
         self.change_reg_bits('ctrl', shift, self.SHIFT_OFFSET, self.SHIFT_WIDTH)
 
     def get_fft_shift(self):
