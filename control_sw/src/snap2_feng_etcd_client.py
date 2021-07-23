@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import datetime
+import socket
 import json
 import threading
 import numpy as np
@@ -295,6 +296,11 @@ class Snap2FengineEtcdClient():
             self.set_log_level("info")
         else:
             self.logger = logger
+        try:
+            socket.gethostbyname(fhost)
+        except socket.gaierror:
+            self.logger.exception("F-engine host %s doesn't resolve to an IP" % fhost)
+            raise
         try:
             self.feng = snap2_fengine.Snap2Fengine(fhost)
         except:
