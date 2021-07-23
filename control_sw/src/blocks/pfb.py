@@ -11,6 +11,29 @@ class Pfb(Block):
         self.SHIFT_OFFSET = 0
         self.SHIFT_WIDTH  = 16
         self.STAT_RST_BIT = 18
+        self.PFB_DISABLE_BIT = 24
+
+    def fir_enable(self):
+        """
+        Enable the PFB's FIR frontend.
+        """
+        self.change_reg_bits('ctrl', 0, self.PFB_DISABLE_BIT, 1)
+
+    def fir_disable(self):
+        """
+        Disable the PFB's FIR frontend to leave a simple FFT.
+        """
+        self.change_reg_bits('ctrl', 1, self.PFB_DISABLE_BIT, 1)
+
+    def fir_is_enabled(self):
+        """
+        Query whether the PFB FIR frontend is enabled or not.
+
+        :return enabled: True if the FIR is enabled, else False.
+        :rtype bool:
+        """
+        disabled = bool(self.get_reg_bits('ctrl', self.PFB_DISABLE_BIT, 1))
+        return not disabled
 
     def set_fft_shift(self, shift):
         """
@@ -75,6 +98,9 @@ class Pfb(Block):
             - fft_shift (str) : Currently loaded FFT shift schedule, formatted
               as a binary string, prefixed with "0b".
 
+            - fir_enabled (bool) : True if the PFB FIR is enabled. False otherwise.
+              If the FIR is disabled this is flagged as "NOTIFY"
+
         :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
             status key-value pairs. flags_dict is
             a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
@@ -90,16 +116,21 @@ class Pfb(Block):
             flags['overflow_count'] = FENG_WARNING
         fft_shift = self.get_fft_shift()
         stats['fft_shift'] = '0b%s' % np.binary_repr(fft_shift, width=self.SHIFT_WIDTH)
+        stats['fir_enabled'] = self.fir_is_enabled()
+        if not stats['fir_enabled']:
+            flags['fir_enabled'] = FENG_NOTIFY
         return stats, flags
         
     def initialize(self, read_only=False):
         """
-        :param read_only: If False, sets FFT shift to the default value, and
-            resets the overflow count. If True, do nothing.
+        :param read_only: If False, enable the PFB FIR, set the
+            FFT shift to the default value, and
+            reset the overflow count. If True, do nothing.
         :type read_only: bool
         """
         if read_only:
             return
         self.write_int('ctrl', 0)
+        self.fir_enable()
         self.set_fft_shift(self.DEFAULT_FFT_SHIFT)
         self.rst_stats()
