@@ -349,10 +349,6 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>fft_4096c_1i_core_c_addsub_v12_0_i7/fft_4096c_1i_core_c_addsub_v12_0_i7.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>fft_4096c_1i_core_c_counter_binary_v12_0_i0/fft_4096c_1i_core_c_counter_binary_v12_0_i0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
@@ -433,75 +429,7 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i10/fft_4096c_1i_core_dist_mem_gen_i10.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i11/fft_4096c_1i_core_dist_mem_gen_i11.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i12/fft_4096c_1i_core_dist_mem_gen_i12.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i13/fft_4096c_1i_core_dist_mem_gen_i13.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i14/fft_4096c_1i_core_dist_mem_gen_i14.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i15/fft_4096c_1i_core_dist_mem_gen_i15.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i16/fft_4096c_1i_core_dist_mem_gen_i16.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i17/fft_4096c_1i_core_dist_mem_gen_i17.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i18/fft_4096c_1i_core_dist_mem_gen_i18.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i19/fft_4096c_1i_core_dist_mem_gen_i19.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>fft_4096c_1i_core_dist_mem_gen_i2/fft_4096c_1i_core_dist_mem_gen_i2.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i3/fft_4096c_1i_core_dist_mem_gen_i3.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i4/fft_4096c_1i_core_dist_mem_gen_i4.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i5/fft_4096c_1i_core_dist_mem_gen_i5.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i6/fft_4096c_1i_core_dist_mem_gen_i6.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i7/fft_4096c_1i_core_dist_mem_gen_i7.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i8/fft_4096c_1i_core_dist_mem_gen_i8.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i9/fft_4096c_1i_core_dist_mem_gen_i9.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -521,74 +449,6 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <spirit:userFileType>coe</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i3_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i4_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i5_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i6_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i7_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i8_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i9_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i10_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i11_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i12_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i13_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i14_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i15_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i16_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i17_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i18_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i19_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>xpm_4dd9cf_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
@@ -605,6 +465,10 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>xpm_effb0c_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>xpm_98f453_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
@@ -614,6 +478,66 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
       </spirit:file>
       <spirit:file>
         <spirit:name>xpm_45185a_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_31439a_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_891e7d_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_1d82c4_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_adce95_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_d8dbe3_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_1f21e9_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_d0d26c_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_2d9d6a_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_6bcd96_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_f49702_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_f4cbf6_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_1b3bee_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_617551_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_274a86_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_4e5cea_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -676,7 +600,7 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
       <spirit:file>
         <spirit:name>hdl/fft_4096c_1i_core.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f4e56bc9</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_c9a12552</spirit:userFileType>
         <spirit:logicalName>xil_defaultlib</spirit:logicalName>
       </spirit:file>
     </spirit:fileSet>
@@ -708,10 +632,6 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
       </spirit:file>
       <spirit:file>
         <spirit:name>fft_4096c_1i_core_c_addsub_v12_0_i6/fft_4096c_1i_core_c_addsub_v12_0_i6.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_c_addsub_v12_0_i7/fft_4096c_1i_core_c_addsub_v12_0_i7.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -795,75 +715,7 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i10/fft_4096c_1i_core_dist_mem_gen_i10.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i11/fft_4096c_1i_core_dist_mem_gen_i11.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i12/fft_4096c_1i_core_dist_mem_gen_i12.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i13/fft_4096c_1i_core_dist_mem_gen_i13.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i14/fft_4096c_1i_core_dist_mem_gen_i14.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i15/fft_4096c_1i_core_dist_mem_gen_i15.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i16/fft_4096c_1i_core_dist_mem_gen_i16.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i17/fft_4096c_1i_core_dist_mem_gen_i17.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i18/fft_4096c_1i_core_dist_mem_gen_i18.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i19/fft_4096c_1i_core_dist_mem_gen_i19.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>fft_4096c_1i_core_dist_mem_gen_i2/fft_4096c_1i_core_dist_mem_gen_i2.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i3/fft_4096c_1i_core_dist_mem_gen_i3.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i4/fft_4096c_1i_core_dist_mem_gen_i4.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i5/fft_4096c_1i_core_dist_mem_gen_i5.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i6/fft_4096c_1i_core_dist_mem_gen_i6.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i7/fft_4096c_1i_core_dist_mem_gen_i7.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i8/fft_4096c_1i_core_dist_mem_gen_i8.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i9/fft_4096c_1i_core_dist_mem_gen_i9.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -876,74 +728,6 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
       </spirit:file>
       <spirit:file>
         <spirit:name>fft_4096c_1i_core_dist_mem_gen_i2_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i3_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i4_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i5_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i6_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i7_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i8_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i9_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i10_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i11_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i12_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i13_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i14_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i15_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i16_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i17_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i18_vivado.coe</spirit:name>
-        <spirit:userFileType>coe</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>fft_4096c_1i_core_dist_mem_gen_i19_vivado.coe</spirit:name>
         <spirit:userFileType>coe</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -963,6 +747,10 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>xpm_effb0c_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>xpm_98f453_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
@@ -972,6 +760,66 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
       </spirit:file>
       <spirit:file>
         <spirit:name>xpm_45185a_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_31439a_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_891e7d_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_1d82c4_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_adce95_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_d8dbe3_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_1f21e9_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_d0d26c_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_2d9d6a_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_6bcd96_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_f49702_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_f4cbf6_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_1b3bee_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_617551_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_274a86_vivado.mem</spirit:name>
+        <spirit:userFileType>mem</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>xpm_4e5cea_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1087,8 +935,8 @@ ediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spiri
         <xilinx:xpmLibrary>XPM_FIFO</xilinx:xpmLibrary>
         <xilinx:xpmLibrary>XPM_CDC</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
-      <xilinx:coreRevision>257862449</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-07-22T12:30:53Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>258307352</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-07-27T16:04:32Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2019.1.3</xilinx:xilinxVersion>

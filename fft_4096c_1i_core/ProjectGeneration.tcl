@@ -24,7 +24,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set IP_LifeCycle_Menu {2}
 	set IP_Logo {sysgen_icon_100.png}
 	set IP_Name {}
-	set IP_Revision {257862449}
+	set IP_Revision {258307352}
 	set IP_Socket_IP {0}
 	set IP_Socket_IP_Proj_Path {}
 	set IP_Vendor_Text {User_Company}
@@ -49,26 +49,25 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 		{{fft_4096c_1i_core_dist_mem_gen_i0_vivado.coe}}
 		{{fft_4096c_1i_core_dist_mem_gen_i1_vivado.coe}}
 		{{fft_4096c_1i_core_dist_mem_gen_i2_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i3_vivado.coe}}
+		{{xpm_effb0c_vivado.mem}}
 		{{xpm_98f453_vivado.mem}}
 		{{xpm_cb2434_vivado.mem}}
 		{{xpm_45185a_vivado.mem}}
-		{{fft_4096c_1i_core_dist_mem_gen_i4_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i5_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i6_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i7_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i8_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i9_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i10_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i11_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i12_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i13_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i14_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i15_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i16_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i17_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i18_vivado.coe}}
-		{{fft_4096c_1i_core_dist_mem_gen_i19_vivado.coe}}
+		{{xpm_31439a_vivado.mem}}
+		{{xpm_891e7d_vivado.mem}}
+		{{xpm_1d82c4_vivado.mem}}
+		{{xpm_adce95_vivado.mem}}
+		{{xpm_d8dbe3_vivado.mem}}
+		{{xpm_1f21e9_vivado.mem}}
+		{{xpm_d0d26c_vivado.mem}}
+		{{xpm_2d9d6a_vivado.mem}}
+		{{xpm_6bcd96_vivado.mem}}
+		{{xpm_f49702_vivado.mem}}
+		{{xpm_f4cbf6_vivado.mem}}
+		{{xpm_1b3bee_vivado.mem}}
+		{{xpm_617551_vivado.mem}}
+		{{xpm_274a86_vivado.mem}}
+		{{xpm_4e5cea_vivado.mem}}
 		{{xpm_3c00a8_vivado.mem}}
 		{{xpm_f6cc85_vivado.mem}}
 		{{xpm_b42cce_dpram.mem}}
@@ -84,7 +83,7 @@ namespace eval ::xilinx::dsp::planaheaddriver {
 	set SynthesisTool {Vivado}
 	set TargetDir {/home/jackh/src/caltech-lwa/fft_4096c_1i_core}
 	set TopLevelModule {fft_4096c_1i_core}
-	set TopLevelSimulinkHandle 137353
+	set TopLevelSimulinkHandle 244028
 	set VHDLLib {xil_defaultlib}
 	set TopLevelPortInterface {}
 	dict set TopLevelPortInterface sync Name {sync}
