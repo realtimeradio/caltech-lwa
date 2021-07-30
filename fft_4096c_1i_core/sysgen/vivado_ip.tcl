@@ -75,6 +75,40 @@ set params_list [list]
 lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i1}
 lappend params_list CONFIG.AINIT_Value {0}
 lappend params_list CONFIG.A_Type {Signed}
+lappend params_list CONFIG.A_Width {19}
+lappend params_list CONFIG.Add_Mode {Add}
+lappend params_list CONFIG.B_Constant {false}
+lappend params_list CONFIG.B_Type {Signed}
+lappend params_list CONFIG.B_Value {0}
+lappend params_list CONFIG.B_Width {19}
+lappend params_list CONFIG.Borrow_Sense {Active_Low}
+lappend params_list CONFIG.Bypass {false}
+lappend params_list CONFIG.Bypass_CE_Priority {Bypass_Overrides_CE}
+lappend params_list CONFIG.Bypass_Sense {Active_Low}
+lappend params_list CONFIG.CE {true}
+lappend params_list CONFIG.C_In {false}
+lappend params_list CONFIG.C_Out {false}
+lappend params_list CONFIG.Implementation {DSP48}
+lappend params_list CONFIG.Latency {1}
+lappend params_list CONFIG.Out_Width {19}
+lappend params_list CONFIG.SCLR {false}
+lappend params_list CONFIG.SINIT {false}
+lappend params_list CONFIG.SINIT_Value {0}
+lappend params_list CONFIG.SSET {false}
+lappend params_list CONFIG.Sync_CE_Priority {Sync_Overrides_CE}
+lappend params_list CONFIG.Sync_Ctrl_Priority {Reset_Overrides_Set}
+
+set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i1]
+}
+
+
+set existingipslist [get_ips]
+if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i2] < 0} {
+create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i2
+set params_list [list]
+lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i2}
+lappend params_list CONFIG.AINIT_Value {0}
+lappend params_list CONFIG.A_Type {Signed}
 lappend params_list CONFIG.A_Width {21}
 lappend params_list CONFIG.Add_Mode {Add}
 lappend params_list CONFIG.B_Constant {false}
@@ -98,15 +132,15 @@ lappend params_list CONFIG.SSET {false}
 lappend params_list CONFIG.Sync_CE_Priority {Sync_Overrides_CE}
 lappend params_list CONFIG.Sync_Ctrl_Priority {Reset_Overrides_Set}
 
-set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i1]
+set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i2]
 }
 
 
 set existingipslist [get_ips]
-if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i2] < 0} {
-create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i2
+if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i3] < 0} {
+create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i3
 set params_list [list]
-lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i2}
+lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i3}
 lappend params_list CONFIG.AINIT_Value {0}
 lappend params_list CONFIG.A_Type {Signed}
 lappend params_list CONFIG.A_Width {19}
@@ -122,7 +156,7 @@ lappend params_list CONFIG.Bypass_Sense {Active_Low}
 lappend params_list CONFIG.CE {true}
 lappend params_list CONFIG.C_In {false}
 lappend params_list CONFIG.C_Out {false}
-lappend params_list CONFIG.Implementation {Fabric}
+lappend params_list CONFIG.Implementation {DSP48}
 lappend params_list CONFIG.Latency {1}
 lappend params_list CONFIG.Out_Width {19}
 lappend params_list CONFIG.SCLR {false}
@@ -132,7 +166,7 @@ lappend params_list CONFIG.SSET {false}
 lappend params_list CONFIG.Sync_CE_Priority {Sync_Overrides_CE}
 lappend params_list CONFIG.Sync_Ctrl_Priority {Reset_Overrides_Set}
 
-set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i2]
+set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i3]
 }
 
 
@@ -277,10 +311,10 @@ set_property -dict $params_list [get_ips fft_4096c_1i_core_c_counter_binary_v12_
 
 
 set existingipslist [get_ips]
-if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i3] < 0} {
-create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i3
+if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i4] < 0} {
+create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i4
 set params_list [list]
-lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i3}
+lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i4}
 lappend params_list CONFIG.AINIT_Value {0}
 lappend params_list CONFIG.A_Type {Signed}
 lappend params_list CONFIG.A_Width {39}
@@ -306,7 +340,7 @@ lappend params_list CONFIG.SSET {false}
 lappend params_list CONFIG.Sync_CE_Priority {Sync_Overrides_CE}
 lappend params_list CONFIG.Sync_Ctrl_Priority {Reset_Overrides_Set}
 
-set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i3]
+set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i4]
 }
 
 
@@ -341,10 +375,10 @@ set_property -dict $params_list [get_ips fft_4096c_1i_core_dist_mem_gen_i0]
 
 
 set existingipslist [get_ips]
-if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i4] < 0} {
-create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i4
+if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i5] < 0} {
+create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i5
 set params_list [list]
-lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i4}
+lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i5}
 lappend params_list CONFIG.AINIT_Value {0}
 lappend params_list CONFIG.A_Type {Unsigned}
 lappend params_list CONFIG.A_Width {3}
@@ -370,7 +404,7 @@ lappend params_list CONFIG.SSET {false}
 lappend params_list CONFIG.Sync_CE_Priority {Sync_Overrides_CE}
 lappend params_list CONFIG.Sync_Ctrl_Priority {Reset_Overrides_Set}
 
-set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i4]
+set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i5]
 }
 
 
@@ -517,36 +551,6 @@ set_property -dict $params_list [get_ips fft_4096c_1i_core_c_counter_binary_v12_
 
 
 set existingipslist [get_ips]
-if {[lsearch $existingipslist fft_4096c_1i_core_dist_mem_gen_i2] < 0} {
-create_ip -name dist_mem_gen -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_dist_mem_gen_i2
-set params_list [list]
-lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_dist_mem_gen_i2}
-lappend params_list CONFIG.ce_overrides {sync_controls_overrides_ce}
-lappend params_list CONFIG.common_output_ce {false}
-lappend params_list CONFIG.common_output_clk {false}
-lappend params_list CONFIG.data_width {18}
-lappend params_list CONFIG.default_data {0}
-lappend params_list CONFIG.default_data_radix {16}
-lappend params_list CONFIG.depth {16}
-lappend params_list CONFIG.dual_port_address {non_registered}
-lappend params_list CONFIG.dual_port_output_clock_enable {false}
-lappend params_list CONFIG.input_clock_enable {false}
-lappend params_list CONFIG.input_options {non_registered}
-lappend params_list CONFIG.memory_type {dual_port_ram}
-lappend params_list CONFIG.output_options {non_registered}
-lappend params_list CONFIG.qualify_we_with_i_ce {false}
-lappend params_list CONFIG.reset_qdpo {false}
-lappend params_list CONFIG.reset_qspo {false}
-lappend params_list CONFIG.single_port_output_clock_enable {false}
-lappend params_list CONFIG.sync_reset_qdpo {false}
-lappend params_list CONFIG.sync_reset_qspo {false}
-lappend params_list CONFIG.coefficient_file {../fft_4096c_1i_core_dist_mem_gen_i2_vivado.coe}
-
-set_property -dict $params_list [get_ips fft_4096c_1i_core_dist_mem_gen_i2]
-}
-
-
-set existingipslist [get_ips]
 if {[lsearch $existingipslist fft_4096c_1i_core_c_counter_binary_v12_0_i9] < 0} {
 create_ip -name c_counter_binary -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_counter_binary_v12_0_i9
 set params_list [list]
@@ -603,10 +607,10 @@ set_property -dict $params_list [get_ips fft_4096c_1i_core_c_counter_binary_v12_
 
 
 set existingipslist [get_ips]
-if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i5] < 0} {
-create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i5
+if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i6] < 0} {
+create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i6
 set params_list [list]
-lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i5}
+lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i6}
 lappend params_list CONFIG.AINIT_Value {0}
 lappend params_list CONFIG.A_Type {Signed}
 lappend params_list CONFIG.A_Width {22}
@@ -632,7 +636,7 @@ lappend params_list CONFIG.SSET {false}
 lappend params_list CONFIG.Sync_CE_Priority {Sync_Overrides_CE}
 lappend params_list CONFIG.Sync_Ctrl_Priority {Reset_Overrides_Set}
 
-set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i5]
+set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i6]
 }
 
 
@@ -777,10 +781,10 @@ set_property -dict $params_list [get_ips fft_4096c_1i_core_c_counter_binary_v12_
 
 
 set existingipslist [get_ips]
-if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i6] < 0} {
-create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i6
+if {[lsearch $existingipslist fft_4096c_1i_core_c_addsub_v12_0_i7] < 0} {
+create_ip -name c_addsub -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_addsub_v12_0_i7
 set params_list [list]
-lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i6}
+lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_addsub_v12_0_i7}
 lappend params_list CONFIG.AINIT_Value {0}
 lappend params_list CONFIG.A_Type {Signed}
 lappend params_list CONFIG.A_Width {11}
@@ -806,7 +810,7 @@ lappend params_list CONFIG.SSET {false}
 lappend params_list CONFIG.Sync_CE_Priority {Sync_Overrides_CE}
 lappend params_list CONFIG.Sync_Ctrl_Priority {Reset_Overrides_Set}
 
-set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i6]
+set_property -dict $params_list [get_ips fft_4096c_1i_core_c_addsub_v12_0_i7]
 }
 
 
