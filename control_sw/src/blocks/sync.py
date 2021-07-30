@@ -3,14 +3,17 @@ import time
 from .block import Block
 
 class Sync(Block):
-    PERIOD_BASE_DIVISOR = 13 * 4 * 8192
-    OFFSET_EXT_LOAD  = 0
-    OFFSET_MAN_LOAD  = 1 
-    OFFSET_RST_TT    = 2
-    OFFSET_RST_ERR   = 3
-    OFFSET_ARM_SYNC  = 4
-    OFFSET_SW_SYNC   = 5
-    OFFSET_ARM_NOISE = 6
+    OFFSET_ACTIVE_HIGH = 0
+    OFFSET_RST_TT_INT = 1
+    OFFSET_MAN_LOAD_INT = 2
+    OFFSET_TT_INT_LOAD_ARM = 3
+    OFFSET_MAN_PPS = 4
+    OFFSET_RST_TT = 5
+    OFFSET_RST_ERR = 6
+    OFFSET_ARM_SYNC_OUT = 7
+    OFFSET_MAN_SYNC = 8
+    OFFSET_ARM_NOISE = 9
+    OFFSET_TT_LOAD_ARM = 10
 
     def __init__(self, host, name, logger=None):
         super(Sync, self).__init__(host, name, logger)
@@ -77,15 +80,16 @@ class Sync(Block):
 
     def arm_sync(self):
         """
-        Arm sync pulse generator.
+        Arm sync pulse generator, which passes sync pulses to the
+        design DSP.
         """
-        self.change_reg_bits('ctrl', 0, self.OFFSET_ARM_SYNC)
-        self.change_reg_bits('ctrl', 1, self.OFFSET_ARM_SYNC)
-        self.change_reg_bits('ctrl', 0, self.OFFSET_ARM_SYNC)
+        self.change_reg_bits('ctrl', 0, self.OFFSET_ARM_SYNC_OUT)
+        self.change_reg_bits('ctrl', 1, self.OFFSET_ARM_SYNC_OUT)
+        self.change_reg_bits('ctrl', 0, self.OFFSET_ARM_SYNC_OUT)
 
     def arm_noise(self):
         """
-        Arm noise generator resets
+        Arm noise generator resets.
         """
         self.change_reg_bits('ctrl', 0, self.OFFSET_ARM_NOISE)
         self.change_reg_bits('ctrl', 1, self.OFFSET_ARM_NOISE)
@@ -93,11 +97,12 @@ class Sync(Block):
 
     def sw_sync(self):
         """
-        Issue a software sync pulse.
+        Issue a sync pulse from software. This will only do anything
+        if appropriate arming commands have been made in advance.
         """
-        self.change_reg_bits('ctrl', 0, self.OFFSET_SW_SYNC)
-        self.change_reg_bits('ctrl', 1, self.OFFSET_SW_SYNC)
-        self.change_reg_bits('ctrl', 0, self.OFFSET_SW_SYNC)
+        self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_SYNC)
+        self.change_reg_bits('ctrl', 1, self.OFFSET_MAN_SYNC)
+        self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_SYNC)
 
     def update_telescope_time(self, fs_hz=196e6):
         """
