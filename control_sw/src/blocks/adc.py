@@ -12,11 +12,16 @@ from .block import Block
 
 TAP_STEP_SIZE = 4
 NSAMPLES = 256
-USE_EMBEDDED_BRAM = False
 NBOARDS = 2
 NFMCS = 2
 
-TRIG_REG = 'snapshot_trigger'
+CONTROL_REG = 'sync'
+
+RST_BIT = 0
+EXT_SS_TRIG_EN_BIT = 1
+SS_TRIG_BIT = 2
+EXT_SYNC_EN_BIT = 3
+SYNC_BIT = 4
 
 class Adc(Block):
     """
@@ -92,6 +97,7 @@ class Adc(Block):
         if len(self.adcs) == 0:
             self._error("No ADCs found! Giving up intialization")
             return
+        self.write_int(CONTROL_REG, 0) # initialize all flags low
         for adc in self.adcs:
             for board in range(NBOARDS):
                 self._info("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, clocksource))
@@ -169,9 +175,9 @@ class Adc(Block):
         """
         Simultaneously trigger all ADC streams to record a snapshot of data.
         """
-        self.write_int(TRIG_REG, 0b0)          
-        self.write_int(TRIG_REG, 0b1)
-        self.write_int(TRIG_REG, 0b0)
+        self.change_reg_bits(CONTROL_REG, 0, SS_TRIG_BIT)
+        self.change_reg_bits(CONTROL_REG, 1, SS_TRIG_BIT)
+        self.change_reg_bits(CONTROL_REG, 0, SS_TRIG_BIT)
 
     def get_snapshot(self, fmc, signed=False, trigger=True):
         """
@@ -607,14 +613,14 @@ class Adc(Block):
         """
         Toggle the ADC sync input.
         """
-        self.write_int('sync', 0)
-        self.write_int('sync', 1)
-        self.write_int('sync', 0)
+        self.change_reg_bits(CONTROL_REG, 0, SYNC_BIT)
+        self.change_reg_bits(CONTROL_REG, 1, SYNC_BIT)
+        self.change_reg_bits(CONTROL_REG, 0, SYNC_BIT)
     
     def reset(self):
         """
         Toggle the ADC reset input.
         """
-        self.write_int('rst', 0)
-        self.write_int('rst', 1)
-        self.write_int('rst', 0)
+        self.change_reg_bits(CONTROL_REG, 0, RST_BIT)
+        self.change_reg_bits(CONTROL_REG, 1, RST_BIT)
+        self.change_reg_bits(CONTROL_REG, 0, RST_BIT)
