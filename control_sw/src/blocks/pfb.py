@@ -5,7 +5,10 @@ from lwa_f.error_levels import *
 
 class Pfb(Block):
     _N_CORES = 4 #: Number of FFT sub-cores per PFB block
-    DEFAULT_FFT_SHIFT = 2**16-1 #: Default FFT shift
+    SHIFT_MASK = 0b1111000011111 # The stages hard coded in the FFT
+    SHIFT_VAL  = 0b0011000011111 # The hard coded shift settings
+    DEFAULT_SHIFT = 0b0011011011111
+    STAGES = 13
     def __init__(self, host, name, logger=None):
         super(Pfb, self).__init__(host, name, logger)
         self.SHIFT_OFFSET = 0
@@ -42,19 +45,26 @@ class Pfb(Block):
         :param shift: Shift schedule to be applied.
         :type shift: int
         """
-        if shift & 31 != 31:
-            self._warning("Shifting must occur on firt 5 FFT stages")
-        shift = shift | 31 # always shift first 5 stages
+        shift = shift & (2**self.STAGES - 1)
+        if shift & self.SHIFT_MASK != self.SHIFT_VAL:
+            shift = (self.SHIFT_VAL + (shift & ~self.SHIFT_MASK)) & (2**self.STAGES - 1)
+            self._warning("Firmware implements some hardcoded shift stages." 
+                          " Setting shift to 0x%x" % shift)
         self.change_reg_bits('ctrl', shift, self.SHIFT_OFFSET, self.SHIFT_WIDTH)
 
     def get_fft_shift(self):
         """
-        Get the currently applied FFT shift schedule.
+        Get the currently applied FFT shift schedule. The returned value
+        takes into account any hardcoding of the shift settings by firmware.
 
         :return: Shift schedule
         :rtype: int
         """
-        return self.get_reg_bits('ctrl', self.SHIFT_OFFSET, self.SHIFT_WIDTH)
+        shift = self.get_reg_bits('ctrl', self.SHIFT_OFFSET, self.SHIFT_WIDTH)
+        if shift & self.SHIFT_MASK != self.SHIFT_VAL:
+            shift = (self.SHIFT_VAL + (shift & ~self.SHIFT_MASK)) & (2**self.STAGES - 1)
+            self._warning("Shift register is being overridden by firmware.")
+        return shift
 
     def rst_stats(self):
         """
@@ -115,7 +125,7 @@ class Pfb(Block):
         if stats['overflow_count'] != 0:
             flags['overflow_count'] = FENG_WARNING
         fft_shift = self.get_fft_shift()
-        stats['fft_shift'] = '0b%s' % np.binary_repr(fft_shift, width=self.SHIFT_WIDTH)
+        stats['fft_shift'] = '0b%s' % np.binary_repr(fft_shift, width=self.STAGES)
         stats['fir_enabled'] = self.fir_is_enabled()
         if not stats['fir_enabled']:
             flags['fir_enabled'] = FENG_NOTIFY
@@ -132,5 +142,5 @@ class Pfb(Block):
             return
         self.write_int('ctrl', 0)
         self.fir_enable()
-        self.set_fft_shift(self.DEFAULT_FFT_SHIFT)
+        self.set_fft_shift(self.DEFAULT_SHIFT)
         self.rst_stats()
