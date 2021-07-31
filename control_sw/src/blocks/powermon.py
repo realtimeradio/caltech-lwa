@@ -101,6 +101,11 @@ class PowerMon(Block):
         super(PowerMon, self).__init__(host, name, logger)
         self.i2c = None
         self.sensors = {}
+        self._initialized = False
+        try:
+            self.initialize(read_only=True)
+        except:
+            self._warning("Error while trying to initialize I2C objects")
 
     def initialize(self, read_only=False):
         """
@@ -131,6 +136,7 @@ class PowerMon(Block):
             if not read_only:
                 s.init()
             self.sensors[sensorname] = s
+        self._initialized = True
 
 
     def _configure_mux(self):
@@ -164,6 +170,12 @@ class PowerMon(Block):
             held in this dictionary are as defined in `error_levels.py` and indicate
             that values in the status dictionary are outside normal ranges.
         """
+        if not self._initialized:
+            try:
+                self.initialize(read_only=True)
+            except:
+                self._warning("Error while trying to initialize I2C objects")
+
         stats = {}
         flags = {}
         for sensorname, sensor in self.sensors.items():
