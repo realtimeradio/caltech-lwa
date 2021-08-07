@@ -10,7 +10,7 @@ from lwa_f import helpers
 from lwa_f.error_levels import *
 from .block import Block
 
-TAP_STEP_SIZE = 4
+TAP_STEP_SIZE = 8
 NSAMPLES = 256
 NBOARDS = 2
 NFMCS = 2
