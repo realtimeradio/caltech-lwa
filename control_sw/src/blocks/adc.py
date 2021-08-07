@@ -548,6 +548,7 @@ class Adc(Block):
             for board in range(2):
                 adc.set_bitslip_index(0, board)
                 adc.decrement_bitslip_index(board) # empirically optimized
+                adc.decrement_bitslip_index(board) # empirically optimized
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
             for slip in range(2):
