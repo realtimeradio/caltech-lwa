@@ -162,7 +162,7 @@ class Snap2Fengine():
                 stats[blockname], flags[blockname] = block.get_status()
         return stats, flags
 
-    def print_status_all(self, use_color=True):
+    def print_status_all(self, use_color=True, ignore_ok=False):
         """
         Print the status returned by ``get_status`` for all blocks in the system.
         If the FPGA is not programmed with F-engine firmware, will only
@@ -172,6 +172,10 @@ class Snap2Fengine():
             error codes.
         :type use_color: bool
 
+        :param ignore_ok: If True, only print status values which are outside the
+           normal range.
+        :type ignore_ok: bool
+
         """
         if not self.blocks['fpga'].is_programmed():
             print('FPGA stats (not programmed with F-engine image):')
@@ -179,7 +183,7 @@ class Snap2Fengine():
         else:
             for blockname, block in self.blocks.items():
                 print('Block %s stats:' % blockname)
-                block.print_status()
+                block.print_status(use_color=use_color, ignore_ok=ignore_ok)
 
     def configure_output(self, antenna_ids, n_chans_per_packet, n_chans_per_xeng, chans, ips, ports=None, debug=False):
         """
