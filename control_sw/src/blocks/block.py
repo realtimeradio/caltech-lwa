@@ -96,13 +96,17 @@ class Block(object):
         flags_dict = {}
         return status_dict, flags_dict
 
-    def print_status(self, use_color=True):
+    def print_status(self, use_color=True, ignore_ok=False):
         """
         Print the information returned by `get_status`, highlighting error flags
         with colors.
 
         :param use_color: If True, print with errors highlighted with colored text.
         :type use_color: bool
+
+        :param ignore_ok: If True, only print status values which are outside the
+           normal range.
+        :type ignore_ok: bool
         """
         colormap = {
             el.FENG_OK: 'green',
@@ -122,6 +126,8 @@ class Block(object):
                 return
         for k, v in sorted(stats.items()):
             err = flags.get(k, el.FENG_OK)
+            if ignore_ok and err == el.FENG_OK:
+                continue
             color = colormap[err]
             msg = '%s: %s' % (k, v)
             if use_color:

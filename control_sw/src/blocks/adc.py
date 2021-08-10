@@ -10,7 +10,7 @@ from lwa_f import helpers
 from lwa_f.error_levels import *
 from .block import Block
 
-TAP_STEP_SIZE = 4
+TAP_STEP_SIZE = 8
 NSAMPLES = 256
 NBOARDS = 2
 NFMCS = 2
@@ -547,6 +547,7 @@ class Adc(Block):
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
             for board in range(2):
                 adc.set_bitslip_index(0, board)
+                adc.decrement_bitslip_index(board) # empirically optimized
                 adc.decrement_bitslip_index(board) # empirically optimized
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
