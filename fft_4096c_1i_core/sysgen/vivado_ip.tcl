@@ -691,34 +691,6 @@ lappend params_list CONFIG.final_count_value {1}
 lappend params_list CONFIG.implementation {Fabric}
 lappend params_list CONFIG.increment_value {1}
 lappend params_list CONFIG.latency {1}
-lappend params_list CONFIG.load {true}
-lappend params_list CONFIG.output_width {10}
-lappend params_list CONFIG.restrict_count {false}
-lappend params_list CONFIG.sclr {false}
-lappend params_list CONFIG.sinit {true}
-lappend params_list CONFIG.sinit_value {0}
-lappend params_list CONFIG.sset {false}
-lappend params_list CONFIG.sync_ce_priority {Sync_Overrides_CE}
-lappend params_list CONFIG.sync_threshold_output {false}
-lappend params_list CONFIG.syncctrlpriority {Reset_Overrides_Set}
-
-set_property -dict $params_list [get_ips fft_4096c_1i_core_c_counter_binary_v12_0_i16]
-}
-
-
-set existingipslist [get_ips]
-if {[lsearch $existingipslist fft_4096c_1i_core_c_counter_binary_v12_0_i17] < 0} {
-create_ip -name c_counter_binary -version 12.0 -vendor xilinx.com -library ip -module_name fft_4096c_1i_core_c_counter_binary_v12_0_i17
-set params_list [list]
-lappend params_list CONFIG.Component_Name {fft_4096c_1i_core_c_counter_binary_v12_0_i17}
-lappend params_list CONFIG.ainit_value {0}
-lappend params_list CONFIG.ce {true}
-lappend params_list CONFIG.count_mode {DOWN}
-lappend params_list CONFIG.fb_latency {0}
-lappend params_list CONFIG.final_count_value {1}
-lappend params_list CONFIG.implementation {Fabric}
-lappend params_list CONFIG.increment_value {1}
-lappend params_list CONFIG.latency {1}
 lappend params_list CONFIG.load {false}
 lappend params_list CONFIG.output_width {3}
 lappend params_list CONFIG.restrict_count {false}
@@ -730,7 +702,7 @@ lappend params_list CONFIG.sync_ce_priority {Sync_Overrides_CE}
 lappend params_list CONFIG.sync_threshold_output {false}
 lappend params_list CONFIG.syncctrlpriority {Reset_Overrides_Set}
 
-set_property -dict $params_list [get_ips fft_4096c_1i_core_c_counter_binary_v12_0_i17]
+set_property -dict $params_list [get_ips fft_4096c_1i_core_c_counter_binary_v12_0_i16]
 }
 
 
