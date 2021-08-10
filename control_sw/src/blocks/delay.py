@@ -18,7 +18,7 @@ class Delay(Block):
     :type n_streams: int
 
     """
-    MIN_DELAY = 5 #: minimum delay allowed
+    MIN_DELAY = 0 #: minimum delay allowed
     def __init__(self, host, name, n_streams=64, logger=None):
         super(Delay, self).__init__(host, name, logger)
         self.n_streams = n_streams
