@@ -60,6 +60,24 @@ class Eq(Block):
         stream_sub_index = stream % 16
         self.write(coeff_reg, coeffs_str, offset=self._stream_size * stream_sub_index)
 
+    def plot_all_coefficients(self, db=False):
+        """
+        Plot EQ coefficients from all input paths.
+
+        :param db: If True, plot 10log10(power). Else, plot linear.
+        :type db: bool
+
+        """
+        from matplotlib import pyplot as plt
+        for i in range(self.n_streams):
+            coeff_val, coeff_scale = self.get_coeffs(i)
+            coeffs = coeff_val / 2**coeff_scale
+            if db:
+                coeffs = 20*np.log10(coeffs)
+            plt.plot(coeffs, label=i)
+        plt.legend()
+        plt.show()
+
     def get_coeffs(self, stream):
         """
         Get the coefficients currently loaded.
