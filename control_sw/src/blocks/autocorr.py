@@ -1,6 +1,7 @@
 import time
 import struct
 import numpy as np
+from scipy.signal import medfilt
 
 from .block import Block
 from lwa_f.error_levels import *
@@ -158,7 +159,7 @@ class AutoCorr(Block):
         self.write_int('trig', 1)
         self.write_int('trig', 0)
     
-    def get_new_spectra(self, pol_block=0, flush_vacc='auto'):
+    def get_new_spectra(self, pol_block=0, flush_vacc='auto', filter_ksize=None):
         """
         Get a new average power spectra.
 
@@ -178,6 +179,10 @@ class AutoCorr(Block):
             changed positions.
         :type flush_vacc: Bool or string
 
+        :param filter_ksize: If not None, apply a spectral median filter
+            with this kernel size. The kernet size should be odd.
+        :type filter_ksize: int
+
         :return: Float32 array of dimensions [POLARIZATION, FREQUENCY CHANNEL]
             containing autocorrelations with accumulation length divided out.
         :rtype: numpy.array
@@ -185,6 +190,7 @@ class AutoCorr(Block):
         """
 
         assert flush_vacc in [True, False, 'auto'], "Don't understand value of `flush_vacc`"
+        assert filter_ksize is None or filter_ksize % 2 == 1, "Filter kernel size should be odd"
 
         auto_flush = False
         if self._use_mux:
@@ -200,9 +206,14 @@ class AutoCorr(Block):
         self._arm_readout()
         acc_cnt = self._wait_for_acc()
         spec = self._read_bram() / float(self.get_acc_len())
+        npols, nchans = spec.shape
+        if filter_ksize is not None:
+            for pol in range(npols):
+                spec[pol] = medfilt(spec[pol], kernel_size=filter_ksize)
+
         return spec
 
-    def plot_all_spectra(self, db=True, show=True):
+    def plot_all_spectra(self, db=True, show=True, filter_ksize=None):
         """
         Plot the spectra of all polarizations,
         with accumulation length divided out
@@ -213,17 +224,22 @@ class AutoCorr(Block):
         :param show: If True, call matplotlib's `show` after plotting
         :type show: bool
 
+        :param filter_ksize: If not None, apply a spectral median filter
+            with this kernel size. The kernet size should be odd.
+        :type filter_ksize: int
+
         :return: matplotlib.Figure
 
         """
+        assert filter_ksize is None or filter_ksize % 2 == 1, "Filter kernel size should be odd"
         from matplotlib import pyplot as plt
         specs = np.zeros([self.n_pols, self.n_chans], dtype=float)
         if self._use_mux:
             for i in range(self._n_cores):
                 specs[i*self.n_pols_per_block:(i+1)*self.n_pols_per_block] = \
-                    self.get_new_spectra(i)
+                    self.get_new_spectra(i, filter_ksize=filter_ksize)
         else:
-            specs = self.get_new_spectra()
+            specs = self.get_new_spectra(filter_ksize=filter_ksize)
         f, ax = plt.subplots(1,1)
         if db:
             ax.set_ylabel('Power [dB]')
@@ -238,7 +254,7 @@ class AutoCorr(Block):
             plt.show()
         return f
 
-    def plot_spectra(self, pol_block=0, db=True, show=True):
+    def plot_spectra(self, pol_block=0, db=True, show=True, filter_ksize=None):
         """
         Plot the spectra of all polarizations in a single pol_block,
         with accumulation length divided out
@@ -258,11 +274,16 @@ class AutoCorr(Block):
         :param show: If True, call matplotlib's `show` after plotting
         :type show: bool
 
+        :param filter_ksize: If not None, apply a spectral median filter
+            with this kernel size. The kernet size should be odd.
+        :type filter_ksize: int
+
         :return: matplotlib.Figure
 
         """
+        assert filter_ksize is None or filter_ksize % 2 == 1, "Filter kernel size should be odd"
         from matplotlib import pyplot as plt
-        specs = self.get_new_spectra(pol_block)
+        specs = self.get_new_spectra(pol_block, filter_ksize=filter_ksize)
         f, ax = plt.subplots(1,1)
         if db:
             ax.set_ylabel('Power [dB]')
