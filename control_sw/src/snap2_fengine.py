@@ -305,6 +305,55 @@ class Snap2Fengine():
         """
         self._cfpga.transport.progdev(0)
 
+    def set_equalization(self, eq_start_chan=1000, eq_stop_chan=3300, 
+            start_chan=512, stop_chan=3584, filter_ksize=21, target_rms=1./7):
+        """
+        Set the equalization coefficients to realize a target RMS.
+
+        :param eq_start_chan: Frequency channels below ``eq_start_chan`` will be given the same EQ coefficient
+            as ``eq_start_chan``.
+        :type eq_start_chan: int
+
+        :param eq_stop_chan: Frequency channels above ``eq_stop_chan`` will be given the same EQ coefficient
+            as ``eq_stop_chan``.
+        :type eq_stop_chan: int
+
+        :param start_chan: Frequency channels below ``start_chan`` will be given zero EQ coefficients.
+        :type start_chan: int
+
+        :param stop_chan: Frequency channels above ``stop_chan`` will be given zero EQ coefficients.
+        :type stop_chan: int
+
+        :param filter_ksize: Filter kernel size, for rudimentary RFI removal. This should be an odd value.
+        :type filter_ksize: int
+
+        :param target_rms: The target post-EQ RMS. This is normalized such that 1.0 is the saturation level.
+            I.e., an RMS of 0.125 means that the RMS is one LSB of a 4-bit signed signal.
+        :type target_rms: float
+
+        """
+        n_cores = self.autocorr.n_pols // self.autocorr.n_pols_per_block
+        for i in range(n_cores):
+            spectra = self.autocorr.get_new_spectra(i, filter_ksize=filter_ksize)
+            n_pols, n_chans = spectra.shape
+            coeff_repeat_factor = n_chans // self.eq.n_coeffs
+            for j in range(n_pols):
+                stream_id = i*n_pols + j
+                self.logger.info("Trying to EQ input %d" % stream_id)
+                pre_quant_rms = np.sqrt(spectra[j] / 2) # RMS of each real / imag component making up spectra
+                eq_coeff, eq_bp = self.eq.get_coeffs(stream_id)
+                eq_scale = eq_coeff / (2**eq_bp)
+                eq_scale = eq_scale.repeat(coeff_repeat_factor)
+                curr_rms = pre_quant_rms * eq_scale
+                diff = target_rms / curr_rms
+                new_eq = eq_scale * diff
+                # stretch the edge coefficients outside the pass band to avoid them heading to infinity
+                new_eq[0:eq_start_chan] = new_eq[eq_start_chan]
+                new_eq[eq_stop_chan:] = new_eq[eq_stop_chan]
+                new_eq[0:start_chan] = 0
+                new_eq[stop_chan:] = 0
+                self.eq.set_coeffs(stream_id, new_eq[::coeff_repeat_factor])
+
     def program(self, fpgfile=None, force=False):
         """
         Program an .fpg file to a SNAP2 FPGA. If the name of the file
