@@ -1,0 +1,10 @@
+#!/bin/bash
+####### Edited for compiling SNAP2 firmware on Jarvis ######
+export XILINX_PATH=/data/Xilinx/Vivado/2019.1
+export MATLAB_PATH=/data/matlab/R2019a
+export PLATFORM=lin64
+export XILINXD_LICENSE_FILE=/home/kplant/Xilinx.lic
+
+export LD_PRELOAD=${LD_PRELOAD}:"/usr/lib/x86_64-linux-gnu/libexpat.so"
+export CASPER_PYTHON_VENV_ON_START=/home/kplant/software/casper_venv/
+#############################################

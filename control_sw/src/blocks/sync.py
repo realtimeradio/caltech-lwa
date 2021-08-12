@@ -1,4 +1,5 @@
 import time
+from numpy import log2
 
 from .block import Block
 
@@ -41,6 +42,13 @@ class Sync(Block):
         """
         return self.read_uint('ext_sync_count')
 
+    def count_pps(self):
+        """
+        :return: Number of external PPS pulses received.
+        :rtype int:
+        """
+        return self.read_uint('ext_pps_count')
+
     def count_int(self):
         """
         :return: Number of internal sync pulses received.
@@ -78,6 +86,14 @@ class Sync(Block):
         while(self.count_ext() == c):
             time.sleep(0.05)
 
+    def wait_for_pps(self):
+        """
+        Block until a PPS has been received.
+        """
+        c = self.read_uint('tt_lsb')
+        while(self.read_uint('tt_lsb') == c):
+            time.sleep(0.05)
+
     def arm_sync(self):
         """
         Arm sync pulse generator, which passes sync pulses to the
@@ -104,25 +120,48 @@ class Sync(Block):
         self.change_reg_bits('ctrl', 1, self.OFFSET_MAN_SYNC)
         self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_SYNC)
 
+    def set_output_sync_rate(self, mask):
+        """
+        Set the output sync generation rate. A sync is issued
+        when the lower 32-bits of the telescope time counter,
+        masked with ``~mask`` == 0. I.e., a mask of 0 will
+        cause a sync every 2^32 clock cycles. A mask of 0xffff0000
+        will create an output pulse every 2^16 clock cycles.
+        Output sync pulses are extended by 256 clocks, so the output pulse rate
+        should be lower than this.
+
+        :param mask: Mask with which to bitwise AND the telescope time
+            counter before comparing to 0.
+        :type mask: int
+        """
+        self.write_int('tt_mask', mask)
+
     def update_telescope_time(self, fs_hz=196e6):
         """
-        Arm sync generators, and issue a software sync pulse on the next second,
+        Arm PPS trigger receivers,
         having loaded an appropriate telescope time.
 
         :param fs_hz: The ADC clock rate, in Hz. Used to set the
             telescope time counter.
         :type fs_hz: int
+
         """
+        self.wait_for_pps()
         now = time.time()
-        now_round_up = int(now) + 2
-        self._info("Loading new telescope time at %s" % time.ctime(now_round_up))
-        target_tt = int(now_round_up * fs_hz)
-        delay = now_round_up - time.time()
-        if delay > 0:
-            time.sleep(delay)
-        else:
+        next_pps = int(now) + 1
+        self._info("Loading new telescope time at %s" % time.ctime(next_pps))
+        target_tt = int(next_pps * fs_hz)
+        delay = next_pps - time.time()
+        if delay < 0.2:
             self._error("Took too long to generate software sync")
-        self.load_telescope_time(target_tt, software_load=True)
+        self.load_telescope_time(target_tt, software_load=False)
+        loaded_time = time.time()
+        spare = next_pps - loaded_time
+        if spare < 0.2:
+            self._warning("TT loaded with only %.2f seconds to spare" % spare)
+        if spare < 0:
+            self._error("TT loaded after the expected PPS arrival!")
+
 
     def reset_telescope_time(self):
         """
@@ -135,6 +174,29 @@ class Sync(Block):
     def load_telescope_time(self, tt, software_load=False):
         """
         Load a new starting value into the telescope time counter on the
+        next PPS.
+
+        :param tt: Telescope time to load
+        :type tt: int
+
+        :param software_load: If True, immediately load via a software trigger. Else
+            load on the next PPS arrival.
+        :type software_load: bool
+        """
+        assert tt < 2**64 - 1
+        self.write_int('tt_load_msb', tt >> 32)
+        self.write_int('tt_load_lsb', tt & 0xffffffff)
+        self.change_reg_bits('ctrl', 0, self.OFFSET_TT_LOAD_ARM)
+        self.change_reg_bits('ctrl', 1, self.OFFSET_TT_LOAD_ARM)
+        self.change_reg_bits('ctrl', 0, self.OFFSET_TT_LOAD_ARM)
+        if software_load:
+            self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_PPS)
+            self.change_reg_bits('ctrl', 1, self.OFFSET_MAN_PPS)
+            self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_PPS)
+
+    def load_internal_time(self, tt, software_load=False):
+        """
+        Load a new starting value into the _internal_ telescope time counter on the
         next sync.
 
         :param tt: Telescope time to load
@@ -145,16 +207,70 @@ class Sync(Block):
         :type software_load: bool
         """
         assert tt < 2**64 - 1
-        self.write_int('tt_load_msb', tt >> 32)
-        self.write_int('tt_load_lsb', tt & 0xffffffff)
+        self.write_int('int_tt_load_msb', tt >> 32)
+        self.write_int('int_tt_load_lsb', tt & 0xffffffff)
+        self.change_reg_bits('ctrl', 0, self.OFFSET_TT_INT_LOAD_ARM)
+        self.change_reg_bits('ctrl', 1, self.OFFSET_TT_INT_LOAD_ARM)
+        self.change_reg_bits('ctrl', 0, self.OFFSET_TT_INT_LOAD_ARM)
         if software_load:
-            self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD)
-            self.change_reg_bits('ctrl', 1, self.OFFSET_MAN_LOAD)
-            self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD)
-        else:
-            self.change_reg_bits('ctrl', 0, self.OFFSET_EXT_LOAD)
-            self.change_reg_bits('ctrl', 1, self.OFFSET_EXT_LOAD)
-            self.change_reg_bits('ctrl', 0, self.OFFSET_EXT_LOAD)
+            self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD_INT)
+            self.change_reg_bits('ctrl', 1, self.OFFSET_MAN_LOAD_INT)
+            self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD_INT)
+
+    def get_tt_of_sync(self):
+        """
+        Get the internal TT at which the last sync pulse arrived.
+
+        :return: (tt, sync_number). ``tt`` is the internal TT of the last sync.
+            ``sync_number`` is the sync pulse count corresponding to this TT.
+        :rtype int:
+        """
+        # wait for a pulse so we are less likely to read over a boundary
+        self.wait_for_sync()
+        sync_number = self.count_ext()
+        tt = (self.read_uint('ext_sync_tt_msb') << 32) + self.read_uint('ext_sync_tt_lsb')
+        sync_number_reread = self.count_ext()
+        if sync_number_reread != sync_number:
+            self._error("Failed to read TT without being interrupted by a sync. Is the sync rate very high?")
+            raise RuntimeError
+        return tt, sync_number
+
+    def update_internal_time(self, fs_hz=196e6):
+        """
+        Arm sync trigger receivers,
+        having loaded an appropriate telescope time.
+
+        :param fs_hz: The ADC clock rate, in Hz. Used to set the
+            telescope time counter.
+        :type fs_hz: int
+
+        """
+        # Figure out sync rate
+        tt0, sync0 = self.get_tt_of_sync()
+        tt1, sync1 = self.get_tt_of_sync()
+        sync_period = (tt1 - tt0) / (sync1 - sync0)
+        self._info("Detected sync period %.1f (2^%.1f) clocks" % (sync_period, log2(sync_period)))
+        sync_period = int(sync_period)
+        if sync_period < 1:
+            self.warning("Might have issues synchronizing with a sync period < 1 second")
+        # We assume that the master TT is tracking clocks since unix epoch.
+        # Syncs should come every `sync_period` ADC clocks
+        self.wait_for_sync()
+        now = time.time()
+        now_clocks = int(now * fs_hz)
+        next_sync_clocks = ((now_clocks // sync_period) + 1) * sync_period
+        next_sync = next_sync_clocks / fs_hz
+        self._info("Loading new telescope time at %s" % time.ctime(next_sync))
+        delay = next_sync - time.time()
+        if delay < 0.2:
+            self._error("Took too long to configure telescope time register")
+        self.load_internal_time(next_sync_clocks, software_load=False)
+        loaded_time = time.time()
+        spare = next_sync - loaded_time
+        if spare < 0.2:
+            self._warning("Internal TT loaded with only %.2f seconds to spare" % spare)
+        if spare < 0:
+            self._error("Internal TT loaded after the expected sync arrival!")
 
     def get_status(self):
         """
@@ -201,4 +317,6 @@ class Sync(Block):
             pass
         else:
             self.write_int('ctrl', 0)
+            # Set output pulse rate to 1 per 2**29 clocks (every ~2.7 seconds)
+            self.set_output_sync_rate(0xe0000000)
             self.reset_error_count()
