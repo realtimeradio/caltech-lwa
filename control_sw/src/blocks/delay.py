@@ -62,7 +62,7 @@ class Delay(Block):
         delay_reg  = 'delay%d' % (control_id)
         self.write_int(enable_reg, 0)
         self.write_int(delay_reg, delay)
-        self.write_int(enable_reg, 1 << (stream % 32))
+        self.write_int(enable_reg, 1 << (31 - (stream % 32))) # MSB is channel 0
         self.write_int(enable_reg, 0)
 
     def get_delay(self, stream):
