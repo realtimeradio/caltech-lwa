@@ -4,7 +4,6 @@ import time
 import socket
 import numpy as np
 
-
 def process_packet(data,checkpacket):
     single_packet_array = np.zeros((256,16)) #allocate space
     timestamps = np.zeros(256)
@@ -37,7 +36,12 @@ def process_packet(data,checkpacket):
         np.save('snapshots/single_packet' + str(time.time()),single_packet_array)
     return this_board_triggered, board_id, block_id, single_packet_array, timestamps
 
-RX_IP = "192.168.41.12"
+
+computer = 'lwacr'
+if computer =='minor':
+    RX_IP = "192.168.41.12"
+if computer == 'lwacr':
+    RX_IP = '10.41.0.106'
 RX_PORT = 11111
 RX_SIZE = 9000
 EXPECTED_PACKETS_PER_BURST = 64

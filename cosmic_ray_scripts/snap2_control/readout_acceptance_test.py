@@ -5,8 +5,8 @@ import time
 ######## Configure Test Parameters ####################
 #fpgfile='variable_delay_readout2_2021-07-19_1817.fpg' #first variable delay version without packet problems
 #fpgfile='variable_delay_readout2_2021-07-20_1539.fpg'
-fpgfile='~/kathryn/cosmic_ray_system_2021-07-26_1245.fpg'
-packetwait = 30  #time to wait between packets. 0 means don't set the register (for use with firmware versions with fixed delay)
+fpgfile='/home/ubuntu/kplant/cosmic_ray_system_2021-07-26_1245.fpg'
+packetwait = 100  #time to wait between packets. 0 means don't set the register (for use with firmware versions with fixed delay)
 brdname='snap03'
 program=True
 datasource='counter' #'constant' or 'counter'
@@ -23,11 +23,11 @@ if brdname=='snap2-rev2-12':
 	ip='192.168.41.15'
 	mac=0x020202050505
 if brdname=='snap01':
-        ip='10.41.0.111'
-        mac='0x020202010101'
+        ip='10.41.0.201'
+        mac=0x020202010101
 if brdname=='snap03':
-        ip='10.41.0.113'
-        mac='0x020202030303'
+        ip='10.41.0.203'
+        mac=0x020202030303
 
 #Load the firmware and configure the 40 Gbe core to send packets to minor enp129s0f1
 brd = casperfpga.CasperFpga(brdname, transport=casperfpga.TapcpTransport)
@@ -44,7 +44,7 @@ if destination == 'lwacr':
     brd.gbes.cr_forty_gbe.set_single_arp_entry('10.41.0.106',  0x043f72dfc2f8)
     brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
 
-if destination == 'minor':
+elif destination == 'minor':
     brd.write_int('cr_dest_ip',3232246028)
     brd.write_int('cr_dest_port',11111)
     brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
@@ -52,8 +52,8 @@ if destination == 'minor':
     brd.gbes.cr_forty_gbe.set_single_arp_entry('192.168.41.12', 0x98039b3d8b7b)
     brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
 else:
-    print(destination + "is not a recognized destination.")
-
+    print(destination + " is not a recognized destination.")
+    print(destination=='lwacr')
 # set test data source
 if datasource=='constant':
 	brd.write_int('select_input_signal1',1)
