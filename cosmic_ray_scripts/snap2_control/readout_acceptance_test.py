@@ -3,18 +3,14 @@
 import casperfpga
 import time
 ######## Configure Test Parameters ####################
-#fpgfile='readout_variable_delay_2021-05-28_2043.fpg'
-#fpgfile='readout_128delay_2021-04-08_1623.fpg'
-#fpgfile='readout_128delay_2021-07-16_1722.fpg'
-#fpgfile='readout_128delay_2021-07-19_1234.fpg'
-#fpgfile='variable_delay_readout2_2021-07-19_1709.fpg'
 #fpgfile='variable_delay_readout2_2021-07-19_1817.fpg' #first variable delay version without packet problems
 #fpgfile='variable_delay_readout2_2021-07-20_1539.fpg'
-fpgfile='cosmic_ray_system_2021-07-26_1245.fpg'
+fpgfile='~/kathryn/cosmic_ray_system_2021-07-26_1245.fpg'
 packetwait = 30  #time to wait between packets. 0 means don't set the register (for use with firmware versions with fixed delay)
-brdname='snap2-rev2-9'
+brdname='snap03'
 program=True
 datasource='counter' #'constant' or 'counter'
+destination='lwacr'
 print('Wait ' + str(packetwait) + 'clock cycles between packets')
 ######################## Do Test #############################
 if brdname=='snap2-rev2-9':
@@ -26,20 +22,37 @@ if brdname=='snap2-rev2-11':
 if brdname=='snap2-rev2-12':
 	ip='192.168.41.15'
 	mac=0x020202050505
+if brdname=='snap01':
+        ip='10.41.0.111'
+        mac='0x020202010101'
+if brdname=='snap03':
+        ip='10.41.0.113'
+        mac='0x020202030303'
+
 #Load the firmware and configure the 40 Gbe core to send packets to minor enp129s0f1
 brd = casperfpga.CasperFpga(brdname, transport=casperfpga.TapcpTransport)
 brd.listdev()
 if program==True:
 	brd.upload_to_ram_and_program(fpgfile)
 	time.sleep(10)
-brd.get_system_information('readout_variable_delay_2021-05-28_2043.fpg')
-#brd.get_system_information('readout_2021-04-01_1318.fpg')
-brd.write_int('cr_dest_ip',3232246028)
-brd.write_int('cr_dest_port',11111)
-brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
-brd.gbes.cr_forty_gbe.configure_core(mac, ip, 11111)
-brd.gbes.cr_forty_gbe.set_single_arp_entry('192.168.41.12', 0x98039b3d8b7b)
-brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
+brd.get_system_information(fpgfile)
+if destination == 'lwacr':
+    brd.write_int('cr_dest_ip',(10<<24)+(41<<16)+(0<<8)+106)
+    brd.write_int('cr_dest_port',11111)
+    brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
+    brd.gbes.cr_forty_gbe.configure_core(mac, ip, 11111)
+    brd.gbes.cr_forty_gbe.set_single_arp_entry('10.41.0.106',  0x043f72dfc2f8)
+    brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
+
+if destination == 'minor':
+    brd.write_int('cr_dest_ip',3232246028)
+    brd.write_int('cr_dest_port',11111)
+    brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
+    brd.gbes.cr_forty_gbe.configure_core(mac, ip, 11111)
+    brd.gbes.cr_forty_gbe.set_single_arp_entry('192.168.41.12', 0x98039b3d8b7b)
+    brd.gbes.cr_forty_gbe.print_gbe_core_details(arp=True)
+else:
+    print(destination + "is not a recognized destination.")
 
 # set test data source
 if datasource=='constant':
