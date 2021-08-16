@@ -36,11 +36,16 @@ def main():
 
     if args.program:
         f.program()
+        f.adc.initialize(read_only=False)
         if not args.initialize:
             f.logger.warning('Programming but *NOT* initializing. This is unlikely to be what you want')
     
     if args.initialize:
-        f.initialize(read_only=False)
+        #f.initialize(read_only=False)
+        for blockname, block in f.blocks.items():
+            if blockname == 'adc':
+                continue
+            block.initialize(read_only=False)
         f.logger.warning('Updating telescope time')
         f.sync.update_telescope_time()
         f.sync.update_internal_time()

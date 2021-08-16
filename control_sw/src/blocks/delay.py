@@ -57,7 +57,13 @@ class Delay(Block):
             self._error('Tried to set delay to %d which is > the allowed maximum (%d)' % (delay, self.max_delay))
             delay = self.max_delay-1
         self._info('Setting delay of stream %d to %d' % (stream, delay))
-        self.write_int('%d_delay' % stream, delay)
+        control_id = stream // 32
+        enable_reg = 'delay_en%d' % (control_id)
+        delay_reg  = 'delay%d' % (control_id)
+        self.write_int(enable_reg, 0)
+        self.write_int(delay_reg, delay)
+        self.write_int(enable_reg, 1 << (stream % 32))
+        self.write_int(enable_reg, 0)
 
     def get_delay(self, stream):
         """
@@ -72,7 +78,7 @@ class Delay(Block):
         """
         if stream > self.n_streams:
             self._error('Tried to get delay for stream %d > n_streams (%d)' % (stream, self.n_streams))
-        return self.read_uint('%d_delay' % stream)
+        return -1#self.read_uint('%d_delay' % stream)
 
     def initialize(self, read_only=False):
         """
