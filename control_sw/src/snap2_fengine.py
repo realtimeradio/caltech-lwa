@@ -80,7 +80,7 @@ class Snap2Fengine():
         #: Control interface to Synchronization / Timing block
         self.sync        = sync.Sync(self._cfpga, 'sync')
         #: Control interface to Noise Generation block
-        self.noise       = noisegen.NoiseGen(self._cfpga, 'noise', n_noise=4, n_outputs=64)
+        self.noise       = noisegen.NoiseGen(self._cfpga, 'noise', n_noise=2, n_outputs=64)
         #: Control interface to Input Multiplex block
         self.input       = input.Input(self._cfpga, 'input', n_streams=64)
         #: Control interface to Coarse Delay block
