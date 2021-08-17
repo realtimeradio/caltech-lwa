@@ -1,0 +1,3 @@
+The directory snap2_control contains scripts that read and write registers on the snap2 for various cosmic-ray-related tests.
+
+The directory data_capture contains test scripts to run to capture data and inspect snapshots.
