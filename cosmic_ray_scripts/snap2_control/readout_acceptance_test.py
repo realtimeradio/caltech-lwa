@@ -6,7 +6,7 @@ import time
 #fpgfile='variable_delay_readout2_2021-07-19_1817.fpg' #first variable delay version without packet problems
 #fpgfile='variable_delay_readout2_2021-07-20_1539.fpg'
 fpgfile='/home/ubuntu/kplant/cosmic_ray_system_2021-07-26_1245.fpg'
-packetwait = 100  #time to wait between packets. 0 means don't set the register (for use with firmware versions with fixed delay)
+packetwait = 5000  #time to wait between packets. 0 means don't set the register (for use with firmware versions with fixed delay)
 brdname='snap03'
 program=True
 datasource='counter' #'constant' or 'counter'
@@ -33,8 +33,9 @@ if brdname=='snap03':
 brd = casperfpga.CasperFpga(brdname, transport=casperfpga.TapcpTransport)
 brd.listdev()
 if program==True:
-	brd.upload_to_ram_and_program(fpgfile)
-	time.sleep(10)
+        print('Programming board')
+        brd.upload_to_ram_and_program(fpgfile)
+        time.sleep(10)
 brd.get_system_information(fpgfile)
 if destination == 'lwacr':
     brd.write_int('cr_dest_ip',(10<<24)+(41<<16)+(0<<8)+106)
