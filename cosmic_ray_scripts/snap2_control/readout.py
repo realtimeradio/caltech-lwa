@@ -68,10 +68,10 @@ else:
     print(destination=='lwacr')
 # set test data source
 if datasource=='constant':
-	brd.write_int('select_input_signal1',1)
+	brd.write_int('select_input_signal',1)
 	#brd.write_int('select_input_signal1',1)
 elif datasource=='counter':
-	brd.write_int('select_input_signal1',0)
+	brd.write_int('select_input_signal',0)
 	#brd.write_int('select_input_signal1',0)
 else:
 	print("datasource must be 'constant' or 'counter'. Defaulting to 'counter'")
