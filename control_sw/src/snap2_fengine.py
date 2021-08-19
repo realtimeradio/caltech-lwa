@@ -491,7 +491,7 @@ class Snap2Fengine():
         mac = MAC_BASE + (ip_int & 0xff)
         ip_str = ''
         for i in range(4):
-            ip_str += "%d" % (ip_int >> (8*(3-i))) & 0xff]
+            ip_str += "%d" % ((ip_int >> (8*(3-i))) & 0xff)
             if i < 3:
                 ip_str += '.'
         self.eth.configure_source(mac, ip_str, FENG_40G_SOURCE_PORT)
