@@ -28,9 +28,15 @@ class Fpga(Block):
         # Try and get the canonical name of the host
         # to use as a serial number
         try:
-            self.serial = socket.gethostbyaddr(self.host.host)[0]
+            fqdn = socket.getfqdn(self.host.host)
+            if fqdn.startswith('snap'):
+                try:
+                    self.serial = int(fqdn.split('.')[0][4:])
+                except:
+                    self._error("FQDN (%s) couldn't be turned into integer serial" % fqdn)
+                    self.serial = None
         except:
-            self._exception("Couldn't get host by address %s" % self.host)
+            self._exception("Couldn't get FQDN of address %s" % self.host)
             self.serial = None
 
         self.sysmon = casperfpga.sysmon.Sysmon(self.host)
