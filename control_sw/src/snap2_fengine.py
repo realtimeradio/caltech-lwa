@@ -26,6 +26,10 @@ from .blocks import eth
 from .blocks import corr
 from .blocks import powermon
 
+FENG_40G_SOURCE_PORT = 10000
+MAC_BASE = 0x020203030400
+IP_BASE = (10 << 24) + (41 << 16) + (0 << 8) + 100
+PIPELINES_PER_XENG = 4
 
 class Snap2Fengine():
     """
@@ -401,3 +405,106 @@ class Snap2Fengine():
         except:
             self.logger.exception("Exception when reinitializing firmware blocks")
             raise RuntimeError("Error reinitializing blocks")
+
+    def cold_start(self, program=True, initialize=True, test_vectors=False,
+                   sync=True, sw_sync=False, enable_eth=True,
+                   chans_per_packet=96, input_id=0, start_chan=512,
+                   n_chans=3072):
+        """
+        Completely configure a SNAP2 F-engine from scratch.
+
+        :param program: If True, start by programming the SNAP2 FPGA from
+            the image currently in flash. Also train the ADC-> FPGA links
+            and initialize all firmware blocks.
+        :type program: bool
+
+        :param initialize: If True, put all firmware blocks in their default
+            initial state. Initialization is always performed if the FPGA
+            has been reprogrammed, but can be run without reprogramming
+            to (quickly) reset the firmware to a known state. Initialization
+            does not include ADC->FPGA link training.
+        :type initialize: bool
+
+        :param test_vectors: If True, put the F-engine in "frequency ramp" test mode.
+        :type test_vectors: bool
+
+        :param sync: If True, synchronize (i.e., reset) the DSP pipeline.
+        :type sync: bool
+
+        :param sw_sync: If True, issue a software reset trigger, rather than waiting
+            for an external reset pulse to be received over SMA.
+        :type sw_sync: bool
+
+        :param enable_eth: If True, enable 40G F-Engine Ethernet output.
+        :type enable_eth: bool
+
+        :param chans_per_packet: Number of frequency channels in each output F-engine
+            packet
+        :type chans_per_packet: int
+
+        :param input_id: Zero-indexed ID of this F-engine. IDs should be unique among
+            SNAP2 boards. An ID of ``n`` means that this board will supply the
+            correlator with antenna indices ``32*n`` through ``32*(n+1)-1``.
+        :type input_id: int
+
+        :param start_chan: First frequency channel to send to X-engines. Should be
+            an integer multiple of 16.
+        :type start_chan: int
+
+        :param n_chans: Number of channels to transmit in total. Should be an integer
+            multiple of 4*``chans_per_packet``.
+        """
+        if program:
+            self.program()
+            self.initialize(read_only=False)
+
+        if initialize:
+            for blockname, block in self.blocks.items():
+                if blockname == 'adc':
+                    continue
+                block.initialize(read_only=False)
+            self.logger.warning('Updating telescope time')
+            self.sync.update_telescope_time()
+            self.sync.update_internal_time()
+
+        if test_vectors:
+            self.logger.info('Enabling EQ TVGs...')
+            self.eqtvg.write_freq_ramp()
+            self.eqtvg.tvg_enable()
+        else:
+            self.logger.info('Disabling EQ TVGs...')
+            self.eqtvg.tvg_disable()
+
+        if sync:
+            self.logger.info("Arming sync generators")
+            self.eth.disable_tx()
+            self.sync.arm_sync()
+            self.sync.arm_noise()
+            if sw_sync:
+                self.logger.info("Issuing software sync")
+                self.sync.sw_sync()
+
+        if self.fpga.serial is None:
+            self.error("Can't assign source IP address because SNAP has no known serial")
+            raise RuntimeError
+        ip_int = IP_BASE + self.fpga.serial
+        mac = MAC_BASE + (ip_int & 0xff)
+        ip_str = ''
+        for i in range(4):
+            ip_str += "%d" % (ip_int >> (8*(3-i))) & 0xff]
+            if i < 3:
+                ip_str += '.'
+        self.eth.configure_source(mac, ip_str, FENG_40G_SOURCE_PORT)
+        #for ip, mac in arp_table.items():
+        #    self.eth.add_arp_entry(ip, mac)
+        stands_per_board = self.n_pols_per_board
+        localants = range(stands_per_board*input_id, stands_per_board*(input_id+1))
+        
+        if enable_eth:
+            self.logger.info("Enabling Ethernet output")
+            self.eth.enable_tx()
+        else:
+            self.logger.info("Disabling Ethernet output")
+            self.eth.disable_tx()
+
+        self.logger.info("Startup of %s complete" % args.host)
