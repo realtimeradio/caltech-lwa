@@ -45,7 +45,6 @@ parser.add_argument('thiscomputer', type=str, help='Which computer is this scrip
 args=parser.parse_args()
 computer = args.thiscomputer
 
-computer = 'lwacr'
 if computer =='minor':
     RX_IP = "192.168.41.12"
 elif computer == 'lwacr':

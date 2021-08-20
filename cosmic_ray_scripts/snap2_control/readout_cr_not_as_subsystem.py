@@ -33,6 +33,9 @@ if brdname=='snap2-rev2-11':
 if brdname=='snap2-rev2-12':
 	ip='192.168.41.15'
 	mac=0x020202050505
+if brdname=='snap2-rev2-10':
+	ip='192.168.41.10'
+	mac=0x020202020202
 if brdname=='snap01':
         ip='10.41.0.201'
         mac=0x020202010101
