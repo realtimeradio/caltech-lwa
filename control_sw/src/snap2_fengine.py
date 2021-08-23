@@ -26,6 +26,10 @@ from .blocks import eth
 from .blocks import corr
 from .blocks import powermon
 
+FENG_40G_SOURCE_PORT = 10000
+MAC_BASE = 0x020203030400
+IP_BASE = (10 << 24) + (41 << 16) + (0 << 8) + 100
+PIPELINES_PER_XENG = 4
 
 class Snap2Fengine():
     """
@@ -80,7 +84,7 @@ class Snap2Fengine():
         #: Control interface to Synchronization / Timing block
         self.sync        = sync.Sync(self._cfpga, 'sync')
         #: Control interface to Noise Generation block
-        self.noise       = noisegen.NoiseGen(self._cfpga, 'noise', n_noise=4, n_outputs=64)
+        self.noise       = noisegen.NoiseGen(self._cfpga, 'noise', n_noise=2, n_outputs=64)
         #: Control interface to Input Multiplex block
         self.input       = input.Input(self._cfpga, 'input', n_streams=64)
         #: Control interface to Coarse Delay block
@@ -401,3 +405,172 @@ class Snap2Fengine():
         except:
             self.logger.exception("Exception when reinitializing firmware blocks")
             raise RuntimeError("Error reinitializing blocks")
+
+    def cold_start(self, program=True, initialize=True, test_vectors=False,
+                   sync=True, sw_sync=False, enable_eth=True,
+                   chans_per_packet=96, first_stand_index=0, nstand=32,
+                   macs={}, source_ip='10.41.0.101', source_port=10000,
+                   dests=[]):
+        """
+        Completely configure a SNAP2 F-engine from scratch.
+
+        :param program: If True, start by programming the SNAP2 FPGA from
+            the image currently in flash. Also train the ADC-> FPGA links
+            and initialize all firmware blocks.
+        :type program: bool
+
+        :param initialize: If True, put all firmware blocks in their default
+            initial state. Initialization is always performed if the FPGA
+            has been reprogrammed, but can be run without reprogramming
+            to (quickly) reset the firmware to a known state. Initialization
+            does not include ADC->FPGA link training.
+        :type initialize: bool
+
+        :param test_vectors: If True, put the F-engine in "frequency ramp" test mode.
+        :type test_vectors: bool
+
+        :param sync: If True, synchronize (i.e., reset) the DSP pipeline.
+        :type sync: bool
+
+        :param sw_sync: If True, issue a software reset trigger, rather than waiting
+            for an external reset pulse to be received over SMA.
+        :type sw_sync: bool
+
+        :param enable_eth: If True, enable 40G F-Engine Ethernet output.
+        :type enable_eth: bool
+
+        :param chans_per_packet: Number of frequency channels in each output F-engine
+            packet
+        :type chans_per_packet: int
+
+        :param first_stand_index: Zero-indexed ID of the first stand connected to this
+            board.
+        :type first_stand_index: int
+
+        :param nstand: Number of stands to be sent. Values of ``n*32`` may be used
+            to spood F-engine packets from multiple SNAP2 boards.
+        :type nstand: int
+
+        :param start_chan: First frequency channel to send to X-engines. Should be
+            an integer multiple of 16.
+        :type start_chan: int
+
+        :param macs: Dictionary, keyed by dotted-quad string IP addresses, containing
+            MAC addresses for F-engine packet destinations. I.e., IP/MAC pairs for all
+            X-engines.
+        :type macs: dict
+
+        :param source_ip: The IP address from which this board should send packets.
+        :type source_ip: str
+
+        :param source_port: The source UDP port from which F-engine packets should be sent.
+        :type source_port: int
+
+        :param dests: List of dictionaries describing where packets should be sent. Each
+            list entry should have the following keys:
+
+              - 'ip' : The destination IP (as a dotted-quad string) to which packets
+                should be sent.
+              - 'port' : The destination UDP port to which packets should be sent.
+              - 'start_chan' : The first frequency channel number which should be sent
+                to this IP / port. ``start_chan`` should be an integer multiple of 16.
+              - 'nchans' : The number of channels which should be sent to this IP / port.
+                ``nchans`` should be a multiple of ``chans_per_packet``.
+        :type dests: List of dict
+
+        """
+        if program:
+            self.program()
+            self.initialize(read_only=False)
+
+        if initialize:
+            for blockname, block in self.blocks.items():
+                if blockname == 'adc':
+                    continue
+                block.initialize(read_only=False)
+            self.logger.warning('Updating telescope time')
+            self.sync.update_telescope_time()
+            self.sync.update_internal_time()
+
+        if test_vectors:
+            self.logger.info('Enabling EQ TVGs...')
+            self.eqtvg.write_freq_ramp()
+            self.eqtvg.tvg_enable()
+        else:
+            self.logger.info('Disabling EQ TVGs...')
+            self.eqtvg.tvg_disable()
+
+        if sync:
+            self.logger.info("Arming sync generators")
+            self.eth.disable_tx()
+            self.sync.arm_sync()
+            self.sync.arm_noise()
+            if sw_sync:
+                self.logger.info("Issuing software sync")
+                self.sync.sw_sync()
+
+        mac = MAC_BASE + int(source_ip.split('.')[-1])
+        self.eth.configure_source(mac, source_ip, source_port)
+
+        # Configure ARP cache
+        for ip, mac in macs.items():
+            self.eth.add_arp_entry(ip, mac)
+
+        # Configure packetizer
+        nstand_per_board = self.n_pols_per_board // 2
+        assert first_stand_index % nstand_per_board == 0, \
+            "first_ant_index should be a multiple of %d" % nstand_per_board
+        assert nstand % nstand_per_board == 0, \
+            "nstand should be a multiple of %d" % nstand_per_board
+        localants = range(first_stand_index, first_stand_index + nstand)
+        chans_to_send = []
+        ips = []
+        ports = []
+        antpol_ids = []
+        this_x_packets = None
+        ok = True
+        for dest in dests:
+            try:
+                for ant in localants[::(self.n_pols_per_board // 2)]:
+                    dest_ip = dest['ip']
+                    dest_port = dest['port']
+                    if dest_ip not in macs:
+                        self.logger.critical("MAC address for IP %s is not known" % dest_ip)
+                    start_chan = dest['start_chan']
+                    nchan = dest['nchan']
+                    this_x_chans = range(start_chan, start_chan + nchan)
+                    if this_x_packets is None:
+                        this_x_packets = len(this_x_chans) // chans_per_packet
+                    else:
+                        if this_x_packets != len(this_x_chans) // chans_per_packet:
+                            self.logger.error("Can't have different total numbers of channels per X-engine")
+                            ok = False
+                    antpol_ids += [2*ant] * this_x_packets
+                    ips += [dest_ip] * this_x_packets
+                    ports += [dest_port] * this_x_packets
+                    chans_to_send += list(this_x_chans)
+            except:
+                self.logger.exception("Failed to parse destination %s" % dest)
+                ok = False
+                raise
+
+        if ok:
+            self.configure_output(
+                    antpol_ids,
+                    chans_per_packet,
+                    chans_per_packet*this_x_packets,
+                    chans_to_send,
+                    ips,
+                    ports
+                    )
+        else:
+            self.logger.error("Not configuring Ethernet output because configuration builder failed")
+
+        if enable_eth:
+            self.logger.info("Enabling Ethernet output")
+            self.eth.enable_tx()
+        else:
+            self.logger.info("Disabling Ethernet output")
+            self.eth.disable_tx()
+
+        self.logger.info("Startup of %s complete" % self.hostname)

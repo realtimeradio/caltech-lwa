@@ -86,13 +86,27 @@ class Sync(Block):
         while(self.count_ext() == c):
             time.sleep(0.05)
 
-    def wait_for_pps(self):
+    def wait_for_pps(self, timeout=2.0):
         """
         Block until a PPS has been received.
+
+        :param timeout: Timeout, in seconds, to wait.
+        :type timeout: float
+
+        :return: least-significant 32-bits of telescope time of
+          last PPS pulse. Or, -1, on timeout.
+        :rtype int:
         """
-        c = self.read_uint('tt_lsb')
-        while(self.read_uint('tt_lsb') == c):
+        t0 = time.time()
+        c0 = self.read_uint('tt_lsb')
+        c1 = self.read_uint('tt_lsb')
+        while(c1 == c0):
+            c1 = self.read_uint('tt_lsb')
+            if time.time() > (t0 + timeout):
+                self._warning("Timed out waiting for PPS")
+                return -1
             time.sleep(0.05)
+        return c1
 
     def arm_sync(self):
         """
@@ -146,7 +160,11 @@ class Sync(Block):
         :type fs_hz: int
 
         """
-        self.wait_for_pps()
+        x = self.wait_for_pps()
+        if (x < 0):
+            # Timed out, probably because this isn't the TT SNAP2 with PPS
+            self._info("Skipping telescope time update, because this board doesn't have a PPS")
+            return
         now = time.time()
         next_pps = int(now) + 1
         self._info("Loading new telescope time at %s" % time.ctime(next_pps))

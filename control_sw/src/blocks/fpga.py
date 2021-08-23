@@ -1,4 +1,5 @@
 import socket
+import time
 import datetime
 
 from .block import Block
@@ -27,11 +28,21 @@ class Fpga(Block):
 
         # Try and get the canonical name of the host
         # to use as a serial number
+        self.serial = None
         try:
-            self.serial = socket.gethostbyaddr(self.host.host)[0]
+            addr = socket.gethostbyname_ex(self.host.host)[2][0]
+            time.sleep(0.01)
+            hostname = socket.gethostbyname_ex(addr)
+            hostname = hostname[0]
+            if hostname.startswith('snap'):
+                try:
+                    self.serial = int(hostname.split('.')[0][4:])
+                except:
+                    self._error("hostname (%s) couldn't be turned into integer serial" % hostname)
+            else:
+                self._error("hostname (%s) couldn't be turned into integer serial" % hostname)
         except:
-            self._exception("Couldn't get host by address %s" % self.host)
-            self.serial = None
+            self._exception("Couldn't get hostname of address %s" % self.host.host)
 
         self.sysmon = casperfpga.sysmon.Sysmon(self.host)
 
