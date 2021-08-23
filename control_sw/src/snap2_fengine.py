@@ -408,8 +408,9 @@ class Snap2Fengine():
 
     def cold_start(self, program=True, initialize=True, test_vectors=False,
                    sync=True, sw_sync=False, enable_eth=True,
-                   chans_per_packet=96, input_id=0, start_chan=512,
-                   n_chans=3072):
+                   chans_per_packet=96, first_stand_index=0, nstand=32,
+                   macs={}, source_ip='10.41.0.101', source_port=10000,
+                   dests=[]):
         """
         Completely configure a SNAP2 F-engine from scratch.
 
@@ -442,17 +443,41 @@ class Snap2Fengine():
             packet
         :type chans_per_packet: int
 
-        :param input_id: Zero-indexed ID of this F-engine. IDs should be unique among
-            SNAP2 boards. An ID of ``n`` means that this board will supply the
-            correlator with antenna indices ``32*n`` through ``32*(n+1)-1``.
-        :type input_id: int
+        :param first_stand_index: Zero-indexed ID of the first stand connected to this
+            board.
+        :type first_stand_index: int
+
+        :param nstand: Number of stands to be sent. Values of ``n*32`` may be used
+            to spood F-engine packets from multiple SNAP2 boards.
+        :type nstand: int
 
         :param start_chan: First frequency channel to send to X-engines. Should be
             an integer multiple of 16.
         :type start_chan: int
 
-        :param n_chans: Number of channels to transmit in total. Should be an integer
-            multiple of 4*``chans_per_packet``.
+        :param macs: Dictionary, keyed by dotted-quad string IP addresses, containing
+            MAC addresses for F-engine packet destinations. I.e., IP/MAC pairs for all
+            X-engines.
+        :type macs: dict
+
+        :param source_ip: The IP address from which this board should send packets.
+        :type source_ip: str
+
+        :param source_port: The source UDP port from which F-engine packets should be sent.
+        :type source_port: int
+
+        :param dests: List of dictionaries describing where packets should be sent. Each
+            list entry should have the following keys:
+
+              - 'ip' : The destination IP (as a dotted-quad string) to which packets
+                should be sent.
+              - 'port' : The destination UDP port to which packets should be sent.
+              - 'start_chan' : The first frequency channel number which should be sent
+                to this IP / port. ``start_chan`` should be an integer multiple of 16.
+              - 'nchans' : The number of channels which should be sent to this IP / port.
+                ``nchans`` should be a multiple of ``chans_per_packet``.
+        :type dests: List of dict
+
         """
         if program:
             self.program()
@@ -484,22 +509,63 @@ class Snap2Fengine():
                 self.logger.info("Issuing software sync")
                 self.sync.sw_sync()
 
-        if self.fpga.serial is None:
-            self.error("Can't assign source IP address because SNAP has no known serial")
-            raise RuntimeError
-        ip_int = IP_BASE + self.fpga.serial
-        mac = MAC_BASE + (ip_int & 0xff)
-        ip_str = ''
-        for i in range(4):
-            ip_str += "%d" % ((ip_int >> (8*(3-i))) & 0xff)
-            if i < 3:
-                ip_str += '.'
-        self.eth.configure_source(mac, ip_str, FENG_40G_SOURCE_PORT)
-        #for ip, mac in arp_table.items():
-        #    self.eth.add_arp_entry(ip, mac)
-        stands_per_board = self.n_pols_per_board
-        localants = range(stands_per_board*input_id, stands_per_board*(input_id+1))
-        
+        mac = MAC_BASE + int(source_ip.split('.')[-1])
+        self.eth.configure_source(mac, source_ip, source_port)
+
+        # Configure ARP cache
+        for ip, mac in macs.items():
+            self.eth.add_arp_entry(ip, mac)
+
+        # Configure packetizer
+        nstand_per_board = self.n_pols_per_board // 2
+        assert first_stand_index % nstand_per_board == 0, \
+            "first_ant_index should be a multiple of %d" % nstand_per_board
+        assert nstand % nstand_per_board == 0, \
+            "nstand should be a multiple of %d" % nstand_per_board
+        localants = range(first_stand_index, first_stand_index + nstand)
+        chans_to_send = []
+        ips = []
+        ports = []
+        antpol_ids = []
+        this_x_packets = None
+        ok = True
+        for dest in dests:
+            try:
+                for ant in localants[::(self.n_pols_per_board // 2)]:
+                    dest_ip = dest['ip']
+                    dest_port = dest['port']
+                    if dest_ip not in macs:
+                        self.logger.critical("MAC address for IP %s is not known" % dest_ip)
+                    start_chan = dest['start_chan']
+                    nchan = dest['nchan']
+                    this_x_chans = range(start_chan, start_chan + nchan)
+                    if this_x_packets is None:
+                        this_x_packets = len(this_x_chans) // chans_per_packet
+                    else:
+                        if this_x_packets != len(this_x_chans) // chans_per_packet:
+                            self.logger.error("Can't have different total numbers of channels per X-engine")
+                            ok = False
+                    antpol_ids += [2*ant] * this_x_packets
+                    ips += [dest_ip] * this_x_packets
+                    ports += [dest_port] * this_x_packets
+                    chans_to_send += list(this_x_chans)
+            except:
+                self.logger.exception("Failed to parse destination %s" % dest)
+                ok = False
+                raise
+
+        if ok:
+            self.configure_output(
+                    antpol_ids,
+                    chans_per_packet,
+                    chans_per_packet*this_x_packets,
+                    chans_to_send,
+                    ips,
+                    ports
+                    )
+        else:
+            self.logger.error("Not configuring Ethernet output because configuration builder failed")
+
         if enable_eth:
             self.logger.info("Enabling Ethernet output")
             self.eth.enable_tx()
@@ -507,4 +573,4 @@ class Snap2Fengine():
             self.logger.info("Disabling Ethernet output")
             self.eth.disable_tx()
 
-        self.logger.info("Startup of %s complete" % args.host)
+        self.logger.info("Startup of %s complete" % self.hostname)

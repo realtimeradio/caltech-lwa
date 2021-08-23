@@ -4,6 +4,10 @@ fengines:
         ants: [0, 352]
         gbe: '10.41.0.101'
         source_port: 10000
+    snap03:
+        ants: [0, 352]
+        gbe: '10.41.0.103'
+        source_port: 10000
 
 xengines:
   arp:

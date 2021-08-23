@@ -6,7 +6,6 @@ import yaml
 import logging
 from lwa_f import snap2_fengine
 
-N_ANTS_PER_BOARD = 32
 
 def main():
     parser = argparse.ArgumentParser(description='Interact with a programmed SNAP board for testing and '\
@@ -34,51 +33,8 @@ def main():
 
     f = snap2_fengine.Snap2Fengine(args.host)
 
-    if args.program:
-        f.program()
-        f.adc.initialize(read_only=False)
-        if not args.initialize:
-            f.logger.warning('Programming but *NOT* initializing. This is unlikely to be what you want')
-    
-    if args.initialize:
-        #f.initialize(read_only=False)
-        for blockname, block in f.blocks.items():
-            if blockname == 'adc':
-                continue
-            block.initialize(read_only=False)
-        f.logger.warning('Updating telescope time')
-        f.sync.update_telescope_time()
-        f.sync.update_internal_time()
-    
-    if args.tvg:
-        f.logger.info('Enabling EQ TVGs...')
-        f.eqtvg.write_freq_ramp()
-        f.eqtvg.tvg_enable()
-    else:
-        f.logger.info('Disabling EQ TVGs...')
-        f.eqtvg.tvg_disable()
-    
-    if args.noise:
-        f.logger.info("Pointing all inputs to noise generator 0")
-        #seed = 23
-        #for i in range(f.noise.n_noise):
-        #    f.noise.set_seed(seed)
-        for stream in range(fengine.noise.noutputs): 
-            f.assign_output(stream, 0) # point all data paths to noise generator 0
-        f.input.use_noise()
-    else:
-        f.logger.info("Pointing all inputs to ADC data streams")
-        f.input.use_adc()
-    
-    # Now assign frequency slots to different X-engines as 
-    # per the config file. A total of 32 Xengs are assumed for 
-    # assigning slots- 16 for the even bank, 16 for the odd.  
-    # Channels not assigned to Xengs in the config file are 
-    # ignored. Following are the assumed globals:
     if args.outputconfig is not None:
         f.logger.info("Trying to configure output with config file %s" % args.outputconfig)
-        # Always disable TX before messing with config
-        f.eth.disable_tx()
         if not os.path.exists(args.outputconfig):
             f.logger.error("Output configuration file %s doesn't exist. Skipping configuration" % args.outputconfig)
         else:
@@ -89,70 +45,43 @@ def main():
                     f.logger.error("No 'fengines' key in output configuration!")
                 if 'xengines' not in conf:
                     f.logger.error("No 'xengines' key in output configuration!")
-                # first configure core local parameters
+                chans_per_packet = conf['fengines']['chans_per_packet']
                 localconf = conf['fengines'].get(args.host, None)
                 if localconf is None:
                     f.logger.error("No configuration for F-engine host %s" % args.host)
-                ip = localconf['gbe']
+                first_stand_index = localconf['ants'][0]
+                nstand = localconf['ants'][1] - first_stand_index
+                macs = conf['xengines']['arp']
+                source_ip = localconf['gbe']
                 source_port = localconf['source_port']
-                mac = 0x020203030400 + int(ip.split('.')[-1])
-                f.eth.configure_source(mac, ip, source_port)
-                # then configure arp table
-                for ip, mac in conf['xengines']['arp'].items():
-                    f.eth.add_arp_entry(ip, mac)
-                # Finally, configure packetizer
-                chans_per_packet = conf['fengines']['chans_per_packet']
-                localants = range(localconf['ants'][0], localconf['ants'][1])
-                chans_to_send = []
-                ips = []
-                ports = []
-                antpol_ids = []
-                this_x_packets = None
+
+                dests = []
                 for xeng, chans in conf['xengines']['chans'].items():
-                    for ant in localants[::(f.n_pols_per_board // 2)]:
-                        dest_ip = xeng.split('-')[0]
-                        dest_port = int(xeng.split('-')[1])
-                        this_x_chans = list(range(chans[0], chans[1]))
-                        if this_x_packets is None:
-                            this_x_packets = len(this_x_chans) // chans_per_packet
-                        else:
-                            if this_x_packets != len(this_x_chans) // chans_per_packet:
-                                self.logger.error("Can't have different total numbers of channels per X-engine")
-                                ok = False
-                        antpol_ids += [2*ant] * this_x_packets
-                        ips += [dest_ip] * this_x_packets
-                        ports += [dest_port] * this_x_packets
-                        chans_to_send += list(range(chans[0], chans[1]))
-                ok = True
+                    dest_ip = xeng.split('-')[0]
+                    dest_port = int(xeng.split('-')[1])
+                    start_chan = chans[0]
+                    nchan = chans[1] - start_chan
+                    dests += [{'ip':dest_ip, 'port':dest_port, 'start_chan':start_chan, 'nchan':nchan}]
             except:
                 f.logger.exception("Failed to parse output configuration file %s" % args.outputconfig)
-                ok = False
-            if ok:
-                f.configure_output(antpol_ids, chans_per_packet, chans_per_packet*this_x_packets, chans_to_send, ips, ports)
-            else:
-                f.logger.error("Not configuring Ethernet output because configuration builder failed")
-    else:
-        f.logger.info("Skipping Ethernet output config because no configuration file supplied")
-    
-    # Sync logic. Do global sync first, and then noise generators
-    # wait for a PPS to pass then arm all the boards
-    if args.sync:
-        f.logger.info("Arming sync generators")
-        f.eth.disable_tx()
-        f.sync.arm_sync()
-        f.sync.arm_noise()
-        if args.mansync:
-            f.logger.info("Issuing software sync")
-            f.sync.sw_sync()
-    
-    if args.eth:
-        f.logger.info("Enabling Ethernet output")
-        f.eth.enable_tx()
-    else:
-        f.logger.info("Disabling Ethernet output")
-        f.eth.disable_tx()
+                raise
 
-    f.logger.info("Initialization of %s complete" % args.host)
+    f.cold_start(
+            program = args.program,
+            initialize = args.initialize,
+            test_vectors = args.tvg,
+            sync = args.sync,
+            sw_sync = args.mansync,
+            enable_eth = args.eth,
+            chans_per_packet = chans_per_packet,
+            first_stand_index = first_stand_index,
+            nstand = nstand,
+            macs = macs,
+            source_ip = source_ip,
+            source_port = source_port,
+            dests = dests,
+            )
+
 
 if __name__ == "__main__":
     main()
