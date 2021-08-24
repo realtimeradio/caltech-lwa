@@ -161,7 +161,8 @@ class Sync(Block):
 
         """
         x = self.wait_for_pps()
-        if (x < 0):
+        has_pps = (x >= 0)
+        if not has_pps:
             # Timed out, probably because this isn't the TT SNAP2 with PPS
             self._info("Skipping telescope time update, because this board doesn't have a PPS")
             return
@@ -179,7 +180,9 @@ class Sync(Block):
             self._warning("TT loaded with only %.2f seconds to spare" % spare)
         if spare < 0:
             self._error("TT loaded after the expected PPS arrival!")
-
+        # Now wait for a PPS so that the TT will have been loaded before anything else happend
+        if has_pps:
+            self.wait_for_pps()
 
     def reset_telescope_time(self):
         """
@@ -289,6 +292,8 @@ class Sync(Block):
             self._warning("Internal TT loaded with only %.2f seconds to spare" % spare)
         if spare < 0:
             self._error("Internal TT loaded after the expected sync arrival!")
+        # Wait for a sync to pass so the TT is laoded before anything else happens
+        self.wait_for_sync()
 
     def get_status(self):
         """
