@@ -38,9 +38,9 @@ class Fpga(Block):
                 try:
                     self.serial = int(hostname.split('.')[0][4:])
                 except:
-                    self._error("hostname (%s) couldn't be turned into integer serial" % hostname)
+                    self._warning("hostname (%s) couldn't be turned into integer serial" % hostname)
             else:
-                self._error("hostname (%s) couldn't be turned into integer serial" % hostname)
+                self._warning("hostname (%s) couldn't be turned into integer serial" % hostname)
         except:
             self._exception("Couldn't get hostname of address %s" % self.host.host)
 

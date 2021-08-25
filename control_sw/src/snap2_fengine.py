@@ -481,9 +481,13 @@ class Snap2Fengine():
         """
         if program:
             self.program()
-            self.initialize(read_only=False)
-
-        if initialize:
+            try:
+                self.adc.initialize(read_only=False)
+            except RuntimeError:
+                # Try once more. TODO: just make work(!)
+                self.adc.initialize(read_only=False)
+        
+        if program or initialize:
             for blockname, block in self.blocks.items():
                 if blockname == 'adc':
                     continue
