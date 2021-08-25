@@ -260,7 +260,7 @@ allowed *Maximum Transmission Unit* (MTU).
 
 In practice, the LWA352 system operates with
   - ``npol = 64``
-  - ``npol_tot = 708``
+  - ``npol_tot = 704``
   - ``nchan = 96``
   - ``nchan_tot = 192``
 
