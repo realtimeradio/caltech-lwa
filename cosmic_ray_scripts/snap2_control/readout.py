@@ -65,7 +65,6 @@ elif destination == 'minor':
     brd.gbes.cosmic_ray_cr_forty_gbe.print_gbe_core_details(arp=True)
 else:
     print(destination + " is not a recognized destination.")
-    print(destination=='lwacr')
 # set test data source
 if datasource=='constant':
 	#brd.write_int('cosmic_ray_select_input_signal',1)
