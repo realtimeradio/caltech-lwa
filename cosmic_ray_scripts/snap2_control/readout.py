@@ -102,6 +102,9 @@ previous_packets = brd.read_int('cosmic_ray_tx_count_eof_and_valid')
 previous_afull = brd.read_int('cosmic_ray_forty_g_tx_afull')
 previous_overflows = brd.read_int('cosmic_ray_forty_g_tx_of')
 
+#enable the ethernet packetizer
+brd.write_int("cosmic_ray_eth_enable",1)
+
 #Send a trigger from software: write register send_trigger to 0 then to 1. 
 brd.write_int('cosmic_ray_send_trigger',0)
 brd.write_int('cosmic_ray_send_trigger',1)
