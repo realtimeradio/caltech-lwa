@@ -11,7 +11,7 @@ parser.add_argument('brd', type=str, help='SNAP2 to hostname.')
 parser.add_argument('pktwait', type=int, help='Clock cycles to wait between packets. 0 means do not set this register (only choose 0 for old versions of firmware without the variable delay option)')
 
 parser.add_argument('dest', type=str, help='Destination. "minor" or "lwacr"')
-parser.add_argument('data', type=str, help='Data source e.g. "counter", "constant"')
+parser.add_argument('data', type=str, help='Data source e.g. "counter", "constant", "adc"')
 parser.add_argument('programbrd', type=str, help='If True, the FPGA will be reprogrammed.')
 args=parser.parse_args()
 
@@ -74,8 +74,10 @@ if datasource=='constant':
 elif datasource=='counter':
 	#brd.write_int('cosmic_ray_select_input_signal',0)
 	brd.write_int('cosmic_ray_select_input_signal1',0)
+elif datasource=='adc':
+        brd.write_int('cosmic_ray_select_input_signal1',3)
 else:
-	print("datasource must be 'constant' or 'counter'. Defaulting to 'counter'")
+	print("datasource must be 'constant','counter', or 'adc'. Defaulting to 'counter'")
 #set wait time
 if packetwait:
 	brd.write_int('cosmic_ray_wait_between_packets', packetwait)
