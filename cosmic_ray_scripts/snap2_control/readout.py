@@ -12,7 +12,7 @@ parser.add_argument('pktwait', type=int, help='Clock cycles to wait between pack
 
 parser.add_argument('dest', type=str, help='Destination. "minor" or "lwacr"')
 parser.add_argument('data', type=str, help='Data source e.g. "counter", "constant"')
-parser.add_argument('programbrd', type=bool, help='If True, the FPGA will be reprogrammed.')
+parser.add_argument('programbrd', type=str, help='If True, the FPGA will be reprogrammed.')
 args=parser.parse_args()
 
 fpgfile=args.fpgfil
@@ -20,7 +20,9 @@ packetwait=args.pktwait
 brdname=args.brd
 destination=args.dest
 datasource=args.data
-program=args.programbrd
+program=(args.programbrd=='True')
+print("Reprogram? ")
+print(program)
 
 print('Wait ' + str(packetwait) + 'clock cycles between packets')
 ######################## Define Addresses #############################
