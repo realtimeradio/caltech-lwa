@@ -5,6 +5,7 @@ import struct
 import time
 import datetime
 import os
+import yaml
 import casperfpga
 from . import helpers
 from . import __version__
@@ -405,6 +406,94 @@ class Snap2Fengine():
         except:
             self.logger.exception("Exception when reinitializing firmware blocks")
             raise RuntimeError("Error reinitializing blocks")
+
+    def cold_start_from_config(self, config_file,
+                    program=True, initialize=True, test_vectors=False,
+                    sync=True, sw_sync=False, enable_eth=True):
+        """
+        Completely configure a SNAP2 F-engine from scratch, using a configuration
+        YAML file.
+
+        :param program: If True, start by programming the SNAP2 FPGA from
+            the image currently in flash. Also train the ADC-> FPGA links
+            and initialize all firmware blocks.
+        :type program: bool
+
+        :param initialize: If True, put all firmware blocks in their default
+            initial state. Initialization is always performed if the FPGA
+            has been reprogrammed, but can be run without reprogramming
+            to (quickly) reset the firmware to a known state. Initialization
+            does not include ADC->FPGA link training.
+        :type initialize: bool
+
+        :param test_vectors: If True, put the F-engine in "frequency ramp" test mode.
+        :type test_vectors: bool
+
+        :param sync: If True, synchronize (i.e., reset) the DSP pipeline.
+        :type sync: bool
+
+        :param sw_sync: If True, issue a software reset trigger, rather than waiting
+            for an external reset pulse to be received over SMA.
+        :type sw_sync: bool
+
+        :param enable_eth: If True, enable 40G F-Engine Ethernet output.
+        :type enable_eth: bool
+
+        :param config_file: Path to a configuration YAML file.
+        :type config_file: str
+
+        """
+        self.logger.info("Trying to configure output with config file %s" % config_file)
+        if not os.path.exists(config_file):
+            f.logger.error("Output configuration file %s doesn't exist!" % config_file)
+            raise RuntimeError
+        try:
+            with open(config_file, 'r') as fh:
+                conf = yaml.load(fh, Loader=yaml.CSafeLoader)
+            if 'fengines' not in conf:
+                self.logger.error("No 'fengines' key in output configuration!")
+                raise RuntimeError('Config file missing "fengines" key')
+            if 'xengines' not in conf:
+                self.logger.error("No 'xengines' key in output configuration!")
+                raise RuntimeError('Config file missing "xengines" key')
+            chans_per_packet = conf['fengines']['chans_per_packet']
+            localconf = conf['fengines'].get(self.hostname, None)
+            if localconf is None:
+                self.logger.error("No configuration for F-engine host %s" % self.hostname)
+                raise RuntimeError("No config found for F-engine host %s" % self.hostname)
+            first_stand_index = localconf['ants'][0]
+            nstand = localconf['ants'][1] - first_stand_index
+            macs = conf['xengines']['arp']
+            source_ip = localconf['gbe']
+            source_port = localconf['source_port']
+
+            dests = []
+            for xeng, chans in conf['xengines']['chans'].items():
+                dest_ip = xeng.split('-')[0]
+                dest_port = int(xeng.split('-')[1])
+                start_chan = chans[0]
+                nchan = chans[1] - start_chan
+                dests += [{'ip':dest_ip, 'port':dest_port, 'start_chan':start_chan, 'nchan':nchan}]
+        except:
+            self.logger.exception("Failed to parse output configuration file %s" % config_file)
+            raise
+
+        self.cold_start(
+            program = program,
+            initialize = initialize,
+            test_vectors = test_vectors,
+            sync = sync,
+            sw_sync = sw_sync,
+            enable_eth = enable_eth,
+            chans_per_packet = chans_per_packet,
+            first_stand_index = first_stand_index,
+            nstand = nstand,
+            macs = macs,
+            source_ip = source_ip,
+            source_port = source_port,
+            dests = dests,
+            )
+
 
     def cold_start(self, program=True, initialize=True, test_vectors=False,
                    sync=True, sw_sync=False, enable_eth=True,

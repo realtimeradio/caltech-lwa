@@ -33,55 +33,15 @@ def main():
 
     f = snap2_fengine.Snap2Fengine(args.host)
 
-    if args.outputconfig is not None:
-        f.logger.info("Trying to configure output with config file %s" % args.outputconfig)
-        if not os.path.exists(args.outputconfig):
-            f.logger.error("Output configuration file %s doesn't exist. Skipping configuration" % args.outputconfig)
-        else:
-            try:
-                with open(args.outputconfig, 'r') as fh:
-                    conf = yaml.load(fh, Loader=yaml.CSafeLoader)
-                if 'fengines' not in conf:
-                    f.logger.error("No 'fengines' key in output configuration!")
-                if 'xengines' not in conf:
-                    f.logger.error("No 'xengines' key in output configuration!")
-                chans_per_packet = conf['fengines']['chans_per_packet']
-                localconf = conf['fengines'].get(args.host, None)
-                if localconf is None:
-                    f.logger.error("No configuration for F-engine host %s" % args.host)
-                first_stand_index = localconf['ants'][0]
-                nstand = localconf['ants'][1] - first_stand_index
-                macs = conf['xengines']['arp']
-                source_ip = localconf['gbe']
-                source_port = localconf['source_port']
-
-                dests = []
-                for xeng, chans in conf['xengines']['chans'].items():
-                    dest_ip = xeng.split('-')[0]
-                    dest_port = int(xeng.split('-')[1])
-                    start_chan = chans[0]
-                    nchan = chans[1] - start_chan
-                    dests += [{'ip':dest_ip, 'port':dest_port, 'start_chan':start_chan, 'nchan':nchan}]
-            except:
-                f.logger.exception("Failed to parse output configuration file %s" % args.outputconfig)
-                raise
-
-    f.cold_start(
+    f.cold_start_from_config(
+            args.outputconfig,
             program = args.program,
             initialize = args.initialize,
             test_vectors = args.tvg,
             sync = args.sync,
             sw_sync = args.mansync,
             enable_eth = args.eth,
-            chans_per_packet = chans_per_packet,
-            first_stand_index = first_stand_index,
-            nstand = nstand,
-            macs = macs,
-            source_ip = source_ip,
-            source_port = source_port,
-            dests = dests,
-            )
-
+        )
 
 if __name__ == "__main__":
     main()
