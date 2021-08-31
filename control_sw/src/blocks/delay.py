@@ -78,7 +78,10 @@ class Delay(Block):
         """
         if stream > self.n_streams:
             self._error('Tried to get delay for stream %d > n_streams (%d)' % (stream, self.n_streams))
-        return -1#self.read_uint('%d_delay' % stream)
+        control_id = stream//32
+        block = 'delay_store%d' % control_id
+        self.write_int('%s_sel' % block, stream % 32)
+        return self.read_uint('%s_readout' % block)
 
     def initialize(self, read_only=False):
         """
