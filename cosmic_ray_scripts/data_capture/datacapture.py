@@ -21,16 +21,16 @@ def process_packet(data,checkpacket,datatype):
         datasamples = int.from_bytes(data[i*32:i*32+20], 'big') # the first 20 bytes are the data
         for j in range(16):  #index for antennas within this packet
             #unpack the ten bit numbers into 16 bit uints
-            if datatype = 'unsigned':
+            if datatype == 'unsigned':
                 #how to unpack unsigned data
                 single_packet_array[i,j] = datasamples&0b1111111111 #take ten bits and put them in array
-            if datatype = 'signed':
+            if datatype == 'signed':
                 #how to unpack signed data
                 nexttenbits = datasamples&0b1111111111 #take ten bits
                 if nexttenbits&0b1000000000:
-                    single_packet_array[i,j] =(2<<9)-nextenbits #handle twos complement negative number
+                    single_packet_array[i,j] =nexttenbits-1024 #handle twos complement negative number
                 else:
-                    single_packet_array[i,j] = nextenbits
+                    single_packet_array[i,j] = nexttenbits
             datasamples = datasamples >> 10 #shift ten bits over
         
         if checkpacket:#  These should be the same value 256 times or else something's wrong
