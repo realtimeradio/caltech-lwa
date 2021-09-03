@@ -52,9 +52,12 @@ def process_packet(data,checkpacket,datatype):
 parser=argparse.ArgumentParser(description='Catch packets, unpack, and save single-board snapshot to disk.')
 parser.add_argument('thiscomputer', type=str, help='Which computer is this script running on? Used to select IP address.')
 parser.add_argument('datatype', type=str, help='Is the firmware sending signed or unsigned integers? Options are "signed" or "unsigned".')
+parser.add_argument('savepacket', type=str, help='Save one file per packet? "True" or "False".')
+
 args=parser.parse_args()
 computer = args.thiscomputer
 datatype = args.datatype
+savepacket = (args.savepacket == "True")
 
 if computer =='minor':
     RX_IP = "192.168.41.12"
@@ -87,7 +90,7 @@ try:
             antenna_block_id = pkt_index//16
             time_block_id = pkt_index%16
             #TODO: save board id and this_board_triggered as metadata
-            this_board_triggered, board_id, block_id, single_packet_array, timestamps = process_packet(d,True,datatype)
+            this_board_triggered, board_id, block_id, single_packet_array, timestamps = process_packet(d,savepacket,datatype)
             print('time_start_index',256*time_block_id,'block from packet index',antenna_block_id,'block from packet', block_id,'first timestamp',timestamps[0])
             single_board_snapshot[256*(time_block_id):256*(time_block_id +1),antenna_block_id] = timestamps 
             single_board_snapshot[256*(time_block_id):256*(time_block_id +1),4+antenna_block_id*16:4+(antenna_block_id+1)*16] = single_packet_array
