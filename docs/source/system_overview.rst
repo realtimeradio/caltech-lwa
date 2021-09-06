@@ -176,14 +176,14 @@ packet receive architecture, and to have the following features:
     struct f_packet {
             uint64_t  seq;
             uint32_t  sync_time;
-            uint16_t  npol;
-            uint16_t  npol_tot;
+            uint16_t  nsignal;
+            uint16_t  nsignal_tot;
             uint16_t  nchan;
             uint16_t  nchan_tot;
             uint32_t  chan_block_id;
             uint32_t  chan0;
-            uint32_t  pol0;
-            uint8_t   data[nchan, npol];
+            uint32_t  signal0;
+            uint8_t   data[nchan, nsignal];
     };
 
 Packet Fields are as follows:
@@ -203,10 +203,10 @@ Packet Fields are as follows:
     |                   |        | seconds | to the first            |
     |                   |        |         | (``seq=0``) spectrum    |
     +-------------------+--------+---------+-------------------------+
-    | ``npol``          | uint16 |         | Number of inputs        |
+    | ``nsignal``       | uint16 |         | Number of inputs        |
     |                   |        |         | present in a packet     |
     +-------------------+--------+---------+-------------------------+
-    | ``npol_tot``      | uint16 |         | Number of inputs        |
+    | ``nsignal_tot``   | uint16 |         | Number of inputs        |
     |                   |        |         | present in the complete |
     |                   |        |         | multi-SNAP system       |
     +-------------------+--------+---------+-------------------------+
@@ -228,12 +228,12 @@ Packet Fields are as follows:
     |                   |        |         | channel present in a    |
     |                   |        |         | packet                  |
     +-------------------+--------+---------+-------------------------+
-    | ``pol0``          | uint32 |         | The index of the first  |
+    | ``signal0``       | uint32 |         | The index of the first  |
     |                   |        |         | input present in this   |
     |                   |        |         | packet                  |
     +-------------------+--------+---------+-------------------------+
     | ``data``          | uint8  |         | An array of ``nchan x   |
-    |                   |        |         | npol`` data samples,    |
+    |                   |        |         | nsignal`` data samples, |
     |                   |        |         | with channel the        |
     |                   |        |         | slowest-varying axis,   |
     |                   |        |         | and input number the    |
@@ -259,8 +259,8 @@ independent X-Engine pipelines in the system, a target packet size
 allowed *Maximum Transmission Unit* (MTU).
 
 In practice, the LWA352 system operates with
-  - ``npol = 64``
-  - ``npol_tot = 704``
+  - ``nsignal = 64``
+  - ``nsignal_tot = 704``
   - ``nchan = 96``
   - ``nchan_tot = 192``
 
