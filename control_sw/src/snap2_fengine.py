@@ -43,8 +43,8 @@ class Snap2Fengine():
     :type logger: logging.Logger
 
     """
-    n_pols_per_board = 64   #: Number of analog inputs per FPGA
-    n_pols_per_xeng = 352*2 #: Number of analog inputs per X-engine
+    n_signals_per_board = 64   #: Number of analog inputs per FPGA
+    n_signals_per_xeng = 352*2 #: Number of analog inputs per X-engine
     def __init__(self, host, logger=None):
         self.hostname = host #: hostname of the F-Engine's host SNAP2 board
         #: Python Logger instance
@@ -299,8 +299,8 @@ class Snap2Fengine():
             ports,
             n_chans_per_packet,
             n_chans_per_xeng,
-            self.n_pols_per_board,
-            self.n_pols_per_xeng,
+            self.n_signals_per_board,
+            self.n_signals_per_xeng,
             print_config=debug,
         )
 
@@ -311,7 +311,7 @@ class Snap2Fengine():
         self._cfpga.transport.progdev(0)
 
     def set_equalization(self, eq_start_chan=1000, eq_stop_chan=3300, 
-            start_chan=512, stop_chan=3584, filter_ksize=21, target_rms=1./7):
+            start_chan=512, stop_chan=3584, filter_ksize=21, target_rms=0.125*3):
         """
         Set the equalization coefficients to realize a target RMS.
 
@@ -337,13 +337,13 @@ class Snap2Fengine():
         :type target_rms: float
 
         """
-        n_cores = self.autocorr.n_pols // self.autocorr.n_pols_per_block
+        n_cores = self.autocorr.n_signals // self.autocorr.n_signals_per_block
         for i in range(n_cores):
             spectra = self.autocorr.get_new_spectra(i, filter_ksize=filter_ksize)
-            n_pols, n_chans = spectra.shape
+            n_signals, n_chans = spectra.shape
             coeff_repeat_factor = n_chans // self.eq.n_coeffs
-            for j in range(n_pols):
-                stream_id = i*n_pols + j
+            for j in range(n_signals):
+                stream_id = i*n_signals + j
                 self.logger.info("Trying to EQ input %d" % stream_id)
                 pre_quant_rms = np.sqrt(spectra[j] / 2) # RMS of each real / imag component making up spectra
                 eq_coeff, eq_bp = self.eq.get_coeffs(stream_id)
@@ -610,7 +610,7 @@ class Snap2Fengine():
             self.eth.add_arp_entry(ip, mac)
 
         # Configure packetizer
-        nstand_per_board = self.n_pols_per_board // 2
+        nstand_per_board = self.n_signals_per_board // 2
         assert first_stand_index % nstand_per_board == 0, \
             "first_ant_index should be a multiple of %d" % nstand_per_board
         assert nstand % nstand_per_board == 0, \
@@ -619,12 +619,12 @@ class Snap2Fengine():
         chans_to_send = []
         ips = []
         ports = []
-        antpol_ids = []
+        signal_ids = []
         this_x_packets = None
         ok = True
         for dest in dests:
             try:
-                for ant in localants[::(self.n_pols_per_board // 2)]:
+                for ant in localants[::(self.n_signals_per_board // 2)]:
                     dest_ip = dest['ip']
                     dest_port = dest['port']
                     if dest_ip not in macs:
@@ -638,7 +638,7 @@ class Snap2Fengine():
                         if this_x_packets != len(this_x_chans) // chans_per_packet:
                             self.logger.error("Can't have different total numbers of channels per X-engine")
                             ok = False
-                    antpol_ids += [2*ant] * this_x_packets
+                    signal_ids += [2*ant] * this_x_packets
                     ips += [dest_ip] * this_x_packets
                     ports += [dest_port] * this_x_packets
                     chans_to_send += list(this_x_chans)
@@ -649,7 +649,7 @@ class Snap2Fengine():
 
         if ok:
             self.configure_output(
-                    antpol_ids,
+                    signal_ids,
                     chans_per_packet,
                     chans_per_packet*this_x_packets,
                     chans_to_send,

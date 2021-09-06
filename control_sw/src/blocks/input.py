@@ -244,7 +244,7 @@ class Input(Block):
 
     def get_all_histograms(self):
         """
-        Get histograms for all antpols, summing over all interleaving cores.
+        Get histograms for all signals, summing over all interleaving cores.
 
         :return: (vals, hists). ``vals`` is a list of histogram bin centers.
             ``hists`` is an ``[n_stream x 2**n_bits]`` list of histogram
