@@ -248,7 +248,7 @@ class Packetizer(Block):
         self.write('ports', struct.pack('>%dI' % self.n_total_words, *ports))
         self.write('flags', struct.pack('>%dI' % self.n_total_words, *flags))
 
-        self.write_int('n_signals', (n_signals_per_packet<<16) + n_signals_per_xeng)
+        self.write_int('n_pols', (n_signals_per_packet<<16) + n_signals_per_xeng)
         self.write_int('n_chans', (nchans_per_packet<<16) + nchans_per_xeng)
 
         if print_config:
