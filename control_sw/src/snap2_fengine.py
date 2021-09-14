@@ -133,10 +133,11 @@ class Snap2Fengine():
 
     def initialize(self, read_only=True):
         """
-        Call the ```initialize`` methods of all underlying blocks.
+        Call the ```initialize`` methods of all underlying blocks, then
+        optionally issue a software global reset.
 
         :param read_only: If True, call the underlying initialization methods
-            in a read_only manner.
+            in a read_only manner, and skip software reset.
         :type read_only: bool
         """
         for blockname, block in self.blocks.items():
@@ -145,6 +146,10 @@ class Snap2Fengine():
             else:
                 self.logger.info("Initializing block (writable): %s" % blockname)
             block.initialize(read_only=read_only)
+        if not read_only:
+            self.logger.info("Performing software global reset")
+            self.sync.arm_sync()
+            self.sync.sw_sync()
 
     def get_status_all(self):
         """
