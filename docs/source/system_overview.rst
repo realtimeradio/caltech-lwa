@@ -89,10 +89,11 @@ However, in order to simply get the firmware into a basic working state the foll
 
   1. Program the FPGA
   2. Initialize all blocks in the system
-  3. Trigger a timing synchronization event.
+  3. Trigger master reset and timing synchronization event.
 
 In a multi-board system, the process of synchronizing a board can be relatively involved.
-For testing purposes, using single board, a simple software trigger can be used in place of a hardware timing signal to perform an artificial synchronization.
+For testing purposes, using single board, a simple software reset can be used in place of a hardware timing signal to perform an artificial synchronization.
+A software reset is automatically issued as part of system initialization.
 
 The following commands bring the F-engine firmware into a functional state, suitable for testing.
 See :numref:`control-interface` for a full software API description
@@ -111,13 +112,8 @@ See :numref:`control-interface` for a full software API description
   # Wait 30 seconds for the board to reboot...
 
   # Initialize all the firmware blocks
+  # and issue a global software reset
   f.initialize(read_only=False)
-
-  # Perform a software synchronization, which resets all
-  # blocks in the system but does not lock to any
-  # external timing signal
-  f.sync.arm_sync()
-  f.sync.sw_sync()
 
 
 Block Descriptions
