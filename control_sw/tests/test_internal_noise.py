@@ -69,6 +69,7 @@ def test_identical_noise(f):
         else:
             logger.debug("Powers match between input %d and input 0" % i)
 
+    spectra = f.autocorr.get_new_spectra(0) # dummy capture to flush vacc
     for i in range(f.autocorr._n_cores):
         spectra = f.autocorr.get_new_spectra(i)
         n_spectra, nchans = spectra.shape
@@ -197,6 +198,7 @@ def test_different_noise(f, noise_sources):
                 else:
                     logger.debug("Powers differ between inputs %d and %d" % (i, j))
 
+    spectra = f.autocorr.get_new_spectra(0) # dummy capture to flush vacc
     for block in range(f.autocorr._n_cores):
         spectra = f.autocorr.get_new_spectra(block)
         n_spectra, nchans = spectra.shape
@@ -290,7 +292,7 @@ def main(args):
     f.sync.arm_noise()
     f.sync.sw_sync()
 
-    if not args.nosamenoise:
+    if args.samenoise:
         logger.info("Checking input stats and autocorrs make sense with all inputs using identical noise")
         if test_identical_noise(f) == SUCCESS:
             logger.info("PASS")
@@ -298,7 +300,7 @@ def main(args):
             logger.error("FAIL")
             exit()
 
-    if not args.nodiffnoise:
+    if args.diffnoise:
         logger.info("Checking input stats and autocorrs with different noise sources")
         noise_allocation = rng.integers(0, 2*f.noise.n_noise, f.noise.n_outputs)
         if test_different_noise(f, noise_allocation) == SUCCESS:
@@ -307,7 +309,7 @@ def main(args):
             logger.error("FAIL")
             exit()
 
-    if not args.nozero:
+    if args.zero:
         logger.info("Checking input stats and autocorrs with some channels zeroed")
         zero_chans = rng.integers(0, f.input.n_streams, f.input.n_streams // 2)
         if test_zeros(f, zero_chans) == SUCCESS:
@@ -316,7 +318,7 @@ def main(args):
             logger.error("FAIL")
             exit()
 
-    if not args.nodelay:
+    if args.delay:
         logger.info("Checking phase between delayed noise sources")
         check_list = rng.integers(0, f.delay.n_streams**2, 200)
         # Use delays of maximum range 200 to avoid decohering. But also place
@@ -336,13 +338,13 @@ if __name__ == "__main__":
                         help ='Use this flag to initialize an F-engine')
     parser.add_argument('-s', dest='seed', type=int, default=0xabcdabcd,
                         help ='Random number seed for this test')
-    parser.add_argument('--nosamenoise', action='store_true',
+    parser.add_argument('--samenoise', action='store_true',
                         help='Skip "Same noise" tests')
-    parser.add_argument('--nodiffnoise', action='store_true',
+    parser.add_argument('--diffnoise', action='store_true',
                         help='Skip "Different noise" tests')
-    parser.add_argument('--nozero', action='store_true',
+    parser.add_argument('--zero', action='store_true',
                         help='Skip "Zeroing out" tests')
-    parser.add_argument('--nodelay', action='store_true',
+    parser.add_argument('--delay', action='store_true',
                         help='Skip "Delay phase" tests')
     parser.add_argument('host', type=str,
                         help='SNAP2 hostname (or IP address) to initialize')
