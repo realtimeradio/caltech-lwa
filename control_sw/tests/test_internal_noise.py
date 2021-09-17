@@ -234,6 +234,12 @@ def test_different_noise(f, noise_sources):
         return FAIL
 
 def test_delays(f, delays, equalize=True, check_list=None):
+    """
+    Set all inputs to use the same noise source.
+    Apply random delays to inputs.
+    Using the corr block, check a subset of baselines
+    to ensure correlations have expected phase slopes.
+    """
     ok = True
     f.input.use_noise()
     for i in range(f.noise.n_outputs):
