@@ -140,8 +140,8 @@ def test_different_noise(f, noise_sources):
     ok = True
     # Point all inputs to the appropriate noise generator
     for output, noisegen in enumerate(noise_sources):
-        logger.info("Assigning output %d to noise generator %d" % (output, noisegen))
         f.noise.assign_output(output, noisegen)
+    logger.info("Assigning outputs %s to noise generator %s" % (range(len(noise_sources)), noise_sources))
 
     means, rmss, powers = f.input.get_bit_stats()
 
