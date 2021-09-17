@@ -100,6 +100,11 @@ def test_identical_noise(f):
         return FAIL
 
 def test_zeros(f, zero_chans):
+    """
+    Set a subset of inputs to zero.
+    Ensure bit stats and autocorrelations are zero only in
+    the expected channels.
+    """
     ok = True
     f.input.use_noise()
     for chan in zero_chans:
@@ -137,6 +142,11 @@ def test_zeros(f, zero_chans):
 
 
 def test_different_noise(f, noise_sources):
+    """
+    Set different inputs to one of several uncorrelated noise sources.
+    Verify that bit stats and autocorrelation spectra are the same,
+    or different, between different inputs, as expected.
+    """
     ok = True
     # Point all inputs to the appropriate noise generator
     for output, noisegen in enumerate(noise_sources):
