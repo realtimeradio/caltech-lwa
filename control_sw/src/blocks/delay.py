@@ -56,7 +56,7 @@ class Delay(Block):
         if delay >= self.max_delay:
             self._error('Tried to set delay to %d which is > the allowed maximum (%d)' % (delay, self.max_delay))
             delay = self.max_delay-1
-        self._info('Setting delay of stream %d to %d' % (stream, delay))
+        self._debug('Setting delay of stream %d to %d' % (stream, delay))
         control_id = stream // 32
         enable_reg = 'delay_en%d' % (control_id)
         delay_reg  = 'delay%d' % (control_id)

@@ -69,6 +69,7 @@ def test_identical_noise(f):
         else:
             logger.debug("Powers match between input %d and input 0" % i)
 
+    spectra = f.autocorr.get_new_spectra(0) # dummy capture to flush vacc
     for i in range(f.autocorr._n_cores):
         spectra = f.autocorr.get_new_spectra(i)
         n_spectra, nchans = spectra.shape
@@ -99,6 +100,11 @@ def test_identical_noise(f):
         return FAIL
 
 def test_zeros(f, zero_chans):
+    """
+    Set a subset of inputs to zero.
+    Ensure bit stats and autocorrelations are zero only in
+    the expected channels.
+    """
     ok = True
     f.input.use_noise()
     for chan in zero_chans:
@@ -136,11 +142,16 @@ def test_zeros(f, zero_chans):
 
 
 def test_different_noise(f, noise_sources):
+    """
+    Set different inputs to one of several uncorrelated noise sources.
+    Verify that bit stats and autocorrelation spectra are the same,
+    or different, between different inputs, as expected.
+    """
     ok = True
     # Point all inputs to the appropriate noise generator
     for output, noisegen in enumerate(noise_sources):
-        logger.info("Assigning output %d to noise generator %d" % (output, noisegen))
         f.noise.assign_output(output, noisegen)
+    logger.info("Assigning outputs %s to noise generator %s" % (range(len(noise_sources)), noise_sources))
 
     means, rmss, powers = f.input.get_bit_stats()
 
@@ -197,6 +208,7 @@ def test_different_noise(f, noise_sources):
                 else:
                     logger.debug("Powers differ between inputs %d and %d" % (i, j))
 
+    spectra = f.autocorr.get_new_spectra(0) # dummy capture to flush vacc
     for block in range(f.autocorr._n_cores):
         spectra = f.autocorr.get_new_spectra(block)
         n_spectra, nchans = spectra.shape
@@ -222,6 +234,12 @@ def test_different_noise(f, noise_sources):
         return FAIL
 
 def test_delays(f, delays, equalize=True, check_list=None):
+    """
+    Set all inputs to use the same noise source.
+    Apply random delays to inputs.
+    Using the corr block, check a subset of baselines
+    to ensure correlations have expected phase slopes.
+    """
     ok = True
     f.input.use_noise()
     for i in range(f.noise.n_outputs):
@@ -290,7 +308,7 @@ def main(args):
     f.sync.arm_noise()
     f.sync.sw_sync()
 
-    if not args.nosamenoise:
+    if args.samenoise:
         logger.info("Checking input stats and autocorrs make sense with all inputs using identical noise")
         if test_identical_noise(f) == SUCCESS:
             logger.info("PASS")
@@ -298,7 +316,7 @@ def main(args):
             logger.error("FAIL")
             exit()
 
-    if not args.nodiffnoise:
+    if args.diffnoise:
         logger.info("Checking input stats and autocorrs with different noise sources")
         noise_allocation = rng.integers(0, 2*f.noise.n_noise, f.noise.n_outputs)
         if test_different_noise(f, noise_allocation) == SUCCESS:
@@ -307,7 +325,7 @@ def main(args):
             logger.error("FAIL")
             exit()
 
-    if not args.nozero:
+    if args.zero:
         logger.info("Checking input stats and autocorrs with some channels zeroed")
         zero_chans = rng.integers(0, f.input.n_streams, f.input.n_streams // 2)
         if test_zeros(f, zero_chans) == SUCCESS:
@@ -316,7 +334,7 @@ def main(args):
             logger.error("FAIL")
             exit()
 
-    if not args.nodelay:
+    if args.delay:
         logger.info("Checking phase between delayed noise sources")
         check_list = rng.integers(0, f.delay.n_streams**2, 200)
         # Use delays of maximum range 200 to avoid decohering. But also place
@@ -336,13 +354,13 @@ if __name__ == "__main__":
                         help ='Use this flag to initialize an F-engine')
     parser.add_argument('-s', dest='seed', type=int, default=0xabcdabcd,
                         help ='Random number seed for this test')
-    parser.add_argument('--nosamenoise', action='store_true',
+    parser.add_argument('--samenoise', action='store_true',
                         help='Skip "Same noise" tests')
-    parser.add_argument('--nodiffnoise', action='store_true',
+    parser.add_argument('--diffnoise', action='store_true',
                         help='Skip "Different noise" tests')
-    parser.add_argument('--nozero', action='store_true',
+    parser.add_argument('--zero', action='store_true',
                         help='Skip "Zeroing out" tests')
-    parser.add_argument('--nodelay', action='store_true',
+    parser.add_argument('--delay', action='store_true',
                         help='Skip "Delay phase" tests')
     parser.add_argument('host', type=str,
                         help='SNAP2 hostname (or IP address) to initialize')
