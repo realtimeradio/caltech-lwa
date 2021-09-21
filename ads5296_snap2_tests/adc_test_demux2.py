@@ -57,14 +57,19 @@ def get_snapshot(adcs, signed=False, use_embedded=USE_EMBEDDED_BRAM):
     out = np.zeros([n_adcs, 8,8,NSAMPLES])
     if use_embedded:
         if args.fengine_regmap:
-            trig_reg = 'adc_snapshot_trigger'
+            trig_reg = 'adc_sync'
         else:
             trig_reg = 'snapshot_trig'
     else:
         trig_reg = '%s_snapshot0_snapshot_ctrl' % FMC_NAMES[0]
-    adcs[0].fpga.write_int(trig_reg, 0b0)          
-    adcs[0].fpga.write_int(trig_reg, 0b1)
-    adcs[0].fpga.write_int(trig_reg, 0b0)
+    if use_embedded and args.fengine_regmap:
+        adcs[0].fpga.write_int(trig_reg, 0)
+        adcs[0].fpga.write_int(trig_reg, 1<<2)
+        adcs[0].fpga.write_int(trig_reg, 0)
+    else:
+        adcs[0].fpga.write_int(trig_reg, 0b0)          
+        adcs[0].fpga.write_int(trig_reg, 0b1)
+        adcs[0].fpga.write_int(trig_reg, 0b0)
     # Loop over ADCs
     for adcn, a in enumerate(adcs):
         # Loop over chips
@@ -271,24 +276,34 @@ def use_data(a):
         a.enable_test_pattern('data', i)
 
 def sync(fpga, f_firmware=False):
+    logger.debug("Issuing sync")
     if f_firmware:
         regname = 'adc_sync'
     else:
         regname = 'sync'
-    logger.debug("Issuing sync")
-    fpga.write_int(regname, 0)
-    fpga.write_int(regname, 1)
-    fpga.write_int(regname, 0)
+    if f_firmware:
+        fpga.write_int(regname, 0)
+        fpga.write_int(regname, 1<<4)
+        fpga.write_int(regname, 0)
+    else:
+        fpga.write_int(regname, 0)
+        fpga.write_int(regname, 1)
+        fpga.write_int(regname, 0)
 
 def reset(fpga, f_firmware=False):
+    logger.debug("Issuing reset")
     if f_firmware:
-        regname = 'adc_rst'
+        regname = 'adc_sync'
     else:
         regname = 'rst'
-    logger.debug("Issuing reset")
-    fpga.write_int(regname, 0)
-    fpga.write_int(regname, 1)
-    fpga.write_int(regname, 0)
+    if f_firmware:
+        fpga.write_int(regname, 0)
+        fpga.write_int(regname, 1<<0)
+        fpga.write_int(regname, 0)
+    else:
+        fpga.write_int(regname, 0)
+        fpga.write_int(regname, 1)
+        fpga.write_int(regname, 0)
 
 def cal_fclk(a):
     delay0, slack0 = a.calibrate_fclk(0)

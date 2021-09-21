@@ -29,8 +29,8 @@ class Packetizer(Block):
     :param n_chans: Number of frequency channels in the correlation output.
     :type n_chans: int
 
-    :param n_pols: Number of independent analog streams in the system
-    :type n_pols: int
+    :param n_signals: Number of independent analog streams in the system
+    :type n_signals: int
 
     :param sample_rate_mhz: ADC sample rate in MHz. Used for data rate checks.
     :type sample_rate_mhz: float
@@ -38,16 +38,16 @@ class Packetizer(Block):
     sample_width = 1 # Sample width in bytes: 4+4bit complex = 1 Byte
     word_width = 32 # Granularity of packet size in Bytes
     line_rate_gbps = 40 # Link speed in Gbits/s
-    def __init__(self, host, name, n_chans=4096, n_pols=64, sample_rate_mhz=200.0, logger=None):
+    def __init__(self, host, name, n_chans=4096, n_signals=64, sample_rate_mhz=200.0, logger=None):
         super(Packetizer, self).__init__(host, name, logger)
         self.n_chans = n_chans
-        self.n_pols = n_pols
+        self.n_signals = n_signals
         self.sample_rate_mhz = sample_rate_mhz
-        self.n_total_words = self.sample_width * self.n_chans * self.n_pols // self.word_width
-        self.n_words_per_chan = self.sample_width * self.n_pols // self.word_width
+        self.n_total_words = self.sample_width * self.n_chans * self.n_signals // self.word_width
+        self.n_words_per_chan = self.sample_width * self.n_signals // self.word_width
         assert self.n_words_per_chan > 1, \
-            "Packetizer software not compatible with n_pols / word_width combination"
-        self.full_data_rate_gbps = 8*self.sample_width * self.n_pols * self.sample_rate_mhz*1e6/2. / 1.0e9
+            "Packetizer software not compatible with n_signals / word_width combination"
+        self.full_data_rate_gbps = 8*self.sample_width * self.n_signals * self.sample_rate_mhz*1e6/2. / 1.0e9
 
     def get_packet_info(self, n_pkt_chans, occupation=0.95, chan_block_size=8):
         """
@@ -145,7 +145,7 @@ class Packetizer(Block):
         
     def write_config(self, packet_starts, packet_payloads, channel_indices,
             ant_indices, dest_ips, dest_ports, nchans_per_packet, nchans_per_xeng,
-            npols_per_packet, npols_per_xeng, print_config=False):
+            n_signals_per_packet, n_signals_per_xeng, print_config=False):
         """
         Write the packetizer configuration BRAMs with appropriate entries.
 
@@ -182,11 +182,11 @@ class Packetizer(Block):
             destination IP.
         :type nchans_per_xeng: int
 
-        :param npols_per_packet: Number of antpols in each packet sent.
-        :type npols_per_packet: int
+        :param n_signals_per_packet: Number of signals in each packet sent.
+        :type n_signals_per_packet: int
 
-        :param npols_per_xeng: Number of antpols expected by each destination IP.
-        :type npols_per_xeng: int
+        :param n_signals_per_xeng: Number of signals expected by each destination IP.
+        :type n_signals_per_xeng: int
 
         :param print:
             If True, print config for debugging
@@ -248,7 +248,7 @@ class Packetizer(Block):
         self.write('ports', struct.pack('>%dI' % self.n_total_words, *ports))
         self.write('flags', struct.pack('>%dI' % self.n_total_words, *flags))
 
-        self.write_int('n_pols', (npols_per_packet<<16) + npols_per_xeng)
+        self.write_int('n_pols', (n_signals_per_packet<<16) + n_signals_per_xeng)
         self.write_int('n_chans', (nchans_per_packet<<16) + nchans_per_xeng)
 
         if print_config:

@@ -89,10 +89,11 @@ However, in order to simply get the firmware into a basic working state the foll
 
   1. Program the FPGA
   2. Initialize all blocks in the system
-  3. Trigger a timing synchronization event.
+  3. Trigger master reset and timing synchronization event.
 
 In a multi-board system, the process of synchronizing a board can be relatively involved.
-For testing purposes, using single board, a simple software trigger can be used in place of a hardware timing signal to perform an artificial synchronization.
+For testing purposes, using single board, a simple software reset can be used in place of a hardware timing signal to perform an artificial synchronization.
+A software reset is automatically issued as part of system initialization.
 
 The following commands bring the F-engine firmware into a functional state, suitable for testing.
 See :numref:`control-interface` for a full software API description
@@ -111,13 +112,8 @@ See :numref:`control-interface` for a full software API description
   # Wait 30 seconds for the board to reboot...
 
   # Initialize all the firmware blocks
+  # and issue a global software reset
   f.initialize(read_only=False)
-
-  # Perform a software synchronization, which resets all
-  # blocks in the system but does not lock to any
-  # external timing signal
-  f.sync.arm_sync()
-  f.sync.sw_sync()
 
 
 Block Descriptions
@@ -176,14 +172,14 @@ packet receive architecture, and to have the following features:
     struct f_packet {
             uint64_t  seq;
             uint32_t  sync_time;
-            uint16_t  npol;
-            uint16_t  npol_tot;
+            uint16_t  nsignal;
+            uint16_t  nsignal_tot;
             uint16_t  nchan;
             uint16_t  nchan_tot;
             uint32_t  chan_block_id;
             uint32_t  chan0;
-            uint32_t  pol0;
-            uint8_t   data[nchan, npol];
+            uint32_t  signal0;
+            uint8_t   data[nchan, nsignal];
     };
 
 Packet Fields are as follows:
@@ -203,10 +199,10 @@ Packet Fields are as follows:
     |                   |        | seconds | to the first            |
     |                   |        |         | (``seq=0``) spectrum    |
     +-------------------+--------+---------+-------------------------+
-    | ``npol``          | uint16 |         | Number of inputs        |
+    | ``nsignal``       | uint16 |         | Number of inputs        |
     |                   |        |         | present in a packet     |
     +-------------------+--------+---------+-------------------------+
-    | ``npol_tot``      | uint16 |         | Number of inputs        |
+    | ``nsignal_tot``   | uint16 |         | Number of inputs        |
     |                   |        |         | present in the complete |
     |                   |        |         | multi-SNAP system       |
     +-------------------+--------+---------+-------------------------+
@@ -228,12 +224,12 @@ Packet Fields are as follows:
     |                   |        |         | channel present in a    |
     |                   |        |         | packet                  |
     +-------------------+--------+---------+-------------------------+
-    | ``pol0``          | uint32 |         | The index of the first  |
+    | ``signal0``       | uint32 |         | The index of the first  |
     |                   |        |         | input present in this   |
     |                   |        |         | packet                  |
     +-------------------+--------+---------+-------------------------+
     | ``data``          | uint8  |         | An array of ``nchan x   |
-    |                   |        |         | npol`` data samples,    |
+    |                   |        |         | nsignal`` data samples, |
     |                   |        |         | with channel the        |
     |                   |        |         | slowest-varying axis,   |
     |                   |        |         | and input number the    |
@@ -259,8 +255,8 @@ independent X-Engine pipelines in the system, a target packet size
 allowed *Maximum Transmission Unit* (MTU).
 
 In practice, the LWA352 system operates with
-  - ``npol = 64``
-  - ``npol_tot = 704``
+  - ``nsignal = 64``
+  - ``nsignal_tot = 704``
   - ``nchan = 96``
   - ``nchan_tot = 192``
 

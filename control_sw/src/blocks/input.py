@@ -95,7 +95,7 @@ class Input(Block):
         :type stream: int or None
 
         """
-        self._info("Stream %s: switching to Noise" % stream)
+        self._debug("Stream %s: switching to Noise" % stream)
         self._switch(self._USE_NOISE, stream)
 
     def use_adc(self, stream=None):
@@ -106,7 +106,7 @@ class Input(Block):
         :type stream: int or None
 
         """
-        self.logger.info("Stream %s: switching to ADC" % stream)
+        self._debug("Stream %s: switching to ADC" % stream)
         self._switch(self._USE_ADC, stream)
 
     def use_zero(self, stream=None):
@@ -117,7 +117,7 @@ class Input(Block):
         :type stream: int or None
 
         """
-        self._info("Stream %s: switching to Zeros" % stream)
+        self._debug("Stream %s: switching to Zeros" % stream)
         self._switch(self._USE_ZERO, stream)
 
     def get_bit_stats(self):
@@ -244,7 +244,7 @@ class Input(Block):
 
     def get_all_histograms(self):
         """
-        Get histograms for all antpols, summing over all interleaving cores.
+        Get histograms for all signals, summing over all interleaving cores.
 
         :return: (vals, hists). ``vals`` is a list of histogram bin centers.
             ``hists`` is an ``[n_stream x 2**n_bits]`` list of histogram
