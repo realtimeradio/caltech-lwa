@@ -28,7 +28,7 @@ triggerwait=args.triggerwait
 
 
 #load firmware and initialize etc
-brd=snap2_fengine.Snap2Fengine('snap01')
+brd=snap2_fengine.Snap2Fengine(brdname)
 if program:
     brd.program(fpgfile)
     brd.initialize(read_only=False)
