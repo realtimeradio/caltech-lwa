@@ -78,12 +78,19 @@ class Sync(Block):
         self.change_reg_bits('ctrl', 1, self.OFFSET_RST_ERR)
         self.change_reg_bits('ctrl', 0, self.OFFSET_RST_ERR)
     
-    def wait_for_sync(self):
+    def wait_for_sync(self, timeout=20):
         """
         Block until a sync has been received.
+
+        :param timeout: Timeout, in seconds, to wait.
+        :type timeout: float
         """
+        t0 = time.time()
         c = self.count_ext()
         while(self.count_ext() == c):
+            if time.time() > (t0 + timeout):
+                self._error("Timed out waiting  %.1f seconds for sync pulse" % timeout)
+                raise RuntimeError("Timed out waiting %.1f seconds for a sync pulse" % timeout)
             time.sleep(0.05)
 
     def wait_for_pps(self, timeout=2.0):
