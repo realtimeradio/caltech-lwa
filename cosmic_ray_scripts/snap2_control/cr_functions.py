@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import pandas as pd
 import time
-
+import numpy as np
+import struct
 
 def extractvalue(mainregister,nbits,MSBoffset,bw):
     #extract the value of the specified consecutive bits of mainregister
@@ -195,3 +196,18 @@ def software_trigger(brd,stats):
         new_afull = afull - previous_afull
         print("Ethernet block almost-full counter incremented by " + str(new_afull))
         return
+
+def read_threshold_rates(casperbrd):
+    #Reads the shared BRAMs that hold the number of times the individual antennas exceed thresholds in the last 2^28 clock cycles
+    #Returns an array of length 64 for the rate each antenna exceeds the core threshold and another for the rate exceeding veto threshold
+    #casperbrd is a casperfpga CasperFpga object
+    core = np.zeros(64)
+    veto = np.zeros(64)
+    core[:32]= struct.unpack('>32l',casperbrd.read("cosmic_ray_thresh_rate1",32*4,0))
+    core[32:]= struct.unpack('>32l',casperbrd.read("cosmic_ray_thresh_rate2",32*4,0))
+    veto[:32]= struct.unpack('>32l',casperbrd.read("cosmic_ray_veto_thresh_rate1",32*4,0))
+    veto[32:]= struct.unpack('>32l',casperbrd.read("cosmic_ray_veto_thresh_rate2",32*4,0))
+    return core, veto
+
+
+
