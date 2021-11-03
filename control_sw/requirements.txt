@@ -7,3 +7,4 @@ termcolor
 progressbar
 etcd3
 yaml
+scipy
