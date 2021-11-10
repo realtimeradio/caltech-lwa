@@ -14,7 +14,7 @@ parser.add_argument('dest', type=str, help='Destination. "minor" or "lwacr"')
 parser.add_argument('data', type=str, help='Data source e.g. "counter", "constant", "adc"')
 parser.add_argument('programbrd', type=str, help='If True, the FPGA will be reprogrammed.')
 parser.add_argument('nsnapshots', type=int, help='Number of triggers to send.')
-parser.add_argument('triggerwait', type=int, help='Number of seconds between triggers.')
+parser.add_argument('triggerwait', type=float, help='Number of seconds between triggers.')
 args=parser.parse_args()
 
 fpgfile=args.fpgfil
