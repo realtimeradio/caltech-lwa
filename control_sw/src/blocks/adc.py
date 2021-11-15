@@ -69,7 +69,7 @@ class Adc(Block):
             else:
                 self._warning("Did not detect FMC ADC board on port %d" % fmc)
 
-    def initialize(self, read_only=False, clocksource=1):
+    def initialize(self, read_only=False, clocksource=1, fail_hard=True):
         """
         Initialize connected ADC boards.
 
@@ -82,6 +82,9 @@ class Adc(Block):
             for boards on all FMC cards, only the FMC card selected as the clock
             source at Simulink compile-time will be used for clocking.
         :type clocksource: int
+
+        :param fail_hard: If True, raise RuntimeError if initialization fails.
+        :type fail_hard: Bool
         
         :return: True if initialization was successful. False otherwise.
         """
@@ -137,7 +140,8 @@ class Adc(Block):
         is_locked = self.mmcm_is_locked()
         if not is_locked:
             self._error("MMCMs not locked!")
-            raise RuntimeError("MMCMs not locked!")
+            if fail_hard:
+                raise RuntimeError("MMCMs not locked!")
         # Flush FIFOs
         #for i in range(10): self.reset()
         #for i in range(10): self.sync()
