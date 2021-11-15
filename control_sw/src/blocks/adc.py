@@ -140,14 +140,13 @@ class Adc(Block):
         is_locked = self.mmcm_is_locked()
         if not is_locked:
             self._error("MMCMs not locked!")
-            if fail_hard:
-                raise RuntimeError("MMCMs not locked!")
+            raise RuntimeError("MMCMs not locked!")
         # Flush FIFOs
         #for i in range(10): self.reset()
         #for i in range(10): self.sync()
         self.reset()
         self.sync()
-        ok, delays, slacks = self.calibrate()
+        ok, delays, slacks = self.calibrate(fail_hard=fail_hard)
         # Return ADC to analog sampling mode
         self.use_data()
         return ok
