@@ -69,7 +69,7 @@ class Adc(Block):
             else:
                 self._warning("Did not detect FMC ADC board on port %d" % fmc)
 
-    def initialize(self, read_only=False, clocksource=1, fail_hard=True):
+    def initialize(self, read_only=False, clocksource=1, fail_hard=False):
         """
         Initialize connected ADC boards.
 
