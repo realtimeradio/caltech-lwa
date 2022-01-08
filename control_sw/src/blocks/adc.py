@@ -561,6 +561,7 @@ class Adc(Block):
                 rescan = False
                 for board in range(2):
                     if not np.any(errs[1:-2, 4*board:4*(board+1), :] == 0):
+                        # If nowhere is good, slip a whole board by 2
                         rescan = True
                         self._info("Bitslipping board %d because everywhere was bad" % board)
                         adc.decrement_bitslip_index(board)
@@ -568,34 +569,37 @@ class Adc(Block):
                 if rescan:
                     errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                             step_size=step_size))
+
+            # Go through each chip, and slip if the eye is on the edge of the delay, or if nowhere is good
             for slip in range(5):
                 slip_done = True
-                if np.any(errs[0:5,:,:] == 0):
-                    slip_done = False
-                    if verbose:
-                        self.print_sweep(errs, best_delays=best)
-                    for board in range(2):
-                        # Make the error search wider here, to encourage boards to
-                        # be slipped together
-                        if np.any(errs[0:20, 4*board:4*(board+1), :] == 0):
-                            self._info("Bitslipping board %d because delay start too large" % board)
-                            adc.increment_bitslip_index(board)
-                    errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
-                                                            step_size=step_size))
-                if np.any(errs[-5:-1,:,:] == 0):
-                    slip_done = False
-                    if verbose:
-                        self.print_sweep(errs, best_delays=best)
-                    for board in range(2):
-                        # Make the error search wider here, to encourage boards to
-                        # be slipped together
-                        if np.any(errs[-20:-1, 4*board:4*(board+1), :] == 0):
-                            self._info("Bitslipping board %d because delay end too small" % board)
-                            adc.decrement_bitslip_index(board)
-                    errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
-                                                            step_size=step_size))
+                for board in range(2):
+                    for chip in range(4):
+                        if np.any(errs[0:20, 4*board + chip:4*board + chip + 1, :] == 0):
+                            slip_done = False
+                            self._info("Bitslipping board %d chip %d because delay start too large" % (board, chip))
+                            for lane in range(4):
+                                adc.bitslip(4*chip + lane, board)
+                        if not np.any(errs[:, 4*board + chip:4*board + chip + 1, :] == 0):
+                            slip_done = False
+                            self._info("Bitslipping board %d chip %d because nowhere was good" % (board, chip))
+                            for lane in range(4):
+                                adc.bitslip(4*chip + lane, board)
+                        if np.any(errs[-5:-1,4*board + chip:4*board + chip + 1,:] == 0):
+                            slip_done = False
+                            self._info("Bitslipping board %d chip %d because delay start too small" % (board, chip))
+                            for lane in range(4):
+                                for i in range(5-1):
+                                    adc.bitslip(4*chip + lane, board)
+                if verbose:
+                    self.print_sweep(errs)
+
                 if slip_done:
                     break
+
+                errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
+                                                        step_size=step_size))
+
             best, slack = self._get_best_delays(errs, step_size=step_size)
             best_by_adc += [best]
             slack_by_adc += [slack]
