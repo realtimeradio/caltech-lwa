@@ -514,7 +514,7 @@ class Adc(Block):
             for i in range(8):
                 adc.enable_test_pattern('data', i)
 
-    def calibrate(self, use_ramp=False, fail_hard=True, step_size=TAP_STEP_SIZE):
+    def calibrate(self, use_ramp=False, fail_hard=True, step_size=TAP_STEP_SIZE, verbose=False):
         """
         Compute and set all ADC data lane input delays to their optimal values.
         After this call, the ADCs are left in test mode.
@@ -528,6 +528,9 @@ class Adc(Block):
         :param fail_hard: If True, raise an exception if the calibration run
             doesn't go to plan.
         :type fail_hard: bool
+
+        :param verbose: If True, print alignment information after each scan.
+        :type verbose: bool
 
         :param step_size: Number of IDELAY tap steps between error counts.
         :type step_size: int
@@ -569,7 +572,8 @@ class Adc(Block):
                 slip_done = True
                 if np.any(errs[0:5,:,:] == 0):
                     slip_done = False
-                    #self.print_sweep(errs, best_delays=best)
+                    if verbose:
+                        self.print_sweep(errs, best_delays=best)
                     for board in range(2):
                         # Make the error search wider here, to encourage boards to
                         # be slipped together
@@ -580,7 +584,8 @@ class Adc(Block):
                                                             step_size=step_size))
                 if np.any(errs[-5:-1,:,:] == 0):
                     slip_done = False
-                    #self.print_sweep(errs, best_delays=best)
+                    if verbose:
+                        self.print_sweep(errs, best_delays=best)
                     for board in range(2):
                         # Make the error search wider here, to encourage boards to
                         # be slipped together
