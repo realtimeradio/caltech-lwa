@@ -33,7 +33,7 @@ class Sync(Block):
         :return: The number of FPGA clock ticks between the last two external sync pulses.
         :rtype int:
         """
-        return self.read_uint('ext_sync_period')
+        return self.read_uint('ext_sync_period') + 1
 
     def count_ext(self):
         """
