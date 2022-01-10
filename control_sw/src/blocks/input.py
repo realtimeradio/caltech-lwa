@@ -260,6 +260,7 @@ class Input(Block):
         Print histogram stats to screen.
         """
         x, hist = self.get_all_histograms()
+        hist = np.array(hist)
         hist /= 1024.*1024
         for vn, v in enumerate(x):
             print('%5d:'%v, end=' ')
