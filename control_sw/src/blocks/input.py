@@ -279,4 +279,5 @@ class Input(Block):
         from matplotlib import pyplot as plt
         bins, d = self.get_histogram(stream)
         plt.bar(np.array(bins)-0.5, d, width=1)
+        plt.xlim((np.min(bins)*1.1, np.max(bins)*1.1))
         plt.show()
