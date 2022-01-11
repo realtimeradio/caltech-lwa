@@ -132,14 +132,14 @@ class Input(Block):
         self.write_int('rms_enable', 1)
         time.sleep(0.01)
         self.write_int('rms_enable', 0)
-        x = np.array(struct.unpack('>%dQ' % (self.n_streams), self.read('rms_levels', self.n_streams * 8)))
+        x = np.array(struct.unpack('>%dQ' % (self.n_streams), self.read('rms_levels', self.n_streams * 8)), dtype=np.uint64)
         self.write_int('rms_enable', 1)
         # Top 29 bits of data are signed means
         # Lower 35 bits are unsigned powers
-        means    = (x >> 35)
+        means    = (x >> 35).astype(np.int64)
         means[means >= 2**28] -= 2**29
-        means   /= 2.**16
-        powers   = (x % (2**35 - 1)) / 2.**16
+        means    = means.astype(float) / 2.**16
+        powers   = (x & (2**35 - 1)) / 2.**16
         rmss     = np.sqrt(powers)
         return means, powers, rmss
 
