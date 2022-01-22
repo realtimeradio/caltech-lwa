@@ -379,7 +379,7 @@ class Snap2FengineEtcdClient():
                                  )]
         # Also watch on the "all SNAPs" key
         self._etcd_watch_ids += [self.ec.add_watch_prefix_callback(
-                                  ETCD_CMD_ROOT + "/0",
+                                  ETCD_CMD_ROOT + "0",
                                   self._etcd_callback,
                                 )]
 
