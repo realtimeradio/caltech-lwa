@@ -14,8 +14,10 @@ Restart=always
 RestartSec=60
 User=ubuntu
 Group=ubuntu
+WorkingDirectory=/home/ubuntu/proj/lwa-shell/caltech-bifrost-dsp/pipeline-control/scripts
+EnvironmentFile=/home/ubuntu/condaEnv
 PIDFile=/var/run/lwa_feng_etcd_service.%i.pid
-ExecStart=/home/ubuntu/anaconda3/bin/lwa_start_feng_etcd_service.py --snaphost %i
+ExecStart=/home/ubuntu/proj/lwa-shell/caltech-lwa/control_sw/scripts/lwa_start_feng_etcd_service.py --snaphost %i
 
 [Install]
 WantedBy=multi-user.target
