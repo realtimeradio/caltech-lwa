@@ -31,7 +31,7 @@ def updatevalue(mainregister,nbits,MSBoffset,bw,newval):
 def lookup_register(name,fname):
     #fname is the file with a table of register information
     #name is the name you want to look up
-    registers = pd.read_excel(fname)
+    registers = pd.read_excel(fname,engine='openpyxl')
     return registers[registers['interface']==name]
 
 def getvalue(brd,name,fname):
@@ -91,10 +91,10 @@ def setup_ethernet(brdname,brd,fpgfile,destinationcomputer,packetwait):
     #configure the 40 Gbe core
     brd.get_system_information(fpgfile)
     if destinationcomputer == 'lwacr':
-        setvalue(brd,'dest_ip','cr_registers.xlsx',(10<<24)+(41<<16)+(0<<8)+106)
+        setvalue(brd,'dest_ip','cr_registers.xlsx',(10<<24)+(41<<16)+(0<<8)+58)
         setvalue(brd,'cr_dest_port','cr_registers.xlsx',11111)
         brd.gbes.cosmic_ray_cr_forty_gbe.configure_core(mac, ip, 11111)
-        brd.gbes.cosmic_ray_cr_forty_gbe.set_single_arp_entry('10.41.0.106',  0x043f72dfc2f8)
+        brd.gbes.cosmic_ray_cr_forty_gbe.set_single_arp_entry('10.41.0.58',  0x043f72dfc2f8)
         brd.gbes.cosmic_ray_cr_forty_gbe.print_gbe_core_details(arp=True)
 
     elif destinationcomputer == 'minor':

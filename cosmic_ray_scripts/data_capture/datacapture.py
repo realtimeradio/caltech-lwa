@@ -62,7 +62,8 @@ savepacket = (args.savepacket == "True")
 if computer =='minor':
     RX_IP = "192.168.41.12"
 elif computer == 'lwacr':
-    RX_IP = '10.41.0.106'
+    #RX_IP = '10.41.0.106'
+    RX_IP = '10.41.0.58'
 else:
     print('Argument not recognized. Options are lwacr and minor right now.')
 
