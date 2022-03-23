@@ -19,3 +19,6 @@ snap2_forty_gbe_test/
 !snap2_forty_gbe_test/outputs/*
 snap2_zynq_bridge/
 !snap2_zynq_bridge/outputs/*
+
+#Cosmic ray test data
+cosmic_ray_scripts/data_capture/snapshots

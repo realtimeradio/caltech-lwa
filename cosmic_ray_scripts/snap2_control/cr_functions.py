@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import pandas as pd
 import time
-
+import numpy as np
+import struct
 
 def extractvalue(mainregister,nbits,MSBoffset,bw):
     #extract the value of the specified consecutive bits of mainregister
@@ -30,7 +31,7 @@ def updatevalue(mainregister,nbits,MSBoffset,bw,newval):
 def lookup_register(name,fname):
     #fname is the file with a table of register information
     #name is the name you want to look up
-    registers = pd.read_excel(fname)
+    registers = pd.read_excel(fname,engine='openpyxl')
     return registers[registers['interface']==name]
 
 def getvalue(brd,name,fname):
@@ -90,10 +91,10 @@ def setup_ethernet(brdname,brd,fpgfile,destinationcomputer,packetwait):
     #configure the 40 Gbe core
     brd.get_system_information(fpgfile)
     if destinationcomputer == 'lwacr':
-        setvalue(brd,'dest_ip','cr_registers.xlsx',(10<<24)+(41<<16)+(0<<8)+106)
+        setvalue(brd,'dest_ip','cr_registers.xlsx',(10<<24)+(41<<16)+(0<<8)+58)
         setvalue(brd,'cr_dest_port','cr_registers.xlsx',11111)
         brd.gbes.cosmic_ray_cr_forty_gbe.configure_core(mac, ip, 11111)
-        brd.gbes.cosmic_ray_cr_forty_gbe.set_single_arp_entry('10.41.0.106',  0x043f72dfc2f8)
+        brd.gbes.cosmic_ray_cr_forty_gbe.set_single_arp_entry('10.41.0.58',  0x043f72dfc2f8)
         brd.gbes.cosmic_ray_cr_forty_gbe.print_gbe_core_details(arp=True)
 
     elif destinationcomputer == 'minor':
@@ -195,3 +196,18 @@ def software_trigger(brd,stats):
         new_afull = afull - previous_afull
         print("Ethernet block almost-full counter incremented by " + str(new_afull))
         return
+
+def read_threshold_rates(casperbrd):
+    #Reads the shared BRAMs that hold the number of times the individual antennas exceed thresholds in the last 2^28 clock cycles
+    #Returns an array of length 64 for the rate each antenna exceeds the core threshold and another for the rate exceeding veto threshold
+    #casperbrd is a casperfpga CasperFpga object
+    core = np.zeros(64)
+    veto = np.zeros(64)
+    core[:32]= struct.unpack('>32l',casperbrd.read("cosmic_ray_thresh_rate1",32*4,0))
+    core[32:]= struct.unpack('>32l',casperbrd.read("cosmic_ray_thresh_rate2",32*4,0))
+    veto[:32]= struct.unpack('>32l',casperbrd.read("cosmic_ray_veto_thresh_rate1",32*4,0))
+    veto[32:]= struct.unpack('>32l',casperbrd.read("cosmic_ray_veto_thresh_rate2",32*4,0))
+    return core, veto
+
+
+
