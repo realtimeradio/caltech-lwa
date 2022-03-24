@@ -1,0 +1,14 @@
+===================================
+Configuration Memory information
+===================================
+File Format        BIN
+Interface          SPIX4
+Size               32M
+Start Address      0x00000000
+End Address        0x01FFFFFF
+Checksum           0x7944B506
+Fill Value         0xFF
+
+Addr1         Addr2         Date                    File(s)                         Checksum
+0x00000000    0x008A336F    Feb  7 22:26:03 2021    ./myproj.runs/impl_1/top.bit    0x04EDF196
+File Checksum Total                                                                 0x04EDF196

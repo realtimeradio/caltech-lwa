@@ -1,0 +1,584 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:47:09 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Sun Feb  7 22:13:39 2021
+# Process ID: 4024
+# Current directory: /home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1
+# Command line: vivado -log cont_microblaze_dlmb_bram_if_cntlr_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source cont_microblaze_dlmb_bram_if_cntlr_0.tcl
+# Log file: /home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1/cont_microblaze_dlmb_bram_if_cntlr_0.vds
+# Journal file: /home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1/vivado.jou
+#-----------------------------------------------------------
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Synthesis Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaOptimized_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaOptimized_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaMultThresholdDSP' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AlternateRoutability' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_PerfOptimized_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_PerfThresholdCarry' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'HLS Compile C Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/CC2015.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/CC2015.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Synthesis Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaOptimized_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaOptimized_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaMultThresholdDSP' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AlternateRoutability' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_PerfOptimized_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_PerfThresholdCarry' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Implementation Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExplorePostRoutePhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExploreWithRemap' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacementFanoutOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_EarlyBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Retiming' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExtraTimingOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_RefinePlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_SpreadSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_BalanceSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_BalanceSLRs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_HighUtilSLRs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_ExploreSequential' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_ExploreWithRemap' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_DefaultOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_ExploreArea' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPostRoutePhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_Quick' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Implementation Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_RefinePlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacementFanoutOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_LateBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExploreSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_DefaultOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_Quick' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogicSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_BalanceSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_BalanceSLRs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_CompressSLRs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Synthesis Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2012.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2012.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Synthesis Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Implementation Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExplorePostRoutePhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacementFanoutOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_EarlyBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Retiming' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExtraTimingOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_RefinePlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_SpreadSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_BalanceSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_ExploreSequential' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_ExploreWithRemap' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_DefaultOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_ExploreArea' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPostRoutePhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+INFO: [Common 17-14] Message 'Runs 36-547' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Synthesis Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Synthesis Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Synthesis Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Implementation Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'UltraFast Design Methodology Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Performance Explore Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Timing Closure Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Implementation Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'UltraFast Design Methodology Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Performance Explore Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Timing Closure Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Implementation Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'UltraFast Design Methodology Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Performance Explore Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Timing Closure Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+source cont_microblaze_dlmb_bram_if_cntlr_0.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/home/kplant/software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/axi_wb_bridge/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/data/Xilinx/Vivado/2019.1/data/ip'.
+Command: synth_design -top cont_microblaze_dlmb_bram_if_cntlr_0 -part xcku115-flvf1924-2-e -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcku115'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcku115'
+INFO: [Common 17-1540] The version limit for your license is '2019.10' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+INFO: [Device 21-403] Loading part xcku115-flvf1924-2-e
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 4104 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 2181.598 ; gain = 144.684 ; free physical = 43908 ; free virtual = 63036
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'cont_microblaze_dlmb_bram_if_cntlr_0' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_dlmb_bram_if_cntlr_0/synth/cont_microblaze_dlmb_bram_if_cntlr_0.vhd:84]
+	Parameter C_FAMILY bound to: kintexu - type: string 
+	Parameter C_HIGHADDR bound to: 64'b0000000000000000000000000000000000000000000000111111111111111111 
+	Parameter C_BASEADDR bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_NUM_LMB bound to: 1 - type: integer 
+	Parameter C_MASK bound to: 64'b0000000000000000000000000000000001000000000000000000000000000000 
+	Parameter C_MASK1 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_MASK2 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_MASK3 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_LMB_AWIDTH bound to: 32 - type: integer 
+	Parameter C_LMB_DWIDTH bound to: 32 - type: integer 
+	Parameter C_ECC bound to: 0 - type: integer 
+	Parameter C_INTERCONNECT bound to: 0 - type: integer 
+	Parameter C_FAULT_INJECT bound to: 0 - type: integer 
+	Parameter C_CE_FAILING_REGISTERS bound to: 0 - type: integer 
+	Parameter C_UE_FAILING_REGISTERS bound to: 0 - type: integer 
+	Parameter C_ECC_STATUS_REGISTERS bound to: 0 - type: integer 
+	Parameter C_ECC_ONOFF_REGISTER bound to: 0 - type: integer 
+	Parameter C_ECC_ONOFF_RESET_VALUE bound to: 1 - type: integer 
+	Parameter C_CE_COUNTER_WIDTH bound to: 0 - type: integer 
+	Parameter C_WRITE_ACCESS bound to: 2 - type: integer 
+	Parameter C_BRAM_AWIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_CTRL_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_CTRL_DATA_WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-3491] module 'lmb_bram_if_cntlr' declared at '/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:3119' bound to instance 'U0' of component 'lmb_bram_if_cntlr' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_dlmb_bram_if_cntlr_0/synth/cont_microblaze_dlmb_bram_if_cntlr_0.vhd:225]
+INFO: [Synth 8-638] synthesizing module 'lmb_bram_if_cntlr' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:3243]
+	Parameter C_FAMILY bound to: kintexu - type: string 
+	Parameter C_HIGHADDR bound to: 64'b0000000000000000000000000000000000000000000000111111111111111111 
+	Parameter C_BASEADDR bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_MASK bound to: 64'b0000000000000000000000000000000001000000000000000000000000000000 
+	Parameter C_MASK1 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_MASK2 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_MASK3 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_LMB_AWIDTH bound to: 32 - type: integer 
+	Parameter C_LMB_DWIDTH bound to: 32 - type: integer 
+	Parameter C_ECC bound to: 0 - type: integer 
+	Parameter C_INTERCONNECT bound to: 0 - type: integer 
+	Parameter C_FAULT_INJECT bound to: 0 - type: integer 
+	Parameter C_CE_FAILING_REGISTERS bound to: 0 - type: integer 
+	Parameter C_UE_FAILING_REGISTERS bound to: 0 - type: integer 
+	Parameter C_ECC_STATUS_REGISTERS bound to: 0 - type: integer 
+	Parameter C_ECC_ONOFF_REGISTER bound to: 0 - type: integer 
+	Parameter C_ECC_ONOFF_RESET_VALUE bound to: 1 - type: integer 
+	Parameter C_CE_COUNTER_WIDTH bound to: 0 - type: integer 
+	Parameter C_WRITE_ACCESS bound to: 2 - type: integer 
+	Parameter C_NUM_LMB bound to: 1 - type: integer 
+	Parameter C_BRAM_AWIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_CTRL_BASEADDR bound to: 32'b11111111111111111111111111111111 
+	Parameter C_S_AXI_CTRL_HIGHADDR bound to: 32'b00000000000000000000000000000000 
+	Parameter C_S_AXI_CTRL_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_CTRL_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_TARGET bound to: 5 - type: integer 
+	Parameter C_BASEADDR bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_MASK bound to: 64'b0000000000000000000000000000000001000000000000000000000000000000 
+	Parameter C_MASK1 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_MASK2 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_MASK3 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_LMB_AWIDTH bound to: 32 - type: integer 
+	Parameter C_LMB_DWIDTH bound to: 32 - type: integer 
+	Parameter C_ECC bound to: 0 - type: integer 
+	Parameter C_NUM_LMB bound to: 1 - type: integer 
+INFO: [Synth 8-3491] module 'lmb_mux' declared at '/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:2527' bound to instance 'lmb_mux_I' of component 'lmb_mux' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:3466]
+INFO: [Synth 8-638] synthesizing module 'lmb_mux' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:2613]
+	Parameter C_TARGET bound to: 5 - type: integer 
+	Parameter C_BASEADDR bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_MASK bound to: 64'b0000000000000000000000000000000001000000000000000000000000000000 
+	Parameter C_MASK1 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_MASK2 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_MASK3 bound to: 64'b0000000000000000000000000000000000000000100000000000000000000000 
+	Parameter C_LMB_AWIDTH bound to: 32 - type: integer 
+	Parameter C_LMB_DWIDTH bound to: 32 - type: integer 
+	Parameter C_ECC bound to: 0 - type: integer 
+	Parameter C_NUM_LMB bound to: 1 - type: integer 
+	Parameter C_AW bound to: 32 - type: integer 
+	Parameter C_BAR bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_MASK bound to: 64'b0000000000000000000000000000000001000000000000000000000000000000 
+INFO: [Synth 8-3491] module 'pselect_mask' declared at '/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:2110' bound to instance 'pselect_mask_lmb' of component 'pselect_mask' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:2681]
+INFO: [Synth 8-638] synthesizing module 'pselect_mask' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:2125]
+	Parameter C_AW bound to: 32 - type: integer 
+	Parameter C_BAR bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_MASK bound to: 64'b0000000000000000000000000000000001000000000000000000000000000000 
+INFO: [Synth 8-256] done synthesizing module 'pselect_mask' (1#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:2125]
+INFO: [Synth 8-256] done synthesizing module 'lmb_mux' (2#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:2613]
+INFO: [Synth 8-256] done synthesizing module 'lmb_bram_if_cntlr' (3#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/6335/hdl/lmb_bram_if_cntlr_v4_0_vh_rfs.vhd:3243]
+INFO: [Synth 8-256] done synthesizing module 'cont_microblaze_dlmb_bram_if_cntlr_0' (4#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_dlmb_bram_if_cntlr_0/synth/cont_microblaze_dlmb_bram_if_cntlr_0.vhd:84]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[0]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[2]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[3]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[4]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[5]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[6]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[7]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[8]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[9]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[10]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[11]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[12]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[13]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[14]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[15]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[16]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[17]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[18]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[19]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[20]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[21]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[22]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[23]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[24]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[25]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[26]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[27]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[28]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[29]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[30]
+WARNING: [Synth 8-3331] design pselect_mask has unconnected port A[31]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB_Clk
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB_Rst
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[0]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[1]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[2]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[3]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[4]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[5]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[6]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[7]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[8]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[9]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[10]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[11]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[12]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[13]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[14]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[15]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[16]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[17]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[18]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[19]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[20]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[21]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[22]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[23]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[24]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[25]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[26]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[27]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[28]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[29]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[30]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ABus[31]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[0]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[1]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[2]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[3]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[4]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[5]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[6]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[7]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[8]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[9]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[10]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[11]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[12]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[13]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[14]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[15]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[16]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[17]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[18]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[19]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[20]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[21]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[22]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[23]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[24]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[25]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[26]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[27]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[28]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[29]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[30]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteDBus[31]
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_AddrStrobe
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_ReadStrobe
+WARNING: [Synth 8-3331] design lmb_mux has unconnected port LMB1_WriteStrobe
+INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2241.316 ; gain = 204.402 ; free physical = 43949 ; free virtual = 63077
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2247.254 ; gain = 210.340 ; free physical = 44016 ; free virtual = 63145
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2247.254 ; gain = 210.340 ; free physical = 44016 ; free virtual = 63145
+---------------------------------------------------------------------------------
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_dlmb_bram_if_cntlr_0/cont_microblaze_dlmb_bram_if_cntlr_0_ooc.xdc] for cell 'U0'
+Finished Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_dlmb_bram_if_cntlr_0/cont_microblaze_dlmb_bram_if_cntlr_0_ooc.xdc] for cell 'U0'
+Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1/dont_touch.xdc]
+Finished Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1/dont_touch.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2388.910 ; gain = 0.000 ; free physical = 43860 ; free virtual = 62989
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2388.910 ; gain = 0.000 ; free physical = 43860 ; free virtual = 62989
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2388.910 ; gain = 351.996 ; free physical = 43792 ; free virtual = 62921
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcku115-flvf1924-2-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2388.910 ; gain = 351.996 ; free physical = 43790 ; free virtual = 62919
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property DONT_TOUCH = true for U0. (constraint file  /home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1/dont_touch.xdc, line 9).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2388.910 ; gain = 351.996 ; free physical = 43789 ; free virtual = 62918
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2388.910 ; gain = 351.996 ; free physical = 43769 ; free virtual = 62898
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 2     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module lmb_bram_if_cntlr 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 2     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 5520 (col length:120)
+BRAMs: 4320 (col length: RAMB18 240 RAMB36 120)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+Warning: Parallel synthesis criteria is not met 
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 2388.910 ; gain = 351.996 ; free physical = 43739 ; free virtual = 62871
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:22 ; elapsed = 00:00:34 . Memory (MB): peak = 2461.207 ; gain = 424.293 ; free physical = 45012 ; free virtual = 64147
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:22 ; elapsed = 00:00:34 . Memory (MB): peak = 2461.207 ; gain = 424.293 ; free physical = 45007 ; free virtual = 64142
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:22 ; elapsed = 00:00:34 . Memory (MB): peak = 2470.223 ; gain = 433.309 ; free physical = 45009 ; free virtual = 64144
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:24 ; elapsed = 00:00:35 . Memory (MB): peak = 2486.066 ; gain = 449.152 ; free physical = 44776 ; free virtual = 63910
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:24 ; elapsed = 00:00:35 . Memory (MB): peak = 2486.066 ; gain = 449.152 ; free physical = 44774 ; free virtual = 63909
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:24 ; elapsed = 00:00:35 . Memory (MB): peak = 2486.066 ; gain = 449.152 ; free physical = 44773 ; free virtual = 63908
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:24 ; elapsed = 00:00:35 . Memory (MB): peak = 2486.066 ; gain = 449.152 ; free physical = 44772 ; free virtual = 63907
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:24 ; elapsed = 00:00:35 . Memory (MB): peak = 2486.066 ; gain = 449.152 ; free physical = 44770 ; free virtual = 63905
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:24 ; elapsed = 00:00:35 . Memory (MB): peak = 2486.066 ; gain = 449.152 ; free physical = 44769 ; free virtual = 63904
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----+------+
+|      |Cell |Count |
++------+-----+------+
+|1     |LUT1 |     1|
+|2     |LUT2 |     1|
+|3     |LUT3 |     4|
+|4     |FDRE |     2|
++------+-----+------+
+
+Report Instance Areas: 
++------+---------+------------------+------+
+|      |Instance |Module            |Cells |
++------+---------+------------------+------+
+|1     |top      |                  |     8|
+|2     |  U0     |lmb_bram_if_cntlr |     8|
++------+---------+------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:24 ; elapsed = 00:00:35 . Memory (MB): peak = 2486.066 ; gain = 449.152 ; free physical = 44768 ; free virtual = 63903
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 321 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:22 ; elapsed = 00:00:34 . Memory (MB): peak = 2486.066 ; gain = 307.496 ; free physical = 44765 ; free virtual = 63900
+Synthesis Optimization Complete : Time (s): cpu = 00:00:24 ; elapsed = 00:00:35 . Memory (MB): peak = 2486.074 ; gain = 449.152 ; free physical = 44764 ; free virtual = 63899
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2564.676 ; gain = 0.000 ; free physical = 44532 ; free virtual = 63666
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+26 Infos, 100 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:33 ; elapsed = 00:00:48 . Memory (MB): peak = 2564.676 ; gain = 1094.027 ; free physical = 44624 ; free virtual = 63759
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2564.676 ; gain = 0.000 ; free physical = 44624 ; free virtual = 63759
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint '/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1/cont_microblaze_dlmb_bram_if_cntlr_0.dcp' has been generated.
+WARNING: [Common 17-576] 'use_project_ipc' is deprecated. This option is deprecated and no longer used.
+INFO: [Coretcl 2-1648] Added synthesis output to IP cache for IP cont_microblaze_dlmb_bram_if_cntlr_0, cache-ID = d79ac7d8fd4b13f5
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2588.688 ; gain = 0.000 ; free physical = 44578 ; free virtual = 63713
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint '/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1/cont_microblaze_dlmb_bram_if_cntlr_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file cont_microblaze_dlmb_bram_if_cntlr_0_utilization_synth.rpt -pb cont_microblaze_dlmb_bram_if_cntlr_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sun Feb  7 22:14:38 2021...

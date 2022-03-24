@@ -1,0 +1,736 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:47:09 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Sun Feb  7 22:15:26 2021
+# Process ID: 5021
+# Current directory: /home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_axi_timebase_wdt_0_0_synth_1
+# Command line: vivado -log cont_microblaze_axi_timebase_wdt_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source cont_microblaze_axi_timebase_wdt_0_0.tcl
+# Log file: /home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_axi_timebase_wdt_0_0_synth_1/cont_microblaze_axi_timebase_wdt_0_0.vds
+# Journal file: /home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_axi_timebase_wdt_0_0_synth_1/vivado.jou
+#-----------------------------------------------------------
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Synthesis Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaOptimized_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaOptimized_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaMultThresholdDSP' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AlternateRoutability' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_PerfOptimized_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_PerfThresholdCarry' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'HLS Compile C Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/CC2015.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/CC2015.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Synthesis Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaOptimized_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaOptimized_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AreaMultThresholdDSP' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_AlternateRoutability' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_PerfOptimized_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_PerfThresholdCarry' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2016.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Implementation Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExplorePostRoutePhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExploreWithRemap' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacementFanoutOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_EarlyBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Retiming' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExtraTimingOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_RefinePlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_SpreadSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_BalanceSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_BalanceSLRs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_HighUtilSLRs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_ExploreSequential' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_ExploreWithRemap' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_DefaultOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_ExploreArea' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPostRoutePhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_Quick' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2018.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Implementation Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_RefinePlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacementFanoutOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_LateBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExploreSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_DefaultOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_Quick' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogicSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_BalanceSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_BalanceSLRs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_CompressSLRs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Synthesis Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2012.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2012.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Synthesis Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDS2013.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDS2013.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Vivado Implementation Defaults' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExplorePostRoutePhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_WLBlockPlacementFanoutOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_EarlyBlockPlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_NetDelay_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_Retiming' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_ExtraTimingOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_RefinePlacement' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_SpreadSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Performance_BalanceSLLs' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_medium' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SpreadLogic_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_high' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_low' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Congestion_SSI_SpreadLogic_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_Explore' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_ExploreSequential' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Area_ExploreWithRemap' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_DefaultOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Power_ExploreArea' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RunPostRoutePhysOpt' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+WARNING: [Runs 36-547] Tool Strategy 'Flow_RuntimeOptimized' from file '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/strategies/VDI2017.psg'
+INFO: [Common 17-14] Message 'Runs 36-547' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Synthesis Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Synthesis Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Synthesis Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRS2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Implementation Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'UltraFast Design Methodology Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Performance Explore Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Timing Closure Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2017.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Implementation Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'UltraFast Design Methodology Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Performance Explore Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Timing Closure Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2018.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Vivado Implementation Default Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'UltraFast Design Methodology Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Performance Explore Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'Timing Closure Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+WARNING: [Runs 36-546] Tool Report Strategy 'No Reports' from file '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg' discarded because strategy with same name already parsed from '/data/Xilinx/Vivado/2019.1/reportstrategies/VRI2019.psg'
+source cont_microblaze_axi_timebase_wdt_0_0.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/home/kplant/software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/axi_wb_bridge/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/data/Xilinx/Vivado/2019.1/data/ip'.
+Command: synth_design -top cont_microblaze_axi_timebase_wdt_0_0 -part xcku115-flvf1924-2-e -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcku115'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcku115'
+INFO: [Common 17-1540] The version limit for your license is '2019.10' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+INFO: [Device 21-403] Loading part xcku115-flvf1924-2-e
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 5201 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 2181.980 ; gain = 146.684 ; free physical = 44930 ; free virtual = 64073
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'cont_microblaze_axi_timebase_wdt_0_0' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/synth/cont_microblaze_axi_timebase_wdt_0_0.vhd:87]
+	Parameter C_FAMILY bound to: kintexu - type: string 
+	Parameter C_WDT_INTERVAL bound to: 29 - type: integer 
+	Parameter C_WDT_ENABLE_ONCE bound to: 1 - type: integer 
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 4 - type: integer 
+	Parameter C_ENABLE_WINDOW_WDT bound to: 0 - type: integer 
+	Parameter C_SST_COUNT_WIDTH bound to: 8 - type: integer 
+	Parameter C_MAX_COUNT_WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-3491] module 'axi_timebase_wdt_top' declared at '/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:2905' bound to instance 'U0' of component 'axi_timebase_wdt_top' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/synth/cont_microblaze_axi_timebase_wdt_0_0.vhd:167]
+INFO: [Synth 8-638] synthesizing module 'axi_timebase_wdt_top' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:2947]
+	Parameter C_FAMILY bound to: kintexu - type: string 
+	Parameter C_WDT_INTERVAL bound to: 29 - type: integer 
+	Parameter C_WDT_ENABLE_ONCE bound to: 1 - type: integer 
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 4 - type: integer 
+	Parameter C_ENABLE_WINDOW_WDT bound to: 0 - type: integer 
+	Parameter C_SST_COUNT_WIDTH bound to: 8 - type: integer 
+	Parameter C_MAX_COUNT_WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-638] synthesizing module 'axi_timebase_wdt' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:1297]
+	Parameter C_FAMILY bound to: kintexu - type: string 
+	Parameter C_WDT_INTERVAL bound to: 29 - type: integer 
+	Parameter C_WDT_ENABLE_ONCE bound to: 1 - type: integer 
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 4 - type: integer 
+INFO: [Synth 8-638] synthesizing module 'timebase_wdt_core' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:603]
+	Parameter C_FAMILY bound to: kintexu - type: string 
+	Parameter C_WDT_INTERVAL bound to: 29 - type: integer 
+	Parameter C_WDT_ENABLE_ONCE bound to: 1 - type: bool 
+	Parameter C_NATIVE_DWIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-638] synthesizing module 'cdc_sync' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/ef1e/hdl/lib_cdc_v1_0_rfs.vhd:106]
+	Parameter C_CDC_TYPE bound to: 1 - type: integer 
+	Parameter C_RESET_STATE bound to: 0 - type: integer 
+	Parameter C_SINGLE_BIT bound to: 1 - type: integer 
+	Parameter C_FLOP_INPUT bound to: 0 - type: integer 
+	Parameter C_VECTOR_WIDTH bound to: 32 - type: integer 
+	Parameter C_MTBF_STAGES bound to: 4 - type: integer 
+	Parameter INIT bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'CROSS_PLEVEL_IN2SCNDRY_IN_cdc_to' to cell 'FDR' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/ef1e/hdl/lib_cdc_v1_0_rfs.vhd:514]
+	Parameter INIT bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'CROSS_PLEVEL_IN2SCNDRY_s_level_out_d2' to cell 'FDR' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/ef1e/hdl/lib_cdc_v1_0_rfs.vhd:545]
+	Parameter INIT bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'CROSS_PLEVEL_IN2SCNDRY_s_level_out_d3' to cell 'FDR' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/ef1e/hdl/lib_cdc_v1_0_rfs.vhd:554]
+	Parameter INIT bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'CROSS_PLEVEL_IN2SCNDRY_s_level_out_d4' to cell 'FDR' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/ef1e/hdl/lib_cdc_v1_0_rfs.vhd:564]
+	Parameter INIT bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'CROSS_PLEVEL_IN2SCNDRY_s_level_out_d5' to cell 'FDR' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/ef1e/hdl/lib_cdc_v1_0_rfs.vhd:574]
+	Parameter INIT bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'CROSS_PLEVEL_IN2SCNDRY_s_level_out_d6' to cell 'FDR' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/ef1e/hdl/lib_cdc_v1_0_rfs.vhd:584]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync' (1#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/ef1e/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-226] default block is never used [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:625]
+INFO: [Synth 8-256] done synthesizing module 'timebase_wdt_core' (2#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:603]
+INFO: [Synth 8-638] synthesizing module 'axi_lite_ipif' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:2948]
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 4 - type: integer 
+	Parameter C_S_AXI_MIN_SIZE bound to: 32'b00000000000000000000000000001111 
+	Parameter C_USE_WSTRB bound to: 1 - type: integer 
+	Parameter C_DPHASE_TIMEOUT bound to: 32 - type: integer 
+	Parameter C_ARD_ADDR_RANGE_ARRAY bound to: 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111 
+	Parameter C_ARD_NUM_CE_ARRAY bound to: 32'b00000000000000000000000000000100 
+	Parameter C_FAMILY bound to: kintexu - type: string 
+INFO: [Synth 8-638] synthesizing module 'slave_attachment' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:2341]
+	Parameter C_ARD_ADDR_RANGE_ARRAY bound to: 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111 
+	Parameter C_ARD_NUM_CE_ARRAY bound to: 32'b00000000000000000000000000000100 
+	Parameter C_IPIF_ABUS_WIDTH bound to: 4 - type: integer 
+	Parameter C_IPIF_DBUS_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_MIN_SIZE bound to: 15 - type: integer 
+	Parameter C_USE_WSTRB bound to: 1 - type: integer 
+	Parameter C_DPHASE_TIMEOUT bound to: 32 - type: integer 
+	Parameter C_FAMILY bound to: kintexu - type: string 
+INFO: [Synth 8-638] synthesizing module 'address_decoder' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1775]
+	Parameter C_BUS_AWIDTH bound to: 4 - type: integer 
+	Parameter C_S_AXI_MIN_SIZE bound to: 15 - type: integer 
+	Parameter C_ARD_ADDR_RANGE_ARRAY bound to: 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111 
+	Parameter C_ARD_NUM_CE_ARRAY bound to: 32'b00000000000000000000000000000100 
+	Parameter C_FAMILY bound to: nofamily - type: string 
+INFO: [Synth 8-638] synthesizing module 'pselect_f' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1534]
+	Parameter C_AB bound to: 2 - type: integer 
+	Parameter C_AW bound to: 2 - type: integer 
+	Parameter C_BAR bound to: 2'b00 
+	Parameter C_FAMILY bound to: nofamily - type: string 
+INFO: [Synth 8-256] done synthesizing module 'pselect_f' (3#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1534]
+INFO: [Synth 8-638] synthesizing module 'pselect_f__parameterized0' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1534]
+	Parameter C_AB bound to: 2 - type: integer 
+	Parameter C_AW bound to: 2 - type: integer 
+	Parameter C_BAR bound to: 2'b01 
+	Parameter C_FAMILY bound to: nofamily - type: string 
+INFO: [Synth 8-256] done synthesizing module 'pselect_f__parameterized0' (3#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1534]
+INFO: [Synth 8-638] synthesizing module 'pselect_f__parameterized1' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1534]
+	Parameter C_AB bound to: 2 - type: integer 
+	Parameter C_AW bound to: 2 - type: integer 
+	Parameter C_BAR bound to: 2'b10 
+	Parameter C_FAMILY bound to: nofamily - type: string 
+INFO: [Synth 8-256] done synthesizing module 'pselect_f__parameterized1' (3#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1534]
+INFO: [Synth 8-638] synthesizing module 'pselect_f__parameterized2' [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1534]
+	Parameter C_AB bound to: 2 - type: integer 
+	Parameter C_AW bound to: 2 - type: integer 
+	Parameter C_BAR bound to: 2'b11 
+	Parameter C_FAMILY bound to: nofamily - type: string 
+INFO: [Synth 8-256] done synthesizing module 'pselect_f__parameterized2' (3#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1534]
+INFO: [Synth 8-256] done synthesizing module 'address_decoder' (4#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:1775]
+INFO: [Synth 8-226] default block is never used [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:2550]
+INFO: [Synth 8-256] done synthesizing module 'slave_attachment' (5#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:2341]
+INFO: [Synth 8-256] done synthesizing module 'axi_lite_ipif' (6#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/66ea/hdl/axi_lite_ipif_v3_0_vh_rfs.vhd:2948]
+INFO: [Synth 8-256] done synthesizing module 'axi_timebase_wdt' (7#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:1297]
+WARNING: [Synth 8-3848] Net wdt_reset_pending in module/entity axi_timebase_wdt_top does not have driver. [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:2942]
+WARNING: [Synth 8-3848] Net wdt_state_vec in module/entity axi_timebase_wdt_top does not have driver. [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:2943]
+INFO: [Synth 8-256] done synthesizing module 'axi_timebase_wdt_top' (8#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ipshared/0ae3/hdl/axi_timebase_wdt_v3_0_vh_rfs.vhd:2947]
+INFO: [Synth 8-256] done synthesizing module 'cont_microblaze_axi_timebase_wdt_0_0' (9#1) [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/synth/cont_microblaze_axi_timebase_wdt_0_0.vhd:87]
+WARNING: [Synth 8-3331] design address_decoder has unconnected port Address_In_Erly[2]
+WARNING: [Synth 8-3331] design address_decoder has unconnected port Address_In_Erly[3]
+WARNING: [Synth 8-3331] design address_decoder has unconnected port Bus_RNW
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_aclk
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_resetn
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[31]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[30]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[29]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[28]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[27]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[26]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[25]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[24]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[23]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[22]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[21]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[20]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[19]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[18]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[17]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[16]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[15]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[14]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[13]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[12]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[11]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[10]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[9]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[8]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[7]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[6]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[5]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[4]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[3]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[2]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[1]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port prmry_vect_in[0]
+WARNING: [Synth 8-3331] design cdc_sync has unconnected port scndry_resetn
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[0]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[1]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[2]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[3]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[4]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[5]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[6]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[7]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[8]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[9]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[10]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[11]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[12]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[13]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[14]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[15]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[16]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[17]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[18]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[19]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[20]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[21]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[22]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[23]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[24]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[25]
+WARNING: [Synth 8-3331] design timebase_wdt_core has unconnected port Bus2IP_Data[26]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_reset_pending
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[6]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[5]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[4]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[3]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[2]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[1]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[0]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2240.699 ; gain = 205.402 ; free physical = 44891 ; free virtual = 64034
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2247.637 ; gain = 212.340 ; free physical = 44878 ; free virtual = 64021
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2247.637 ; gain = 212.340 ; free physical = 44878 ; free virtual = 64021
+---------------------------------------------------------------------------------
+INFO: [Netlist 29-17] Analyzing 6 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/cont_microblaze_axi_timebase_wdt_0_0_ooc.xdc] for cell 'U0'
+Finished Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/cont_microblaze_axi_timebase_wdt_0_0_ooc.xdc] for cell 'U0'
+Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/cont_microblaze_axi_timebase_wdt_0_0.xdc] for cell 'U0'
+Finished Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.srcs/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/cont_microblaze_axi_timebase_wdt_0_0.xdc] for cell 'U0'
+Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_axi_timebase_wdt_0_0_synth_1/dont_touch.xdc]
+Finished Parsing XDC File [/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_axi_timebase_wdt_0_0_synth_1/dont_touch.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2430.293 ; gain = 0.000 ; free physical = 45038 ; free virtual = 64182
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 6 instances were transformed.
+  FDR => FDRE: 6 instances
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2430.293 ; gain = 0.000 ; free physical = 45038 ; free virtual = 64182
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2430.293 ; gain = 394.996 ; free physical = 45022 ; free virtual = 64166
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcku115-flvf1924-2-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2430.293 ; gain = 394.996 ; free physical = 45022 ; free virtual = 64166
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property DONT_TOUCH = true for U0. (constraint file  /home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_axi_timebase_wdt_0_0_synth_1/dont_touch.xdc, line 9).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 2430.293 ; gain = 394.996 ; free physical = 45022 ; free virtual = 64166
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'WDT_Current_State_reg' in module 'timebase_wdt_core'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'slave_attachment'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+              resetstate |                             0001 |                               00
+             expiredonce |                             0010 |                               10
+      expiredoncedelayed |                             0100 |                               01
+            expiredtwice |                             1000 |                               11
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'WDT_Current_State_reg' using encoding 'one-hot' in module 'timebase_wdt_core'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE2 |                             0001 |                               00
+                  iSTATE |                             0010 |                               01
+                 iSTATE0 |                             0100 |                               10
+                 iSTATE1 |                             1000 |                               11
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'slave_attachment'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 2430.293 ; gain = 394.996 ; free physical = 45012 ; free virtual = 64156
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
+	   2 Input      6 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 2     
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 1     
+	                4 Bit    Registers := 1     
+	                2 Bit    Registers := 3     
+	                1 Bit    Registers := 23    
++---Muxes : 
+	   4 Input     32 Bit        Muxes := 1     
+	   4 Input      4 Bit        Muxes := 2     
+	   2 Input      4 Bit        Muxes := 9     
+	   7 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 11    
+	   4 Input      1 Bit        Muxes := 4     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module timebase_wdt_core 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 1     
+	                5 Bit    Registers := 1     
+	                1 Bit    Registers := 10    
++---Muxes : 
+	   4 Input     32 Bit        Muxes := 1     
+	   4 Input      4 Bit        Muxes := 1     
+	   2 Input      4 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 3     
+	   4 Input      1 Bit        Muxes := 1     
+Module pselect_f 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 1     
+Module pselect_f__parameterized0 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 1     
+Module pselect_f__parameterized1 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 1     
+Module pselect_f__parameterized2 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 1     
+Module address_decoder 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 6     
+Module slave_attachment 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 1     
+	                6 Bit    Registers := 1     
+	                4 Bit    Registers := 1     
+	                2 Bit    Registers := 3     
+	                1 Bit    Registers := 7     
++---Muxes : 
+	   4 Input      4 Bit        Muxes := 1     
+	   2 Input      4 Bit        Muxes := 7     
+	   7 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 4     
+	   4 Input      1 Bit        Muxes := 3     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 5520 (col length:120)
+BRAMs: 4320 (col length: RAMB18 240 RAMB36 120)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+Warning: Parallel synthesis criteria is not met 
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_reset_pending
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[6]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[5]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[4]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[3]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[2]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[1]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port wdt_state_vec[0]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[31]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[30]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[29]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[28]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[27]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[26]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[25]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[24]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[23]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[22]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[21]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[20]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[19]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[18]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[17]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[16]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[15]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[14]
+WARNING: [Synth 8-3331] design axi_timebase_wdt_top has unconnected port s_axi_wdata[13]
+INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (U0/\LEGACY_WDT.axi_timebase_wdt_i/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_rresp_i_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (U0/\LEGACY_WDT.axi_timebase_wdt_i/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_bresp_i_reg[0] )
+WARNING: [Synth 8-3332] Sequential element (LEGACY_WDT.axi_timebase_wdt_i/TIMEBASE_WDT_CORE_I/INPUT_DOUBLE_REGS3/GENERATE_LEVEL_P_S_CDC.SINGLE_BIT.CROSS_PLEVEL_IN2SCNDRY_s_level_out_d5) is unused and will be removed from module axi_timebase_wdt_top.
+WARNING: [Synth 8-3332] Sequential element (LEGACY_WDT.axi_timebase_wdt_i/TIMEBASE_WDT_CORE_I/INPUT_DOUBLE_REGS3/GENERATE_LEVEL_P_S_CDC.SINGLE_BIT.CROSS_PLEVEL_IN2SCNDRY_s_level_out_d6) is unused and will be removed from module axi_timebase_wdt_top.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:09 ; elapsed = 00:00:11 . Memory (MB): peak = 2430.293 ; gain = 394.996 ; free physical = 44985 ; free virtual = 64131
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+ROM:
++---------------------+----------------------------------------------------------+---------------+----------------+
+|Module Name          | RTL Object                                               | Depth x Width | Implemented As | 
++---------------------+----------------------------------------------------------+---------------+----------------+
+|timebase_wdt_core    | number                                                   | 32x5          | LUT            | 
+|axi_timebase_wdt_top | LEGACY_WDT.axi_timebase_wdt_i/TIMEBASE_WDT_CORE_I/number | 32x5          | LUT            | 
++---------------------+----------------------------------------------------------+---------------+----------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:24 ; elapsed = 00:00:36 . Memory (MB): peak = 2460.996 ; gain = 425.699 ; free physical = 45924 ; free virtual = 65066
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:24 ; elapsed = 00:00:36 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45864 ; free virtual = 65006
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:25 ; elapsed = 00:00:36 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45862 ; free virtual = 65004
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:26 ; elapsed = 00:00:38 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45792 ; free virtual = 64934
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:26 ; elapsed = 00:00:38 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45792 ; free virtual = 64934
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:26 ; elapsed = 00:00:38 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45792 ; free virtual = 64934
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:26 ; elapsed = 00:00:38 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45792 ; free virtual = 64934
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:26 ; elapsed = 00:00:38 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45791 ; free virtual = 64933
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:26 ; elapsed = 00:00:38 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45791 ; free virtual = 64932
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY8 |     4|
+|2     |LUT1   |     5|
+|3     |LUT2   |    13|
+|4     |LUT3   |    13|
+|5     |LUT4   |     8|
+|6     |LUT5   |    22|
+|7     |LUT6   |    60|
+|8     |MUXF7  |     4|
+|9     |FDR    |     4|
+|10    |FDRE   |   106|
+|11    |FDSE   |     6|
++------+-------+------+
+
+Report Instance Areas: 
++------+----------------------------------------------------------------------------+--------------------------+------+
+|      |Instance                                                                    |Module                    |Cells |
++------+----------------------------------------------------------------------------+--------------------------+------+
+|1     |top                                                                         |                          |   245|
+|2     |  U0                                                                        |axi_timebase_wdt_top      |   245|
+|3     |    \LEGACY_WDT.axi_timebase_wdt_i                                          |axi_timebase_wdt          |   245|
+|4     |      AXI4_LITE_I                                                           |axi_lite_ipif             |   143|
+|5     |        I_SLAVE_ATTACHMENT                                                  |slave_attachment          |   143|
+|6     |          I_DECODER                                                         |address_decoder           |    70|
+|7     |            \MEM_DECODE_GEN[0].PER_CE_GEN[0].MULTIPLE_CES_THIS_CS_GEN.CE_I  |pselect_f                 |     1|
+|8     |            \MEM_DECODE_GEN[0].PER_CE_GEN[2].MULTIPLE_CES_THIS_CS_GEN.CE_I  |pselect_f__parameterized1 |     1|
+|9     |      TIMEBASE_WDT_CORE_I                                                   |timebase_wdt_core         |   101|
+|10    |        INPUT_DOUBLE_REGS3                                                  |cdc_sync                  |     5|
++------+----------------------------------------------------------------------------+--------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:26 ; elapsed = 00:00:38 . Memory (MB): peak = 2504.059 ; gain = 468.762 ; free physical = 45791 ; free virtual = 64932
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 37 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:24 ; elapsed = 00:00:36 . Memory (MB): peak = 2504.059 ; gain = 286.105 ; free physical = 45811 ; free virtual = 64953
+Synthesis Optimization Complete : Time (s): cpu = 00:00:26 ; elapsed = 00:00:38 . Memory (MB): peak = 2504.066 ; gain = 468.762 ; free physical = 45811 ; free virtual = 64953
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 12 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2576.699 ; gain = 0.000 ; free physical = 45688 ; free virtual = 64829
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 4 instances were transformed.
+  FDR => FDRE: 4 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+58 Infos, 104 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:35 ; elapsed = 00:00:50 . Memory (MB): peak = 2576.699 ; gain = 1105.730 ; free physical = 45776 ; free virtual = 64918
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2576.699 ; gain = 0.000 ; free physical = 45776 ; free virtual = 64918
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint '/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_axi_timebase_wdt_0_0_synth_1/cont_microblaze_axi_timebase_wdt_0_0.dcp' has been generated.
+WARNING: [Common 17-576] 'use_project_ipc' is deprecated. This option is deprecated and no longer used.
+INFO: [Coretcl 2-1648] Added synthesis output to IP cache for IP cont_microblaze_axi_timebase_wdt_0_0, cache-ID = cdc7b09d9169efe5
+INFO: [Coretcl 2-1174] Renamed 9 cell refs.
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2600.711 ; gain = 0.000 ; free physical = 45746 ; free virtual = 64888
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint '/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.runs/cont_microblaze_axi_timebase_wdt_0_0_synth_1/cont_microblaze_axi_timebase_wdt_0_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file cont_microblaze_axi_timebase_wdt_0_0_utilization_synth.rpt -pb cont_microblaze_axi_timebase_wdt_0_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sun Feb  7 22:16:27 2021...

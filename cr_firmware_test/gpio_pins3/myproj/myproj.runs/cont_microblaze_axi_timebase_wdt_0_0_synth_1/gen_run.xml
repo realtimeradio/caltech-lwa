@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="cont_microblaze_axi_timebase_wdt_0_0_synth_1" LaunchPart="xcku115-flvf1924-2-e" LaunchTime="1612764481">
+  <File Type="VDS-TIMINGSUMMARY" Name="cont_microblaze_axi_timebase_wdt_0_0_timing_summary_synth.rpt"/>
+  <File Type="RDS-DCP" Name="cont_microblaze_axi_timebase_wdt_0_0.dcp"/>
+  <File Type="RDS-UTIL-PB" Name="cont_microblaze_axi_timebase_wdt_0_0_utilization_synth.pb"/>
+  <File Type="RDS-UTIL" Name="cont_microblaze_axi_timebase_wdt_0_0_utilization_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="cont_microblaze_axi_timebase_wdt_0_0_timing_summary_synth.pb"/>
+  <File Type="PA-TCL" Name="cont_microblaze_axi_timebase_wdt_0_0.tcl"/>
+  <File Type="REPORTS-TCL" Name="cont_microblaze_axi_timebase_wdt_0_0_reports.tcl"/>
+  <File Type="RDS-RDS" Name="cont_microblaze_axi_timebase_wdt_0_0.vds"/>
+  <File Type="RDS-PROPCONSTRS" Name="cont_microblaze_axi_timebase_wdt_0_0_drc_synth.rpt"/>
+  <FileSet Name="sources" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_axi_timebase_wdt_0_0">
+    <File Path="$PSRCDIR/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/cont_microblaze_axi_timebase_wdt_0_0.xci">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopModule" Val="cont_microblaze_axi_timebase_wdt_0_0"/>
+      <Option Name="UseBlackboxStub" Val="1"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_axi_timebase_wdt_0_0">
+    <File Path="$PSRCDIR/sources_1/bd/cont_microblaze/ip/cont_microblaze_axi_timebase_wdt_0_0/cont_microblaze_axi_timebase_wdt_0_0.xci">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopModule" Val="cont_microblaze_axi_timebase_wdt_0_0"/>
+      <Option Name="UseBlackboxStub" Val="1"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
+    <Filter Type="Utils"/>
+    <Config>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+      <Desc>Vivado Synthesis Defaults</Desc>
+    </StratHandle>
+    <Step Id="synth_design"/>
+  </Strategy>
+</GenRun>

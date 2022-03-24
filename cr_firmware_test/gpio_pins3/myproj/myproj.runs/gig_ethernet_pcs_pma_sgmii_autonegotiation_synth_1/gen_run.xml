@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="gig_ethernet_pcs_pma_sgmii_autonegotiation_synth_1" LaunchPart="xcku115-flvf1924-2-e" LaunchTime="1612764481">
+  <File Type="VDS-TIMINGSUMMARY" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation_timing_summary_synth.rpt"/>
+  <File Type="RDS-DCP" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation.dcp"/>
+  <File Type="RDS-UTIL-PB" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation_utilization_synth.pb"/>
+  <File Type="RDS-UTIL" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation_utilization_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation_timing_summary_synth.pb"/>
+  <File Type="PA-TCL" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation.tcl"/>
+  <File Type="REPORTS-TCL" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation_reports.tcl"/>
+  <File Type="RDS-RDS" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation.vds"/>
+  <File Type="RDS-PROPCONSTRS" Name="gig_ethernet_pcs_pma_sgmii_autonegotiation_drc_synth.rpt"/>
+  <FileSet Name="sources" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gig_ethernet_pcs_pma_sgmii_autonegotiation">
+    <File Path="$PSRCDIR/sources_1/ip/gig_ethernet_pcs_pma_sgmii_autonegotiation/gig_ethernet_pcs_pma_sgmii_autonegotiation.xci">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gig_ethernet_pcs_pma_sgmii_autonegotiation.xci"/>
+        <Attr Name="ImportTime" Val="1605207745"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopModule" Val="gig_ethernet_pcs_pma_sgmii_autonegotiation"/>
+      <Option Name="UseBlackboxStub" Val="1"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gig_ethernet_pcs_pma_sgmii_autonegotiation">
+    <File Path="$PSRCDIR/sources_1/ip/gig_ethernet_pcs_pma_sgmii_autonegotiation/gig_ethernet_pcs_pma_sgmii_autonegotiation.xci">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gig_ethernet_pcs_pma_sgmii_autonegotiation.xci"/>
+        <Attr Name="ImportTime" Val="1605207745"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopModule" Val="gig_ethernet_pcs_pma_sgmii_autonegotiation"/>
+      <Option Name="UseBlackboxStub" Val="1"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
+    <Filter Type="Utils"/>
+    <Config>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+      <Desc>Vivado Synthesis Defaults</Desc>
+    </StratHandle>
+    <Step Id="synth_design"/>
+  </Strategy>
+</GenRun>
