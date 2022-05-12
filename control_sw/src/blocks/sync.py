@@ -47,6 +47,8 @@ class Sync(Block):
         :return: Number of external PPS pulses received.
         :rtype int:
         """
+        self._warning("firmware bug workaround. PPS count register doesn't exist")
+        return 0
         return self.read_uint('ext_pps_count')
 
     def count_int(self):
@@ -272,8 +274,8 @@ class Sync(Block):
         :rtype int:
         """
         # wait for a pulse so we are less likely to read over a boundary
-        self.wait_for_sync()
-        sync_number = self.count_ext()
+        self.wait_for_pps()
+        sync_number = self.count_pps()
         tt = (self.read_uint('tt_msb') << 32) + self.read_uint('tt_lsb')
         sync_number_reread = self.count_pps()
         if sync_number_reread != sync_number:
@@ -298,7 +300,7 @@ class Sync(Block):
         self._info("Detected sync period %.1f (2^%.1f) clocks" % (sync_period, log2(sync_period)))
         sync_period = int(sync_period)
         if sync_period < 1:
-            self.warning("Might have issues synchronizing with a sync period < 1 second")
+            self._warning("Might have issues synchronizing with a sync period < 1 second")
         # We assume that the master TT is tracking clocks since unix epoch.
         # Syncs should come every `sync_period` ADC clocks
         self.wait_for_sync()
