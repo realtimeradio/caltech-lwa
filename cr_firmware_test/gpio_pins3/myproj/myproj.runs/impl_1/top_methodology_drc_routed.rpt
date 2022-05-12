@@ -1,0 +1,232 @@
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2019.1 (lin64) Build 2552052 Fri May 24 14:47:09 MDT 2019
+| Date         : Sun Feb  7 22:24:09 2021
+| Host         : jarvis running 64-bit Ubuntu 18.04.3 LTS
+| Command      : report_methodology -file top_methodology_drc_routed.rpt -pb top_methodology_drc_routed.pb -rpx top_methodology_drc_routed.rpx
+| Design       : top
+| Device       : xcku115-flvf1924-2-e
+| Speed File   : -2
+| Design State : Fully Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Report Methodology
+
+Table of Contents
+-----------------
+1. REPORT SUMMARY
+2. REPORT DETAILS
+
+1. REPORT SUMMARY
+-----------------
+            Netlist: netlist
+          Floorplan: checkpoint_top
+      Design limits: <entire design considered>
+             Max violations: <unlimited>
+             Violations found: 38
++-----------+------------------+------------------------------------------------+------------+
+| Rule      | Severity         | Description                                    | Violations |
++-----------+------------------+------------------------------------------------+------------+
+| TIMING-3  | Critical Warning | Invalid primary clock on Clock Modifying Block | 1          |
+| TIMING-6  | Critical Warning | No common primary clock between related clocks | 2          |
+| TIMING-7  | Critical Warning | No common node between related clocks          | 2          |
+| LUTAR-1   | Warning          | LUT drives async reset alert                   | 10         |
+| TIMING-9  | Warning          | Unknown CDC Logic                              | 1          |
+| TIMING-10 | Warning          | Missing property on synchronizer               | 1          |
+| TIMING-24 | Warning          | Overridden Max delay datapath only             | 16         |
+| TIMING-46 | Warning          | Multicycle path with tied CE pins              | 5          |
++-----------+------------------+------------------------------------------------+------------+
+
+2. REPORT DETAILS
+-----------------
+TIMING-3#1 Critical Warning
+Invalid primary clock on Clock Modifying Block  
+A primary clock gbe_userclk2_out is created on the output pin or net gpio_pins3_one_gbe_pcs_pma/U0/core_clocking_i/usrclk2_bufg_inst/O of a Clock Modifying Block
+Related violations: <none>
+
+TIMING-6#1 Critical Warning
+No common primary clock between related clocks  
+The clocks gbe_userclk2_out and userclk_out are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks gbe_userclk2_out] -to [get_clocks userclk_out]
+Related violations: <none>
+
+TIMING-6#2 Critical Warning
+No common primary clock between related clocks  
+The clocks userclk_out and gbe_userclk2_out are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks userclk_out] -to [get_clocks gbe_userclk2_out]
+Related violations: <none>
+
+TIMING-7#1 Critical Warning
+No common node between related clocks  
+The clocks gbe_userclk2_out and userclk_out are related (timed together) but they have no common node. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks gbe_userclk2_out] -to [get_clocks userclk_out]
+Related violations: <none>
+
+TIMING-7#2 Critical Warning
+No common node between related clocks  
+The clocks userclk_out and gbe_userclk2_out are related (timed together) but they have no common node. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks userclk_out] -to [get_clocks gbe_userclk2_out]
+Related violations: <none>
+
+LUTAR-1#1 Warning
+LUT drives async reset alert  
+LUT cell cont_microblaze_inst/mdm_1/U0/MDM_Core_I1/JTAG_CONTROL_I/sel_n_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) cont_microblaze_inst/mdm_1/U0/MDM_Core_I1/JTAG_CONTROL_I/sel_n_reg/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#2 Warning
+LUT drives async reset alert  
+LUT cell gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/FSM_sequential_sm_reset_all[0]_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_txprogdivreset_inst/rst_in_meta_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_txprogdivreset_inst/rst_in_out_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_txprogdivreset_inst/rst_in_sync1_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_txprogdivreset_inst/rst_in_sync2_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_txprogdivreset_inst/rst_in_sync3_reg/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#3 Warning
+LUT drives async reset alert  
+LUT cell gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_any_inst/rst_in_out_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_any_inst/rst_in_meta_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_any_inst/rst_in_out_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_any_inst/rst_in_sync1_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_any_inst/rst_in_sync2_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_any_inst/rst_in_sync3_reg/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#4 Warning
+LUT drives async reset alert  
+LUT cell gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_datapath_inst/rst_in_meta_i_1__2, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_datapath_inst/rst_in_meta_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_datapath_inst/rst_in_out_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_datapath_inst/rst_in_sync1_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_datapath_inst/rst_in_sync2_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_rx_datapath_inst/rst_in_sync3_reg/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#5 Warning
+LUT drives async reset alert  
+LUT cell gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_any_inst/rst_in_meta_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_any_inst/rst_in_meta_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_any_inst/rst_in_out_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_any_inst/rst_in_sync1_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_any_inst/rst_in_sync2_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_any_inst/rst_in_sync3_reg/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#6 Warning
+LUT drives async reset alert  
+LUT cell gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/sm_reset_all_timer_clr_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_rx_done_inst/rst_in_meta_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_rx_done_inst/rst_in_out_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_rx_done_inst/rst_in_sync1_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_rx_done_inst/rst_in_sync2_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_rx_done_inst/rst_in_sync3_reg/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#7 Warning
+LUT drives async reset alert  
+LUT cell gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/sm_reset_all_timer_clr_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_tx_done_inst/rst_in_meta_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_tx_done_inst/rst_in_out_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_tx_done_inst/rst_in_sync1_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_tx_done_inst/rst_in_sync2_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_tx_done_inst/rst_in_sync3_reg/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#8 Warning
+LUT drives async reset alert  
+LUT cell gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/sm_reset_all_timer_clr_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_rx_buffer_bypass_internal.gen_single_instance.gtwiz_buffbypass_rx_inst/gen_gtwiz_buffbypass_rx_main.gen_auto_mode.reset_synchronizer_resetdone_inst/rst_in_meta_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_rx_buffer_bypass_internal.gen_single_instance.gtwiz_buffbypass_rx_inst/gen_gtwiz_buffbypass_rx_main.gen_auto_mode.reset_synchronizer_resetdone_inst/rst_in_out_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_rx_buffer_bypass_internal.gen_single_instance.gtwiz_buffbypass_rx_inst/gen_gtwiz_buffbypass_rx_main.gen_auto_mode.reset_synchronizer_resetdone_inst/rst_in_sync1_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_rx_buffer_bypass_internal.gen_single_instance.gtwiz_buffbypass_rx_inst/gen_gtwiz_buffbypass_rx_main.gen_auto_mode.reset_synchronizer_resetdone_inst/rst_in_sync2_reg/CLR, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_rx_buffer_bypass_internal.gen_single_instance.gtwiz_buffbypass_rx_inst/gen_gtwiz_buffbypass_rx_main.gen_auto_mode.reset_synchronizer_resetdone_inst/rst_in_sync3_reg/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#9 Warning
+LUT drives async reset alert  
+LUT cell gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_datapath_inst/rst_in_meta_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_datapath_inst/rst_in_out_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_datapath_inst/rst_in_sync1_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_datapath_inst/rst_in_sync2_reg/PRE, gpio_pins3_one_gbe_pcs_pma/U0/pcs_pma_block_i/transceiver_inst/gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_i/inst/gen_gtwizard_gthe3_top.gig_ethernet_pcs_pma_sgmii_autonegotiation_gt_gtwizard_gthe3_inst/gen_gtwizard_gthe3.gen_reset_controller_internal.gen_single_instance.gtwiz_reset_inst/reset_synchronizer_gtwiz_reset_tx_datapath_inst/rst_in_sync3_reg/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#10 Warning
+LUT drives async reset alert  
+LUT cell snap2_v2_infrastructure_inst/gpio_pins3_one_gbe_pcs_pma_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) gpio_pins3_one_gbe_pcs_pma/U0/core_resets_i/pma_reset_pipe_reg[0]/PRE, gpio_pins3_one_gbe_pcs_pma/U0/core_resets_i/pma_reset_pipe_reg[1]/PRE, gpio_pins3_one_gbe_pcs_pma/U0/core_resets_i/pma_reset_pipe_reg[2]/PRE, gpio_pins3_one_gbe_pcs_pma/U0/core_resets_i/pma_reset_pipe_reg[3]/PRE, gpio_pins3_one_gbe_mac/mac_rx/FSM_sequential_rx_state_reg[0]/CLR, gpio_pins3_one_gbe_mac/mac_rx/FSM_sequential_rx_state_reg[1]/CLR, gpio_pins3_one_gbe_mac/mac_rx/FSM_sequential_rx_state_reg[2]/CLR, gpio_pins3_one_gbe_mac/mac_rx/conf_rx_jumbo_en_reg_reg/CLR, gpio_pins3_one_gbe_mac/mac_rx/gmii_rxd_in_reg_reg[0]/CLR, gpio_pins3_one_gbe_mac/mac_rx/gmii_rxd_in_reg_reg[1]/CLR, gpio_pins3_one_gbe_mac/mac_rx/gmii_rxd_in_reg_reg[2]/CLR, gpio_pins3_one_gbe_mac/mac_rx/gmii_rxd_in_reg_reg[3]/CLR, gpio_pins3_one_gbe_mac/mac_rx/gmii_rxd_in_reg_reg[4]/CLR, gpio_pins3_one_gbe_mac/mac_rx/gmii_rxd_in_reg_reg[5]/CLR, gpio_pins3_one_gbe_mac/mac_rx/gmii_rxd_in_reg_reg[6]/CLR (the first 15 of 153 listed). The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+TIMING-9#1 Warning
+Unknown CDC Logic  
+One or more asynchronous Clock Domain Crossing has been detected between 2 clock domains through a set_false_path or a set_clock_groups or set_max_delay -datapath_only constraint but no double-registers logic synchronizer has been found on the side of the capture clock. It is recommended to run report_cdc for a complete and detailed CDC coverage. Please consider using XPM_CDC to avoid Critical severities
+Related violations: <none>
+
+TIMING-10#1 Warning
+Missing property on synchronizer  
+One or more logic synchronizer has been detected between 2 clock domains but the synchronizer does not have the property ASYNC_REG defined on one or both registers. It is recommended to run report_cdc for a complete and detailed CDC coverage
+Related violations: <none>
+
+TIMING-24#1 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 42 in the Timing Constraints window in Vivado IDE) between clocks gbe_userclk2_out and sys_clk0_dcm overrides a set_max_delay -datapath_only (position 80). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#2 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 42 in the Timing Constraints window in Vivado IDE) between clocks gbe_userclk2_out and sys_clk0_dcm overrides a set_max_delay -datapath_only (position 86). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#3 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 42 in the Timing Constraints window in Vivado IDE) between clocks gbe_userclk2_out and sys_clk0_dcm overrides a set_max_delay -datapath_only (position 90). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#4 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 42 in the Timing Constraints window in Vivado IDE) between clocks gbe_userclk2_out and sys_clk0_dcm overrides a set_max_delay -datapath_only (position 92). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#5 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 42 in the Timing Constraints window in Vivado IDE) between clocks sys_clk0_dcm and gbe_userclk2_out overrides a set_max_delay -datapath_only (position 82). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#6 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 42 in the Timing Constraints window in Vivado IDE) between clocks sys_clk0_dcm and gbe_userclk2_out overrides a set_max_delay -datapath_only (position 84). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#7 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 42 in the Timing Constraints window in Vivado IDE) between clocks sys_clk0_dcm and gbe_userclk2_out overrides a set_max_delay -datapath_only (position 88). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#8 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 42 in the Timing Constraints window in Vivado IDE) between clocks sys_clk0_dcm and gbe_userclk2_out overrides a set_max_delay -datapath_only (position 94). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#9 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 43 in the Timing Constraints window in Vivado IDE) between clocks gbe_userclk2_out and sys_clk0_dcm overrides a set_max_delay -datapath_only (position 80). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#10 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 43 in the Timing Constraints window in Vivado IDE) between clocks gbe_userclk2_out and sys_clk0_dcm overrides a set_max_delay -datapath_only (position 86). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#11 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 43 in the Timing Constraints window in Vivado IDE) between clocks gbe_userclk2_out and sys_clk0_dcm overrides a set_max_delay -datapath_only (position 90). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#12 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 43 in the Timing Constraints window in Vivado IDE) between clocks gbe_userclk2_out and sys_clk0_dcm overrides a set_max_delay -datapath_only (position 92). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#13 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 43 in the Timing Constraints window in Vivado IDE) between clocks sys_clk0_dcm and gbe_userclk2_out overrides a set_max_delay -datapath_only (position 82). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#14 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 43 in the Timing Constraints window in Vivado IDE) between clocks sys_clk0_dcm and gbe_userclk2_out overrides a set_max_delay -datapath_only (position 84). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#15 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 43 in the Timing Constraints window in Vivado IDE) between clocks sys_clk0_dcm and gbe_userclk2_out overrides a set_max_delay -datapath_only (position 88). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-24#16 Warning
+Overridden Max delay datapath only  
+A set_clock_groups or a set_false path (see constraint position 43 in the Timing Constraints window in Vivado IDE) between clocks sys_clk0_dcm and gbe_userclk2_out overrides a set_max_delay -datapath_only (position 94). It is not recommended to override a set_max_delay -datapath_only constraint. Replace the set_clock_groups or set_false_path between clocks with point-to-point set_false_path constraints
+Related violations: <none>
+
+TIMING-46#1 Warning
+Multicycle path with tied CE pins  
+One or more multicycle paths are defined between registers gpio_pins3_readout_state_value/register_request_reg/Q and gpio_pins3_readout_state_value/register_requestR_reg/D with a direct connection and the CE pins connected to VCC (see constraint position 44 in the Timing Constraint window in Vivado IDE).  This may result in an inaccurate path requirement.
+Related violations: <none>
+
+TIMING-46#2 Warning
+Multicycle path with tied CE pins  
+One or more multicycle paths are defined between registers gpio_pins3_snapshot_counter/register_request_reg/Q and gpio_pins3_snapshot_counter/register_requestR_reg/D with a direct connection and the CE pins connected to VCC (see constraint position 46 in the Timing Constraint window in Vivado IDE).  This may result in an inaccurate path requirement.
+Related violations: <none>
+
+TIMING-46#3 Warning
+Multicycle path with tied CE pins  
+One or more multicycle paths are defined between registers gpio_pins3_sum_ab/register_request_reg/Q and gpio_pins3_sum_ab/register_requestR_reg/D with a direct connection and the CE pins connected to VCC (see constraint position 48 in the Timing Constraint window in Vivado IDE).  This may result in an inaccurate path requirement.
+Related violations: <none>
+
+TIMING-46#4 Warning
+Multicycle path with tied CE pins  
+One or more multicycle paths are defined between registers gpio_pins3_trig_debug_timer/register_request_reg/Q and gpio_pins3_trig_debug_timer/register_requestR_reg/D with a direct connection and the CE pins connected to VCC (see constraint position 50 in the Timing Constraint window in Vivado IDE).  This may result in an inaccurate path requirement.
+Related violations: <none>
+
+TIMING-46#5 Warning
+Multicycle path with tied CE pins  
+One or more multicycle paths are defined between registers gpio_pins3_trig_debug_trig_rec_count/register_request_reg/Q and gpio_pins3_trig_debug_trig_rec_count/register_requestR_reg/D with a direct connection and the CE pins connected to VCC (see constraint position 52 in the Timing Constraint window in Vivado IDE).  This may result in an inaccurate path requirement.
+Related violations: <none>
+
+

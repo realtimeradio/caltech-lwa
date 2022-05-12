@@ -1,0 +1,289 @@
+yellow_blocks:
+  gpio_pins3/SNAP2:
+    name: SNAP2
+    fullpath: gpio_pins3/SNAP2
+    tag: xps:xsg
+    hw_sys: 'SNAP2_v2:xcku115'
+    clk_src: sys_clk
+    clk_rate: 200
+    use_microblaze: on
+    sample_period: 1
+    synthesis_tool: XST
+  gpio_pins3/a:
+    name: a
+    fullpath: gpio_pins3/a
+    tag: xps:sw_reg
+    io_dir: From Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 32
+    bin_pts: 0
+    arith_types: 0
+    sim_port: on
+    show_format: on
+  gpio_pins3/b:
+    name: b
+    fullpath: gpio_pins3/b
+    tag: xps:sw_reg
+    io_dir: From Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 32
+    bin_pts: 0
+    arith_types: 0
+    sim_port: on
+    show_format: on
+  gpio_pins3/in_pin:
+    name: in_pin
+    fullpath: gpio_pins3/in_pin
+    tag: xps:gpio
+    io_group: 'ROACH:led'
+    io_group_real: gpio
+    io_group_custom: 0
+    io_dir: in
+    arith_type: Boolean
+    bitwidth: 1
+    bin_pt: 0
+    bit_index: 1
+    sample_period: 1
+    use_single_ended: off
+    use_ddr: off
+    reg_iob: on
+    reg_clk_phase: 0
+    termination: None
+  gpio_pins3/led0:
+    name: led0
+    fullpath: gpio_pins3/led0
+    tag: xps:gpio
+    io_group: 'ROACH:led'
+    io_group_real: led
+    io_group_custom: 0
+    io_dir: out
+    arith_type: Boolean
+    bitwidth: 1
+    bin_pt: 0
+    bit_index: 0
+    sample_period: 1
+    use_single_ended: off
+    use_ddr: off
+    reg_iob: on
+    reg_clk_phase: 0
+    termination: None
+  gpio_pins3/one_gbe:
+    name: one_gbe
+    fullpath: gpio_pins3/one_gbe
+    tag: xps:onegbe
+    local_en: on
+    dis_cpu_rx: off
+    dis_cpu_tx: off
+    cpu_promiscuous: on
+    local_mac: 20015998343868
+    local_ip: 3232246026
+    local_port: 4321
+    local_gateway: 1
+  gpio_pins3/out_pin:
+    name: out_pin
+    fullpath: gpio_pins3/out_pin
+    tag: xps:gpio
+    io_group: 'ROACH:led'
+    io_group_real: gpio
+    io_group_custom: 0
+    io_dir: out
+    arith_type: Boolean
+    bitwidth: 1
+    bin_pt: 0
+    bit_index: 2
+    sample_period: 1
+    use_single_ended: off
+    use_ddr: off
+    reg_iob: on
+    reg_clk_phase: 0
+    termination: None
+  gpio_pins3/readout_state_value:
+    name: readout_state_value
+    fullpath: gpio_pins3/readout_state_value
+    tag: xps:sw_reg
+    io_dir: To Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 1
+    bin_pts: 0
+    arith_types: 2
+    sim_port: on
+    show_format: on
+  gpio_pins3/reset_to_listen:
+    name: reset_to_listen
+    fullpath: gpio_pins3/reset_to_listen
+    tag: xps:sw_reg
+    io_dir: From Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 1
+    bin_pts: 0
+    arith_types: 2
+    sim_port: on
+    show_format: on
+  gpio_pins3/send_trigger:
+    name: send_trigger
+    fullpath: gpio_pins3/send_trigger
+    tag: xps:sw_reg
+    io_dir: From Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 1
+    bin_pts: 0
+    arith_types: 2
+    sim_port: on
+    show_format: on
+  gpio_pins3/snapshot_count_reset:
+    name: snapshot_count_reset
+    fullpath: gpio_pins3/snapshot_count_reset
+    tag: xps:sw_reg
+    io_dir: From Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 1
+    bin_pts: 0
+    arith_types: 2
+    sim_port: on
+    show_format: on
+  gpio_pins3/snapshot_counter:
+    name: snapshot_counter
+    fullpath: gpio_pins3/snapshot_counter
+    tag: xps:sw_reg
+    io_dir: To Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 32
+    bin_pts: 0
+    arith_types: 0
+    sim_port: on
+    show_format: on
+  gpio_pins3/sum_ab:
+    name: sum_ab
+    fullpath: gpio_pins3/sum_ab
+    tag: xps:sw_reg
+    io_dir: To Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 32
+    bin_pts: 0
+    arith_types: 0
+    sim_port: on
+    show_format: on
+  gpio_pins3/trig_debug_reset:
+    name: trig_debug_reset
+    fullpath: gpio_pins3/trig_debug_reset
+    tag: xps:sw_reg
+    io_dir: From Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 1
+    bin_pts: 0
+    arith_types: 2
+    sim_port: on
+    show_format: on
+  gpio_pins3/trig_debug_timer:
+    name: trig_debug_timer
+    fullpath: gpio_pins3/trig_debug_timer
+    tag: xps:sw_reg
+    io_dir: To Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 32
+    bin_pts: 0
+    arith_types: 0
+    sim_port: on
+    show_format: on
+  gpio_pins3/trig_debug_timer_reset:
+    name: trig_debug_timer_reset
+    fullpath: gpio_pins3/trig_debug_timer_reset
+    tag: xps:sw_reg
+    io_dir: From Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 1
+    bin_pts: 0
+    arith_types: 2
+    sim_port: on
+    show_format: on
+  gpio_pins3/trig_debug_trig_rec_count:
+    name: trig_debug_trig_rec_count
+    fullpath: gpio_pins3/trig_debug_trig_rec_count
+    tag: xps:sw_reg
+    io_dir: To Processor
+    io_delay: 0
+    init_val: 0
+    sample_period: 1
+    names: reg
+    bitwidths: 32
+    bin_pts: 0
+    arith_types: 0
+    sim_port: on
+    show_format: on
+
+user_modules:
+  gpio_pins3:
+    clock: clk
+    ports:
+      - gpio_pins3_a_user_data_out
+      - gpio_pins3_b_user_data_out
+      - gpio_pins3_in_pin_gateway
+      - gpio_pins3_one_gbe_app_dbg_data
+      - gpio_pins3_one_gbe_app_dbg_dvld
+      - gpio_pins3_one_gbe_app_rx_badframe
+      - gpio_pins3_one_gbe_app_rx_data
+      - gpio_pins3_one_gbe_app_rx_dvld
+      - gpio_pins3_one_gbe_app_rx_eof
+      - gpio_pins3_one_gbe_app_rx_overrun
+      - gpio_pins3_one_gbe_app_rx_srcip
+      - gpio_pins3_one_gbe_app_rx_srcport
+      - gpio_pins3_one_gbe_app_tx_afull
+      - gpio_pins3_one_gbe_app_tx_overflow
+      - gpio_pins3_reset_to_listen_user_data_out
+      - gpio_pins3_send_trigger_user_data_out
+      - gpio_pins3_snapshot_count_reset_user_data_out
+      - gpio_pins3_trig_debug_reset_user_data_out
+      - gpio_pins3_trig_debug_timer_reset_user_data_out
+      - gpio_pins3_led0_gateway
+      - gpio_pins3_one_gbe_app_rx_ack
+      - gpio_pins3_one_gbe_app_rx_rst
+      - gpio_pins3_one_gbe_app_tx_data
+      - gpio_pins3_one_gbe_app_tx_destip
+      - gpio_pins3_one_gbe_app_tx_destport
+      - gpio_pins3_one_gbe_app_tx_dvld
+      - gpio_pins3_one_gbe_app_tx_eof
+      - gpio_pins3_one_gbe_app_tx_rst
+      - gpio_pins3_out_pin_gateway
+      - gpio_pins3_readout_state_value_user_data_in
+      - gpio_pins3_snapshot_counter_user_data_in
+      - gpio_pins3_sum_ab_user_data_in
+      - gpio_pins3_trig_debug_timer_user_data_in
+      - gpio_pins3_trig_debug_trig_rec_count_user_data_in
+    sources:
+      - /home/kplant/lwa_firmware/gpio_pins3/sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen
+      - /home/kplant/lwa_firmware/gpio_pins3/sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/ip/*.coe
+      - /home/kplant/lwa_firmware/gpio_pins3/sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/ip/*/*.xci
+      - /home/kplant/lwa_firmware/gpio_pins3/sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/*.mem
