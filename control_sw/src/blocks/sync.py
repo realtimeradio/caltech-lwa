@@ -263,6 +263,24 @@ class Sync(Block):
             raise RuntimeError
         return tt, sync_number
 
+    def get_tt_of_pps(self):
+        """
+        Get the internal TT at which the last PPS pulse arrived.
+
+        :return: (tt, sync_number). ``tt`` is the internal TT of the last PPS.
+            ``sync_number`` is the PPS pulse count corresponding to this TT.
+        :rtype int:
+        """
+        # wait for a pulse so we are less likely to read over a boundary
+        self.wait_for_sync()
+        sync_number = self.count_ext()
+        tt = (self.read_uint('tt_msb') << 32) + self.read_uint('tt_lsb')
+        sync_number_reread = self.count_pps()
+        if sync_number_reread != sync_number:
+            self._error("Failed to read TT without being interrupted by a sync. Is the sync rate very high?")
+            raise RuntimeError
+        return tt, sync_number
+
     def update_internal_time(self, fs_hz=196e6):
         """
         Arm sync trigger receivers,
