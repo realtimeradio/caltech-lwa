@@ -586,7 +586,7 @@ class Snap2Fengine():
                 if blockname == 'adc':
                     continue
                 block.initialize(read_only=False)
-            self.logger.warning('Updating telescope time')
+            self.logger.info('Updating telescope time')
             self.sync.update_telescope_time()
             self.sync.update_internal_time()
 

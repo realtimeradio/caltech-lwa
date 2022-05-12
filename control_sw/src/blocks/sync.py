@@ -112,7 +112,7 @@ class Sync(Block):
         while(c1 == c0):
             c1 = self.read_uint('tt_lsb')
             if time.time() > (t0 + timeout):
-                self._warning("Timed out waiting for PPS")
+                self._info("Timed out waiting for PPS")
                 return -1
             time.sleep(0.05)
         return c1
