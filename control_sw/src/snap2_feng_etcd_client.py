@@ -112,7 +112,7 @@ class Snap2FengineEtcdControl():
             return
 
 
-    def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0):
+    def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=1):
         """
         Send a command to a SNAP2
 
@@ -132,12 +132,16 @@ class Snap2FengineEtcdControl():
         :param timeout: Time, in seconds, to wait for a response to the command.
         :type timeout: float
 
+        :param n_response_expected: Number of individual responses expected.
+            Should be 1 unless broadcasting a command using etcd with `fid=0`.
+        :type n_response_expected: int
+
         :return: Dictionary of values, dependent on the command response.
         """
         if self.noetcd:
             return self._send_command_noetcd(fid, block, cmd, kwargs=kwargs)
         else:
-            return self._send_command_etcd(fid, block, cmd, kwargs=kwargs, timeout=timeout)
+            return self._send_command_etcd(fid, block, cmd, kwargs=kwargs, timeout=timeout, n_response_expected=n_response_expected)
 
     def _send_command_noetcd(self, fid, block, cmd, kwargs):
         """
@@ -177,11 +181,12 @@ class Snap2FengineEtcdControl():
             raise TypeError("Wrong command arguments")
         
 
-    def _send_command_etcd(self, fid, block, cmd, kwargs={}, timeout=10.0):
+    def _send_command_etcd(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=1):
         """
         Send a command to a SNAP2
 
-        :param fid: SNAP F-engine ID to which command should be sent.
+        :param fid: SNAP F-engine ID to which command should be sent. If 0,
+            the command will be processed by all SNAP boards.
         :type fid: int
 
         :param block: Block to which command applies.
@@ -195,12 +200,19 @@ class Snap2FengineEtcdControl():
         :type kwargs: dict
 
         :param timeout: Time, in seconds, to wait for a response to the command.
+            If a command is being broadcast with `fid=0`, this method will
+            wait for `n_response_expected` separate responses until timeout.
         :type timeout: float
 
-        :return: Dictionary of values, dependent on the command response.
+        :param n_response_expected: Number of individual responses expected.
+            Should be 1 unless broadcasting a command with `fid=0`.
+        :type n_response_expected: int
+
+        :return: If `fid=0`, a dictionary of responses keyed by `fid`.
+            If `fid != 0`, the return value matching the underlying command.
         """
         cmd_key = ETCD_CMD_ROOT + "%d" % fid
-        resp_key = ETCD_RESP_ROOT + "%d" % fid
+        resp_key = ETCD_RESP_ROOT # Listen to responses from all boards
         timestamp = time.time()
         sequence_id = str(int(timestamp * 1e6))
         command_json = self._format_command(
@@ -213,12 +225,18 @@ class Snap2FengineEtcdControl():
         if command_json is None:
             return False
 
-        self._response_received = False
-        self._response = None
+        self._n_response_received = 0
+        self._responses = {}
 
         def response_callback(watchresponse):
             for event in watchresponse.events:
                 self.logger.debug("Got command response")
+                try:
+                    resp_fid = int(event.key[len(resp_key):])
+                    self.logger.debug("FID is %d" % resp_fid)
+                except:
+                    self.logger.error('Failed to decode FID from response key %s' % event.key)
+                    continue
                 try:
                     response_dict = json.loads(event.value.decode())
                 except:
@@ -227,26 +245,33 @@ class Snap2FengineEtcdControl():
                 self.logger.debug("Response: %s" % response_dict)
                 resp_id = response_dict.get("id", None)
                 if resp_id == sequence_id:
-                    self._response = response_dict
-                    self._response_received = True
+                    self._responses[resp_fid] = response_dict
+                    self._n_response_received += 1
                 else:
                     self.logger.debug("Seq ID %s didn't match expected (%s)" % (resp_id, sequence_id))
 
         # Begin watching response channel and then send message
-        watch_id = self.ec.add_watch_callback(resp_key, response_callback)
+        watch_id = self.ec.add_watch_prefix_callback(resp_key, response_callback)
+        time.sleep(0.01)
         # send command
         self.ec.put(cmd_key, command_json)
         starttime = time.time()
         while(True):
-            if self._response_received:
+            if (self._n_response_received >= n_response_expected) or (time.time() > starttime + timeout):
                 self.ec.cancel_watch(watch_id)
-                status = self._response['val']['status']
-                if status != 'normal':
-                    self.logger.info("Command status returned: '%s'" % status)
-                return self._response['val']['response']
-            if time.time() > starttime + timeout:
-                self.ec.cancel_watch(watch_id)
-                return None
+                if self._n_response_received != n_response_expected:
+                    self.logger.error('Received %d of %d expected responses' % (self._n_response_received, n_response_expected))
+                rv = {}
+                for k, v in self._responses.items():
+                    status = v['val']['status']
+                    if status != 'normal':
+                        self.logger.info("Command status from FID %d returned: '%s'" % (k, status))
+                    else:
+                        rv[k] = v['val']['response']
+                # If we were targetting a single board, don't return a dictionary
+                if fid != 0:
+                    return rv.get(fid, {})
+                return rv
             time.sleep(0.01)
 
 class Snap2FengineEtcdClient():
@@ -379,7 +404,7 @@ class Snap2FengineEtcdClient():
                                  )]
         # Also watch on the "all SNAPs" key
         self._etcd_watch_ids += [self.ec.add_watch_prefix_callback(
-                                  ETCD_CMD_ROOT + "/0",
+                                  ETCD_CMD_ROOT + "0",
                                   self._etcd_callback,
                                 )]
 

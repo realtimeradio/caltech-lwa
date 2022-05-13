@@ -33,7 +33,7 @@ class Sync(Block):
         :return: The number of FPGA clock ticks between the last two external sync pulses.
         :rtype int:
         """
-        return self.read_uint('ext_sync_period')
+        return self.read_uint('ext_sync_period') + 1
 
     def count_ext(self):
         """
@@ -47,6 +47,8 @@ class Sync(Block):
         :return: Number of external PPS pulses received.
         :rtype int:
         """
+        self._warning("firmware bug workaround. PPS count register doesn't exist")
+        return 0
         return self.read_uint('ext_pps_count')
 
     def count_int(self):
@@ -78,12 +80,19 @@ class Sync(Block):
         self.change_reg_bits('ctrl', 1, self.OFFSET_RST_ERR)
         self.change_reg_bits('ctrl', 0, self.OFFSET_RST_ERR)
     
-    def wait_for_sync(self):
+    def wait_for_sync(self, timeout=20):
         """
         Block until a sync has been received.
+
+        :param timeout: Timeout, in seconds, to wait.
+        :type timeout: float
         """
+        t0 = time.time()
         c = self.count_ext()
         while(self.count_ext() == c):
+            if time.time() > (t0 + timeout):
+                self._error("Timed out waiting  %.1f seconds for sync pulse" % timeout)
+                raise RuntimeError("Timed out waiting %.1f seconds for a sync pulse" % timeout)
             time.sleep(0.05)
 
     def wait_for_pps(self, timeout=2.0):
@@ -103,7 +112,7 @@ class Sync(Block):
         while(c1 == c0):
             c1 = self.read_uint('tt_lsb')
             if time.time() > (t0 + timeout):
-                self._warning("Timed out waiting for PPS")
+                self._info("Timed out waiting for PPS")
                 return -1
             time.sleep(0.05)
         return c1
@@ -256,6 +265,24 @@ class Sync(Block):
             raise RuntimeError
         return tt, sync_number
 
+    def get_tt_of_pps(self):
+        """
+        Get the internal TT at which the last PPS pulse arrived.
+
+        :return: (tt, sync_number). ``tt`` is the internal TT of the last PPS.
+            ``sync_number`` is the PPS pulse count corresponding to this TT.
+        :rtype int:
+        """
+        # wait for a pulse so we are less likely to read over a boundary
+        self.wait_for_pps()
+        sync_number = self.count_pps()
+        tt = (self.read_uint('tt_msb') << 32) + self.read_uint('tt_lsb')
+        sync_number_reread = self.count_pps()
+        if sync_number_reread != sync_number:
+            self._error("Failed to read TT without being interrupted by a sync. Is the sync rate very high?")
+            raise RuntimeError
+        return tt, sync_number
+
     def update_internal_time(self, fs_hz=196e6):
         """
         Arm sync trigger receivers,
@@ -273,7 +300,7 @@ class Sync(Block):
         self._info("Detected sync period %.1f (2^%.1f) clocks" % (sync_period, log2(sync_period)))
         sync_period = int(sync_period)
         if sync_period < 1:
-            self.warning("Might have issues synchronizing with a sync period < 1 second")
+            self._warning("Might have issues synchronizing with a sync period < 1 second")
         # We assume that the master TT is tracking clocks since unix epoch.
         # Syncs should come every `sync_period` ADC clocks
         self.wait_for_sync()
