@@ -26,23 +26,23 @@ class Fpga(Block):
         # Top-level F-engine sees all registers
         super(Fpga, self).__init__(host, name, logger)
 
-        # Try and get the canonical name of the host
-        # to use as a serial number
-        self.serial = None
-        try:
-            addr = socket.gethostbyname_ex(self.host.host)[2][0]
-            time.sleep(0.01)
-            hostname = socket.gethostbyname_ex(addr)
-            hostname = hostname[0]
-            if hostname.startswith('snap'):
-                try:
-                    self.serial = int(hostname.split('.')[0][4:])
-                except:
-                    self._warning("hostname (%s) couldn't be turned into integer serial" % hostname)
-            else:
-                self._warning("hostname (%s) couldn't be turned into integer serial" % hostname)
-        except:
-            self._exception("Couldn't get hostname of address %s" % self.host.host)
+        ## Try and get the canonical name of the host
+        ## to use as a serial number
+        #self.serial = None
+        #try:
+        #    addr = socket.gethostbyname_ex(self.host.host)[2][0]
+        #    time.sleep(0.01)
+        #    hostname = socket.gethostbyname_ex(addr)
+        #    hostname = hostname[0]
+        #    if hostname.startswith('snap'):
+        #        try:
+        #            self.serial = int(hostname.split('.')[0][4:])
+        #        except:
+        #            self._warning("hostname (%s) couldn't be turned into integer serial" % hostname)
+        #    else:
+        #        self._warning("hostname (%s) couldn't be turned into integer serial" % hostname)
+        #except:
+        #    self._exception("Couldn't get hostname of address %s" % self.host.host)
 
         self.sysmon = casperfpga.sysmon.Sysmon(self.host)
 
@@ -164,7 +164,7 @@ class Fpga(Block):
         stats['flash_firmware'] = meta['filename']
         stats['flash_firmware_md5'] = meta['md5sum']
         stats['timestamp'] = datetime.datetime.now().isoformat()
-        stats['serial'] = self.serial
+        #stats['serial'] = self.serial
         stats['host'] = self.host.host
         stats['sw_version'] = __version__
         if stats['programmed']:
@@ -181,8 +181,8 @@ class Fpga(Block):
             flags['programmed'] = FENG_WARNING
         if stats['sw_version'].endswith('dirty'):
             flags['sw_version'] = FENG_WARNING
-        if stats['serial'] is None:
-            flags['serial'] = FENG_WARNING
+        #if stats['serial'] is None:
+        #    flags['serial'] = FENG_WARNING
         if 'vccaux' in stats:
             if stats['vccaux'] < 1.746 or stats['vccaux'] > 1.854:
                 flags['vccaux'] = FENG_WARNING

@@ -47,6 +47,8 @@ class Sync(Block):
         :return: Number of external PPS pulses received.
         :rtype int:
         """
+        self._warning("firmware bug workaround. PPS count register doesn't exist")
+        return 0
         return self.read_uint('ext_pps_count')
 
     def count_int(self):
@@ -110,7 +112,7 @@ class Sync(Block):
         while(c1 == c0):
             c1 = self.read_uint('tt_lsb')
             if time.time() > (t0 + timeout):
-                self._warning("Timed out waiting for PPS")
+                self._info("Timed out waiting for PPS")
                 return -1
             time.sleep(0.05)
         return c1
@@ -263,6 +265,24 @@ class Sync(Block):
             raise RuntimeError
         return tt, sync_number
 
+    def get_tt_of_pps(self):
+        """
+        Get the internal TT at which the last PPS pulse arrived.
+
+        :return: (tt, sync_number). ``tt`` is the internal TT of the last PPS.
+            ``sync_number`` is the PPS pulse count corresponding to this TT.
+        :rtype int:
+        """
+        # wait for a pulse so we are less likely to read over a boundary
+        self.wait_for_pps()
+        sync_number = self.count_pps()
+        tt = (self.read_uint('tt_msb') << 32) + self.read_uint('tt_lsb')
+        sync_number_reread = self.count_pps()
+        if sync_number_reread != sync_number:
+            self._error("Failed to read TT without being interrupted by a sync. Is the sync rate very high?")
+            raise RuntimeError
+        return tt, sync_number
+
     def update_internal_time(self, fs_hz=196e6):
         """
         Arm sync trigger receivers,
@@ -280,7 +300,7 @@ class Sync(Block):
         self._info("Detected sync period %.1f (2^%.1f) clocks" % (sync_period, log2(sync_period)))
         sync_period = int(sync_period)
         if sync_period < 1:
-            self.warning("Might have issues synchronizing with a sync period < 1 second")
+            self._warning("Might have issues synchronizing with a sync period < 1 second")
         # We assume that the master TT is tracking clocks since unix epoch.
         # Syncs should come every `sync_period` ADC clocks
         self.wait_for_sync()
