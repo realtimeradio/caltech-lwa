@@ -450,7 +450,7 @@ class Snap2Fengine():
         """
         self.logger.info("Trying to configure output with config file %s" % config_file)
         if not os.path.exists(config_file):
-            f.logger.error("Output configuration file %s doesn't exist!" % config_file)
+            self.logger.error("Output configuration file %s doesn't exist!" % config_file)
             raise RuntimeError
         try:
             with open(config_file, 'r') as fh:
@@ -586,7 +586,7 @@ class Snap2Fengine():
                 if blockname == 'adc':
                     continue
                 block.initialize(read_only=False)
-            self.logger.warning('Updating telescope time')
+            self.logger.info('Updating telescope time')
             self.sync.update_telescope_time()
             self.sync.update_internal_time()
 
