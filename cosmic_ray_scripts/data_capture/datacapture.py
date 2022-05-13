@@ -31,8 +31,10 @@ def process_packet(data,checkpacket,datatype):
                     single_packet_array[i,j] =nexttenbits-1024 #handle twos complement negative number
                 else:
                     single_packet_array[i,j] = nexttenbits
+            else:
+                print("Datatype must be 'signed' or 'unsigned'")
+                exit()
             datasamples = datasamples >> 10 #shift ten bits over
-        
         if checkpacket:#  These should be the same value 256 times or else something's wrong
             this_board_triggered_current_value = data[32*i+21]
             board_id_current_value = data[32*i+22]
