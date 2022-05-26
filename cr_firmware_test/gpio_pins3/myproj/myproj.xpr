@@ -1,0 +1,1668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Product Version: Vivado v2019.1 (64-bit)              -->
+<!--                                                         -->
+<!-- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.   -->
+
+<Project Version="7" Minor="40" Path="/home/kplant/lwa_firmware/gpio_pins3/myproj/myproj.xpr">
+  <DefaultLaunch Dir="$PRUNDIR"/>
+  <Configuration>
+    <Option Name="Id" Val="5f65da09231a436693f61a22c920c742"/>
+    <Option Name="Part" Val="xcku115-flvf1924-2-e"/>
+    <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
+    <Option Name="CompiledLibDirXSim" Val=""/>
+    <Option Name="CompiledLibDirModelSim" Val="$PCACHEDIR/compile_simlib/modelsim"/>
+    <Option Name="CompiledLibDirQuesta" Val="$PCACHEDIR/compile_simlib/questa"/>
+    <Option Name="CompiledLibDirIES" Val="$PCACHEDIR/compile_simlib/ies"/>
+    <Option Name="CompiledLibDirXcelium" Val="$PCACHEDIR/compile_simlib/xcelium"/>
+    <Option Name="CompiledLibDirVCS" Val="$PCACHEDIR/compile_simlib/vcs"/>
+    <Option Name="CompiledLibDirRiviera" Val="$PCACHEDIR/compile_simlib/riviera"/>
+    <Option Name="CompiledLibDirActivehdl" Val="$PCACHEDIR/compile_simlib/activehdl"/>
+    <Option Name="TargetLanguage" Val="VHDL"/>
+    <Option Name="BoardPart" Val=""/>
+    <Option Name="ActiveSimSet" Val="sim_1"/>
+    <Option Name="DefaultLib" Val="xil_defaultlib"/>
+    <Option Name="ProjectType" Val="Default"/>
+    <Option Name="IPRepoPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/axi_wb_bridge/ip_repo"/>
+    <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
+    <Option Name="IPCachePermission" Val="read"/>
+    <Option Name="IPCachePermission" Val="write"/>
+    <Option Name="EnableCoreContainer" Val="FALSE"/>
+    <Option Name="CreateRefXciForCoreContainers" Val="FALSE"/>
+    <Option Name="IPUserFilesDir" Val="$PIPUSERFILESDIR"/>
+    <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
+    <Option Name="EnableBDX" Val="FALSE"/>
+    <Option Name="DSAVendor" Val="xilinx"/>
+    <Option Name="DSANumComputeUnits" Val="60"/>
+    <Option Name="WTXSimLaunchSim" Val="0"/>
+    <Option Name="WTModelSimLaunchSim" Val="0"/>
+    <Option Name="WTQuestaLaunchSim" Val="0"/>
+    <Option Name="WTIesLaunchSim" Val="0"/>
+    <Option Name="WTVcsLaunchSim" Val="0"/>
+    <Option Name="WTRivieraLaunchSim" Val="0"/>
+    <Option Name="WTActivehdlLaunchSim" Val="0"/>
+    <Option Name="WTXSimExportSim" Val="0"/>
+    <Option Name="WTModelSimExportSim" Val="0"/>
+    <Option Name="WTQuestaExportSim" Val="0"/>
+    <Option Name="WTIesExportSim" Val="0"/>
+    <Option Name="WTVcsExportSim" Val="0"/>
+    <Option Name="WTRivieraExportSim" Val="0"/>
+    <Option Name="WTActivehdlExportSim" Val="0"/>
+    <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
+    <Option Name="XSimRadix" Val="hex"/>
+    <Option Name="XSimTimeUnit" Val="ns"/>
+    <Option Name="XSimArrayDisplayLimit" Val="1024"/>
+    <Option Name="XSimTraceLimit" Val="65536"/>
+    <Option Name="SimTypes" Val="rtl"/>
+    <Option Name="SimTypes" Val="bfm"/>
+    <Option Name="SimTypes" Val="tlm"/>
+    <Option Name="SimTypes" Val="tlm_dpi"/>
+    <Option Name="MEMEnableMemoryMapGeneration" Val="TRUE"/>
+  </Configuration>
+  <FileSets Version="1" Minor="31">
+    <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
+      <Filter Type="Srcs"/>
+      <File Path="$PSRCDIR/sources_1/bd/cont_microblaze/cont_microblaze.bd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_microblaze_0_axi_intc_0/cont_microblaze_microblaze_0_axi_intc_0.xci">
+          <Proxy FileSetName="cont_microblaze_microblaze_0_axi_intc_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_xbar_0/cont_microblaze_xbar_0.xci">
+          <Proxy FileSetName="cont_microblaze_xbar_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_axi_hwicap_0_0/cont_microblaze_axi_hwicap_0_0.xci">
+          <Proxy FileSetName="cont_microblaze_axi_hwicap_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_axi_timer_0_0/cont_microblaze_axi_timer_0_0.xci">
+          <Proxy FileSetName="cont_microblaze_axi_timer_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_auto_pc_0/cont_microblaze_auto_pc_0.xci">
+          <Proxy FileSetName="cont_microblaze_auto_pc_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_microblaze_0_0/cont_microblaze_microblaze_0_0.xci">
+          <Proxy FileSetName="cont_microblaze_microblaze_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_mdm_1_0/cont_microblaze_mdm_1_0.xci">
+          <Proxy FileSetName="cont_microblaze_mdm_1_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_dlmb_bram_if_cntlr_0/cont_microblaze_dlmb_bram_if_cntlr_0.xci">
+          <Proxy FileSetName="cont_microblaze_dlmb_bram_if_cntlr_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_dlmb_v10_0/cont_microblaze_dlmb_v10_0.xci">
+          <Proxy FileSetName="cont_microblaze_dlmb_v10_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_ilmb_bram_if_cntlr_0/cont_microblaze_ilmb_bram_if_cntlr_0.xci">
+          <Proxy FileSetName="cont_microblaze_ilmb_bram_if_cntlr_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_axi_uartlite_0_0/cont_microblaze_axi_uartlite_0_0.xci">
+          <Proxy FileSetName="cont_microblaze_axi_uartlite_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_axi_quad_spi_0_0/cont_microblaze_axi_quad_spi_0_0.xci">
+          <Proxy FileSetName="cont_microblaze_axi_quad_spi_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_axi_slave_wishbone_classic_master_0_0/cont_microblaze_axi_slave_wishbone_classic_master_0_0.xci">
+          <Proxy FileSetName="cont_microblaze_axi_slave_wishbone_classic_master_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_axi_timebase_wdt_0_0/cont_microblaze_axi_timebase_wdt_0_0.xci">
+          <Proxy FileSetName="cont_microblaze_axi_timebase_wdt_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_ilmb_v10_0/cont_microblaze_ilmb_v10_0.xci">
+          <Proxy FileSetName="cont_microblaze_ilmb_v10_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_lmb_bram_0/cont_microblaze_lmb_bram_0.xci">
+          <Proxy FileSetName="cont_microblaze_lmb_bram_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="cont_microblaze.bd" FileRelPathName="ip/cont_microblaze_rst_Clk_100M_0/cont_microblaze_rst_Clk_100M_0.xci">
+          <Proxy FileSetName="cont_microblaze_rst_Clk_100M_0"/>
+        </CompFileExtendedInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/CRC_chk.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/CRC_chk.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/CRC_gen.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/CRC_gen.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gbe_cpu_attach_wb.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gbe_cpu_attach_wb.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gbe_rx.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gbe_rx.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gbe_tx.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gbe_tx.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gbe_udp.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gbe_udp.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gig_eth_mac.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gig_eth_mac.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gig_eth_mac_rx.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gig_eth_mac_rx.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gig_eth_mac_tx.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gig_eth_mac_tx.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/infrastructure/snap2_v2_infrastructure.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/infrastructure/snap2_v2_infrastructure.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sys_block/sys_block.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/sys_block/sys_block.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/wbs_arbiter/timeout.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/wbs_arbiter/timeout.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/wb_register_ppc2simulink/wb_register_ppc2simulink.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/wb_register_ppc2simulink/wb_register_ppc2simulink.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/wb_register_simulink2ppc/wb_register_simulink2ppc.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/wb_register_simulink2ppc/wb_register_simulink2ppc.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/wbs_arbiter/wbs_arbiter.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/wbs_arbiter/wbs_arbiter.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/conv_pkg.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/conv_pkg.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/gpio_ext2simulink/gpio_ext2simulink.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/gpio_ext2simulink/gpio_ext2simulink.vhd"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/gpio_pins3_entity_declarations.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/gpio_pins3_entity_declarations.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/xlclockdriver_rd.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/xlclockdriver_rd.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/gpio_pins3.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/gpio_pins3.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/gpio_simulink2ext/gpio_simulink2ext.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/gpio_simulink2ext/gpio_simulink2ext.vhd"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/single_reg_w_init.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/single_reg_w_init.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/srl33e.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/srl33e.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/synth_reg.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/synth_reg.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/synth_reg_reg.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/synth_reg_reg.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/synth_reg_w_init.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/synth_reg_w_init.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/gpio_pins3/top.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../top.v"/>
+          <Attr Name="ImportTime" Val="1612764413"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gbe_udp2.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gbe_udp2.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/mdio_config.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/mdio_config.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/gbe_tx2.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gbe_tx2.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/mdio_master.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/mdio_master.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/onegbe/arp_cache_init.coe">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/arp_cache_init.coe"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/gig_ethernet_pcs_pma_sgmii_lvds/gig_ethernet_pcs_pma_sgmii_lvds.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/virtex7/gig_ethernet_pcs_pma_sgmii_lvds.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/gig_ethernet_pcs_pma_sgmii/gig_ethernet_pcs_pma_sgmii.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/virtex7/gig_ethernet_pcs_pma_sgmii.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/infrastructure/snap2_infrastructure.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/infrastructure/snap2_infrastructure.v"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sysgen/srl17e.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/imports/sysgen/srl17e.vhd"/>
+          <Attr Name="ImportTime" Val="1612764401"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="DesignMode" Val="RTL"/>
+        <Option Name="TopModule" Val="top"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
+      <Filter Type="Constrs"/>
+      <File Path="$PSRCDIR/constrs_1/imports/gpio_pins3/user_const.xdc">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../user_const.xdc"/>
+          <Attr Name="ImportTime" Val="1612764413"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="ConstrsType" Val="XDC"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
+      <Config>
+        <Option Name="DesignMode" Val="RTL"/>
+        <Option Name="TopAutoSet" Val="TRUE"/>
+        <Option Name="TransportPathDelay" Val="0"/>
+        <Option Name="TransportIntDelay" Val="0"/>
+        <Option Name="SrcSet" Val="sources_1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="utils_1" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
+      <Filter Type="Utils"/>
+      <Config>
+        <Option Name="TopAutoSet" Val="TRUE"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gbe_tx_packet_fifo" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gbe_tx_packet_fifo">
+      <File Path="$PSRCDIR/sources_1/ip/gbe_tx_packet_fifo/gbe_tx_packet_fifo.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/virtex7/gbe_tx_packet_fifo.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gbe_tx_packet_fifo"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_microblaze_0_axi_intc_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_microblaze_0_axi_intc_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_microblaze_0_axi_intc_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gpio_pins3_c_addsub_v12_0_i0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gpio_pins3_c_addsub_v12_0_i0">
+      <File Path="$PSRCDIR/sources_1/ip/gpio_pins3_c_addsub_v12_0_i0/gpio_pins3_c_addsub_v12_0_i0.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/ip/gpio_pins3_c_addsub_v12_0_i0/gpio_pins3_c_addsub_v12_0_i0.xci"/>
+          <Attr Name="ImportTime" Val="1612764412"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gpio_pins3_c_addsub_v12_0_i0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_xbar_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_xbar_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_xbar_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_axi_hwicap_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_axi_hwicap_0_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_axi_hwicap_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gbe_rx_ctrl_fifo" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gbe_rx_ctrl_fifo">
+      <File Path="$PSRCDIR/sources_1/ip/gbe_rx_ctrl_fifo/gbe_rx_ctrl_fifo.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/virtex7/gbe_rx_ctrl_fifo.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gbe_rx_ctrl_fifo"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gbe_rx_packet_fifo" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gbe_rx_packet_fifo">
+      <File Path="$PSRCDIR/sources_1/ip/gbe_rx_packet_fifo/gbe_rx_packet_fifo.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/virtex7/gbe_rx_packet_fifo.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gbe_rx_packet_fifo"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gbe_ctrl_fifo" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gbe_ctrl_fifo">
+      <File Path="$PSRCDIR/sources_1/ip/gbe_ctrl_fifo/gbe_ctrl_fifo.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/virtex7/gbe_ctrl_fifo.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gbe_ctrl_fifo"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gig_ethernet_pcs_pma_sgmii_autonegotiation" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gig_ethernet_pcs_pma_sgmii_autonegotiation">
+      <File Path="$PSRCDIR/sources_1/ip/gig_ethernet_pcs_pma_sgmii_autonegotiation/gig_ethernet_pcs_pma_sgmii_autonegotiation.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/gig_ethernet_pcs_pma_sgmii_autonegotiation.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gig_ethernet_pcs_pma_sgmii_autonegotiation"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gbe_cpu_buffer" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gbe_cpu_buffer">
+      <File Path="$PSRCDIR/sources_1/ip/gbe_cpu_buffer/gbe_cpu_buffer.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/virtex7/gbe_cpu_buffer.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gbe_cpu_buffer"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gbe_arp_cache" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gbe_arp_cache">
+      <File Path="$PSRCDIR/sources_1/ip/gbe_arp_cache/gbe_arp_cache.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../software/caltech-lwa/mlib_devel/jasper_library/hdl_sources/onegbe/virtex7/gbe_arp_cache.xci"/>
+          <Attr Name="ImportTime" Val="1605207745"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gbe_arp_cache"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gpio_pins3_c_counter_binary_v12_0_i1" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gpio_pins3_c_counter_binary_v12_0_i1">
+      <File Path="$PSRCDIR/sources_1/ip/gpio_pins3_c_counter_binary_v12_0_i1/gpio_pins3_c_counter_binary_v12_0_i1.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/ip/gpio_pins3_c_counter_binary_v12_0_i1/gpio_pins3_c_counter_binary_v12_0_i1.xci"/>
+          <Attr Name="ImportTime" Val="1612764412"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gpio_pins3_c_counter_binary_v12_0_i1"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gpio_pins3_c_counter_binary_v12_0_i2" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gpio_pins3_c_counter_binary_v12_0_i2">
+      <File Path="$PSRCDIR/sources_1/ip/gpio_pins3_c_counter_binary_v12_0_i2/gpio_pins3_c_counter_binary_v12_0_i2.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/ip/gpio_pins3_c_counter_binary_v12_0_i2/gpio_pins3_c_counter_binary_v12_0_i2.xci"/>
+          <Attr Name="ImportTime" Val="1612764412"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gpio_pins3_c_counter_binary_v12_0_i2"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="gpio_pins3_c_counter_binary_v12_0_i0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/gpio_pins3_c_counter_binary_v12_0_i0">
+      <File Path="$PSRCDIR/sources_1/ip/gpio_pins3_c_counter_binary_v12_0_i0/gpio_pins3_c_counter_binary_v12_0_i0.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/hdl_netlist/gpio_pins3.srcs/sources_1/ip/gpio_pins3_c_counter_binary_v12_0_i0/gpio_pins3_c_counter_binary_v12_0_i0.xci"/>
+          <Attr Name="ImportTime" Val="1612764412"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="gpio_pins3_c_counter_binary_v12_0_i0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_axi_timer_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_axi_timer_0_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_axi_timer_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_auto_pc_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_auto_pc_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_auto_pc_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_microblaze_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_microblaze_0_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_microblaze_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_mdm_1_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_mdm_1_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_mdm_1_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_dlmb_bram_if_cntlr_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_dlmb_bram_if_cntlr_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_dlmb_bram_if_cntlr_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_dlmb_v10_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_dlmb_v10_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_dlmb_v10_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_ilmb_bram_if_cntlr_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_ilmb_bram_if_cntlr_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_ilmb_bram_if_cntlr_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_axi_uartlite_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_axi_uartlite_0_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_axi_uartlite_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_axi_quad_spi_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_axi_quad_spi_0_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_axi_quad_spi_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_axi_slave_wishbone_classic_master_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_axi_slave_wishbone_classic_master_0_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_axi_slave_wishbone_classic_master_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_axi_timebase_wdt_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_axi_timebase_wdt_0_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_axi_timebase_wdt_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_ilmb_v10_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_ilmb_v10_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_ilmb_v10_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_lmb_bram_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_lmb_bram_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_lmb_bram_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="cont_microblaze_rst_Clk_100M_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/cont_microblaze_rst_Clk_100M_0">
+      <Config>
+        <Option Name="TopModule" Val="cont_microblaze_rst_Clk_100M_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+  </FileSets>
+  <Simulators>
+    <Simulator Name="XSim">
+      <Option Name="Description" Val="Vivado Simulator"/>
+      <Option Name="CompiledLib" Val="0"/>
+    </Simulator>
+    <Simulator Name="ModelSim">
+      <Option Name="Description" Val="ModelSim Simulator"/>
+    </Simulator>
+    <Simulator Name="Questa">
+      <Option Name="Description" Val="Questa Advanced Simulator"/>
+    </Simulator>
+    <Simulator Name="IES">
+      <Option Name="Description" Val="Incisive Enterprise Simulator (IES)"/>
+    </Simulator>
+    <Simulator Name="Xcelium">
+      <Option Name="Description" Val="Xcelium Parallel Simulator"/>
+    </Simulator>
+    <Simulator Name="VCS">
+      <Option Name="Description" Val="Verilog Compiler Simulator (VCS)"/>
+    </Simulator>
+    <Simulator Name="Riviera">
+      <Option Name="Description" Val="Riviera-PRO Simulator"/>
+    </Simulator>
+  </Simulators>
+  <Runs Version="1" Minor="10">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xcku115-flvf1924-2-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_tx_packet_fifo_synth_1" Type="Ft3:Synth" SrcSet="gbe_tx_packet_fifo" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_tx_packet_fifo" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gbe_tx_packet_fifo_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_microblaze_0_axi_intc_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_microblaze_0_axi_intc_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_microblaze_0_axi_intc_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_microblaze_0_axi_intc_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gpio_pins3_c_addsub_v12_0_i0_synth_1" Type="Ft3:Synth" SrcSet="gpio_pins3_c_addsub_v12_0_i0" Part="xcku115-flvf1924-2-e" ConstrsSet="gpio_pins3_c_addsub_v12_0_i0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gpio_pins3_c_addsub_v12_0_i0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_xbar_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_xbar_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_xbar_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_xbar_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_hwicap_0_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_axi_hwicap_0_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_hwicap_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_axi_hwicap_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_rx_ctrl_fifo_synth_1" Type="Ft3:Synth" SrcSet="gbe_rx_ctrl_fifo" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_rx_ctrl_fifo" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gbe_rx_ctrl_fifo_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_rx_packet_fifo_synth_1" Type="Ft3:Synth" SrcSet="gbe_rx_packet_fifo" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_rx_packet_fifo" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gbe_rx_packet_fifo_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_ctrl_fifo_synth_1" Type="Ft3:Synth" SrcSet="gbe_ctrl_fifo" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_ctrl_fifo" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gbe_ctrl_fifo_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gig_ethernet_pcs_pma_sgmii_autonegotiation_synth_1" Type="Ft3:Synth" SrcSet="gig_ethernet_pcs_pma_sgmii_autonegotiation" Part="xcku115-flvf1924-2-e" ConstrsSet="gig_ethernet_pcs_pma_sgmii_autonegotiation" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gig_ethernet_pcs_pma_sgmii_autonegotiation_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_cpu_buffer_synth_1" Type="Ft3:Synth" SrcSet="gbe_cpu_buffer" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_cpu_buffer" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gbe_cpu_buffer_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_arp_cache_synth_1" Type="Ft3:Synth" SrcSet="gbe_arp_cache" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_arp_cache" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gbe_arp_cache_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gpio_pins3_c_counter_binary_v12_0_i1_synth_1" Type="Ft3:Synth" SrcSet="gpio_pins3_c_counter_binary_v12_0_i1" Part="xcku115-flvf1924-2-e" ConstrsSet="gpio_pins3_c_counter_binary_v12_0_i1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gpio_pins3_c_counter_binary_v12_0_i1_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gpio_pins3_c_counter_binary_v12_0_i2_synth_1" Type="Ft3:Synth" SrcSet="gpio_pins3_c_counter_binary_v12_0_i2" Part="xcku115-flvf1924-2-e" ConstrsSet="gpio_pins3_c_counter_binary_v12_0_i2" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gpio_pins3_c_counter_binary_v12_0_i2_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gpio_pins3_c_counter_binary_v12_0_i0_synth_1" Type="Ft3:Synth" SrcSet="gpio_pins3_c_counter_binary_v12_0_i0" Part="xcku115-flvf1924-2-e" ConstrsSet="gpio_pins3_c_counter_binary_v12_0_i0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/gpio_pins3_c_counter_binary_v12_0_i0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_timer_0_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_axi_timer_0_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_timer_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_axi_timer_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_auto_pc_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_auto_pc_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_auto_pc_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_auto_pc_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_microblaze_0_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_microblaze_0_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_microblaze_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_microblaze_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_mdm_1_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_mdm_1_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_mdm_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_mdm_1_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_dlmb_bram_if_cntlr_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_dlmb_bram_if_cntlr_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_dlmb_bram_if_cntlr_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_dlmb_bram_if_cntlr_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_dlmb_v10_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_dlmb_v10_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_dlmb_v10_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_dlmb_v10_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_ilmb_bram_if_cntlr_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_ilmb_bram_if_cntlr_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_ilmb_bram_if_cntlr_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_ilmb_bram_if_cntlr_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_uartlite_0_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_axi_uartlite_0_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_uartlite_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_axi_uartlite_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_quad_spi_0_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_axi_quad_spi_0_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_quad_spi_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_axi_quad_spi_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_slave_wishbone_classic_master_0_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_axi_slave_wishbone_classic_master_0_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_slave_wishbone_classic_master_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_axi_slave_wishbone_classic_master_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_timebase_wdt_0_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_axi_timebase_wdt_0_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_timebase_wdt_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_axi_timebase_wdt_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_ilmb_v10_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_ilmb_v10_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_ilmb_v10_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_ilmb_v10_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_lmb_bram_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_lmb_bram_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_lmb_bram_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_lmb_bram_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_rst_Clk_100M_0_synth_1" Type="Ft3:Synth" SrcSet="cont_microblaze_rst_Clk_100M_0" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_rst_Clk_100M_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/cont_microblaze_rst_Clk_100M_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design" EnableStepBool="1"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design" EnableStepBool="1"/>
+        <Step Id="write_bitstream">
+          <Option Id="BinFile">1</Option>
+        </Step>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_tx_packet_fifo_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_tx_packet_fifo" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gbe_tx_packet_fifo_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_microblaze_0_axi_intc_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_microblaze_0_axi_intc_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_microblaze_0_axi_intc_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gpio_pins3_c_addsub_v12_0_i0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gpio_pins3_c_addsub_v12_0_i0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gpio_pins3_c_addsub_v12_0_i0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_xbar_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_xbar_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_xbar_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_hwicap_0_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_hwicap_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_axi_hwicap_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_rx_ctrl_fifo_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_rx_ctrl_fifo" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gbe_rx_ctrl_fifo_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_rx_packet_fifo_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_rx_packet_fifo" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gbe_rx_packet_fifo_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_ctrl_fifo_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_ctrl_fifo" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gbe_ctrl_fifo_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gig_ethernet_pcs_pma_sgmii_autonegotiation_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gig_ethernet_pcs_pma_sgmii_autonegotiation" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gig_ethernet_pcs_pma_sgmii_autonegotiation_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_cpu_buffer_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_cpu_buffer" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gbe_cpu_buffer_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gbe_arp_cache_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gbe_arp_cache" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gbe_arp_cache_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gpio_pins3_c_counter_binary_v12_0_i1_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gpio_pins3_c_counter_binary_v12_0_i1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gpio_pins3_c_counter_binary_v12_0_i1_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gpio_pins3_c_counter_binary_v12_0_i2_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gpio_pins3_c_counter_binary_v12_0_i2" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gpio_pins3_c_counter_binary_v12_0_i2_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="gpio_pins3_c_counter_binary_v12_0_i0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="gpio_pins3_c_counter_binary_v12_0_i0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="gpio_pins3_c_counter_binary_v12_0_i0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_timer_0_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_timer_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_axi_timer_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_auto_pc_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_auto_pc_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_auto_pc_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_microblaze_0_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_microblaze_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_microblaze_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_mdm_1_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_mdm_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_mdm_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_dlmb_bram_if_cntlr_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_dlmb_bram_if_cntlr_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_dlmb_bram_if_cntlr_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_dlmb_v10_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_dlmb_v10_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_dlmb_v10_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_ilmb_bram_if_cntlr_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_ilmb_bram_if_cntlr_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_ilmb_bram_if_cntlr_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_uartlite_0_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_uartlite_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_axi_uartlite_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_quad_spi_0_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_quad_spi_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_axi_quad_spi_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_slave_wishbone_classic_master_0_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_slave_wishbone_classic_master_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_axi_slave_wishbone_classic_master_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_axi_timebase_wdt_0_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_axi_timebase_wdt_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_axi_timebase_wdt_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_ilmb_v10_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_ilmb_v10_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_ilmb_v10_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_lmb_bram_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_lmb_bram_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_lmb_bram_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+    <Run Id="cont_microblaze_rst_Clk_100M_0_impl_1" Type="Ft2:EntireDesign" Part="xcku115-flvf1924-2-e" ConstrsSet="cont_microblaze_rst_Clk_100M_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="cont_microblaze_rst_Clk_100M_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2019">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2019"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+    </Run>
+  </Runs>
+  <Board/>
+  <DashboardSummary Version="1" Minor="0">
+    <Dashboards>
+      <Dashboard Name="default_dashboard">
+        <Gadgets>
+          <Gadget Name="drc_1" Type="drc" Version="1" Row="2" Column="0">
+            <GadgetParam Name="REPORTS" Type="string_list" Value="impl_1#impl_1_route_report_drc_0 "/>
+          </Gadget>
+          <Gadget Name="methodology_1" Type="methodology" Version="1" Row="2" Column="1">
+            <GadgetParam Name="REPORTS" Type="string_list" Value="impl_1#impl_1_route_report_methodology_0 "/>
+          </Gadget>
+          <Gadget Name="power_1" Type="power" Version="1" Row="1" Column="0">
+            <GadgetParam Name="REPORTS" Type="string_list" Value="impl_1#impl_1_route_report_power_0 "/>
+          </Gadget>
+          <Gadget Name="timing_1" Type="timing" Version="1" Row="0" Column="1">
+            <GadgetParam Name="REPORTS" Type="string_list" Value="impl_1#impl_1_route_report_timing_summary_0 "/>
+          </Gadget>
+          <Gadget Name="utilization_1" Type="utilization" Version="1" Row="0" Column="0">
+            <GadgetParam Name="REPORTS" Type="string_list" Value="synth_1#synth_1_synth_report_utilization_0 "/>
+            <GadgetParam Name="RUN.STEP" Type="string" Value="synth_design"/>
+            <GadgetParam Name="RUN.TYPE" Type="string" Value="synthesis"/>
+          </Gadget>
+          <Gadget Name="utilization_2" Type="utilization" Version="1" Row="1" Column="1">
+            <GadgetParam Name="REPORTS" Type="string_list" Value="impl_1#impl_1_place_report_utilization_0 "/>
+          </Gadget>
+        </Gadgets>
+      </Dashboard>
+      <CurrentDashboard>default_dashboard</CurrentDashboard>
+    </Dashboards>
+  </DashboardSummary>
+  <BootPmcSettings Version="1" Minor="0">
+    <Parameters>
+      <Parameter Name="PMC_CDO.ATTRS.LOADADDR" Value="" Type="string"/>
+      <Parameter Name="BOOT.PMC.QSPI_ENABLE" Value="0" Type="string"/>
+      <Parameter Name="BOOT.PMC.QSPI_FB_CLK" Value="0" Type="string"/>
+      <Parameter Name="BOOT.PMC.QSPI_FREQ" Value="300" Type="string"/>
+      <Parameter Name="BOOT.PMC.QSPI_BUS_WIDTH" Value="x1" Type="string"/>
+      <Parameter Name="BOOT.PMC.QSPI_DATA_MODE" Value="Single" Type="string"/>
+      <Parameter Name="BOOT.PMC.SD0_ENABLE" Value="0" Type="string"/>
+      <Parameter Name="BOOT.PMC.SD0_FREQ" Value="200" Type="string"/>
+      <Parameter Name="BOOT.PMC.SD0_SLOT_TYPE" Value="SD 2.0" Type="string"/>
+      <Parameter Name="BOOT.PMC.SD0_DATA_TRANSFER_MODE" Value="4Bit" Type="string"/>
+      <Parameter Name="BOOT.PMC.SD1_ENABLE" Value="0" Type="string"/>
+      <Parameter Name="BOOT.PMC.SD1_FREQ" Value="200" Type="string"/>
+      <Parameter Name="BOOT.PMC.SD1_SLOT_TYPE" Value="SD 2.0" Type="string"/>
+      <Parameter Name="BOOT.PMC.SD1_DATA_TRANSFER_MODE" Value="4Bit" Type="string"/>
+      <Parameter Name="BOOT.PMC.OSPI_ENABLE" Value="0" Type="string"/>
+      <Parameter Name="BOOT.PMC.OSPI_FREQ" Value="300" Type="string"/>
+      <Parameter Name="BOOT.USB_ENABLE" Value="0" Type="string"/>
+      <Parameter Name="BOOT.PMC.SMAP_ENABLE" Value="0" Type="string"/>
+      <Parameter Name="BOOT.PMC.SMAP_DATA_WIDTH" Value="32 Bit" Type="string"/>
+      <Parameter Name="BOOT.PMC.OSC_FREQ" Value="33.333" Type="string"/>
+      <Parameter Name="BOOT.SECONDARY.PCIE_ENABLE" Value="0" Type="string"/>
+    </Parameters>
+  </BootPmcSettings>
+</Project>
