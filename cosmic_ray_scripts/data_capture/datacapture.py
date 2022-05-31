@@ -11,7 +11,7 @@ def process_packet(data,checkpacket,datatype):
     timestamps = np.zeros(256)
     #get metadata for the packet
     
-    this_board_triggered = data[21] #did this board's own trigger logic generate the trigger
+    this_board_triggered =data[21] #did this board's own trigger logic generate the trigger
     board_id = data[22]             #which board did this come from
     block_id = data[23]             #which block of antennas are in this packet. Combined with board ID, this determines antenna ids.
     
@@ -94,16 +94,15 @@ try:
             time_block_id = pkt_index%16
             #TODO: save board id and this_board_triggered as metadata
             this_board_triggered, board_id, block_id, single_packet_array, timestamps = process_packet(d,savepacket,datatype)
-            print('time_start_index',256*time_block_id,'block from packet index',antenna_block_id,'block from packet', block_id,'first timestamp',timestamps[0])
+            print(board_id, this_board_triggered)
+            #print('time_start_index',256*time_block_id,'block from packet index',antenna_block_id,'block from packet', block_id,'first timestamp',timestamps[0])
             single_board_snapshot[256*(time_block_id):256*(time_block_id +1),antenna_block_id] = timestamps 
             single_board_snapshot[256*(time_block_id):256*(time_block_id +1),4+antenna_block_id*16:4+(antenna_block_id+1)*16] = single_packet_array
-            #single_board_snapshot[256*(time_block_id):256*(time_block_id +1),antenna_block_id] = 1
-            #single_board_snapshot[256*(time_block_id):256*(time_block_id +1),16:32] = 1
             pkt_count += 1
             pkt_index +=1
             if pkt_index == 64:  #end of the snpshot
                 pkt_index = 0  #reset the index in case more packets from a new burst come before timeout
-                np.save('snapshots/single_board_snapshot' + str(time.time()),single_board_snapshot) #save the burst
+                np.save('snapshots/single_board_snapshot' + str(time.time())+'_'+str(board_id)+'_'+str(this_board_triggered),single_board_snapshot) #save the burst
                 single_board_snapshot = np.zeros((4096,68)) # make a new array for the next burst
         except IndexError:
             incomplete_packets +=1
@@ -117,7 +116,7 @@ try:
                 missing = (n_bursts * EXPECTED_PACKETS_PER_BURST) - pkt_count
                 print("Received %d packets (%d bursts of 64 with %d missing)" % (pkt_count, n_bursts, missing))
                 if pkt_index!=0:
-                    np.save('snapshots/single_board_snapshot' + str(time.time()),single_board_snapshot) #save the burst
+                    np.save('snapshots/single_board_snapshot' + str(time.time())+'_'+str(board_id)+'_'+str(this_board_triggered),single_board_snapshot) #save the burst
                     single_board_snapshot = np.zeros((4096,68)) # make a new array for the next burst
             old_pkt_count = pkt_count
             
