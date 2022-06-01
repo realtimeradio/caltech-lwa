@@ -85,9 +85,37 @@ def setup_ethernet(brdname,brd,fpgfile,destinationcomputer,packetwait):
     if brdname=='snap01':
         ip='10.41.0.201'
         mac=0x020202010101
+    if brdname=='snap02':
+        ip='10.41.0.202'
+        mac=0x020202020202
     if brdname=='snap03':
         ip='10.41.0.203'
         mac=0x020202030303
+    if brdname=='snap04':
+        ip='10.41.0.204'
+        mac=0x020202040404
+    if brdname=='snap05':
+        ip='10.41.0.205'
+        mac=0x020202050505
+    if brdname=='snap06':
+        ip='10.41.0.206'
+        mac=0x020202060606
+    if brdname=='snap07':
+        ip='10.41.0.207'
+        mac=0x020202070707
+    if brdname=='snap08':
+        ip='10.41.0.208'
+        mac=0x020202080808
+    if brdname=='snap09':
+        ip='10.41.0.209'
+        mac=0x020202090909
+    if brdname=='snap10':
+        ip='10.41.0.210'
+        mac=0x020202101010
+    if brdname=='snap11':
+        ip='10.41.0.211'
+        mac=0x020202111111
+
     #configure the 40 Gbe core
     brd.get_system_information(fpgfile)
     if destinationcomputer == 'lwacr':
