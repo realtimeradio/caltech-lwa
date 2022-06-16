@@ -6,6 +6,7 @@ import time
 import argparse
 import sys
 import os
+import socket
 
 import casperfpga
 import logging
@@ -386,6 +387,11 @@ if __name__ == "__main__":
         logger.warning("WARNING: --check_errors will only produce meaningful results in --use_ramp mode")
 
     logger.info("Connecting to %s" % args.host)
+    try:
+        socket.gethostbyname(args.host)
+    except socket.gaierror:
+        logger.error("Can't resolve hostname %s" % args.host)
+        exit()
     s = casperfpga.CasperFpga(args.host, transport=casperfpga.TapcpTransport)
 
     if args.program:
