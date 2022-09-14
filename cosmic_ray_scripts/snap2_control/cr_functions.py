@@ -245,9 +245,8 @@ def packantennaroles(roles_array):
     output1=0
     output2=0
     for i in range(32):
-        output1+=roles_array[i]<<i
-        output2+=roles_array[i+32]<<i
-
+        output1+=roles_array[i]<<(31-i)
+        output2+=roles_array[i+32]<<(31-i)
     return output1, output2
 
 def setup_coincidencer(casperbrd,trigger_power_thresh,
@@ -272,7 +271,6 @@ def setup_coincidencer(casperbrd,trigger_power_thresh,
     setvalue(casperbrd,'trigger_antennas2','cr_registers.xlsx',core_roles2)
     setvalue(casperbrd,'veto_antennas1','cr_registers.xlsx',veto_roles1)
     setvalue(casperbrd,'veto_antennas2','cr_registers.xlsx',veto_roles2)
-
     return
 
 def set_delays(casperbrd,delays):
