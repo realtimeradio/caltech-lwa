@@ -2,7 +2,7 @@ from distutils.core import setup
 import glob
 import os
 
-ver = '0.0.1'
+ver = '1.0.0'
 try:
     import subprocess
     ver = ver + '-' + subprocess.check_output(['git', 'describe', '--abbrev=8', '--always', '--dirty', '--tags']).decode().strip()
