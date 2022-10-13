@@ -462,7 +462,7 @@ class Snap2Fengine():
                 self.logger.error("No 'xengines' key in output configuration!")
                 raise RuntimeError('Config file missing "xengines" key')
             try:
-                enable_pfb = config['fengines']['enable_pfb']
+                enable_pfb = conf['fengines']['enable_pfb']
             except KeyError:
                 enable_pfb = True
             chans_per_packet = conf['fengines']['chans_per_packet']
