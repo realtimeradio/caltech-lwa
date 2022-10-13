@@ -461,6 +461,10 @@ class Snap2Fengine():
             if 'xengines' not in conf:
                 self.logger.error("No 'xengines' key in output configuration!")
                 raise RuntimeError('Config file missing "xengines" key')
+            try:
+                enable_pfb = config['fengines']['enable_pfb']
+            except KeyError:
+                enable_pfb = True
             chans_per_packet = conf['fengines']['chans_per_packet']
             localconf = conf['fengines'].get(self.hostname, None)
             if localconf is None:
@@ -489,6 +493,7 @@ class Snap2Fengine():
             test_vectors = test_vectors,
             sync = sync,
             sw_sync = sw_sync,
+            enable_pfb = enable_pfb,
             enable_eth = enable_eth,
             chans_per_packet = chans_per_packet,
             first_stand_index = first_stand_index,
@@ -501,7 +506,7 @@ class Snap2Fengine():
 
 
     def cold_start(self, program=True, initialize=True, test_vectors=False,
-                   sync=True, sw_sync=False, enable_eth=True,
+                   sync=True, sw_sync=False, enable_pfb=True, enable_eth=True,
                    chans_per_packet=96, first_stand_index=0, nstand=32,
                    macs={}, source_ip='10.41.0.101', source_port=10000,
                    dests=[]):
@@ -529,6 +534,9 @@ class Snap2Fengine():
         :param sw_sync: If True, issue a software reset trigger, rather than waiting
             for an external reset pulse to be received over SMA.
         :type sw_sync: bool
+
+        :param enable_pfb: If True, enable the PFB FIR filter on the F-Engine.
+        :type enable_eth: bool
 
         :param enable_eth: If True, enable 40G F-Engine Ethernet output.
         :type enable_eth: bool
@@ -589,6 +597,13 @@ class Snap2Fengine():
             self.logger.info('Updating telescope time')
             self.sync.update_telescope_time()
             self.sync.update_internal_time()
+
+        if enable_pfb:
+            self.logger.info('Enabling the PFB FIR filter')
+            self.pfb.fir_enable()
+        else:
+            self.logger.info('Disabling the PFB FIR filter')
+            self.pfb.fir_disable()
 
         if test_vectors:
             self.logger.info('Enabling EQ TVGs...')
