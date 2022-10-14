@@ -141,7 +141,7 @@ class Input(Block):
         means    = means.astype(float) / 2.**16
         powers   = (x & (2**35 - 1)) / 2.**16
         rmss     = np.sqrt(powers)
-        return means.tolist(), powers.tolist(), rmss.tolist()
+        return means, powers, rmss
 
     def initialize(self, read_only=False):
         """
