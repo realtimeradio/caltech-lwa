@@ -563,8 +563,15 @@ class Snap2FengineEtcdClient():
                 self.logger.error("Responded to command '%s' (ID %s): %s" % (command, seq_id, err))
                 return False
             try:
+                # cast numpy arrays as lists for JSONification
                 if isinstance(resp, np.ndarray):
                     resp = resp.tolist()
+                # If the return value is a tuple, try to cast
+                # any numpy arrays in the tuple
+                if isinstance(resp, tuple):
+                    for i in range(len(resp)):
+                        if isinstance(resp[i], np.ndarray):
+                            resp[i] = resp[i].tolist()
                 # Check we will be able to encode the response
                 test_encode = json.dumps(resp)
             except:
