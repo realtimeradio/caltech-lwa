@@ -569,6 +569,7 @@ class Snap2FengineEtcdClient():
                 # If the return value is a tuple, try to cast
                 # any numpy arrays in the tuple
                 if isinstance(resp, tuple):
+                    resp = list(resp)
                     for i in range(len(resp)):
                         if isinstance(resp[i], np.ndarray):
                             resp[i] = resp[i].tolist()
