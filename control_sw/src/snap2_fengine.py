@@ -337,7 +337,7 @@ class Snap2Fengine():
         :param filter_ksize: Filter kernel size, for rudimentary RFI removal. This should be an odd value.
         :type filter_ksize: int
 
-        :param target_rms: The target post-EQ RMS. This is normalized such that 1.0 is the saturation level.
+        :param target_rms: The target post-EQ RMS. This is normalized such that 0.875 is the saturation level.
             I.e., an RMS of 0.125 means that the RMS is one LSB of a 4-bit signed signal.
         :type target_rms: float
 
