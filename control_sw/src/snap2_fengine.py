@@ -351,8 +351,7 @@ class Snap2Fengine():
                 stream_id = i*n_signals + j
                 self.logger.info("Trying to EQ input %d" % stream_id)
                 pre_quant_rms = np.sqrt(spectra[j] / 2) # RMS of each real / imag component making up spectra
-                eq_coeff, eq_bp = self.eq.get_coeffs(stream_id)
-                eq_scale = eq_coeff / (2**eq_bp)
+                eq_scale = self.eq.get_coeffs(stream_id)
                 eq_scale = eq_scale.repeat(coeff_repeat_factor)
                 curr_rms = pre_quant_rms * eq_scale
                 diff = target_rms / curr_rms
