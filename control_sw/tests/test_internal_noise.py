@@ -361,13 +361,13 @@ if __name__ == "__main__":
     parser.add_argument('-s', dest='seed', type=int, default=0xabcdabcd,
                         help ='Random number seed for this test')
     parser.add_argument('--samenoise', action='store_true',
-                        help='Skip "Same noise" tests')
+                        help='Run "Same noise" tests')
     parser.add_argument('--diffnoise', action='store_true',
-                        help='Skip "Different noise" tests')
+                        help='Run "Different noise" tests')
     parser.add_argument('--zero', action='store_true',
-                        help='Skip "Zeroing out" tests')
+                        help='Run "Zeroing out" tests')
     parser.add_argument('--delay', action='store_true',
-                        help='Skip "Delay phase" tests')
+                        help='Run "Delay phase" tests')
     parser.add_argument('host', type=str,
                         help='SNAP2 hostname (or IP address) to initialize')
     args = parser.parse_args()
