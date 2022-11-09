@@ -465,6 +465,12 @@ class Snap2Fengine():
             except KeyError:
                 enable_pfb = True
             chans_per_packet = conf['fengines']['chans_per_packet']
+            fft_shift = conf['fengines'].get('fft_shift', None)
+            eq_coeffs = conf['fengines'].get('eq_coeffs', None)
+            # if a single coefficient is provided, use it for all channels
+            if eq_coeffs is not None:
+                if not isinstance(eq_coeffs, list):
+                    eq_coeffs = [eq_coeffs] * self.eq.n_coeffs
             localconf = conf['fengines'].get(self.hostname, None)
             if localconf is None:
                 self.logger.error("No configuration for F-engine host %s" % self.hostname)
@@ -494,6 +500,8 @@ class Snap2Fengine():
             sw_sync = sw_sync,
             enable_pfb = enable_pfb,
             enable_eth = enable_eth,
+            fft_shift = fft_shift,
+            eq_coeffs = eq_coeffs,
             chans_per_packet = chans_per_packet,
             first_stand_index = first_stand_index,
             nstand = nstand,
@@ -506,6 +514,7 @@ class Snap2Fengine():
 
     def cold_start(self, program=True, initialize=True, test_vectors=False,
                    sync=True, sw_sync=False, enable_pfb=True, enable_eth=True,
+                   fft_shift=None, eq_coeffs=None,
                    chans_per_packet=96, first_stand_index=0, nstand=32,
                    macs={}, source_ip='10.41.0.101', source_port=10000,
                    dests=[]):
@@ -539,6 +548,13 @@ class Snap2Fengine():
 
         :param enable_eth: If True, enable 40G F-Engine Ethernet output.
         :type enable_eth: bool
+
+        :param fft_shift: If provided, set the F-engine FFT shift to the provided value.
+        :type fft_shift: int
+
+        :param eq_coeffs: If provided, the list of pre-quantization equalization
+            coefficients to be loaded to F-engines. This should have `eq.n_coeffs` entries.
+        :type eq_coeffs: list
 
         :param chans_per_packet: Number of frequency channels in each output F-engine
             packet
@@ -603,6 +619,16 @@ class Snap2Fengine():
         else:
             self.logger.info('Disabling the PFB FIR filter')
             self.pfb.fir_disable()
+
+        if fft_shift is not None:
+            self.logger.info('Setting FFT shift to 0x%.4x' % fft_shift)
+            self.pfb.set_fft_shift(fft_shift)
+
+        if eq_coeffs is not None:
+            # Set all inputs to use the same coeffs
+            self.logger.info('Setting EQ coefficients')
+            for i in range(self.eq.n_streams):
+                self.eq.set_coeffs(i, eq_coeffs)
 
         if test_vectors:
             self.logger.info('Enabling EQ TVGs...')
