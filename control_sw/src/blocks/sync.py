@@ -2,6 +2,7 @@ import time
 from numpy import log2
 
 from .block import Block
+from lwa_f.error_levels import *
 
 class Sync(Block):
     OFFSET_ACTIVE_HIGH = 0
@@ -15,6 +16,7 @@ class Sync(Block):
     OFFSET_MAN_SYNC = 8
     OFFSET_ARM_NOISE = 9
     OFFSET_TT_LOAD_ARM = 10
+    OFFSET_LOOPBACK_EN = 11
 
     def __init__(self, host, name, logger=None):
         super(Sync, self).__init__(host, name, logger)
@@ -51,6 +53,13 @@ class Sync(Block):
         return 0
         return self.read_uint('ext_pps_count')
 
+    def period_pps(self):
+        """
+        :return: The number of FPGA clock ticks between the last two external PPS pulses.
+        :rtype int:
+        """
+        return self.read_uint('ext_pps_period') + 1
+
     def count_int(self):
         """
         :return: Number of internal sync pulses received.
@@ -63,7 +72,30 @@ class Sync(Block):
         :return: Number of FPGA clock ticks between sync transmission and reception
         :rtype int:
         """
-        return self.read_uint('latency') & 0xff
+        return self.read_uint('latency')
+
+    def get_latency_variations(self):
+        """
+        :return: Number of latency variations between sync transmission and reception
+            since reset_error_count
+        :rtype int:
+        """
+        return self.read_uint('latency_variations')
+
+    def get_period_variations(self):
+        """
+        :return: The number of external sync period variations since last
+            reset_error_count
+        :rtype int:
+        """
+        return self.read_uint('ext_period_variations')
+
+    def get_pps_period_variations(self):
+        """
+        :return: The number of external pps period variations since last reset_error_count
+        :rtype int:
+        """
+        return self.read_uint('ext_pps_period_variations')
 
     def get_error_count(self):
         """
@@ -79,6 +111,18 @@ class Sync(Block):
         self.change_reg_bits('ctrl', 0, self.OFFSET_RST_ERR)
         self.change_reg_bits('ctrl', 1, self.OFFSET_RST_ERR)
         self.change_reg_bits('ctrl', 0, self.OFFSET_RST_ERR)
+
+    def enable_loopback(self):
+        """
+        Internally loop back the sync output and input.
+        """
+        self.change_reg_bits('ctrl', 1, self.OFFSET_LOOPBACK_EN)
+
+    def disable_loopback(self):
+        """
+        Disable the internal loopback between the sync output and input.
+        """
+        self.change_reg_bits('ctrl', 0, self.OFFSET_LOOPBACK_EN)
     
     def wait_for_sync(self, timeout=20):
         """
@@ -334,6 +378,12 @@ class Sync(Block):
             - period_fpga_clks (int) : Number of FPGA clock ticks (= ADC clock ticks)
               between the last two internal sync pulses.
 
+            - period_variations (int) : Number of different external sync periods measured
+              since the last error count reset
+
+            - period_pps_fpga_clks (int) : Number of FPGA clock ticks (= ADC clock ticks)
+              between the last two external PPS sync pulses.
+
             - ext_count (int) : The number of external sync pulses since the FPGA
               was last programmed.
 
@@ -350,8 +400,12 @@ class Sync(Block):
         flags = {}
         stats['uptime_fpga_clks'] = self.uptime()
         stats['period_fpga_clks'] = self.period()
+        stats['period_pps_fpga_clks'] = self.period_pps()
+        stats['period_variations'] = self.get_period_variations()
         stats['ext_count'] = self.count_ext()
         stats['int_count'] = self.count_int()
+        if stats['period_variations'] > 0:
+            flags['period_variations'] = FENG_WARNING
         return stats, flags
 
     def initialize(self, read_only=False):
