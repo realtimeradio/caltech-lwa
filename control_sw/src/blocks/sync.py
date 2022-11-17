@@ -32,21 +32,23 @@ class Sync(Block):
 
     def period(self):
         """
-        :return: The number of FPGA clock ticks between the last two external sync pulses.
+        :return: The number of FPGA clock ticks between the last two external sync pulses
+            received from the timing distribution system.
         :rtype int:
         """
         return self.read_uint('ext_sync_period') + 1
 
     def count_ext(self):
         """
-        :return: Number of external sync pulses received.
+        :return: Number of external sync pulses received from the timing distribution system.
         :rtype int:
         """
         return self.read_uint('ext_sync_count')
 
     def count_pps(self):
         """
-        :return: Number of external PPS pulses received.
+        :return: Number of external PPS pulses received. This counter will only
+            increment reliably on the single board which has a PPS connected.
         :rtype int:
         """
         self._warning("firmware bug workaround. PPS count register doesn't exist")
@@ -55,21 +57,26 @@ class Sync(Block):
 
     def period_pps(self):
         """
-        :return: The number of FPGA clock ticks between the last two external PPS pulses.
+        :return: The number of FPGA clock ticks between the last two PPS pulses.
+            This period report will only be meaningful is this board has a PPS connected.
         :rtype int:
         """
         return self.read_uint('ext_pps_period') + 1
 
     def count_int(self):
         """
-        :return: Number of internal sync pulses received.
+        :return: Number of internally generated sync pulses counted.
+            The "internal" pulses are output on a physical board connector.
+            For one board, this signal drives the timing distribution system.
         :rtype int:
         """
         return self.read_uint('int_sync_count')
 
     def get_latency(self):
         """
-        :return: Number of FPGA clock ticks between sync transmission and reception
+        :return: Number of FPGA clock ticks between sync transmission and reception.
+            This measurement is only meaningful for the board which has its internal pulse
+            output connected to the timing distribution system input.
         :rtype int:
         """
         return self.read_uint('latency')
@@ -84,29 +91,23 @@ class Sync(Block):
 
     def get_period_variations(self):
         """
-        :return: The number of external sync period variations since last
-            reset_error_count
+        :return: The number of sync period variations in pulses received from the
+            timing distribution system since last reset_error_count()
         :rtype int:
         """
         return self.read_uint('ext_period_variations')
 
     def get_pps_period_variations(self):
         """
-        :return: The number of external pps period variations since last reset_error_count
+        :return: The number of PPS period variations since last reset_error_count().
+            This is only meaninful if a board has a PPS input connected.
         :rtype int:
         """
         return self.read_uint('ext_pps_period_variations')
 
-    def get_error_count(self):
-        """
-        :return: Number of sync errors.
-        :rtype int:
-        """
-        return self.read_uint('latency') >> 8
-
     def reset_error_count(self):
         """
-        Reset internal error counter to 0.
+        Reset error counters to 0.
         """
         self.change_reg_bits('ctrl', 0, self.OFFSET_RST_ERR)
         self.change_reg_bits('ctrl', 1, self.OFFSET_RST_ERR)
@@ -291,16 +292,22 @@ class Sync(Block):
             self.change_reg_bits('ctrl', 1, self.OFFSET_MAN_LOAD_INT)
             self.change_reg_bits('ctrl', 0, self.OFFSET_MAN_LOAD_INT)
 
-    def get_tt_of_sync(self):
+    def get_tt_of_sync(self, wait_for_sync=True):
         """
-        Get the internal TT at which the last sync pulse arrived.
+        Get the internal TT at which the last sync pulse arrived, optionally
+        waiting for a pulse to pass before reading its arrival time and returning.
+
+        :param wait_for_sync: If True, wait for a sync pulse to pass before
+            measuring its arrival time and returning.
+        :type wait_for_sync: bool
 
         :return: (tt, sync_number). ``tt`` is the internal TT of the last sync.
             ``sync_number`` is the sync pulse count corresponding to this TT.
         :rtype int:
         """
-        # wait for a pulse so we are less likely to read over a boundary
-        self.wait_for_sync()
+        if wait_for_sync:
+            # wait for a pulse so we are less likely to read over a boundary
+            self.wait_for_sync()
         sync_number = self.count_ext()
         tt = (self.read_uint('ext_sync_tt_msb') << 32) + self.read_uint('ext_sync_tt_lsb')
         sync_number_reread = self.count_ext()
@@ -309,16 +316,22 @@ class Sync(Block):
             raise RuntimeError
         return tt, sync_number
 
-    def get_tt_of_pps(self):
+    def get_tt_of_pps(self, wait_for_sync=True):
         """
-        Get the internal TT at which the last PPS pulse arrived.
+        Get the internal TT at which the last PPS pulse arrived, optionally
+        waiting for a pulse to pass before reading its arrival time and returning.
+
+        :param wait_for_sync: If True, wait for a sync pulse to pass before
+            measuring its arrival time and returning.
+        :type wait_for_sync: bool
 
         :return: (tt, sync_number). ``tt`` is the internal TT of the last PPS.
             ``sync_number`` is the PPS pulse count corresponding to this TT.
         :rtype int:
         """
-        # wait for a pulse so we are less likely to read over a boundary
-        self.wait_for_pps()
+        if wait_for_sync:
+            # wait for a pulse so we are less likely to read over a boundary
+            self.wait_for_pps()
         sync_number = self.count_pps()
         tt = (self.read_uint('tt_msb') << 32) + self.read_uint('tt_lsb')
         sync_number_reread = self.count_pps()
@@ -379,7 +392,8 @@ class Sync(Block):
               between the last two internal sync pulses.
 
             - period_variations (int) : Number of different external sync periods measured
-              since the last error count reset
+              since the last error count reset. Any value other than zero is flagged as
+              a warning.
 
             - period_pps_fpga_clks (int) : Number of FPGA clock ticks (= ADC clock ticks)
               between the last two external PPS sync pulses.
