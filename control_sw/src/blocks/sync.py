@@ -209,6 +209,16 @@ class Sync(Block):
         Load the PPS-locked telescope time counters with the correct time
         on the next PPS pulse.
 
+        Loading procedure is:
+          1. Wait for a PPS to pass, or for a timeout waiting for a PPS
+          2. If no PPS was detected. Do nothing and return from this function,
+             skipping steps 3,4,5
+          3. Compute how many ADC clocks will have occurred at the time of the
+             next PPS.
+          4. Load this value on the next PPS pulse using ``load_telescope_time``
+          5. Verify (using ``count_pps``) that no PPS pulses have occurred while
+             performing steps 2 and 3. Generate an error if this is not the case.
+
         :param fs_hz: The ADC clock rate, in Hz. Used to set the
             telescope time counter.
         :type fs_hz: int
@@ -234,6 +244,7 @@ class Sync(Block):
             self._warning("TT loaded with only %.2f seconds to spare" % spare)
         if spare < 0:
             self._error("TT loaded after the expected PPS arrival!")
+            raise RuntimeError("TT loaded after the expected PPS arrival!")
         # Now wait for a PPS so that the TT will have been loaded before anything else happend
         if has_pps:
             self.wait_for_pps()
@@ -345,6 +356,16 @@ class Sync(Block):
         Load the sync-pulse -locked telescope time counters with the correct time
         on the next sync pulse.
 
+        Loading procedure is:
+          1. Wait for a sync pulse to pass
+          2. Compute how many, ``m``,  sync periods (determined by ``period()``)
+             have passed since UNIX time 0.
+          3. Compute the telescope time (``(m+1)*period``) of the next expected
+             sync pulse arrival.
+          4. Load this value on the next sync pulse using ``load_internal_time``
+          5. Verify (using ``count_ext``) that no sync pulses have occurred while
+             performing steps 2 and 3. Generate an error if this is not the case.
+
         :param fs_hz: The ADC clock rate, in Hz. Used to set the
             telescope time counter.
         :type fs_hz: int
@@ -376,7 +397,8 @@ class Sync(Block):
             self._warning("Internal TT loaded with only %.2f seconds to spare" % spare)
         if spare < 0:
             self._error("Internal TT loaded after the expected sync arrival!")
-        # Wait for a sync to pass so the TT is laoded before anything else happens
+            raise RuntimeError("Internal TT loaded after the expected sync arrival!")
+        # Wait for a sync to pass so the TT is loaded before anything else happens
         self.wait_for_sync()
 
     def get_status(self):
