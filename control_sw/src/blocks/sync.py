@@ -206,8 +206,8 @@ class Sync(Block):
 
     def update_telescope_time(self, fs_hz=196e6):
         """
-        Arm PPS trigger receivers,
-        having loaded an appropriate telescope time.
+        Load the PPS-locked telescope time counters with the correct time
+        on the next PPS pulse.
 
         :param fs_hz: The ADC clock rate, in Hz. Used to set the
             telescope time counter.
@@ -342,8 +342,8 @@ class Sync(Block):
 
     def update_internal_time(self, fs_hz=196e6):
         """
-        Arm sync trigger receivers,
-        having loaded an appropriate telescope time.
+        Load the sync-pulse -locked telescope time counters with the correct time
+        on the next sync pulse.
 
         :param fs_hz: The ADC clock rate, in Hz. Used to set the
             telescope time counter.
