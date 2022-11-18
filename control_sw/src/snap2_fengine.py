@@ -416,7 +416,7 @@ class Snap2Fengine():
                     sync=True, sw_sync=False, enable_eth=True):
         """
         Completely configure a SNAP2 F-engine from scratch, using a configuration
-        YAML file.
+        YAML file. SNAP timekeeping will be relocked to the timing distribution system.
 
         :param program: If True, start by programming the SNAP2 FPGA from
             the image currently in flash. Also train the ADC-> FPGA links
@@ -520,6 +520,7 @@ class Snap2Fengine():
                    dests=[]):
         """
         Completely configure a SNAP2 F-engine from scratch.
+        SNAP timekeeping will be relocked to the timing distribution system.
 
         :param program: If True, start by programming the SNAP2 FPGA from
             the image currently in flash. Also train the ADC-> FPGA links
