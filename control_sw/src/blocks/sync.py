@@ -51,9 +51,11 @@ class Sync(Block):
             increment reliably on the single board which has a PPS connected.
         :rtype int:
         """
-        self._warning("firmware bug workaround. PPS count register doesn't exist")
-        return 0
-        return self.read_uint('ext_pps_count')
+        try:
+            return self.read_uint('ext_pps_count')
+        except:
+            self._warning("firmware bug workaround. PPS count register doesn't exist")
+            return 0
 
     def period_pps(self):
         """
@@ -204,7 +206,7 @@ class Sync(Block):
         """
         self.write_int('tt_mask', mask)
 
-    def update_telescope_time(self, fs_hz=196e6):
+    def update_telescope_time(self, fs_hz=196000000):
         """
         Load the PPS-locked telescope time counters with the correct time
         on the next PPS pulse.
@@ -213,8 +215,10 @@ class Sync(Block):
           1. Wait for a PPS to pass, or for a timeout waiting for a PPS
           2. If no PPS was detected. Do nothing and return from this function,
              skipping steps 3,4,5
-          3. Compute how many ADC clocks will have occurred at the time of the
-             next PPS.
+          3. Inferring the exact time of the observed PPS arrival via current
+             system time, which is assumed to be aligned to GPS time to
+             better than 0.5 seconds, compute how many ADC clocks will
+             have occurred at the time of the upcoming PPS.
           4. Load this value on the next PPS pulse using ``load_telescope_time``
           5. Verify (using ``count_pps``) that no PPS pulses have occurred while
              performing steps 2 and 3. Generate an error if this is not the case.
@@ -225,29 +229,33 @@ class Sync(Block):
 
         """
         x = self.wait_for_pps()
+        count_start = self.count_pps()
         has_pps = (x >= 0)
         if not has_pps:
             # Timed out, probably because this isn't the TT SNAP2 with PPS
             self._info("Skipping telescope time update, because this board doesn't have a PPS")
             return
-        now = time.time()
-        next_pps = int(now) + 1
+        first_pps = time.time()
+        if (abs(first_pps - round(first_pps))) > 0.05:
+            self._warning("System time and GPS time seem to differ by >50 ms")
+        next_pps = round(first_pps) + 1
         self._info("Loading new telescope time at %s" % time.ctime(next_pps))
         target_tt = int(next_pps * fs_hz)
-        delay = next_pps - time.time()
-        if delay < 0.2:
-            self._error("Took too long to generate software sync")
         self.load_telescope_time(target_tt, software_load=False)
         loaded_time = time.time()
-        spare = next_pps - loaded_time
+        spare = first_pps + 1 - loaded_time
         if spare < 0.2:
             self._warning("TT loaded with only %.2f seconds to spare" % spare)
         if spare < 0:
             self._error("TT loaded after the expected PPS arrival!")
             raise RuntimeError("TT loaded after the expected PPS arrival!")
+        count_stop = self.count_pps()
+        if count_stop != count_start:
+            self._error("TT loaded after the expected PPS arrival!")
+            raise RuntimeError("TT loaded after the expected PPS arrival!")
         # Now wait for a PPS so that the TT will have been loaded before anything else happend
         if has_pps:
-            self.wait_for_pps()
+            pps_cnt_after = self.wait_for_pps()
 
     def reset_telescope_time(self):
         """
@@ -351,7 +359,7 @@ class Sync(Block):
             raise RuntimeError
         return tt, sync_number
 
-    def update_internal_time(self, fs_hz=196e6):
+    def update_internal_time(self, fs_hz=196000000):
         """
         Load the sync-pulse-locked telescope time counters with the correct time
         on the next sync pulse.
@@ -363,7 +371,10 @@ class Sync(Block):
         Loading procedure is:
           1. Wait for a sync pulse to pass
           2. Compute how many, ``m``,  sync periods (determined by ``period()``)
-             have passed since UNIX time 0.
+             have passed since UNIX time 0, inferring the exact arrival time
+             of the last sync by comparison with system time, which
+             is assumed to be aligned to GPS time to better than 50% of a sync
+             pulse period.
           3. Compute the telescope time (``(m+1)*period``) of the next expected
              sync pulse arrival.
           4. Load this value on the next sync pulse using ``load_internal_time``
@@ -375,33 +386,36 @@ class Sync(Block):
         :type fs_hz: int
 
         """
-        # Figure out sync rate
-        tt0, sync0 = self.get_tt_of_sync()
-        tt1, sync1 = self.get_tt_of_sync()
-        sync_period = (tt1 - tt0) / (sync1 - sync0)
+        sync_period = self.period()
         self._info("Detected sync period %.1f (2^%.1f) clocks" % (sync_period, log2(sync_period)))
-        sync_period = int(sync_period)
-        if sync_period < 1:
+        if ((log2(sync_period) % 1) != 0):
+            self._warning("Odd sync period detected")
+        if sync_period < fs_hz:
             self._warning("Might have issues synchronizing with a sync period < 1 second")
         # We assume that the master TT is tracking clocks since unix epoch.
         # Syncs should come every `sync_period` ADC clocks
         self.wait_for_sync()
-        now = time.time()
-        now_clocks = int(now * fs_hz)
-        next_sync_clocks = ((now_clocks // sync_period) + 1) * sync_period
+        count_start = self.count_ext()
+        first_sync = time.time() 
+        first_sync_clocks = int(first_sync * fs_hz)
+        first_sync_exact = (first_sync_clocks / sync_period) # pulse ID since time origin
+        next_sync_clocks = (round(first_sync_exact) + 1) * sync_period
+        if (abs(first_sync_exact - round(first_sync_exact)) * sync_period / fs_hz) > 0.05:
+            self._warning("System time and Sync time seem to differ by >50 ms")
         next_sync = next_sync_clocks / fs_hz
         self._info("Loading new telescope time at %s" % time.ctime(next_sync))
-        delay = next_sync - time.time()
-        if delay < 0.2:
-            self._error("Took too long to configure telescope time register")
         self.load_internal_time(next_sync_clocks, software_load=False)
         loaded_time = time.time()
-        spare = next_sync - loaded_time
+        spare = first_sync + (sync_period / fs_hz) - loaded_time
         if spare < 0.2:
             self._warning("Internal TT loaded with only %.2f seconds to spare" % spare)
         if spare < 0:
             self._error("Internal TT loaded after the expected sync arrival!")
-            raise RuntimeError("Internal TT loaded after the expected sync arrival!")
+            # Don't raise here, the count test below is the concrete one
+        count_stop = self.count_pps()
+        if count_stop != count_start:
+            self._error("TT loaded after the expected sync arrival!")
+            raise RuntimeError("TT loaded after the expected sync arrival!")
         # Wait for a sync to pass so the TT is loaded before anything else happens
         self.wait_for_sync()
 
