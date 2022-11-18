@@ -353,8 +353,12 @@ class Sync(Block):
 
     def update_internal_time(self, fs_hz=196e6):
         """
-        Load the sync-pulse -locked telescope time counters with the correct time
+        Load the sync-pulse-locked telescope time counters with the correct time
         on the next sync pulse.
+        Since sync pulses are derived from the telescope
+        time of the one SNAP board which drives the timing distribution network,
+        ``update_telescope_time()`` should have been run on this unique board
+        prior to the use of ``update_internal_time``.
 
         Loading procedure is:
           1. Wait for a sync pulse to pass
