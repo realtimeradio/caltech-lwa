@@ -416,15 +416,19 @@ class Snap2Fengine():
                     sync=True, sw_sync=False, enable_eth=True):
         """
         Completely configure a SNAP2 F-engine from scratch, using a configuration
-        YAML file. SNAP timekeeping will be relocked to the timing distribution system.
+        YAML file.
 
         :param program: If True, start by programming the SNAP2 FPGA from
             the image currently in flash. Also train the ADC-> FPGA links
-            and initialize all firmware blocks.
+            and initialize all firmware blocks. Also relock the SNAP2's
+            internal timekeeping logic to the sync pulse
+            (and PPS, if connected) distribution system.
         :type program: bool
 
         :param initialize: If True, put all firmware blocks in their default
-            initial state. Initialization is always performed if the FPGA
+            initial state, and relock the board's timekeeping logic to the
+            sync pulse (and PPS, if connected) distribution system.
+            Initialization is always performed if the FPGA
             has been reprogrammed, but can be run without reprogramming
             to (quickly) reset the firmware to a known state. Initialization
             does not include ADC->FPGA link training.
@@ -520,15 +524,18 @@ class Snap2Fengine():
                    dests=[]):
         """
         Completely configure a SNAP2 F-engine from scratch.
-        SNAP timekeeping will be relocked to the timing distribution system.
 
         :param program: If True, start by programming the SNAP2 FPGA from
             the image currently in flash. Also train the ADC-> FPGA links
-            and initialize all firmware blocks.
+            and initialize all firmware blocks. Also relock the SNAP2's
+            internal timekeeping logic to the sync pulse
+            (and PPS, if connected) distribution system.
         :type program: bool
 
         :param initialize: If True, put all firmware blocks in their default
-            initial state. Initialization is always performed if the FPGA
+            initial state, and relock the board's timekeeping logic to the
+            sync pulse (and PPS, if connected) distribution system.
+            Initialization is always performed if the FPGA
             has been reprogrammed, but can be run without reprogramming
             to (quickly) reset the firmware to a known state. Initialization
             does not include ADC->FPGA link training.
