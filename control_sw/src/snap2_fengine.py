@@ -18,6 +18,7 @@ from .blocks import noisegen
 from .blocks import input
 from .blocks import delay
 from .blocks import pfb
+from .blocks import mask
 from .blocks import autocorr
 from .blocks import eq
 from .blocks import eqtvg
@@ -31,6 +32,7 @@ FENG_40G_SOURCE_PORT = 10000
 MAC_BASE = 0x020203030400
 IP_BASE = (10 << 24) + (41 << 16) + (0 << 8) + 100
 PIPELINES_PER_XENG = 4
+FS_HZ = 196000000 # ADC sample rate in Hz
 
 class Snap2Fengine():
     """
@@ -92,6 +94,8 @@ class Snap2Fengine():
         self.delay       = delay.Delay(self._cfpga, 'delay', n_streams=64)
         #: Control interface to PFB block
         self.pfb         = pfb.Pfb(self._cfpga, 'pfb')
+        #: Control interface to Mask (flagging) block
+        self.mask        = mask.Mask(self._cfpga, 'mask', n_cores=1, n_signals=16) # one core only
         #: Control interface to Autocorrelation block
         self.autocorr    = autocorr.AutoCorr(self._cfpga, 'autocorr')
         #: Control interface to Equalization block
@@ -121,6 +125,7 @@ class Snap2Fengine():
             'input'     : self.input,
             'delay'     : self.delay,
             'pfb'       : self.pfb,
+            'mask'      : self.mask,
             'eq'        : self.eq,
             'eqtvg'     : self.eqtvg,
             'reorder'   : self.reorder,
@@ -620,6 +625,13 @@ class Snap2Fengine():
             self.logger.info('Updating telescope time')
             self.sync.update_telescope_time()
             self.sync.update_internal_time()
+            # Configure flag core to use windows of acc_len since TT=0
+            now_tt = int(time.time() * FS_HZ)
+            tt_ticks_per_acc = self.mask.get_acc_len() * 2 * self.mask.n_chans
+            # Find a valid accumulation start TT between 1 and 2 acc_lens in the future
+            target_acc_cnt = int(ceil(now_tt / tt_ticks_per_acc)) + 1
+            target_tt = target_acc_cnt * tt_ticks_per_acc
+            self.mask.set_acc_start_time(target_tt)
 
         if enable_pfb:
             self.logger.info('Enabling the PFB FIR filter')
