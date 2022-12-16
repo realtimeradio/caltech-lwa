@@ -629,7 +629,7 @@ class Snap2Fengine():
             now_tt = int(time.time() * FS_HZ)
             tt_ticks_per_acc = self.mask.get_acc_len() * 2 * self.mask.n_chans
             # Find a valid accumulation start TT between 1 and 2 acc_lens in the future
-            target_acc_cnt = int(ceil(now_tt / tt_ticks_per_acc)) + 1
+            target_acc_cnt = int(np.ceil(now_tt / tt_ticks_per_acc)) + 1
             target_tt = target_acc_cnt * tt_ticks_per_acc
             self.mask.set_acc_start_time(target_tt)
 
