@@ -95,7 +95,7 @@ class Snap2Fengine():
         #: Control interface to PFB block
         self.pfb         = pfb.Pfb(self._cfpga, 'pfb')
         #: Control interface to Mask (flagging) block
-        self.mask        = mask.Mask(self._cfpga, 'mask', n_cores=1, n_signals=16) # one core only
+        self.mask        = mask.Mask(self._cfpga, 'mask')
         #: Control interface to Autocorrelation block
         self.autocorr    = autocorr.AutoCorr(self._cfpga, 'autocorr')
         #: Control interface to Equalization block
