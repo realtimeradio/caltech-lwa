@@ -35,8 +35,8 @@ class Mask(Block):
 
     """
     def __init__(self, host, name, acc_len=240000, logger=None, n_chans=4096,
-                 n_cores=4, n_signals=64, flag_threshold):
-        super(Corr, self).__init__(host, name, logger)
+                 n_cores=4, n_signals=64, flag_threshold=(2**15-1)):
+        super(Mask, self).__init__(host, name, logger)
         self.n_chans = n_chans
         self.n_signals = n_signals
         self.n_cores = n_cores
@@ -56,7 +56,7 @@ class Mask(Block):
         cnt = self.get_current_acc_count()
         while self.get_current_acc_count() < (cnt+1):
             time.sleep(0.1)
-        return = self.get_current_acc_count()
+        return self.get_current_acc_count()
 
     def get_current_acc_count(self):
         """
@@ -65,7 +65,21 @@ class Mask(Block):
         :return: Accumulation count
         :rtype: int
         """
-        return = self.read_uint('acc_cnt')
+        return self.read_uint('acc_cnt')
+
+    def get_current_acc_tt(self):
+        """
+        Get the Telescope Time of the last completed accumulation.
+
+        :return: Telescope time
+        :rtype: int
+        """
+        before = self.get_current_acc_count()
+        tt = (self.read_uint('acc_time_msb') << 32) + self.read_uint('acc_time_lsb')
+        after = self.get_current_acc_count()
+        if before != after:
+            self._warning("An accumulation passed while reading time registers")
+        return tt
 
     def set_acc_start_time(self, tt):
         """
@@ -94,7 +108,7 @@ class Mask(Block):
         :param v: Threshold level
         :type v: float
         """
-        v *= 2**self._input_binary_point
+        v = int(v * 2**self._input_binary_point)
         assert v < 2**32, "Threshold exceeded maximum allowed"
         self.write_int('threshold', v)
 
@@ -120,9 +134,9 @@ class Mask(Block):
         :rtype: list(int)
         """
         r = b''
-        for core in range(self._n_cores):
+        for core in range(self.n_cores):
             r += self.read('core%d_flag_count' % core, 4*self._n_signals_per_core)
-        v = struct.unpack('>%dI' % self._n_signals, r)
+        v = struct.unpack('>%dI' % self.n_signals, r)
         return v
     
     def get_flag_count(self):
@@ -192,7 +206,7 @@ class Mask(Block):
         :type read_only: bool
         """
         if read_only:
-            continue
+            return
         else:
             self.set_acc_len(self.initial_acc_len)
             self.set_flag_threshold(self.initial_flag_threshold)
