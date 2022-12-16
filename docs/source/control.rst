@@ -165,6 +165,13 @@ PFB Control
   :no-show-inheritance:
   :members:
 
+Flagging Control
+++++++++++++++++
+
+.. autoclass:: lwa_f.blocks.mask.Mask
+  :no-show-inheritance:
+  :members:
+
 
 Auto-correlation Control
 ++++++++++++++++++++++++
