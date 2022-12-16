@@ -99,29 +99,45 @@ class Mask(Block):
         # Ideally would be able to check if this is in the past/future
         # and by how much...
 
-    def set_flag_threshold(self, v):
+    def set_flag_threshold(self, signal, v):
         """
-        Set the flag threshold. If the sum of power in a spectra
+        Set the flag threshold for a single signal path.
+        If the sum of power in a spectra
         is greater than this value, the spectra is replaced with zeroes,
         and the flag accumulation count is incremented by 1.
+
+        :param signal: Which signal path number to modify
+        :type signal: int
 
         :param v: Threshold level
         :type v: float
         """
+        core_num = signal // self._n_signals_per_core
+        addr = signal % self._n_signals_per_core
         v = int(v * 2**self._input_binary_point)
         assert v < 2**32, "Threshold exceeded maximum allowed"
-        self.write_int('threshold', v)
+        self.write_int('core%d_addr' % core_num, (0<<31) + addr) # read only
+        self.write_int('core%d_threshold' % core_num, v)
+        self.write_int('core%d_addr' % core_num, (1<<31) + addr) # write strobe
+        self.write_int('core%d_addr' % core_num, (0<<31) + addr)
 
-    def get_flag_threshold(self):
+    def get_flag_threshold(self, signal):
         """
-        Get the flag threshold. If the sum of power in a spectra
+        Get the flag threshold of a single signal path.
+        If the sum of power in a spectra
         is greater than this value, the spectra is replaced with zeroes,
         and the flag accumulation count is incremented by 1.
+
+        :param signal: Which signal path to query
+        :type signal: int
 
         :return: Threshold level
         :rtype: float
         """
-        v = self.read_uint('threshold')
+        core_num = signal // self._n_signals_per_core
+        addr = signal % self._n_signals_per_core
+        self.write_int('core%d_addr' % core_num, addr)
+        v = self.read_uint('core%d_readback' % core_num)
         v /= 2**self._input_binary_point
         return v
 
@@ -209,4 +225,5 @@ class Mask(Block):
             return
         else:
             self.set_acc_len(self.initial_acc_len)
-            self.set_flag_threshold(self.initial_flag_threshold)
+            for i in range(self.n_signals):
+                self.set_flag_threshold(i, self.initial_flag_threshold)
