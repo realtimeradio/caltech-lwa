@@ -597,7 +597,7 @@ class Snap2FengineEtcdClient():
             etcd_dict = {
                     "stats": stats,
                     "flags": flags,
-                    "time": t
+                    "timestamp": t
                     }
         except:
             self.logger.exception("Error polling stats")
