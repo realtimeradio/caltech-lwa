@@ -174,7 +174,10 @@ class Snap2Fengine():
             stats['fpga'], flags['fpga'] = self.blocks['fpga'].get_status()
         else:
             for blockname, block in self.blocks.items():
-                stats[blockname], flags[blockname] = block.get_status()
+                try:
+                    stats[blockname], flags[blockname] = block.get_status()
+                except:
+                    self.logger.info("Failed to poll stats from block %s" % blockname)
         return stats, flags
 
     def print_status_all(self, use_color=True, ignore_ok=False):
