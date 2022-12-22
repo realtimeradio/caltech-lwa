@@ -8,7 +8,7 @@ from lwa_antpos import mapping
 from lwa_f import snap2_feng_etcd_client
 
 
-NSTAND = 352
+NSTAND = 366 # Not number of antennas -- just a list as large as LWA stand IDs
 DELAY_OFFSET = 10 # minimum delay
 
 def main():
@@ -52,8 +52,8 @@ def main():
     ec = snap2_feng_etcd_client.Snap2FengineEtcdControl(args.etcdhost)
 
     for ant_id in range(NSTAND):
-        snap_id_a, input_id_a = mapping.antpol_to_fpga('LWA-%.3d'%(ant_id+1), 'A')
-        snap_id_b, input_id_b = mapping.antpol_to_fpga('LWA-%.3d'%(ant_id+1), 'B')
+        snap_id_a, input_id_a = mapping.antpol_to_fpga('LWA-%.3d'%(ant_id), 'A')
+        snap_id_b, input_id_b = mapping.antpol_to_fpga('LWA-%.3d'%(ant_id), 'B')
         print("Setting stand %d delay (snap%d:%d, snap%d:%d) to %s" % (ant_id+1, snap_id_a, input_id_a, snap_id_b, input_id_b, delays_to_apply_clocks[ant_id]))
         if snap_id_a != -1 and input_id_a != -1:
             ec.send_command(snap_id_a, 'delay', 'set_delay', kwargs={'stream':input_id_a, 'delay':int(delays_to_apply_clocks[ant_id, 0])})
