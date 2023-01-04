@@ -24,7 +24,7 @@ def process_packet(data,checkpacket,datatype):
             if datatype == 'unsigned':
                 #how to unpack unsigned data
                 single_packet_array[i,j] = datasamples&0b1111111111 #take ten bits and put them in array
-            if datatype == 'signed':
+            elif datatype == 'signed':
                 #how to unpack signed data
                 nexttenbits = datasamples&0b1111111111 #take ten bits
                 if nexttenbits&0b1000000000:
@@ -60,6 +60,9 @@ args=parser.parse_args()
 computer = args.thiscomputer
 datatype = args.datatype
 savepacket = (args.savepacket == "True")
+print(datatype)
+print(datatype=='unsigned')
+print(datatype=='signed')
 
 if computer =='minor':
     RX_IP = "192.168.41.12"

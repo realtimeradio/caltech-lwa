@@ -3,6 +3,8 @@ import pandas as pd
 import time
 import numpy as np
 import struct
+from lwa_f import snap2_fengine
+from lwa_f import blocks
 
 def extractvalue(mainregister,nbits,MSBoffset,bw):
     #extract the value of the specified consecutive bits of mainregister
@@ -238,4 +240,102 @@ def read_threshold_rates(casperbrd):
     return core, veto
 
 
+def packantennaroles(roles_array):
+    #turn an array of 64 ones and zeros into two 32 bit integers, one for the first half and one for the second
+    output1=0
+    output2=0
+    for i in range(32):
+        output1+=roles_array[i]<<(31-i)
+        output2+=roles_array[i+32]<<(31-i)
+    return output1, output2
 
+def setup_coincidencer(casperbrd,trigger_power_thresh,
+                      veto_power_thresh,
+                      trigger_window,
+                      veto_window,
+                      antenna_number_thresh,
+                      veto_number_thresh,
+                      core_roles_array,
+                      veto_roles_array):
+    # set parameters
+    setvalue(casperbrd,"trigger_power_thresh","cr_registers.xlsx",trigger_power_thresh)
+    setvalue(casperbrd,"veto_power_thresh","cr_registers.xlsx",veto_power_thresh)
+    setvalue(casperbrd,'trigger_window','cr_registers.xlsx',trigger_window) 
+    setvalue(casperbrd,'veto_window','cr_registers.xlsx',veto_window) 
+    setvalue(casperbrd,'antenna_number_thresh','cr_registers.xlsx',antenna_number_thresh) 
+    setvalue(casperbrd,'veto_number_thresh','cr_registers.xlsx',veto_number_thresh) 
+    #set the antenna roles
+    core_roles1,core_roles2=packantennaroles(core_roles_array)
+    veto_roles1,veto_roles2=packantennaroles(veto_roles_array)
+    setvalue(casperbrd,'trigger_antennas1','cr_registers.xlsx',core_roles1)
+    setvalue(casperbrd,'trigger_antennas2','cr_registers.xlsx',core_roles2)
+    setvalue(casperbrd,'veto_antennas1','cr_registers.xlsx',veto_roles1)
+    setvalue(casperbrd,'veto_antennas2','cr_registers.xlsx',veto_roles2)
+    return
+
+def set_delays(casperbrd,delays):
+#see notebook subarray_threshold_scans for a function to extract the delays from a text file of delays and antenna names
+    delayblock=blocks.delay.Delay(casperbrd, 'delay', n_streams=64, logger=None)
+    delayblock.initialize()
+    for i in range(64):
+        z=delays[i]
+        delayblock.set_delay(i,z)
+    return
+
+def single_board_snapshot_summary_plots(fname,boardnumber):
+    #plot spectra
+    fbins=np.linspace(0,197/2,int(1+4096/2))
+    chanmap=np.loadtxt('channelmap.txt')
+    snapshot=np.load(fname)
+
+
+    fig1 = plt.figure(figsize=(20,15))
+    for i in range(64):
+        ax=fig1.add_subplot(8,8,1+i)
+        fpgachan=chanmap[1,i]
+        antname=mapping.snap2_to_antpol(boardnumber,fpgachan)
+        ax.text(.5,.1,antname,horizontalalignment='center',transform=ax.transAxes)
+
+        spec=np.fft.rfft(snapshot[:,i+4])
+        plt.plot(fbins,np.log(np.square(np.abs(spec))))
+        plt.ylim(0,25)
+        if i > 55:
+            plt.xlabel('frequency [MHz]')
+        if i%8==0:
+            plt.ylabel('power')
+
+    fbins=np.linspace(0,197/2,int(1+4096/2))
+    #isnormal=np.zeros(64)  
+
+    #plot histogram
+    fig2 = plt.figure(figsize=(20,15))
+    for i in range(64):
+        ax=fig2.add_subplot(8,8,1+i)
+        #ax.text(.5,.5,int(chanmap[1,i]),horizontalalignment='center',transform=ax.transAxes)
+        fpgachan=chanmap[1,i]
+        antname=mapping.snap2_to_antpol(boardnumber,fpgachan)
+        ax.text(.5,.5,antname,horizontalalignment='center',transform=ax.transAxes)
+
+
+        plt.hist(snapshot[:,i+4])
+        #isnormal[i] = st.normaltest(snapshot[:,i+4])[1]
+        if i > 55:
+            plt.xlabel('voltage [ADC units]')
+        if i%8==0:
+            plt.ylabel('Counts')
+        #plt.xlim(-200,200)
+
+    #plot timeseries
+    fig3 = plt.figure(figsize=(20,15))
+    for i in range(64):
+        ax=fig3.add_subplot(8,8,1+i)
+        #plt.title(i)
+        plt.plot(snapshot[:,i+4])
+        fpgachan=chanmap[1,i]
+        antname=mapping.snap2_to_antpol(boardnumber,fpgachan)
+        ax.text(.5,.5,antname,horizontalalignment='center',transform=ax.transAxes)
+        if i > 55:
+            plt.xlabel('time sample')
+        if i%8==0:
+            plt.ylabel('voltage [ADC units]')
+    return
