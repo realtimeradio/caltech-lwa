@@ -31,7 +31,7 @@ def main():
                 continue
             else:
                 v = line.split()
-                delays_ns[int(v[0])] = [float(v[4]), float(v[8])]
+                delays_ns[int(v[0])] = [float(v[1]), float(v[1])]
 
     max_delay_ns = delays_ns.max()
     delays_clocks = np.round(delays_ns*1e-9 * args.adcclk).astype(int)
