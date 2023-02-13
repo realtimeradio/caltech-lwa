@@ -394,7 +394,10 @@ class Snap2Fengine():
         if not isinstance(force, bool):
             raise TypeError("wrong type for force")
 
-        fpgfile = os.path.realpath(fpgfile)
+        # Resolve symlinks
+        if fpgfile:
+            fpgfile = os.path.realpath(fpgfile)
+
         if fpgfile and not os.path.exists(fpgfile):
             raise RuntimeError("Path %s doesn't exist" % fpgfile)
 
