@@ -251,7 +251,8 @@ class Snap2FengineEtcdControl():
                     self.logger.debug("Seq ID %s didn't match expected (%s)" % (resp_id, sequence_id))
 
         # Begin watching response channel and then send message
-        watch_id = self.ec.add_watch_callback(key=resp_key, callback=response_callback)
+        # Watch by prefix here, since we want responses from any boards
+        watch_id = self.ec.add_watch_prefix_callback(resp_key, response_callback)
         time.sleep(0.01)
         # send command
         self.ec.put(cmd_key, command_json)
