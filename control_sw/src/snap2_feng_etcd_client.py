@@ -181,7 +181,7 @@ class Snap2FengineEtcdControl():
             raise TypeError("Wrong command arguments")
         
 
-    def _send_command_etcd(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=1):
+    def _send_command_etcd(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=None):
         """
         Send a command to a SNAP2
 
@@ -205,13 +205,18 @@ class Snap2FengineEtcdControl():
         :type timeout: float
 
         :param n_response_expected: Number of individual responses expected.
-            Should be 1 unless broadcasting a command with `fid=0`.
+            If `None`, assume 1, unless `fid=0` in which case assume 11.
         :type n_response_expected: int
 
         :return: If `fid=0`, a dictionary of responses keyed by `fid`.
             If `fid != 0`, the return value matching the underlying command.
         """
-        cmd_key = ETCD_CMD_ROOT + "%.2d" % fid
+        if fid == 0:
+            cmd_key = ETCD_CMD_ROOT + "%.1d" % fid
+            n_response_expected = n_response_expected or 11
+        else:
+            cmd_key = ETCD_CMD_ROOT + "%.2d" % fid
+            n_response_expected = n_response_expected or 1
         resp_key = ETCD_RESP_ROOT # Listen to responses from all boards
         timestamp = time.time()
         sequence_id = str(int(timestamp * 1e6))
