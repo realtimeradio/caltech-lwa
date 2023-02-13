@@ -86,7 +86,7 @@ class Fpga(Block):
         # Check from major version down. If __fwversion__ says "A.B"
         # then any A.B.x.y is deemed supported.
         for vn, ver in enumerate(vsw):
-            if ver != vfw[vn]:
+            if len(ver) > 0 and ver != vfw[vn]:
                 self._warning("Software supports FW rev %s, but not %s" % (vsw_str, vfw_str))
                 return False
         return True
