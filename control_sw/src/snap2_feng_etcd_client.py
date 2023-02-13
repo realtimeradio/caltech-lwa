@@ -112,7 +112,7 @@ class Snap2FengineEtcdControl():
             return
 
 
-    def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=1):
+    def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=None):
         """
         Send a command to a SNAP2
 
@@ -133,11 +133,15 @@ class Snap2FengineEtcdControl():
         :type timeout: float
 
         :param n_response_expected: Number of individual responses expected.
-            Should be 1 unless broadcasting a command using etcd with `fid=0`.
+            If `None`, assume 1, unless `fid=0` in which case assume 11.
         :type n_response_expected: int
 
         :return: Dictionary of values, dependent on the command response.
         """
+        if fid == 0:
+            n_response_expected = n_response_expected or 11
+        else:
+            n_response_expected = n_response_expected or 1
         if self.noetcd:
             return self._send_command_noetcd(fid, block, cmd, kwargs=kwargs)
         else:
@@ -181,7 +185,7 @@ class Snap2FengineEtcdControl():
             raise TypeError("Wrong command arguments")
         
 
-    def _send_command_etcd(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=None):
+    def _send_command_etcd(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=1):
         """
         Send a command to a SNAP2
 
@@ -205,7 +209,6 @@ class Snap2FengineEtcdControl():
         :type timeout: float
 
         :param n_response_expected: Number of individual responses expected.
-            If `None`, assume 1, unless `fid=0` in which case assume 11.
         :type n_response_expected: int
 
         :return: If `fid=0`, a dictionary of responses keyed by `fid`.
@@ -213,10 +216,8 @@ class Snap2FengineEtcdControl():
         """
         if fid == 0:
             cmd_key = ETCD_CMD_ROOT + "%.1d" % fid
-            n_response_expected = n_response_expected or 11
         else:
             cmd_key = ETCD_CMD_ROOT + "%.2d" % fid
-            n_response_expected = n_response_expected or 1
         resp_key = ETCD_RESP_ROOT # Listen to responses from all boards
         timestamp = time.time()
         sequence_id = str(int(timestamp * 1e6))
