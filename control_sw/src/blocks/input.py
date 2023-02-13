@@ -34,10 +34,12 @@ class Input(Block):
     _USE_NOISE = 0
     _USE_ADC   = 1
     _USE_ZERO  = 2
+    _USE_COUNTER = 3
     _INT_TO_POS = {}
     _INT_TO_POS[_USE_NOISE] = 'noise'
     _INT_TO_POS[_USE_ADC]   = 'adc'
     _INT_TO_POS[_USE_ZERO]  = 'zero'
+    _INT_TO_POS[_USE_COUNTER] = 'counter'
     _SNAPSHOT_SAMPLES_PER_POL = 2048
 
     def __init__(self, host, name, n_streams=64, n_bits=10, logger=None):
@@ -120,6 +122,17 @@ class Input(Block):
         self._debug("Stream %s: switching to Zeros" % stream)
         self._switch(self._USE_ZERO, stream)
 
+    def use_counter(self, stream=None):
+        """
+        Switch input to counter.
+
+        :param stream: Which stream to switch. If None, switch all.
+        :type stream: int or None
+
+        """
+        self._debug("Stream %s: switching to Counter" % stream)
+        self._switch(self._USE_COUNTER, stream)
+
     def get_bit_stats(self):
         """
         Get the mean, RMS, and mean powers of all ADC streams.
@@ -164,7 +177,7 @@ class Input(Block):
 
         Status keys:
 
-            - switch_position<n> (str) : Switch position ('noise', 'adc' or 'zero')
+            - switch_position<n> (str) : Switch position ('noise', 'adc', 'zero' or 'counter')
               for input stream ``n``, where ``n`` is a two-digit integer starting at 00.
               Any input position other than 'adc' is flagged with "NOTIFY".
 

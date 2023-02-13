@@ -250,7 +250,7 @@ The command key is:
 
 ``/cmd/snap/<id>``
 
-``id`` is the one-indexed ID number of the SNAP board which should respond
+``id`` is the two-digit (for example ``01``), one-indexed ID number of the SNAP board which should respond
 to these commands. Commands issues to ``id=0`` are processed by all SNAP boards.
 
 Writing messages to this key results in the execution of ``Snap2Fengine``
