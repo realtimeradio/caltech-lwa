@@ -79,7 +79,7 @@ class Fpga(Block):
         :return: True if firmware is supported, False otherwise.
         :rtype bool:
         """
-        vfw_str = self.firmware_version()
+        vfw_str = self.get_firmware_version()
         vsw_str = __fwversion__
         vfw = vfws_str.split('.')
         vsw = vsws_str.split('.')
