@@ -211,7 +211,7 @@ class Snap2FengineEtcdControl():
         :return: If `fid=0`, a dictionary of responses keyed by `fid`.
             If `fid != 0`, the return value matching the underlying command.
         """
-        cmd_key = ETCD_CMD_ROOT + "%d" % fid
+        cmd_key = ETCD_CMD_ROOT + "%.2d" % fid
         resp_key = ETCD_RESP_ROOT # Listen to responses from all boards
         timestamp = time.time()
         sequence_id = str(int(timestamp * 1e6))
@@ -347,9 +347,9 @@ class Snap2FengineEtcdClient():
         except:
             self.logger.exception("Failed to connect to Etcd server on host %s" % etcdhost)
             raise
-        self.cmd_key = ETCD_CMD_ROOT + "%d" % self.fid
-        self.cmd_resp_key = ETCD_RESP_ROOT + "%d" % self.fid
-        self.mon_key = ETCD_MON_ROOT + "%d" % self.fid
+        self.cmd_key = ETCD_CMD_ROOT + "%.2d" % self.fid
+        self.cmd_resp_key = ETCD_RESP_ROOT + "%.2d" % self.fid
+        self.mon_key = ETCD_MON_ROOT + "%.2d" % self.fid
         self.logger.debug("Command key is %s" % self.cmd_key)
         self.logger.debug("Command response key is %s" % self.cmd_resp_key)
         self.logger.debug("Monitor key root is %s" % self.mon_key)
