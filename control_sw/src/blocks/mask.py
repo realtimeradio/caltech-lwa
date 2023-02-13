@@ -207,8 +207,9 @@ class Mask(Block):
         """
         stats = {
             'acc_len': self.get_acc_len(),
-            'flag_threshold': self.get_flag_threshold(),
         }
+        for i in range(self.n_signals):
+            stats['flag_threshold%.2d'%i] = self.get_flag_threshold(i)
         flags = {}
         return stats, flags
 
