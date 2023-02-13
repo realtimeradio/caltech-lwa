@@ -631,6 +631,11 @@ class Snap2Fengine():
                 block.initialize(read_only=False)
             self.logger.info('Updating telescope time')
             self.sync.update_telescope_time()
+            # Telescope time update can cause a jump in sync pulses. Wait for stability
+            self.sync.wait_for_sync()
+            self.sync.wait_for_sync()
+            self.sync.reset_error_count()
+            # and reset error counters to clear any registered period variations
             self.sync.update_internal_time()
             # Configure flag core to use windows of acc_len since TT=0
             now_tt = int(time.time() * FS_HZ)
