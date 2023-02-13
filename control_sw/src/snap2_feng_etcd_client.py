@@ -211,7 +211,7 @@ class Snap2FengineEtcdControl():
         :return: If `fid=0`, a dictionary of responses keyed by `fid`.
             If `fid != 0`, the return value matching the underlying command.
         """
-        cmd_key = ETCD_CMD_ROOT + "%d" % fid
+        cmd_key = ETCD_CMD_ROOT + "%.2d" % fid
         resp_key = ETCD_RESP_ROOT # Listen to responses from all boards
         timestamp = time.time()
         sequence_id = str(int(timestamp * 1e6))
@@ -251,6 +251,7 @@ class Snap2FengineEtcdControl():
                     self.logger.debug("Seq ID %s didn't match expected (%s)" % (resp_id, sequence_id))
 
         # Begin watching response channel and then send message
+        # Watch by prefix here, since we want responses from any boards
         watch_id = self.ec.add_watch_prefix_callback(resp_key, response_callback)
         time.sleep(0.01)
         # send command
@@ -347,9 +348,9 @@ class Snap2FengineEtcdClient():
         except:
             self.logger.exception("Failed to connect to Etcd server on host %s" % etcdhost)
             raise
-        self.cmd_key = ETCD_CMD_ROOT + "%d" % self.fid
-        self.cmd_resp_key = ETCD_RESP_ROOT + "%d" % self.fid
-        self.mon_key = ETCD_MON_ROOT + "%d" % self.fid
+        self.cmd_key = ETCD_CMD_ROOT + "%.2d" % self.fid
+        self.cmd_resp_key = ETCD_RESP_ROOT + "%.2d" % self.fid
+        self.mon_key = ETCD_MON_ROOT + "%.2d" % self.fid
         self.logger.debug("Command key is %s" % self.cmd_key)
         self.logger.debug("Command response key is %s" % self.cmd_resp_key)
         self.logger.debug("Monitor key root is %s" % self.mon_key)
@@ -398,14 +399,14 @@ class Snap2FengineEtcdClient():
         allow a watch to later be cancelled.
         """
         self.logger.info("Beginning command watch on key %s" % self.cmd_key)
-        self._etcd_watch_ids += [self.ec.add_watch_prefix_callback(
-                                  self.cmd_key,
-                                  self._etcd_callback,
+        self._etcd_watch_ids += [self.ec.add_watch_callback(
+                                  key = self.cmd_key,
+                                  callback = self._etcd_callback,
                                  )]
         # Also watch on the "all SNAPs" key
-        self._etcd_watch_ids += [self.ec.add_watch_prefix_callback(
-                                  ETCD_CMD_ROOT + "0",
-                                  self._etcd_callback,
+        self._etcd_watch_ids += [self.ec.add_watch_callback(
+                                  key = ETCD_CMD_ROOT + "0",
+                                  callback = self._etcd_callback,
                                 )]
 
     def stop_command_watch(self):
@@ -466,7 +467,7 @@ class Snap2FengineEtcdClient():
         resulting dictionary to ``_process_commands``.
 
         :param watchresponse: A WatchResponse object used by the etcd
-            `add_watch_prefix_callback` as the calling argument.
+            `add_watch_callback` as the calling argument.
         :type watchresponse: WatchResponse
 
         :return: True if command was processed successfully, False otherwise.
