@@ -71,7 +71,7 @@ class Fpga(Block):
         bugfix = (v >>  0) & 0xff
         return "%d.%d.%d.%d" % (major, minor, rev, bugfix)
 
-    def check_firmware_suppport(self):
+    def check_firmware_support(self):
         """
         Check the software packages firmware support version against
         the running firmware version.
