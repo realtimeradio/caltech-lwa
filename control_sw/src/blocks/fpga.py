@@ -81,8 +81,8 @@ class Fpga(Block):
         """
         vfw_str = self.get_firmware_version()
         vsw_str = __fwversion__
-        vfw = vfws_str.split('.')
-        vsw = vsws_str.split('.')
+        vfw = vfw_str.split('.')
+        vsw = vsw_str.split('.')
         # Check from major version down. If __fwversion__ says "A.B"
         # then any A.B.x.y is deemed supported.
         for vn, ver in enumerate(vsw):
