@@ -95,6 +95,10 @@ class Snap2FengineEtcdControl():
         :return: JSON-encoded command string to be sent. Returns None if there
             is an enoding error.
         """
+        for k in kwargs.keys():
+            if isinstance(kwargs[k], np.ndarray):
+                kwargs[k] = kwargs[k].tolist()
+
         command_dict = {
             "cmd": cmd,
             "val": {
@@ -109,7 +113,7 @@ class Snap2FengineEtcdControl():
             return command_json
         except:
             self.logger.exception("Failed to JSON-encode command")
-            return
+            raise
 
 
     def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=None):
