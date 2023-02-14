@@ -369,6 +369,21 @@ These directly manipulate FPGA registers, and should be used with caution.
 
 The **``kwargs``** field should contain any arguments required by the command
 method being called.
+Since these arguments are JSON-encoded before being sent through ``etcd``, argument
+types must be supported by the Python ``json`` library, and are thus limited to:
+
+  - ``dict``
+  - ``list``
+  - ``str``
+  - ``int``
+  - ``float``
+  - ``True``
+  - ``False``
+  - ``None``
+
+In particular, ``numpy`` arrays are not supported, though these can usually be successfully
+encoded by first converting them to lists using the ``ndarray.tolist()`` method.
+
 For example, the Fengine ``delay`` block's ``set_delay`` method requires
 a ``stream`` argument (to select which of the 64 SNAP2 data streams is being
 manipulated) and a ``delay`` argument (to set the delay for this stream).
