@@ -1,5 +1,6 @@
 import logging
 import socket
+import inspect
 import numpy as np
 import struct
 import time
@@ -38,8 +39,8 @@ class Snap2Fengine():
     """
     A control class for LWA352's SNAP2 F-Engine firmware.
 
-    :param host: CasperFpga interface for host.
-    :type host: casperfpga.CasperFpga
+    :param host: Hostname of SNAP2 board
+    :type host: str
 
     :param logger: Logger instance to which log messages should be emitted.
     :type logger: logging.Logger
@@ -74,16 +75,20 @@ class Snap2Fengine():
         """
         return self._cfpga.is_connected()
 
-    def _initialize_blocks(self):
+    def _initialize_blocks(self, passive=False):
         """
         Initialize firmware blocks, populating the ``blocks`` attribute.
+
+        :param passive: If True, don't attempt to do anything to interact with the FPGAs
+            when creating their block control instances.
+        :type passive: bool
         """
 
         # blocks
         #: Control interface to high-level FPGA functionality
         self.fpga        = fpga.Fpga(self._cfpga, "")
         #: Control interface to ADC block
-        self.adc         = adc.Adc(self._cfpga, 'adc')
+        self.adc         = adc.Adc(self._cfpga, 'adc', passive=passive)
         #: Control interface to Synchronization / Timing block
         self.sync        = sync.Sync(self._cfpga, 'sync')
         #: Control interface to Noise Generation block
@@ -111,7 +116,7 @@ class Snap2Fengine():
         #: Control interface to Correlation block
         self.corr        = corr.Corr(self._cfpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
         #: Control interface to Power Monitor block
-        self.powermon    = powermon.PowerMon(self._cfpga, 'powermon')
+        self.powermon    = powermon.PowerMon(self._cfpga, 'powermon', passive=passive)
 
         # The order here can be important, blocks are initialized in the
         # order they appear here
@@ -744,3 +749,82 @@ class Snap2Fengine():
             self.eth.disable_tx()
 
         self.logger.info("Startup of %s complete" % self.hostname)
+
+def __getattribute__(self, attr):
+    wrap_method = True
+    if attr.startswith('_'):
+        wrap_method = False
+    elif attr == "intercept_method_call":
+        wrap_method = False
+    val = object.__getattribute__(self, attr)
+    if not callable(val):
+        return val
+    elif not wrap_method:
+        return val
+    else:
+        return lambda *args, **kwargs: object.__getattribute__(self, '_intercept_method_call')(self.blockname, attr, val, args, kwargs)
+
+def _intercept_method_call(self, blockname, methodname, method, args, kwargs):
+    signature = inspect.signature(method)
+    arg_names = [arg.name for arg in signature.parameters.values()]
+    argdict = {}
+    for aa, arg in enumerate(args):
+        argdict[arg_names[aa]] = arg
+    argdict.update(**kwargs)
+    rv = self.ec.send_command(self.snap_id, blockname, methodname, kwargs=argdict, timeout=10)
+    return rv
+
+class Snap2FengineEtcd(Snap2Fengine):
+    """
+    A control class for LWA352's SNAP2 F-Engine firmware via an Etcd gateway
+
+    :param host: SNAP hostname (e.g. 'snap01')
+    :type host: str
+
+    :param logger: Logger instance to which log messages should be emitted.
+    :type logger: logging.Logger
+
+    """
+    def __init__(self, host, logger=None, etcdhost="etcdv3service.sas.pvt"):
+        self.hostname = host #: hostname of the F-Engine's host SNAP2 board
+        #: Python Logger instance
+        self.logger = logger or helpers.add_default_log_handlers(logging.getLogger(__name__ + ":%s" % (host)))
+        class FakeCasperfpga:
+            def __init__(self, host):
+                self.host = host
+        self._cfpga = FakeCasperfpga(host)
+        from .snap2_feng_etcd_client import Snap2FengineEtcdControl
+        try:
+            self.snap_id = int(self.hostname[4:]) # strip "snap"
+        except:
+            self.logger.error("Couldn't infer board ID from hostname %s" % self.hostname)
+            raise ValueError
+        self.ec = Snap2FengineEtcdControl(etcdhost=etcdhost)
+        self.blockname = 'feng' # The etcd name of the top-level block
+        self.blocks = {}
+        self._wrap_block_methods()
+        try:
+            self._initialize_blocks(passive=True)
+            self._set_block_names()
+        except:
+            self.logger.error("Failed to inialize firmware blocks.")
+            raise
+
+    def _wrap_block_methods(self):
+        setattr(block.Block, "__getattribute__", __getattribute__)
+        setattr(block.Block, "_intercept_method_call", _intercept_method_call)
+
+    def _set_block_names(self):
+        """
+        Set the blockname used by etcd
+        """
+        for blockname, block in self.blocks.items():
+            block.blockname = blockname
+            block.snap_id = self.snap_id
+            block.ec = self.ec
+
+    def __getattribute__(self, attr):
+        return __getattribute__(self, attr)
+
+    def _intercept_method_call(self, blockname, methodname, method, args, kwargs):
+        return _intercept_method_call(self, blockname, methodname, method, args, kwargs)

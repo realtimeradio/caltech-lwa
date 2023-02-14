@@ -37,12 +37,13 @@ class Adc(Block):
     :type logger: logging.Logger
     """
 
-    def __init__(self, host, name, logger=None):
+    def __init__(self, host, name, logger=None, passive=False):
         super(Adc, self).__init__(host, name, logger)
         # Check which ADCs are connected. Only if no ADC chips on an FMC board
         # respond do we ignore a port
         self.adcs = []
-        self._connect_to_adcs()
+        if not passive:
+            self._connect_to_adcs()
 
     def _connect_to_adcs(self):
         """

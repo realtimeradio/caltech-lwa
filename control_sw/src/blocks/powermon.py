@@ -97,15 +97,16 @@ class PowerMon(Block):
             'voltage' : 1.5,
         },
     }
-    def __init__(self, host, name, logger=None):
+    def __init__(self, host, name, logger=None, passive=False):
         super(PowerMon, self).__init__(host, name, logger)
         self.i2c = None
         self.sensors = {}
         self._initialized = False
-        try:
-            self.initialize(read_only=True)
-        except:
-            self._warning("Error while trying to initialize I2C objects")
+        if not passive:
+            try:
+                self.initialize(read_only=True)
+            except:
+                self._warning("Error while trying to initialize I2C objects")
 
     def initialize(self, read_only=False):
         """
