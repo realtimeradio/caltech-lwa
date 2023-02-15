@@ -5,9 +5,9 @@ from lwa_f.error_levels import *
 
 class Pfb(Block):
     _N_CORES = 4 #: Number of FFT sub-cores per PFB block
-    SHIFT_MASK = 0b1111000011111 # The stages hard coded in the FFT
-    SHIFT_VAL  = 0b0011000011111 # The hard coded shift settings
-    DEFAULT_SHIFT = 0b0011011011111
+    SHIFT_MASK = 0b1111000000000 # The stages hard coded in the FFT
+    SHIFT_VAL  = 0b1111000000000 # The hard coded shift settings
+    DEFAULT_SHIFT = 0b1111011011111
     STAGES = 13
     def __init__(self, host, name, logger=None):
         super(Pfb, self).__init__(host, name, logger)
