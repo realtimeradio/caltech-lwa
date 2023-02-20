@@ -160,7 +160,7 @@ class PowerMon(Block):
               in units of Amps.
 
         Currents are flagged as warnings if they exceed 80% of the allowed
-        maximum, and errors if they exceed the allowed maximum.
+        maximum.
 
         Voltages are flagged as errors if they are not within 3% of the
         expected level.
@@ -186,9 +186,9 @@ class PowerMon(Block):
             stats['%s_voltage' % sensorname] = v
             stats['%s_current' % sensorname] = i
             if (v < 0.97*conf['voltage']) or (v > 1.03*conf['voltage']):
-                flags['%s_voltage' % sensorname] = FENG_ERROR
+                flags['%s_voltage' % sensorname] = FENG_WARNING
             if (i > 0.8*conf['max_current']):
                 flags['%s_current' % sensorname] = FENG_WARNING
             if (i > conf['max_current']):
-                flags['%s_current' % sensorname] = FENG_ERROR
+                flags['%s_current' % sensorname] = FENG_WARNING
         return stats, flags
