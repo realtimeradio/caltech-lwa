@@ -60,7 +60,7 @@ class Eth(Block):
 
             - tx_of : Count of TX buffer overflow events.
             - tx_full : Count of TX buffer full events.
-            - tx_vld : Count of 64-bit words marked as valid for transmission.
+            - tx_vld : Count of 256-bit words marked as valid for transmission.
             - tx_ctr: Count of transmission End-of-Frames marked valid.
 
         :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
