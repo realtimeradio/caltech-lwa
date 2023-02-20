@@ -601,14 +601,14 @@ class Snap2FengineEtcdService():
         Set the top-level status key to True (i.e. board is OK)
         """
         t = datetime.datetime.utcnow().astimezone().isoformat()
-        self.ec.put(self.top_status_key, {"ok": True, "timestamp": t})
+        self.ec.put(self.top_status_key, json.dumps({"ok": True, "timestamp": t}))
 
     def set_top_status_bad(self):
         """
         Set the top-level status key to False (i.e. board is _NOT_ OK)
         """
         t = datetime.datetime.utcnow().astimezone().isoformat()
-        self.ec.put(self.top_status_key, {"ok": False, "timestamp": t})
+        self.ec.put(self.top_status_key, json.dumps({"ok": False, "timestamp": t}))
 
     def poll_stats(self):
         """
