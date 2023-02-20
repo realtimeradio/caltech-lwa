@@ -285,7 +285,7 @@ class Snap2FengineEtcdControl():
                 return rv
             time.sleep(0.01)
 
-class Snap2FengineEtcdClient():
+class Snap2FengineEtcdService():
     """
     An ETCD client to interface a single SNAP2 F-Engine
     to an etcd store.
@@ -326,7 +326,7 @@ class Snap2FengineEtcdClient():
         #: List of etcd watch IDs, used to kill watch processes
         self._etcd_watch_ids = []
         if logger is None:
-            self.logger = logging.getLogger("Snap2FengineEtcdClient:%s" % self.fhost)
+            self.logger = logging.getLogger("Snap2FengineEtcdService:%s" % self.fhost)
             stderr_handler = logging.StreamHandler(sys.stderr)
             self.logger.addHandler(stderr_handler)
             self.set_log_level("info")
