@@ -26,25 +26,6 @@ class Fpga(Block):
     def __init__(self, host, name, logger=None):
         # Top-level F-engine sees all registers
         super(Fpga, self).__init__(host, name, logger)
-
-        ## Try and get the canonical name of the host
-        ## to use as a serial number
-        #self.serial = None
-        #try:
-        #    addr = socket.gethostbyname_ex(self.host.host)[2][0]
-        #    time.sleep(0.01)
-        #    hostname = socket.gethostbyname_ex(addr)
-        #    hostname = hostname[0]
-        #    if hostname.startswith('snap'):
-        #        try:
-        #            self.serial = int(hostname.split('.')[0][4:])
-        #        except:
-        #            self._warning("hostname (%s) couldn't be turned into integer serial" % hostname)
-        #    else:
-        #        self._warning("hostname (%s) couldn't be turned into integer serial" % hostname)
-        #except:
-        #    self._exception("Couldn't get hostname of address %s" % self.host.host)
-
         self.sysmon = casperfpga.sysmon.Sysmon(self.host)
 
     def get_fpga_clock(self):
@@ -55,7 +36,16 @@ class Fpga(Block):
         :rtype: float
 
         """
-        return self.host.estimate_fpga_clock()
+        c0 = self.read_uint('sys_clkcounter')
+        t0 = time.time()
+        time.sleep(0.1)
+        c1 = self.read_uint('sys_clkcounter')
+        t1 = time.time()
+        # Catch counter wrap
+        if c1 < c0:
+            c1 += 2**32
+        clk_mhz = (c1 - c0) / 1e6 / (t1 - t0)
+        return clk_mhz
 
     def get_firmware_version(self):
         """
@@ -131,8 +121,9 @@ class Fpga(Block):
 
             - timestamp (str) : The current time, as an ISO format string.
 
-            - serial (str) : The serial number / identifier for this board.
-              Flagged with a warning if no serial is available.
+            - fpga_clk_mhz (float) : The estimated FPGA clock rate in MHz. This
+                is the same as the estimated ADC sampling rate.
+              Flagged with an error if not between 190 and 200 MHz
 
             - host (str) : The host name of this board.
 
@@ -141,7 +132,7 @@ class Fpga(Block):
               against a dirty git repository.
 
             - fw_supported (bool) : True if the running firmware is supported
-              by this software. False (and flagged as a warning) otherwise.
+              by this software. False (and flagged as an error) otherwise.
 
             - fw_version (str): The version string of the currently running
               firmware. Available only if the board is programmed.
@@ -188,28 +179,29 @@ class Fpga(Block):
         stats['flash_firmware'] = meta['filename']
         stats['flash_firmware_md5'] = meta['md5sum']
         stats['timestamp'] = datetime.datetime.now().isoformat()
-        #stats['serial'] = self.serial
         stats['host'] = self.host.host
         stats['sw_version'] = __version__
+        fpga_clk_mhz = self.get_fpga_clock()
+        stats['fpga_clk_mhz'] = fpga_clk_mhz
+        if fpga_clk_mhz > 200. or fpga_clk_mhz < 190.:
+            flags['fpga_clk_mhz'] = FENG_ERROR
         if stats['programmed']:
             stats['fw_version'] = self.get_firmware_version()
             stats['fw_build_time'] = datetime.datetime.fromtimestamp(self.get_build_time()).isoformat()
             stats['fw_supported'] = self.check_firmware_support()
             if not stats['fw_supported']:
-                flags['fw_supported'] = FENG_WARNING
+                flags['fw_supported'] = FENG_ERROR
         try:
             stats.update(self.sysmon.get_all_sensors())
             stats['sys_mon'] = 'reporting'
             flags['sys_mon'] = FENG_OK
         except:
             stats['sys_mon'] = 'not reporting'
-            flags['sys_mon'] = FENG_ERROR
+            flags['sys_mon'] = FENG_WARNING
         if not stats['programmed']:
-            flags['programmed'] = FENG_WARNING
+            flags['programmed'] = FENG_ERROR
         if stats['sw_version'].endswith('dirty'):
             flags['sw_version'] = FENG_WARNING
-        #if stats['serial'] is None:
-        #    flags['serial'] = FENG_WARNING
         if 'vccaux' in stats:
             if stats['vccaux'] < 1.746 or stats['vccaux'] > 1.854:
                 flags['vccaux'] = FENG_WARNING
