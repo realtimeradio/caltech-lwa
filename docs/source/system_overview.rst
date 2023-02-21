@@ -31,7 +31,7 @@ The top-level specs of the F-Engine are:
 +-------------------------+----------+----------------------+
 | Delay compensation      | <=4095   | Programmable per-    |
 |                         | samples  | input between 5 and  |
-|                         |          | 8191 samples         |
+|                         |          | 4095 samples         |
 +-------------------------+----------+----------------------+
 | Polyphase Filter Bank   | 4096     |                      |
 | Channels                |          |                      |
