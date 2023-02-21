@@ -60,8 +60,9 @@ class Eth(Block):
 
             - tx_of : Count of TX buffer overflow events.
             - tx_full : Count of TX buffer full events.
-            - tx_vld : Count of 64-bit words marked as valid for transmission.
+            - tx_vld : Count of 256-bit words marked as valid for transmission.
             - tx_ctr: Count of transmission End-of-Frames marked valid.
+            - gbps: Approximate Gbits/s transmission rate
 
         :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
             status key-value pairs. flags_dict is
@@ -76,6 +77,16 @@ class Eth(Block):
         stats['tx_full'] = self.read_uint(self._CORE_NAME + '_txfullctr')
         stats['tx_vld' ] = self.read_uint(self._CORE_NAME + '_txvldctr')
         stats['tx_ctr' ] = self.read_uint(self._CORE_NAME + '_txctr')
+        c0 = self.read_uint(self._CORE_NAME + '_txctr')
+        t0 = time.time()
+        time.sleep(0.1)
+        c1 = self.read_uint(self._CORE_NAME + '_txctr')
+        t1 = time.time()
+        # catch counter overflow
+        if c1 < c0:
+            c1 += 2**32
+        gbps = (c1 - c0) * 256 / 1e9 / (t1-t0)
+        stats['gbps' ] = gbps
         if stats['tx_of'] > 0:
             flags['tx_of'] = FENG_ERROR
         if stats['tx_full'] > 0:
@@ -84,6 +95,8 @@ class Eth(Block):
             flags['tx_ctr'] = FENG_WARNING
         if stats['tx_vld'] == 0:
             flags['tx_vld'] = FENG_WARNING
+        if stats['gbps'] == 0:
+            flags['tx_vld'] = FENG_ERROR
         return stats, flags
         
     def status_reset(self):

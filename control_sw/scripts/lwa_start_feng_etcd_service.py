@@ -41,7 +41,7 @@ def main():
     
     logger.info("Starting ETCD client service")
     try:
-        ec = snap2_feng_etcd_client.Snap2FengineEtcdClient(
+        ec = snap2_feng_etcd_client.Snap2FengineEtcdService(
                 args.snaphost,
                 fid,
                 etcdhost=args.etcdhost,

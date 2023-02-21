@@ -9,6 +9,7 @@ import numpy as np
 import etcd3
 from . import snap2_fengine
 import logging
+from . import error_levels
 
 # ETCD Keys
 ETCD_CMD_ROOT = "/cmd/snap/"
@@ -285,7 +286,7 @@ class Snap2FengineEtcdControl():
                 return rv
             time.sleep(0.01)
 
-class Snap2FengineEtcdClient():
+class Snap2FengineEtcdService():
     """
     An ETCD client to interface a single SNAP2 F-Engine
     to an etcd store.
@@ -326,7 +327,7 @@ class Snap2FengineEtcdClient():
         #: List of etcd watch IDs, used to kill watch processes
         self._etcd_watch_ids = []
         if logger is None:
-            self.logger = logging.getLogger("Snap2FengineEtcdClient:%s" % self.fhost)
+            self.logger = logging.getLogger("Snap2FengineEtcdService:%s" % self.fhost)
             stderr_handler = logging.StreamHandler(sys.stderr)
             self.logger.addHandler(stderr_handler)
             self.set_log_level("info")
@@ -361,6 +362,7 @@ class Snap2FengineEtcdClient():
         self.cmd_key = ETCD_CMD_ROOT + "%.2d" % self.fid
         self.cmd_resp_key = ETCD_RESP_ROOT + "%.2d" % self.fid
         self.mon_key = ETCD_MON_ROOT + "%.2d" % self.fid
+        self.top_status_key = self.mon_key + "/status"
         self.logger.debug("Command key is %s" % self.cmd_key)
         self.logger.debug("Command response key is %s" % self.cmd_resp_key)
         self.logger.debug("Monitor key root is %s" % self.mon_key)
@@ -594,6 +596,20 @@ class Snap2FengineEtcdClient():
             self.logger.debug("Responded to command '%s' (ID %s): %s" % (command, seq_id, resp))
             return ok
 
+    def set_top_status_good(self):
+        """
+        Set the top-level status key to True (i.e. board is OK)
+        """
+        t = datetime.datetime.utcnow().astimezone().isoformat()
+        self.ec.put(self.top_status_key, json.dumps({"ok": True, "timestamp": t}))
+
+    def set_top_status_bad(self):
+        """
+        Set the top-level status key to False (i.e. board is _NOT_ OK)
+        """
+        t = datetime.datetime.utcnow().astimezone().isoformat()
+        self.ec.put(self.top_status_key, json.dumps({"ok": False, "timestamp": t}))
+
     def poll_stats(self):
         """
         Poll all statistics and push to etcd.
@@ -610,8 +626,18 @@ class Snap2FengineEtcdClient():
                     "flags": flags,
                     "timestamp": t
                     }
+            ok = True
+            for bname, bflags in flags.items(): # Loop through blocks
+                for fname, flag in bflags.items(): # Loop through flag fields
+                    if flag == error_levels.FENG_ERROR:
+                        ok = False
+            if ok:
+                self.set_top_status_good()
+            else:
+                self.set_top_status_bad()
         except:
             self.logger.exception("Error polling stats")
+            self.set_top_status_bad()
             return
         try:
             etcd_dict_json = json.dumps(etcd_dict)
