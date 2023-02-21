@@ -20,7 +20,7 @@ control and monitoring of multiple F-Engines can also be carried out through
 the passing of JSON-encoded messages through an ``etcd``\  [1]_
 key-value store.
 This mechanismi, shown in :numref:`control_top`,
-utilizes the Python class ``Snap2FengineEtcdClient`` to
+utilizes the Python class ``Snap2FengineEtcdService`` to
 translate commands and responses between the ``etcd`` format and the
 underlying ``Snap2Fengine`` method calls.
 
@@ -234,7 +234,7 @@ SNAP2 boards running F-Engine firmware via the passing of messages through
 an ``etcd`` key-value store.
 
 In order to use the ``etcd`` control interface, a daemon
-``Snap2FengineEtcdClient`` instance is required to be running on
+``Snap2FengineEtcdService`` instance is required to be running on
 a server with network access to the SNAP2 hardware being controlled.
 
 Key Organization
@@ -489,7 +489,7 @@ and their meanings are:
 +-----------------------------+----------------------------------------------+
 
 In the event that a command fails, more information is available in the
-``Snap2FengineEtcdClient`` daemon logs.
+``Snap2FengineEtcdService`` daemon logs.
 
 Monitoring Interface
 ~~~~~~~~~~~~~~~~~~~~
@@ -497,7 +497,7 @@ Monitoring Interface
 The ``etcd`` F-engine control service can be commanded to periodically
 push status data to monitoring keys using the following commands.
 
-.. autoclass:: lwa_f.snap2_feng_etcd_client.Snap2FengineEtcdClient
+.. autoclass:: lwa_f.snap2_feng_etcd_client.Snap2FengineEtcdService
   :no-show-inheritance:
   :members:
 
