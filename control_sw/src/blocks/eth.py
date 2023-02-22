@@ -77,10 +77,10 @@ class Eth(Block):
         stats['tx_full'] = self.read_uint(self._CORE_NAME + '_txfullctr')
         stats['tx_vld' ] = self.read_uint(self._CORE_NAME + '_txvldctr')
         stats['tx_ctr' ] = self.read_uint(self._CORE_NAME + '_txctr')
-        c0 = self.read_uint(self._CORE_NAME + '_txctr')
+        c0 = self.read_uint(self._CORE_NAME + '_txvldctr')
         t0 = time.time()
         time.sleep(0.1)
-        c1 = self.read_uint(self._CORE_NAME + '_txctr')
+        c1 = self.read_uint(self._CORE_NAME + '_txvldctr')
         t1 = time.time()
         # catch counter overflow
         if c1 < c0:
