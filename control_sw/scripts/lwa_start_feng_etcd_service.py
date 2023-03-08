@@ -38,6 +38,7 @@ def main():
         logger.info("SNAP %s has ID %d" % (args.snaphost, fid))
     except:
         logger.error("Couldn't get SNAP ID from hostname ending %s" % args.snaphost[4:])
+        raise
     
     logger.info("Starting ETCD client service")
     try:
