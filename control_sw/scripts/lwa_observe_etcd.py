@@ -18,7 +18,7 @@ def configure_snaps(snapids, config_file, program=True):
 
     for i in sorted(snapids):
         print("Initializing board %d" % i)
-        ec.send_command(i, 'feng', 'cold_start_from_config', kwargs={'config_file':CONFIG_FILE, 'program':False, 'initialize':True}, timeout=20)
+        ec.send_command(i, 'feng', 'cold_start_from_config', kwargs={'config_file':config_file, 'program':False, 'initialize':True}, timeout=20)
 
 def configure_gpu_servers(serverids):
     from lwa352_pipeline_control import Lwa352CorrelatorControl
