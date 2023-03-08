@@ -140,7 +140,7 @@ class Sync(Block):
             if time.time() > (t0 + timeout):
                 self._error("Timed out waiting  %.1f seconds for sync pulse" % timeout)
                 raise RuntimeError("Timed out waiting %.1f seconds for a sync pulse" % timeout)
-            time.sleep(0.05)
+            time.sleep(0.02)
 
     def wait_for_pps(self, timeout=2.0):
         """
@@ -161,7 +161,7 @@ class Sync(Block):
             if time.time() > (t0 + timeout):
                 self._info("Timed out waiting for PPS")
                 return -1
-            time.sleep(0.05)
+            time.sleep(0.02)
         return c1
 
     def arm_sync(self):
