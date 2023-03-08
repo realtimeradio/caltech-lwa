@@ -635,6 +635,9 @@ class Snap2FengineEtcdService():
                 self.set_top_status_good()
             else:
                 self.set_top_status_bad()
+        except etcd3.exceptions.Etcd3Exception:
+            self.logger.exception("ETCD error")
+            raise
         except:
             self.logger.exception("Error polling stats")
             self.set_top_status_bad()
@@ -648,7 +651,7 @@ class Snap2FengineEtcdService():
             self.ec.put(self.mon_key, etcd_dict_json)
         except:
             self.logger.exception("Error pushing poll data to etcd")
-            return
+            raise
 
     def start_poll_stats_loop(self, pollsecs=10, expiresecs=-1):
         """
