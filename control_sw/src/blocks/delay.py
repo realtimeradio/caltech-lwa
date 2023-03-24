@@ -33,7 +33,14 @@ class Delay(Block):
         :rtype: int
 
         """
-        self.max_delay = self.read_uint('max_delay')
+        max_delay = self.read_uint('max_delay')
+        # If the register returns 0, it probably means the
+        # board isn't clocking yet so we should leave
+        # the max delay uninitialized
+        if max_delay == 0:
+            self.max_delay = None
+        else:
+            self.max_delay = max_delay
         return self.max_delay
 
     def set_delay(self, stream, delay):

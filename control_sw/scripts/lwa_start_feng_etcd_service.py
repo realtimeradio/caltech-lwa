@@ -13,7 +13,7 @@ def main():
                         help ='Host serving etcd')
     parser.add_argument('-p', dest='port', type=int, default=2379,
                         help ='Port on which etcd is served')
-    parser.add_argument('-t', dest='polltime', type=int, default=None,
+    parser.add_argument('-t', dest='polltime', type=int, default=60,
                         help ='Time, in seconds, between FPGA status polls. '
                               'If None, don\'t start poll loop')
     parser.add_argument('--snaphost', dest='snaphost', type=str, default='snap01',
@@ -38,10 +38,11 @@ def main():
         logger.info("SNAP %s has ID %d" % (args.snaphost, fid))
     except:
         logger.error("Couldn't get SNAP ID from hostname ending %s" % args.snaphost[4:])
+        raise
     
     logger.info("Starting ETCD client service")
     try:
-        ec = snap2_feng_etcd_client.Snap2FengineEtcdClient(
+        ec = snap2_feng_etcd_client.Snap2FengineEtcdService(
                 args.snaphost,
                 fid,
                 etcdhost=args.etcdhost,

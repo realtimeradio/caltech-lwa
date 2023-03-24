@@ -24,7 +24,7 @@ class Eq(Block):
 
     """
     _WIDTH = 16 #: Coefficient bit width
-    _BP = 5     #: Coefficient binary point position
+    _BP = 2     #: Coefficient binary point position
     _FORMAT = 'H'#'L' 
     def __init__(self, host, name, n_streams=64, n_coeffs=2**9, logger=None):
         super(Eq, self).__init__(host, name, logger)
@@ -35,7 +35,8 @@ class Eq(Block):
     def set_coeffs(self, stream, coeffs):
         """
         Set the coefficients for a data stream.
-        Clipping and saturation will be applied before loading.
+        Rounding and saturation will be applied before loading, so the provided
+        coefficients may be integer or floating point.
         
         :param stream: ADC stream index to which coefficients should be applied.
         :type stream: int
@@ -70,34 +71,48 @@ class Eq(Block):
         """
         from matplotlib import pyplot as plt
         for i in range(self.n_streams):
-            coeff_val, coeff_scale = self.get_coeffs(i)
-            coeffs = coeff_val / 2**coeff_scale
+            coeffs = self.get_coeffs(i)
             if db:
                 coeffs = 20*np.log10(coeffs)
             plt.plot(coeffs, label=i)
         plt.legend()
         plt.show()
 
-    def get_coeffs(self, stream):
+    def get_coeffs(self, stream, return_as_int=False):
         """
         Get the coefficients currently loaded.
-        Reads the actual coefficients from the board.
+        Reads the actual coefficients from the board, returning these
+        either as floats (which may, for example, be modified and then passed
+        back to ``set_coeffs``) or as an integers with a scaling factor
+        (which reflects precisely the values stored in the firmware registers).
 
         :param stream: ADC stream index to query.
         :type stream: int
 
-        :return: (coeffs, binary_point). ``coeffs`` is an array of
-            ``self.n_coeffs`` integer coefficients currently being applied.
-            ``binary_point`` is the position of the binary point wy which these
-            integers are scaled on the FPGA.
-        :rtype: (numpy.ndarray, int)
+        :param return_as_int: If True, return a tuple containing integer
+            coefficients as stored on the FPGA, and a binary point scale.
+            If False, return a floating point
+            interpretation of the coefficients being applied to data.
+        :type return_as_int: bool
+
+        :return: If ``return_as_int``, return a tuple ``(coeffs, binary_point)``.
+            ``coeffs`` is an array of ``self.n_coeffs`` coefficients currently
+            being applied. ``binary_point`` is the position of the binary
+            point with which these integers are scaled on the FPGA.
+            If not ``return_as_int``, return ``coeffs``, an array of
+            ``self.n_coeffs`` floating point coefficients.
+            
+        :rtype: (numpy.ndarray, int) or numpy.ndarray
 
         """
         coeff_reg = 'core%d_coeffs' % (stream // 16)
         stream_sub_index = stream % 16
         coeffs_str = self.read(coeff_reg, self._stream_size, offset= self._stream_size * stream_sub_index)
         coeffs = np.array(struct.unpack('>%d%s' % (self.n_coeffs, self._FORMAT), coeffs_str))
-        return coeffs, self._BP
+        if return_as_int:
+            return coeffs, self._BP
+        else:
+            return np.array(coeffs, dtype=float) / (2**self._BP)
 
     def clip_count(self):
         """
@@ -135,7 +150,7 @@ class Eq(Block):
         flags = {}
         stats['clip_count'] = self.clip_count()
         for stream in range(self.n_streams):
-            coeffs, bp = self.get_coeffs(stream)
+            coeffs, bp = self.get_coeffs(stream, return_as_int=True)
             stats['coefficients%.2d' % stream] = coeffs.tolist()
             assert bp == self._BP, "Software hardcoded for all coefficient BPs the same"
         stats['binary_point'] = self._BP

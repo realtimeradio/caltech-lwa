@@ -20,7 +20,7 @@ control and monitoring of multiple F-Engines can also be carried out through
 the passing of JSON-encoded messages through an ``etcd``\  [1]_
 key-value store.
 This mechanismi, shown in :numref:`control_top`,
-utilizes the Python class ``Snap2FengineEtcdClient`` to
+utilizes the Python class ``Snap2FengineEtcdService`` to
 translate commands and responses between the ``etcd`` format and the
 underlying ``Snap2Fengine`` method calls.
 
@@ -165,6 +165,13 @@ PFB Control
   :no-show-inheritance:
   :members:
 
+Flagging Control
+++++++++++++++++
+
+.. autoclass:: lwa_f.blocks.mask.Mask
+  :no-show-inheritance:
+  :members:
+
 
 Auto-correlation Control
 ++++++++++++++++++++++++
@@ -227,7 +234,7 @@ SNAP2 boards running F-Engine firmware via the passing of messages through
 an ``etcd`` key-value store.
 
 In order to use the ``etcd`` control interface, a daemon
-``Snap2FengineEtcdClient`` instance is required to be running on
+``Snap2FengineEtcdService`` instance is required to be running on
 a server with network access to the SNAP2 hardware being controlled.
 
 Key Organization
@@ -243,7 +250,7 @@ The command key is:
 
 ``/cmd/snap/<id>``
 
-``id`` is the one-indexed ID number of the SNAP board which should respond
+``id`` is the two-digit (for example ``01``), one-indexed ID number of the SNAP board which should respond
 to these commands. Commands issues to ``id=0`` are processed by all SNAP boards.
 
 Writing messages to this key results in the execution of ``Snap2Fengine``
@@ -362,6 +369,21 @@ These directly manipulate FPGA registers, and should be used with caution.
 
 The **``kwargs``** field should contain any arguments required by the command
 method being called.
+Since these arguments are JSON-encoded before being sent through ``etcd``, argument
+types must be supported by the Python ``json`` library, and are thus limited to:
+
+  - ``dict``
+  - ``list``
+  - ``str``
+  - ``int``
+  - ``float``
+  - ``True``
+  - ``False``
+  - ``None``
+
+In particular, ``numpy`` arrays are not supported, though these can usually be successfully
+encoded by first converting them to lists using the ``ndarray.tolist()`` method.
+
 For example, the Fengine ``delay`` block's ``set_delay`` method requires
 a ``stream`` argument (to select which of the 64 SNAP2 data streams is being
 manipulated) and a ``delay`` argument (to set the delay for this stream).
@@ -467,7 +489,7 @@ and their meanings are:
 +-----------------------------+----------------------------------------------+
 
 In the event that a command fails, more information is available in the
-``Snap2FengineEtcdClient`` daemon logs.
+``Snap2FengineEtcdService`` daemon logs.
 
 Monitoring Interface
 ~~~~~~~~~~~~~~~~~~~~
@@ -475,7 +497,7 @@ Monitoring Interface
 The ``etcd`` F-engine control service can be commanded to periodically
 push status data to monitoring keys using the following commands.
 
-.. autoclass:: lwa_f.snap2_feng_etcd_client.Snap2FengineEtcdClient
+.. autoclass:: lwa_f.snap2_feng_etcd_client.Snap2FengineEtcdService
   :no-show-inheritance:
   :members:
 

@@ -73,7 +73,7 @@ def configure_snaps(snapids, config_file):
         fhost = 'snap01'
         f = ffs[fhost]
         print("Configuring board %s" % fhost)
-        do_program = not f.fpga.is_programmed()
+        do_program = True
         f.cold_start_from_config(config_file, program=do_program)
 
 
@@ -83,7 +83,7 @@ def configure_snaps(snapids, config_file):
         # Already done snap01
         if fhost == 'snap01':
             continue
-        do_program = not f.fpga.is_programmed()
+        do_program = True
         init_fengines += [f]
         init_fengine_kwargs[fhost] = {'program': do_program}
 

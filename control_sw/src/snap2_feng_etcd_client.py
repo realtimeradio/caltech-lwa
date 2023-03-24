@@ -9,6 +9,7 @@ import numpy as np
 import etcd3
 from . import snap2_fengine
 import logging
+from . import error_levels
 
 # ETCD Keys
 ETCD_CMD_ROOT = "/cmd/snap/"
@@ -95,6 +96,10 @@ class Snap2FengineEtcdControl():
         :return: JSON-encoded command string to be sent. Returns None if there
             is an enoding error.
         """
+        for k in kwargs.keys():
+            if isinstance(kwargs[k], np.ndarray):
+                kwargs[k] = kwargs[k].tolist()
+
         command_dict = {
             "cmd": cmd,
             "val": {
@@ -109,10 +114,10 @@ class Snap2FengineEtcdControl():
             return command_json
         except:
             self.logger.exception("Failed to JSON-encode command")
-            return
+            raise
 
 
-    def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=1):
+    def send_command(self, fid, block, cmd, kwargs={}, timeout=10.0, n_response_expected=None):
         """
         Send a command to a SNAP2
 
@@ -133,11 +138,15 @@ class Snap2FengineEtcdControl():
         :type timeout: float
 
         :param n_response_expected: Number of individual responses expected.
-            Should be 1 unless broadcasting a command using etcd with `fid=0`.
+            If `None`, assume 1, unless `fid=0` in which case assume 11.
         :type n_response_expected: int
 
         :return: Dictionary of values, dependent on the command response.
         """
+        if fid == 0:
+            n_response_expected = n_response_expected or 11
+        else:
+            n_response_expected = n_response_expected or 1
         if self.noetcd:
             return self._send_command_noetcd(fid, block, cmd, kwargs=kwargs)
         else:
@@ -205,13 +214,15 @@ class Snap2FengineEtcdControl():
         :type timeout: float
 
         :param n_response_expected: Number of individual responses expected.
-            Should be 1 unless broadcasting a command with `fid=0`.
         :type n_response_expected: int
 
         :return: If `fid=0`, a dictionary of responses keyed by `fid`.
             If `fid != 0`, the return value matching the underlying command.
         """
-        cmd_key = ETCD_CMD_ROOT + "%d" % fid
+        if fid == 0:
+            cmd_key = ETCD_CMD_ROOT + "%.1d" % fid
+        else:
+            cmd_key = ETCD_CMD_ROOT + "%.2d" % fid
         resp_key = ETCD_RESP_ROOT # Listen to responses from all boards
         timestamp = time.time()
         sequence_id = str(int(timestamp * 1e6))
@@ -251,6 +262,7 @@ class Snap2FengineEtcdControl():
                     self.logger.debug("Seq ID %s didn't match expected (%s)" % (resp_id, sequence_id))
 
         # Begin watching response channel and then send message
+        # Watch by prefix here, since we want responses from any boards
         watch_id = self.ec.add_watch_prefix_callback(resp_key, response_callback)
         time.sleep(0.01)
         # send command
@@ -274,7 +286,7 @@ class Snap2FengineEtcdControl():
                 return rv
             time.sleep(0.01)
 
-class Snap2FengineEtcdClient():
+class Snap2FengineEtcdService():
     """
     An ETCD client to interface a single SNAP2 F-Engine
     to an etcd store.
@@ -315,7 +327,7 @@ class Snap2FengineEtcdClient():
         #: List of etcd watch IDs, used to kill watch processes
         self._etcd_watch_ids = []
         if logger is None:
-            self.logger = logging.getLogger("Snap2FengineEtcdClient:%s" % self.fhost)
+            self.logger = logging.getLogger("Snap2FengineEtcdService:%s" % self.fhost)
             stderr_handler = logging.StreamHandler(sys.stderr)
             self.logger.addHandler(stderr_handler)
             self.set_log_level("info")
@@ -347,9 +359,10 @@ class Snap2FengineEtcdClient():
         except:
             self.logger.exception("Failed to connect to Etcd server on host %s" % etcdhost)
             raise
-        self.cmd_key = ETCD_CMD_ROOT + "%d" % self.fid
-        self.cmd_resp_key = ETCD_RESP_ROOT + "%d" % self.fid
-        self.mon_key = ETCD_MON_ROOT + "%d" % self.fid
+        self.cmd_key = ETCD_CMD_ROOT + "%.2d" % self.fid
+        self.cmd_resp_key = ETCD_RESP_ROOT + "%.2d" % self.fid
+        self.mon_key = ETCD_MON_ROOT + "%.2d" % self.fid
+        self.top_status_key = self.mon_key + "/status"
         self.logger.debug("Command key is %s" % self.cmd_key)
         self.logger.debug("Command response key is %s" % self.cmd_resp_key)
         self.logger.debug("Monitor key root is %s" % self.mon_key)
@@ -398,14 +411,14 @@ class Snap2FengineEtcdClient():
         allow a watch to later be cancelled.
         """
         self.logger.info("Beginning command watch on key %s" % self.cmd_key)
-        self._etcd_watch_ids += [self.ec.add_watch_prefix_callback(
-                                  self.cmd_key,
-                                  self._etcd_callback,
+        self._etcd_watch_ids += [self.ec.add_watch_callback(
+                                  key = self.cmd_key,
+                                  callback = self._etcd_callback,
                                  )]
         # Also watch on the "all SNAPs" key
-        self._etcd_watch_ids += [self.ec.add_watch_prefix_callback(
-                                  ETCD_CMD_ROOT + "0",
-                                  self._etcd_callback,
+        self._etcd_watch_ids += [self.ec.add_watch_callback(
+                                  key = ETCD_CMD_ROOT + "0",
+                                  callback = self._etcd_callback,
                                 )]
 
     def stop_command_watch(self):
@@ -466,7 +479,7 @@ class Snap2FengineEtcdClient():
         resulting dictionary to ``_process_commands``.
 
         :param watchresponse: A WatchResponse object used by the etcd
-            `add_watch_prefix_callback` as the calling argument.
+            `add_watch_callback` as the calling argument.
         :type watchresponse: WatchResponse
 
         :return: True if command was processed successfully, False otherwise.
@@ -563,8 +576,16 @@ class Snap2FengineEtcdClient():
                 self.logger.error("Responded to command '%s' (ID %s): %s" % (command, seq_id, err))
                 return False
             try:
+                # cast numpy arrays as lists for JSONification
                 if isinstance(resp, np.ndarray):
                     resp = resp.tolist()
+                # If the return value is a tuple, try to cast
+                # any numpy arrays in the tuple
+                if isinstance(resp, tuple):
+                    resp = list(resp)
+                    for i in range(len(resp)):
+                        if isinstance(resp[i], np.ndarray):
+                            resp[i] = resp[i].tolist()
                 # Check we will be able to encode the response
                 test_encode = json.dumps(resp)
             except:
@@ -574,6 +595,20 @@ class Snap2FengineEtcdClient():
             self.logger.info("Responded to command '%s' (ID %s): OK? %s" % (command, seq_id, ok))
             self.logger.debug("Responded to command '%s' (ID %s): %s" % (command, seq_id, resp))
             return ok
+
+    def set_top_status_good(self):
+        """
+        Set the top-level status key to True (i.e. board is OK)
+        """
+        t = datetime.datetime.utcnow().astimezone().isoformat()
+        self.ec.put(self.top_status_key, json.dumps({"ok": True, "timestamp": t}))
+
+    def set_top_status_bad(self):
+        """
+        Set the top-level status key to False (i.e. board is _NOT_ OK)
+        """
+        t = datetime.datetime.utcnow().astimezone().isoformat()
+        self.ec.put(self.top_status_key, json.dumps({"ok": False, "timestamp": t}))
 
     def poll_stats(self):
         """
@@ -589,10 +624,23 @@ class Snap2FengineEtcdClient():
             etcd_dict = {
                     "stats": stats,
                     "flags": flags,
-                    "time": t
+                    "timestamp": t
                     }
+            ok = True
+            for bname, bflags in flags.items(): # Loop through blocks
+                for fname, flag in bflags.items(): # Loop through flag fields
+                    if flag == error_levels.FENG_ERROR:
+                        ok = False
+            if ok:
+                self.set_top_status_good()
+            else:
+                self.set_top_status_bad()
+        except etcd3.exceptions.Etcd3Exception:
+            self.logger.exception("ETCD error")
+            raise
         except:
             self.logger.exception("Error polling stats")
+            self.set_top_status_bad()
             return
         try:
             etcd_dict_json = json.dumps(etcd_dict)
@@ -603,7 +651,7 @@ class Snap2FengineEtcdClient():
             self.ec.put(self.mon_key, etcd_dict_json)
         except:
             self.logger.exception("Error pushing poll data to etcd")
-            return
+            raise
 
     def start_poll_stats_loop(self, pollsecs=10, expiresecs=-1):
         """

@@ -1,5 +1,6 @@
 import logging
 import socket
+import inspect
 import numpy as np
 import struct
 import time
@@ -18,6 +19,7 @@ from .blocks import noisegen
 from .blocks import input
 from .blocks import delay
 from .blocks import pfb
+from .blocks import mask
 from .blocks import autocorr
 from .blocks import eq
 from .blocks import eqtvg
@@ -31,13 +33,14 @@ FENG_40G_SOURCE_PORT = 10000
 MAC_BASE = 0x020203030400
 IP_BASE = (10 << 24) + (41 << 16) + (0 << 8) + 100
 PIPELINES_PER_XENG = 4
+FS_HZ = 196000000 # ADC sample rate in Hz
 
 class Snap2Fengine():
     """
     A control class for LWA352's SNAP2 F-Engine firmware.
 
-    :param host: CasperFpga interface for host.
-    :type host: casperfpga.CasperFpga
+    :param host: Hostname of SNAP2 board
+    :type host: str
 
     :param logger: Logger instance to which log messages should be emitted.
     :type logger: logging.Logger
@@ -72,16 +75,20 @@ class Snap2Fengine():
         """
         return self._cfpga.is_connected()
 
-    def _initialize_blocks(self):
+    def _initialize_blocks(self, passive=False):
         """
         Initialize firmware blocks, populating the ``blocks`` attribute.
+
+        :param passive: If True, don't attempt to do anything to interact with the FPGAs
+            when creating their block control instances.
+        :type passive: bool
         """
 
         # blocks
         #: Control interface to high-level FPGA functionality
         self.fpga        = fpga.Fpga(self._cfpga, "")
         #: Control interface to ADC block
-        self.adc         = adc.Adc(self._cfpga, 'adc')
+        self.adc         = adc.Adc(self._cfpga, 'adc', passive=passive)
         #: Control interface to Synchronization / Timing block
         self.sync        = sync.Sync(self._cfpga, 'sync')
         #: Control interface to Noise Generation block
@@ -92,6 +99,8 @@ class Snap2Fengine():
         self.delay       = delay.Delay(self._cfpga, 'delay', n_streams=64)
         #: Control interface to PFB block
         self.pfb         = pfb.Pfb(self._cfpga, 'pfb')
+        #: Control interface to Mask (flagging) block
+        self.mask        = mask.Mask(self._cfpga, 'mask')
         #: Control interface to Autocorrelation block
         self.autocorr    = autocorr.AutoCorr(self._cfpga, 'autocorr')
         #: Control interface to Equalization block
@@ -107,7 +116,7 @@ class Snap2Fengine():
         #: Control interface to Correlation block
         self.corr        = corr.Corr(self._cfpga,'corr_0', n_chans=2**12 // 8) # Corr module collapses channels by 8x
         #: Control interface to Power Monitor block
-        self.powermon    = powermon.PowerMon(self._cfpga, 'powermon')
+        self.powermon    = powermon.PowerMon(self._cfpga, 'powermon', passive=passive)
 
         # The order here can be important, blocks are initialized in the
         # order they appear here
@@ -121,6 +130,7 @@ class Snap2Fengine():
             'input'     : self.input,
             'delay'     : self.delay,
             'pfb'       : self.pfb,
+            'mask'      : self.mask,
             'eq'        : self.eq,
             'eqtvg'     : self.eqtvg,
             'reorder'   : self.reorder,
@@ -169,7 +179,10 @@ class Snap2Fengine():
             stats['fpga'], flags['fpga'] = self.blocks['fpga'].get_status()
         else:
             for blockname, block in self.blocks.items():
-                stats[blockname], flags[blockname] = block.get_status()
+                try:
+                    stats[blockname], flags[blockname] = block.get_status()
+                except:
+                    self.logger.info("Failed to poll stats from block %s" % blockname)
         return stats, flags
 
     def print_status_all(self, use_color=True, ignore_ok=False):
@@ -337,7 +350,7 @@ class Snap2Fengine():
         :param filter_ksize: Filter kernel size, for rudimentary RFI removal. This should be an odd value.
         :type filter_ksize: int
 
-        :param target_rms: The target post-EQ RMS. This is normalized such that 1.0 is the saturation level.
+        :param target_rms: The target post-EQ RMS. This is normalized such that 0.875 is the saturation level.
             I.e., an RMS of 0.125 means that the RMS is one LSB of a 4-bit signed signal.
         :type target_rms: float
 
@@ -351,8 +364,7 @@ class Snap2Fengine():
                 stream_id = i*n_signals + j
                 self.logger.info("Trying to EQ input %d" % stream_id)
                 pre_quant_rms = np.sqrt(spectra[j] / 2) # RMS of each real / imag component making up spectra
-                eq_coeff, eq_bp = self.eq.get_coeffs(stream_id)
-                eq_scale = eq_coeff / (2**eq_bp)
+                eq_scale = self.eq.get_coeffs(stream_id)
                 eq_scale = eq_scale.repeat(coeff_repeat_factor)
                 curr_rms = pre_quant_rms * eq_scale
                 diff = target_rms / curr_rms
@@ -386,6 +398,10 @@ class Snap2Fengine():
             raise TypeError("wrong type for fpgfile")
         if not isinstance(force, bool):
             raise TypeError("wrong type for force")
+
+        # Resolve symlinks
+        if fpgfile:
+            fpgfile = os.path.realpath(fpgfile)
 
         if fpgfile and not os.path.exists(fpgfile):
             raise RuntimeError("Path %s doesn't exist" % fpgfile)
@@ -421,11 +437,15 @@ class Snap2Fengine():
 
         :param program: If True, start by programming the SNAP2 FPGA from
             the image currently in flash. Also train the ADC-> FPGA links
-            and initialize all firmware blocks.
+            and initialize all firmware blocks. Also relock the SNAP2's
+            internal timekeeping logic to the sync pulse
+            (and PPS, if connected) distribution system.
         :type program: bool
 
         :param initialize: If True, put all firmware blocks in their default
-            initial state. Initialization is always performed if the FPGA
+            initial state, and relock the board's timekeeping logic to the
+            sync pulse (and PPS, if connected) distribution system.
+            Initialization is always performed if the FPGA
             has been reprogrammed, but can be run without reprogramming
             to (quickly) reset the firmware to a known state. Initialization
             does not include ADC->FPGA link training.
@@ -461,7 +481,17 @@ class Snap2Fengine():
             if 'xengines' not in conf:
                 self.logger.error("No 'xengines' key in output configuration!")
                 raise RuntimeError('Config file missing "xengines" key')
+            try:
+                enable_pfb = conf['fengines']['enable_pfb']
+            except KeyError:
+                enable_pfb = True
             chans_per_packet = conf['fengines']['chans_per_packet']
+            fft_shift = conf['fengines'].get('fft_shift', None)
+            eq_coeffs = conf['fengines'].get('eq_coeffs', None)
+            # if a single coefficient is provided, use it for all channels
+            if eq_coeffs is not None:
+                if not isinstance(eq_coeffs, list):
+                    eq_coeffs = [eq_coeffs] * self.eq.n_coeffs
             localconf = conf['fengines'].get(self.hostname, None)
             if localconf is None:
                 self.logger.error("No configuration for F-engine host %s" % self.hostname)
@@ -489,7 +519,10 @@ class Snap2Fengine():
             test_vectors = test_vectors,
             sync = sync,
             sw_sync = sw_sync,
+            enable_pfb = enable_pfb,
             enable_eth = enable_eth,
+            fft_shift = fft_shift,
+            eq_coeffs = eq_coeffs,
             chans_per_packet = chans_per_packet,
             first_stand_index = first_stand_index,
             nstand = nstand,
@@ -501,7 +534,8 @@ class Snap2Fengine():
 
 
     def cold_start(self, program=True, initialize=True, test_vectors=False,
-                   sync=True, sw_sync=False, enable_eth=True,
+                   sync=True, sw_sync=False, enable_pfb=True, enable_eth=True,
+                   fft_shift=None, eq_coeffs=None,
                    chans_per_packet=96, first_stand_index=0, nstand=32,
                    macs={}, source_ip='10.41.0.101', source_port=10000,
                    dests=[]):
@@ -510,11 +544,15 @@ class Snap2Fengine():
 
         :param program: If True, start by programming the SNAP2 FPGA from
             the image currently in flash. Also train the ADC-> FPGA links
-            and initialize all firmware blocks.
+            and initialize all firmware blocks. Also relock the SNAP2's
+            internal timekeeping logic to the sync pulse
+            (and PPS, if connected) distribution system.
         :type program: bool
 
         :param initialize: If True, put all firmware blocks in their default
-            initial state. Initialization is always performed if the FPGA
+            initial state, and relock the board's timekeeping logic to the
+            sync pulse (and PPS, if connected) distribution system.
+            Initialization is always performed if the FPGA
             has been reprogrammed, but can be run without reprogramming
             to (quickly) reset the firmware to a known state. Initialization
             does not include ADC->FPGA link training.
@@ -530,8 +568,18 @@ class Snap2Fengine():
             for an external reset pulse to be received over SMA.
         :type sw_sync: bool
 
+        :param enable_pfb: If True, enable the PFB FIR filter on the F-Engine.
+        :type enable_eth: bool
+
         :param enable_eth: If True, enable 40G F-Engine Ethernet output.
         :type enable_eth: bool
+
+        :param fft_shift: If provided, set the F-engine FFT shift to the provided value.
+        :type fft_shift: int
+
+        :param eq_coeffs: If provided, the list of pre-quantization equalization
+            coefficients to be loaded to F-engines. This should have `eq.n_coeffs` entries.
+        :type eq_coeffs: list
 
         :param chans_per_packet: Number of frequency channels in each output F-engine
             packet
@@ -588,7 +636,36 @@ class Snap2Fengine():
                 block.initialize(read_only=False)
             self.logger.info('Updating telescope time')
             self.sync.update_telescope_time()
+            # Telescope time update can cause a jump in sync pulses. Wait for stability
+            self.sync.wait_for_sync()
+            self.sync.wait_for_sync()
+            self.sync.reset_error_count()
+            # and reset error counters to clear any registered period variations
             self.sync.update_internal_time()
+            # Configure flag core to use windows of acc_len since TT=0
+            now_tt = int(time.time() * FS_HZ)
+            tt_ticks_per_acc = self.mask.get_acc_len() * 2 * self.mask.n_chans
+            # Find a valid accumulation start TT between 1 and 2 acc_lens in the future
+            target_acc_cnt = int(np.ceil(now_tt / tt_ticks_per_acc)) + 1
+            target_tt = target_acc_cnt * tt_ticks_per_acc
+            self.mask.set_acc_start_time(target_tt)
+
+        if enable_pfb:
+            self.logger.info('Enabling the PFB FIR filter')
+            self.pfb.fir_enable()
+        else:
+            self.logger.info('Disabling the PFB FIR filter')
+            self.pfb.fir_disable()
+
+        if fft_shift is not None:
+            self.logger.info('Setting FFT shift to 0x%.4x' % fft_shift)
+            self.pfb.set_fft_shift(fft_shift)
+
+        if eq_coeffs is not None:
+            # Set all inputs to use the same coeffs
+            self.logger.info('Setting EQ coefficients')
+            for i in range(self.eq.n_streams):
+                self.eq.set_coeffs(i, eq_coeffs)
 
         if test_vectors:
             self.logger.info('Enabling EQ TVGs...')
@@ -672,3 +749,82 @@ class Snap2Fengine():
             self.eth.disable_tx()
 
         self.logger.info("Startup of %s complete" % self.hostname)
+
+def __getattribute__(self, attr):
+    wrap_method = True
+    if attr.startswith('_'):
+        wrap_method = False
+    elif attr == "intercept_method_call":
+        wrap_method = False
+    val = object.__getattribute__(self, attr)
+    if not callable(val):
+        return val
+    elif not wrap_method:
+        return val
+    else:
+        return lambda *args, **kwargs: object.__getattribute__(self, '_intercept_method_call')(self.blockname, attr, val, args, kwargs)
+
+def _intercept_method_call(self, blockname, methodname, method, args, kwargs):
+    signature = inspect.signature(method)
+    arg_names = [arg.name for arg in signature.parameters.values()]
+    argdict = {}
+    for aa, arg in enumerate(args):
+        argdict[arg_names[aa]] = arg
+    argdict.update(**kwargs)
+    rv = self.ec.send_command(self.snap_id, blockname, methodname, kwargs=argdict, timeout=10)
+    return rv
+
+class Snap2FengineEtcd(Snap2Fengine):
+    """
+    A control class for LWA352's SNAP2 F-Engine firmware via an Etcd gateway
+
+    :param host: SNAP hostname (e.g. 'snap01')
+    :type host: str
+
+    :param logger: Logger instance to which log messages should be emitted.
+    :type logger: logging.Logger
+
+    """
+    def __init__(self, host, logger=None, etcdhost="etcdv3service.sas.pvt"):
+        self.hostname = host #: hostname of the F-Engine's host SNAP2 board
+        #: Python Logger instance
+        self.logger = logger or helpers.add_default_log_handlers(logging.getLogger(__name__ + ":%s" % (host)))
+        class FakeCasperfpga:
+            def __init__(self, host):
+                self.host = host
+        self._cfpga = FakeCasperfpga(host)
+        from .snap2_feng_etcd_client import Snap2FengineEtcdControl
+        try:
+            self.snap_id = int(self.hostname[4:]) # strip "snap"
+        except:
+            self.logger.error("Couldn't infer board ID from hostname %s" % self.hostname)
+            raise ValueError
+        self.ec = Snap2FengineEtcdControl(etcdhost=etcdhost)
+        self.blockname = 'feng' # The etcd name of the top-level block
+        self.blocks = {}
+        self._wrap_block_methods()
+        try:
+            self._initialize_blocks(passive=True)
+            self._set_block_names()
+        except:
+            self.logger.error("Failed to inialize firmware blocks.")
+            raise
+
+    def _wrap_block_methods(self):
+        setattr(block.Block, "__getattribute__", __getattribute__)
+        setattr(block.Block, "_intercept_method_call", _intercept_method_call)
+
+    def _set_block_names(self):
+        """
+        Set the blockname used by etcd
+        """
+        for blockname, block in self.blocks.items():
+            block.blockname = blockname
+            block.snap_id = self.snap_id
+            block.ec = self.ec
+
+    def __getattribute__(self, attr):
+        return __getattribute__(self, attr)
+
+    def _intercept_method_call(self, blockname, methodname, method, args, kwargs):
+        return _intercept_method_call(self, blockname, methodname, method, args, kwargs)

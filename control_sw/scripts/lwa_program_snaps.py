@@ -51,7 +51,7 @@ def multithread_call(fengines, method, args, kwargs):
         raise RuntimeError
 
 
-def program_snaps(snapids, fpgfile):
+def program_snaps(snapids, fpgfile, force):
     from lwa_f import snap2_fengine
 
     snapnames = ['snap%.2d' % i for i in snapids]
@@ -65,7 +65,7 @@ def program_snaps(snapids, fpgfile):
     fengine_kwargs = {}
     for fhost, f in ffs.items():
       snaps_to_program += [f]
-      fengine_kwargs[fhost] = {}
+      fengine_kwargs[fhost] = {'force':force}
 
     for fhost, f in ffs.items():
         print("%s is programmed? %s" % (f.hostname, f.fpga.is_programmed()))
@@ -81,13 +81,15 @@ def main():
                         help ='SNAP firmware .fpg file')
     parser.add_argument('-i', dest='snapids', type=str, default=SNAP_IDS,
                         help ='Comma-separated list of SNAP ID numbers to initialize')
+    parser.add_argument('--force', action='store_true',
+                        help ='Force programming no matter what the SNAP claims is currently in flash')
     args = parser.parse_args()
 
     if args.fpgfile is None:
         print("Supply an fpg file with -f flag")
         exit()
 
-    program_snaps(map(int, args.snapids.split(',')), args.fpgfile)
+    program_snaps(map(int, args.snapids.split(',')), args.fpgfile, args.force)
 
 if __name__ == "__main__":
     main()
