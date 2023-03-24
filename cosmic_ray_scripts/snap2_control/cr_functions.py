@@ -159,10 +159,13 @@ def setup_data_source(brd,datasource):
     elif datasource=='counter':
         setvalue(brd,'select_input_signal', 'cr_registers.xlsx', 0)
 
+    elif datasource=='longcounter':
+        setvalue(brd,'select_input_signal', 'cr_registers.xlsx', 2)
+        
     elif datasource=='adc':
         setvalue(brd,'select_input_signal', 'cr_registers.xlsx', 3)
     else:
-        print("datasource must be 'constant','counter', or 'adc'. Defaulting to 'counter'")
+        print("datasource must be 'constant','counter', 'longcounter', or 'adc'. Defaulting to 'counter'")
     print("Data source set to "+datasource)
     return
 
