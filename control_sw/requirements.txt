@@ -1,5 +1,4 @@
 setuptools
-setuptools_scm
 pdoc3
 numpy
 matplotlib
