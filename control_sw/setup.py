@@ -6,16 +6,19 @@ try:
     import subprocess
     git_desc = subprocess.check_output(['git', 'describe', '--abbrev=8', '--always', '--dirty', '--tags']).decode().strip()
     print('Git describe returns: %s' % git_desc)
-    assert git_desc.startswith('v'), 'Repo should be tagged with a version vX.Y.Z'
-    assert not '-' in git_desc, 'Repo can only be installed from a tagged commit'
-    ver = git_desc.lstrip('v')
-    ver_fields = ver.split('.')
-    assert len(ver_fields) <= 3, 'Version has too many fields. Only vX.Y.Z is allowed'
-    try:
-        map(int, ver_fields)
-    except:
-        print('Couldn\'t turn fields of %s into integers' % ver)
-        raise
+    if git_desc.endswith('dirty'):
+        ver = git_desc # For local testing only
+    else:
+        assert git_desc.startswith('v'), 'Repo should be tagged with a version vX.Y.Z'
+        assert not '-' in git_desc, 'Repo can only be installed from a tagged commit'
+        ver = git_desc.lstrip('v')
+        ver_fields = ver.split('.')
+        assert len(ver_fields) <= 3, 'Version has too many fields. Only vX.Y.Z is allowed'
+        try:
+            map(int, ver_fields)
+        except:
+            print('Couldn\'t turn fields of %s into integers' % ver)
+            raise
 except:
     print('Couldn\'t get version from git')
     raise
