@@ -1,10 +1,12 @@
-from distutils.core import setup
+from setuptools import setup
+from setuptools_scm import get_version
 import glob
 import os
 
+GIT_DESC_CMD = '' #'git describe --abbrev=8 --always --dirty --tags'
+
 try:
-    import subprocess
-    git_desc = subprocess.check_output(['git', 'describe', '--abbrev=8', '--always', '--dirty', '--tags']).decode().strip()
+    git_desc = get_version(git_describe_command=GIT_DESC_CMD)
     print('Git describe returns: %s' % git_desc)
     assert git_desc.startswith('v'), 'Repo should be tagged with a version vX.Y.Z'
     assert not '-' in git_desc, 'Repo can only be installed from a tagged commit'
@@ -29,7 +31,7 @@ with open(os.path.join(here, 'src', '__version__.py'), 'w') as fh:
 
 setup(name='lwa_f',
       version='%s' % ver,
-      description='Python libraries and scripts to control the HERA correlator F-Engines',
+      description='Python libraries and scripts to control the LWA correlator F-Engines',
       author='Jack Hickish',
       author_email='jack@realtimeradio.co.uk',
       url='https://github.com/realtimeradio/caltech-lwa',
