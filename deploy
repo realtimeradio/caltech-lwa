@@ -1,12 +1,13 @@
 #!/bin/bash
-# Distinct deployment servers
+# Distinct ${CONDA_ENV} servers
 # - $CONTROL_SERVER_HOST (here the etcd services need installing and running)
 # - elsewhere (just install the control libraries)
 # Distinct environments
-# - deployment -- reliable, tested
+# - ${CONDA_ENV} -- reliable, tested
 # - development -- testing
 
 CONTROL_SERVER_HOST='lxdlwacr'
+CONDA_ENV=deployment
 
 # setup
 NAME="caltech-lwa"
@@ -25,21 +26,21 @@ whoami >> $LOG 2>>$LOG  # should be user pipeline (or ubuntu?)
 if [[ $PWD =~ ${NAME}/${SUBDIR} ]]; then
     ROOTDIR=$PWD
     echo "$DATE" >> $LOG 2>>$LOG
-    conda run -n deployment which python >> $LOG 2>>$LOG
-    conda run -n deployment git describe >> $LOG 2>>$LOG
-    conda run -n deployment pip install -r requirements.txt >> $LOG 2>>$LOG
-    conda run -n deployment python setup.py install >> $LOG 2>>$LOG
+    conda run -n ${CONDA_ENV} which python >> $LOG 2>>$LOG
+    conda run -n ${CONDA_ENV} git describe >> $LOG 2>>$LOG
+    conda run -n ${CONDA_ENV} pip install -r requirements.txt >> $LOG 2>>$LOG
+    conda run -n ${CONDA_ENV} python setup.py install >> $LOG 2>>$LOG
     if [[ $HOSTNAME =~ $CONTROL_SERVER_HOST ]]; then
-    echo "Installing etcd service(s)" >> $LOG 2>>$LOG
+        echo "Installing etcd service(s)" >> $LOG 2>>$LOG
         # Copy special dependencies
         cd ${ROOTDIR}/libs/casperfpga
-        conda run -n deployment pip install . >> $LOG 2>>$LOG
+        conda run -n ${CONDA_ENV} pip install . >> $LOG 2>>$LOG
         # Copy systemd services and start
         sudo cp ${ROOTDIR}/systemd/lwa-feng-etcd@.service /etc/systemd/system/
         for snap in snap0{1..9} snap{10..11}; do
-            sudo systemctl enable lwa-feng-etcd@${snap}.service;
-            sudo systemctl stop lwa-feng-etcd@${snap}.service;
-            sudo systemctl start lwa-feng-etcd@${snap}.service;
+            sudo systemctl enable lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
+            sudo systemctl stop lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
+            sudo systemctl start lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
         done
     fi
 else
