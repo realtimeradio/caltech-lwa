@@ -630,6 +630,7 @@ class Snap2Fengine():
                 self.adc.initialize(read_only=False)
         
         if program or initialize:
+            self.eth.disable_tx()
             for blockname, block in self.blocks.items():
                 if blockname == 'adc':
                     continue
@@ -730,6 +731,7 @@ class Snap2Fengine():
                 raise
 
         if ok:
+            self.eth.disable_tx()
             self.configure_output(
                     signal_ids,
                     chans_per_packet,
