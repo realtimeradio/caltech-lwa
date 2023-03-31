@@ -1,0 +1,47 @@
+#!/bin/bash
+# Distinct deployment servers
+# - $CONTROL_SERVER_HOST (here the etcd services need installing and running)
+# - elsewhere (just install the control libraries)
+# Distinct environments
+# - deployment -- reliable, tested
+# - development -- testing
+
+CONTROL_SERVER_HOST='lxdlwacr'
+
+# setup
+NAME="caltech-lwa"
+SUBDIR="control_sw"
+DATE=$(date --iso-8601=seconds)
+LOG=~/deploy_${NAME}_${DATE}.log
+
+set -ex >> $LOG 2>>$LOG
+
+rm ~/deploy_$NAME_*.log >> $LOG 2>>$LOG  # clean up old logs
+echo $HOSTNAME >> $LOG 2>>$LOG  # should be installing on calim
+cd $SUBDIR # Base of software library
+echo $PWD >> $LOG 2>>$LOG  # should be base of code repo
+whoami >> $LOG 2>>$LOG  # should be user pipeline (or ubuntu?)
+
+if [[ $PWD =~ ${NAME}/${SUBDIR} ]]; then
+    ROOTDIR=$PWD
+    echo "$DATE" >> $LOG 2>>$LOG
+    conda run -n deployment which python >> $LOG 2>>$LOG
+    conda run -n deployment git describe >> $LOG 2>>$LOG
+    conda run -n deployment pip install -r requirements.txt >> $LOG 2>>$LOG
+    conda run -n deployment python setup.py install >> $LOG 2>>$LOG
+    if [[ $HOSTNAME =~ $CONTROL_SERVER_HOST ]]; then
+    echo "Installing etcd service(s)" >> $LOG 2>>$LOG
+        # Copy special dependencies
+        cd ${ROOTDIR}/libs/casperfpga
+        conda run -n deployment pip install . >> $LOG 2>>$LOG
+        # Copy systemd services and start
+        sudo cp ${ROOTDIR}/systemd/lwa-feng-etcd@.service /etc/systemd/system/
+        for snap in snap{1..9} snap{10..11}; do
+            sudo systemctl enable lwa-feng-etcd@${snap}.service;
+            sudo systemctl stop lwa-feng-etcd@${snap}.service;
+            sudo systemctl start lwa-feng-etcd@${snap}.service;
+        done
+    fi
+else
+    echo "Not installing in this location" >> $LOG 2>>$LOG
+fi
