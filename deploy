@@ -6,7 +6,7 @@
 # - ${CONDA_ENV} -- reliable, tested
 # - development -- testing
 
-CONTROL_SERVER_HOST='lxdlwacr'
+CONTROL_SERVER_HOST='lwacalim10'
 CONDA_ENV=deployment
 
 # setup
