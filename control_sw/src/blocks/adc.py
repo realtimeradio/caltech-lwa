@@ -42,6 +42,11 @@ class Adc(Block):
         # Check which ADCs are connected. Only if no ADC chips on an FMC board
         # respond do we ignore a port
         self.adcs = []
+        # variable to store whether initialization completed OK
+        # None -> initialization hasn't been run
+        # True -> initialization completed OK
+        # False -> intiialization failed.
+        self.init_ok = None
         if not passive:
             self._connect_to_adcs()
 
@@ -141,6 +146,7 @@ class Adc(Block):
         is_locked = self.mmcm_is_locked()
         if not is_locked:
             self._error("MMCMs not locked!")
+            self.init_ok = False
             raise RuntimeError("MMCMs not locked!")
         # Flush FIFOs
         #for i in range(10): self.reset()
@@ -150,6 +156,7 @@ class Adc(Block):
         ok, delays, slacks = self.calibrate(fail_hard=fail_hard)
         # Return ADC to analog sampling mode
         self.use_data()
+        self.init_ok = ok
         return ok
 
     def mmcm_is_locked(self):
@@ -475,6 +482,33 @@ class Adc(Block):
         for adc in self.adcs:
             for i in range(8):
                 adc.init(i) # includes reset
+
+    def get_status(self):
+        """
+        Get status and error flag dictionaries.
+
+        Status keys:
+
+            - init_ok (bool) : True if last ADC initialization completed without error.
+              False if initialization failed. None if initialization hasn't been called
+              by this instance.
+              False is flagged as a warning. None is flagged as notify.
+
+        :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
+            status key-value pairs. flags_dict is
+            a dictionary with all, or a sub-set, of the keys in `status_dict`. The values
+            held in this dictionary are as defined in `error_levels.py` and indicate
+            that values in the status dictionary are outside normal ranges.
+
+        """
+        stats = {}
+        flags = {}
+        stats['init_ok'] = self.init_ok
+        if init_ok is None
+            flags['init_ok'] = FENG_NOTIFY
+        elif init_ok == False:
+            flags['init_ok'] = FENG_WARNING
+        return stats, flags
     
     def use_toggle(self, val0, val1):
         """
