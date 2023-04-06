@@ -504,9 +504,9 @@ class Adc(Block):
         stats = {}
         flags = {}
         stats['init_ok'] = self.init_ok
-        if init_ok is None:
+        if stats['init_ok'] is None:
             flags['init_ok'] = FENG_NOTIFY
-        elif init_ok == False:
+        elif stats['init_ok'] == False:
             flags['init_ok'] = FENG_WARNING
         return stats, flags
     
