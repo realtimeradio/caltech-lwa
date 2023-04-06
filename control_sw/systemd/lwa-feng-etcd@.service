@@ -14,8 +14,9 @@ Restart=always
 RestartSec=60
 
 # Logging
-StandardOutput=syslog
-StandardError=syslog
+ExecStartPre=/bin/bash -c '[ -d %h/logs ] || mkdir -p %h/logs'
+StandardOutput=%h/logs/lwa-feng-etcd%i.out
+StandardError=%h/logs/lwa-feng-etcd%i.err
 SyslogIdentifier=lwa-feng-etcd%i
 
 Environment=PYTHONUNBUFFERED=1
