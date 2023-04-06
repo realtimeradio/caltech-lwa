@@ -6,5 +6,5 @@ matplotlib
 termcolor
 progressbar
 etcd3
-yaml
+pyaml
 scipy

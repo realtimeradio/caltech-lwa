@@ -4,7 +4,7 @@ import time
 import argparse
 import logging
 import logging.handlers
-from lwa_f import snap2_feng_etcd_client
+from lwa_f import snap2_feng_etcd_client, helpers
 
 def main():
     parser = argparse.ArgumentParser(description='Start an ETCD F-Engine control service',
@@ -21,13 +21,7 @@ def main():
     args = parser.parse_args()
 
     logger = logging.getLogger("%s:%s" % (__file__, args.snaphost))
-    logger.setLevel(logging.INFO)
-    
-    formatter = logging.Formatter('%(asctime)s - %(name)20s - %(levelname)s - %(message)s')
-    handler = logging.handlers.SysLogHandler(address='/dev/log')
-    handler.setFormatter(formatter)
-    
-    logger.addHandler(handler)
+    helpers.add_default_log_handlers(logger)
     
     if not args.snaphost.startswith('snap'):
         logger.error("Don't know how to determine SNAP ID unless hostname is 'snap<integer>'")

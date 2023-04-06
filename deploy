@@ -1,0 +1,52 @@
+#!/bin/bash
+# Distinct ${CONDA_ENV} servers
+# - $CONTROL_SERVER_HOST (here the etcd services need installing and running)
+# - elsewhere (just install the control libraries)
+# Distinct environments
+# - ${CONDA_ENV} -- reliable, tested
+# - development -- testing
+
+# Install etcd services only on this host:
+CONTROL_SERVER_HOST='lwacalim10'
+# Install in this conda environment:
+CONDA_ENV=deployment
+# Install etcd services in this user's /home/$SERVICE_USER/.config/systemd/user
+SERVICE_USER=pipeline
+
+# setup
+NAME="caltech-lwa"
+SUBDIR="control_sw"
+DATE=$(date --iso-8601=seconds)
+LOG=~/deploy_${NAME}_${DATE}.log
+
+set -ex >> $LOG 2>>$LOG
+
+rm ~/deploy_$NAME_*.log >> $LOG 2>>$LOG  # clean up old logs
+echo $HOSTNAME >> $LOG 2>>$LOG  # should be installing on calim
+cd $SUBDIR # Base of software library
+echo $PWD >> $LOG 2>>$LOG  # should be base of code repo
+whoami >> $LOG 2>>$LOG  # should be user pipeline (or ubuntu?)
+
+if [[ $PWD =~ ${NAME}/${SUBDIR} ]]; then
+    ROOTDIR=$PWD
+    echo "$DATE" >> $LOG 2>>$LOG
+    conda run -n ${CONDA_ENV} which python >> $LOG 2>>$LOG
+    conda run -n ${CONDA_ENV} git describe >> $LOG 2>>$LOG
+    conda run -n ${CONDA_ENV} pip install -r requirements.txt >> $LOG 2>>$LOG
+    conda run -n ${CONDA_ENV} python setup.py install >> $LOG 2>>$LOG
+    if [[ $HOSTNAME =~ $CONTROL_SERVER_HOST ]]; then
+        echo "Installing etcd service(s)" >> $LOG 2>>$LOG
+        # Copy special dependencies
+        cd ${ROOTDIR}/libs/casperfpga
+        conda run -n ${CONDA_ENV} pip install . >> $LOG 2>>$LOG
+        # Copy systemd services and start
+        cp ${ROOTDIR}/systemd/lwa-feng-etcd@.service /home/${SERVICE_USER}/.config/systemd/user/
+        for snap in snap0{1..9} snap{10..11}; do
+            systemctl --user enable lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
+            systemctl --user stop lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
+            systemctl --user start lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
+        done
+    fi
+else
+    echo "Not installing in this location" >> $LOG 2>>$LOG
+fi
