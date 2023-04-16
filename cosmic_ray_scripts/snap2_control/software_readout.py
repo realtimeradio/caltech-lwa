@@ -7,35 +7,37 @@ from cr_functions import *
 
 parser=argparse.ArgumentParser(description='Trigger a snapshot readout from software to a specified destination address, and report summary information.')
 parser.add_argument('brd', type=str, help='SNAP2 to hostname.')
-parser.add_argument('pktwait', type=int, help='Clock cycles to wait between packets. 0 means do not set this register (only choose 0 for old versions of firmware without the variable delay option)')
+#parser.add_argument('pktwait', type=int, help='Clock cycles to wait between packets. 0 means do not set this register (only choose 0 for old versions of firmware without the variable delay option)')
 
-parser.add_argument('dest', type=str, help='Destination. "minor" or "lwacr"')
+#parser.add_argument('dest', type=str, help='Destination. "minor" or "lwacr"')
 parser.add_argument('data', type=str, help='Data source e.g. "counter", "constant", "adc"')
 parser.add_argument('nsnapshots', type=int, help='Number of triggers to send.')
 parser.add_argument('triggerwait', type=float, help='Number of seconds between triggers.')
+#parser.add_argument('configethernet',type=bool,help='Choose whether to configure the ethernet block. Leave false if ethernet is already configured.')
+#parser.add_argument('fpgafile',type=str,'Name of fpgafile that the board is running.')
 args=parser.parse_args()
 
-fpgfile=args.fpgfil
-packetwait=args.pktwait
+#configethernet=args.configethernet
+#packetwait=args.pktwait
 brdname=args.brd
-destinationcomputer=args.dest
-datasource=args.data
-program=(args.programbrd=='True')
+#destinationcomputer=args.dest
+#datasource=args.data
 nsnapshots=args.nsnapshots
 triggerwait=args.triggerwait
+#fpgafile=args.fpgafile
 
 
 brd = casperfpga.CasperFpga(brdname, transport=casperfpga.TapcpTransport) #TODO find a way to not have to define brd twice
 
-if configethernet:
+#if configethernet:
     #configure ethernet
-    setup_ethernet(brdname,brd,fpgfile,destinationcomputer,packetwait)
+#    setup_ethernet(brdname,brd,fpgfile,destinationcomputer,packetwait)
     
     #configure data source
-    setup_data_source(brd,datasource)
+#    setup_data_source(brd,datasource)
     
     #enable ethernet
-    setvalue(brd,'eth_enable','cr_registers.xlsx',1)
+#    setvalue(brd,'eth_enable','cr_registers.xlsx',1)
     
     #send however many software triggers
 for i in range(nsnapshots):

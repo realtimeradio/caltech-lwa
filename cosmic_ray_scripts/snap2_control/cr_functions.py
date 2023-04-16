@@ -44,7 +44,7 @@ def getvalue(brd,name,fname):
     mainregistername=info['registername'].values[0]
     mainregistervalue=brd.read_int(mainregistername)
     value=extractvalue(mainregistervalue,info['mainregister_bitwidth'].values[0],info['offset_from_msb'].values[0],info['bitwidth'].values[0])
-    time.sleep(0.01)
+    time.sleep(0.001)
     return value
 
 def setvalue(brd,name,fname,newvalue):
@@ -58,7 +58,7 @@ def setvalue(brd,name,fname,newvalue):
     #value=extractvalue(mainregistervalue,info['mainregister_bitwidth'].values[0],info['offset_from_msb'].values[0],info['bitwidth'].values[0])
     updatedvalue=updatevalue(mainregistervalue,info['mainregister_bitwidth'].values[0],info['offset_from_msb'].values[0],info['bitwidth'].values[0],newvalue)
     brd.write_int(mainregistername,updatedvalue)
-    time.sleep(0.01)
+    time.sleep(0.001)
     return
 
 def reset_to_listen(brd):
