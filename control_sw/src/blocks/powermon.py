@@ -128,14 +128,18 @@ class PowerMon(Block):
                 self.i2c.setClock(self.I2C_CLK_KHZ, self.I2C_REF_CLK_MHZ)
                 self._configure_mux()
         except:
-            self._error('Failed to instantiate I2C control object')
+            self._exception('Failed to instantiate I2C control object')
             self.i2c = None
             return
 
         for sensorname, sensor in self.voltage_sensor_config.items():
-            s = i2c_volt.INA219(self.i2c, sensor['address'])
-            if not read_only:
-                s.init()
+            try:
+                s = i2c_volt.INA219(self.i2c, sensor['address'])
+                if not read_only:
+                    s.init()
+            except:
+                self._exception('Error configuring INA219 sensor at address 0x%x' % sensor['address'])
+                return
             self.sensors[sensorname] = s
         self._initialized = True
 
