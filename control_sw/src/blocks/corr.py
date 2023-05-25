@@ -69,7 +69,7 @@ class Corr(Block):
         spec = (spec[0::2]+1j*spec[1::2])
         return spec
     
-    def get_new_corr(self, signal1, signal2, flush_vacc=True):
+    def get_new_corr(self, signal1, signal2, flush_vacc=True, decomplexify=False):
         """
         Get a new correlation.
         Data are returned with summing factor divided out, and normalized to correspond to an input
@@ -86,8 +86,14 @@ class Corr(Block):
             first time a new signal pair is read.
         :type flush_vacc: bool
 
-        :return: Complex-valued cross-correlation spectra of `signal1` and `signal2` with
-            accumulation length and frequency summing factor divided out.
+        :param decomplexify: If True, return a list keyed 'real' and 'imag', to aid
+            downstream JSONification which may be required.
+        :type decomplexify: bool
+
+        :return: If `decomplexify=False`: Complex-valued cross-correlation spectra of
+            `signal1` and `signal2` with accumulation length and frequency summing factor divided out.
+            If `decomplexify=True`: Real and imaginary parts of the same results present in a dictionary
+            with keys 'real' and 'imag', where each key stores values as a list
         :rtype: numpy.array
 
         """
@@ -97,6 +103,8 @@ class Corr(Block):
         self._wait_for_acc()
         acc_len = self.get_acc_len()
         spec = self._read_bram()/float(acc_len*self._chan_sum_factor)/(2**(2*self._input_binary_point))
+        if decomplexify:
+            spec = {'real':spec.real.tolist(), 'imag':spec.imag.tolist()}
         return spec
 
     def plot_all_spectra(self, db=False, show=True):
