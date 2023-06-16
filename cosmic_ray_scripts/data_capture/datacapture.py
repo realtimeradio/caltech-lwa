@@ -31,8 +31,11 @@ if computer =='minor':
 elif computer == 'lwacr':
     #RX_IP = '10.41.0.106'
     RX_IP = '10.41.0.58'
+
+elif computer =='gpu09':
+    RX_IP = '10.41.0.25'
 else:
-    print('Argument not recognized. Options are lwacr and minor right now.')   
+    print('Argument not recognized. Options lwacr, gpu09, and minor right now.')   
     exit()
 
 
