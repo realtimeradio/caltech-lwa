@@ -126,6 +126,13 @@ def setup_ethernet(brdname,brd,fpgfile,destinationcomputer,packetwait):
         brd.gbes.cosmic_ray_cr_forty_gbe.configure_core(mac, ip, 11111)
         brd.gbes.cosmic_ray_cr_forty_gbe.set_single_arp_entry('10.41.0.58',  0x043f72dfc2f8)
         brd.gbes.cosmic_ray_cr_forty_gbe.print_gbe_core_details(arp=True)
+    
+    elif destinationcomputer=='gpu09': 
+        setvalue(brd,'dest_ip','cr_registers.xlsx',(10<<24)+(41<<16)+(0<<8)+25)
+        setvalue(brd,'cr_dest_port','cr_registers.xlsx',11111)
+        brd.gbes.cosmic_ray_cr_forty_gbe.configure_core(mac, ip, 11111)
+        brd.gbes.cosmic_ray_cr_forty_gbe.set_single_arp_entry('10.41.0.25',  0x043f72dfc1f0)
+        brd.gbes.cosmic_ray_cr_forty_gbe.print_gbe_core_details(arp=True)
 
     elif destinationcomputer == 'minor':
         setvalue(brd,'dest_ip','cr_registers.xlsx',3232246028)
