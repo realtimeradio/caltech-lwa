@@ -2,9 +2,9 @@
 from lwa_f import snap2_fengine
 
 
-fpgfile="/home/ubuntu/kp/caltech-lwa/snap2_f_200msps_64i_4096c/outputs/snap2_f_200msps_64i_4096c_2022-09-20_1316.fpg"
+fpgfile="/home/ubuntu/kp/caltech-lwa/snap2_f_200msps_64i_4096c/outputs/snap2_f_200msps_64i_4096c_2023-03-23_1851.fpg"
 
-brdnames=['snap03','snap04','snap06','snap07','snap08','snap09','snap10','snap11']
+brdnames=['snap01','snap02','snap03','snap04','snap06','snap07','snap08','snap09','snap10','snap11']
 
 #load firmware and initialize etc
 
