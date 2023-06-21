@@ -12,6 +12,8 @@ Description=LWA SNAP etcd service for host %i
 Type=simple
 Restart=always
 RestartSec=60
+User=pipeline
+Group=pipeline
 
 # Logging
 ExecStartPre=/bin/bash -c '[ -d %h/logs ] || mkdir -p %h/logs'
