@@ -39,10 +39,11 @@ if [[ $PWD =~ ${NAME}/${SUBDIR} ]]; then
         conda run -n ${CONDA_ENV} pip install . >> $LOG 2>>$LOG
         # Copy systemd services and start
         sudo cp ${ROOTDIR}/systemd/lwa-feng-etcd@.service /etc/systemd/system/
+	sudo systemctl daemon-reload
         for snap in snap0{1..9} snap{10..11}; do
-            systemctl --user enable lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
-            systemctl --user stop lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
-            systemctl --user start lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
+            sudo systemctl enable lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
+            sudo systemctl stop lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
+            sudo systemctl start lwa-feng-etcd@${snap}.service >> $LOG 2>>$LOG;
         done
     fi
 else
