@@ -482,6 +482,10 @@ class Snap2Fengine():
                 self.logger.error("No 'xengines' key in output configuration!")
                 raise RuntimeError('Config file missing "xengines" key')
             try:
+                adc_clocksource = conf['fengines']['adc_clocksource']
+            except KeyError:
+                adc_clocksource = 1
+            try:
                 enable_pfb = conf['fengines']['enable_pfb']
             except KeyError:
                 enable_pfb = True
@@ -519,6 +523,7 @@ class Snap2Fengine():
             test_vectors = test_vectors,
             sync = sync,
             sw_sync = sw_sync,
+            adc_clocksource = adc_clocksource,
             enable_pfb = enable_pfb,
             enable_eth = enable_eth,
             fft_shift = fft_shift,
@@ -534,8 +539,8 @@ class Snap2Fengine():
 
 
     def cold_start(self, program=True, initialize=True, test_vectors=False,
-                   sync=True, sw_sync=False, enable_pfb=True, enable_eth=True,
-                   fft_shift=None, eq_coeffs=None,
+                   sync=True, sw_sync=False, adc_clocksource=1, enable_pfb=True,
+                   enable_eth=True, fft_shift=None, eq_coeffs=None,
                    chans_per_packet=96, first_stand_index=0, nstand=32,
                    macs={}, source_ip='10.41.0.101', source_port=10000,
                    dests=[]):
@@ -568,6 +573,9 @@ class Snap2Fengine():
             for an external reset pulse to be received over SMA.
         :type sw_sync: bool
 
+        :param adc_clocksource: Set the ADC clock source to use (0 or 1).
+        :type adc_clocksource: int
+        
         :param enable_pfb: If True, enable the PFB FIR filter on the F-Engine.
         :type enable_eth: bool
 
@@ -624,10 +632,10 @@ class Snap2Fengine():
         if program:
             self.program()
             try:
-                self.adc.initialize(read_only=False)
+                self.adc.initialize(read_only=False, clocksource=adc_clocksource)
             except RuntimeError:
                 # Try once more. TODO: just make work(!)
-                self.adc.initialize(read_only=False)
+                self.adc.initialize(read_only=False, clocksource=adc_clocksource)
         
         if program or initialize:
             self.eth.disable_tx()
