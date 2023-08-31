@@ -500,6 +500,10 @@ class Snap2Fengine():
             if localconf is None:
                 self.logger.error("No configuration for F-engine host %s" % self.hostname)
                 raise RuntimeError("No config found for F-engine host %s" % self.hostname)
+            try:
+                adc_clocksource = localconf['adc_clocksource']
+            except KeyError:
+                pass
             first_stand_index = localconf['ants'][0]
             nstand = localconf['ants'][1] - first_stand_index
             macs = conf['xengines']['arp']
