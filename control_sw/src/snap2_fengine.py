@@ -507,8 +507,8 @@ class Snap2Fengine():
             except KeyError:
                 nant_tot = 0
                 for key, data in conf['fengines'].items():
-                    if isinstance(v, dict) and 'ants' in v:
-                        nant_tot += self.n_signals_per_board // 2
+                    if isinstance(data, dict) and 'ants' in data:
+                        nant_tot += data['ants'][1] - data['ants'][0]
             localconf = conf['fengines'].get(self.hostname, None)
             if localconf is None:
                 self.logger.error("No configuration for F-engine host %s" % self.hostname)
