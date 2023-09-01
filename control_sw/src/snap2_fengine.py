@@ -719,12 +719,14 @@ class Snap2Fengine():
             self.eth.add_arp_entry(ip, mac)
 
         # Configure packetizer
-        self.n_signals_per_xeng = nstand_tot * 2
         nstand_per_board = self.n_signals_per_board // 2
         assert first_stand_index % nstand_per_board == 0, \
             "first_ant_index should be a multiple of %d" % nstand_per_board
         assert nstand % nstand_per_board == 0, \
             "nstand should be a multiple of %d" % nstand_per_board
+        assert nstand_tot % nstand_per_board == 0, \
+            "nstand_tot should be a multiple of %d" % nstand_per_board
+        self.n_signals_per_xeng = nstand_tot * 2
         localants = range(first_stand_index, first_stand_index + nstand)
         chans_to_send = []
         ips = []
