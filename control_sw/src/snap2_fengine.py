@@ -481,6 +481,9 @@ class Snap2Fengine():
             if 'xengines' not in conf:
                 self.logger.error("No 'xengines' key in output configuration!")
                 raise RuntimeError('Config file missing "xengines" key')
+            # adc_clocksource can be controlled either globally as a top-level key
+            # in 'fengines' or locally as a key within a SNAP2 host configuration
+            # the local value takes precedence over the global one
             try:
                 adc_clocksource = conf['fengines']['adc_clocksource']
             except KeyError:
@@ -496,6 +499,9 @@ class Snap2Fengine():
             if eq_coeffs is not None:
                 if not isinstance(eq_coeffs, list):
                     eq_coeffs = [eq_coeffs] * self.eq.n_coeffs
+            # nant_tot sets the total number of antennas for the entire
+            # system  if the key is not provided a value will be determined
+            # from counting all of the SNAP2 host configuration entries
             try:
                 nant_tot = conf['fengines']['nant_tot']
             except KeyError:
