@@ -496,6 +496,13 @@ class Snap2Fengine():
             if eq_coeffs is not None:
                 if not isinstance(eq_coeffs, list):
                     eq_coeffs = [eq_coeffs] * self.eq.n_coeffs
+            try:
+                nant_tot = conf['fengines']['nant_tot']
+            except KeyError:
+                nant_tot = 0
+                for key, data in conf['fengines'].items():
+                    if isinstance(v, dict) and 'ants' in v:
+                        nant_tot += self.n_signals_per_board // 2
             localconf = conf['fengines'].get(self.hostname, None)
             if localconf is None:
                 self.logger.error("No configuration for F-engine host %s" % self.hostname)
@@ -535,6 +542,7 @@ class Snap2Fengine():
             chans_per_packet = chans_per_packet,
             first_stand_index = first_stand_index,
             nstand = nstand,
+            nstand_tot = nant_tot,
             macs = macs,
             source_ip = source_ip,
             source_port = source_port,
@@ -546,8 +554,8 @@ class Snap2Fengine():
                    sync=True, sw_sync=False, adc_clocksource=1, enable_pfb=True,
                    enable_eth=True, fft_shift=None, eq_coeffs=None,
                    chans_per_packet=96, first_stand_index=0, nstand=32,
-                   macs={}, source_ip='10.41.0.101', source_port=10000,
-                   dests=[]):
+                   nstand_tot=32, macs={}, source_ip='10.41.0.101',
+                   source_port=10000, dests=[]):
         """
         Completely configure a SNAP2 F-engine from scratch.
 
@@ -605,6 +613,10 @@ class Snap2Fengine():
             to spood F-engine packets from multiple SNAP2 boards.
         :type nstand: int
 
+        :param nstand_tot: Total number of stands for the entire collection of SNAP2
+            boards.
+        :type nstand_tot: int
+        
         :param start_chan: First frequency channel to send to X-engines. Should be
             an integer multiple of 16.
         :type start_chan: int
@@ -705,6 +717,7 @@ class Snap2Fengine():
             self.eth.add_arp_entry(ip, mac)
 
         # Configure packetizer
+        self.n_signals_per_xeng = nstand_tot * 2
         nstand_per_board = self.n_signals_per_board // 2
         assert first_stand_index % nstand_per_board == 0, \
             "first_ant_index should be a multiple of %d" % nstand_per_board
