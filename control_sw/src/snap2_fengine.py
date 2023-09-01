@@ -616,7 +616,7 @@ class Snap2Fengine():
         :type first_stand_index: int
 
         :param nstand: Number of stands to be sent. Values of ``n*32`` may be used
-            to spood F-engine packets from multiple SNAP2 boards.
+            to spoof F-engine packets from multiple SNAP2 boards.
         :type nstand: int
 
         :param nstand_tot: Total number of stands for the entire collection of SNAP2
