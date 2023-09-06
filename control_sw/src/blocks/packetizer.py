@@ -143,7 +143,7 @@ class Packetizer(Block):
             w_cnt += spare_chans_per_packet * self.n_words_per_chan
         return packet_starts, packet_payloads, channel_indices
         
-    def write_config(self, packet_starts, packet_payloads, channel_indices,
+    def write_config(self, packet_starts, packet_payloads, channel_indices, chan_block_ids,
             ant_indices, dest_ips, dest_ports, nchans_per_packet, nchans_per_xeng,
             n_signals_per_packet, n_signals_per_xeng, print_config=False):
         """
@@ -162,6 +162,10 @@ class Packetizer(Block):
         :param channel_indices:
             Header entries for the channel field of each packet to be sent
         :type channel_indices: list of ints
+
+        :param chan_block_ids:
+            Header entries for the chan_block_id field of each packet to be sent
+        :type chan_block_ids: list of ints
 
         :param ant_indices:
             Header entries for the antenna field of each packet to be sent
@@ -217,6 +221,7 @@ class Packetizer(Block):
         n_packets = len(packet_starts)
         assert len(packet_payloads) == n_packets
         assert len(channel_indices) == n_packets
+        assert len(chan_block_ids) == n_packets
         assert len(ant_indices) == n_packets
         assert len(dest_ips) == n_packets
         assert len(dest_ports) == n_packets
@@ -229,7 +234,7 @@ class Packetizer(Block):
 
         for i in range(n_packets):
             channel_index = channel_indices[i]
-            channel_block_id = (channel_index % nchans_per_xeng ) // nchans_per_packet
+            channel_block_id = chan_block_ids[i]
             chans[packet_starts[i]] = (channel_block_id << 24) + channel_index
             #print(channel_index, channel_block_id, chans[packet_starts[i]])
             ants[packet_starts[i]]  = ant_indices[i]
@@ -262,3 +267,41 @@ class Packetizer(Block):
                 if is_eof:
                     print('EOF', end=' ')
                 print()
+
+    def _print_packet_info(self, n=128, print_headers=True, print_eofs=True, print_all=False):
+        """
+        Print info from the packetizer header / control blocks.
+
+        :param n: Number of packetizer data blocks to print
+        :type n: int
+
+        :param print_headers: If True, print whenever a block is a header.
+        :type print_headers: bool
+
+        :param print_eofs: If True, print whenever a block is a eof.
+        :type print_eofs: bool
+
+        :param print_all: If True, print every block
+        :type print_all: bool
+        """
+        ants = np.frombuffer(self.read('ants', n*4), dtype='>u4')
+        chans = np.frombuffer(self.read('chans', n*4), dtype='>u4')
+        flags = np.frombuffer(self.read('flags', n*4), dtype='>u4')
+        n_chans = self.read_uint('n_chans')
+        n_pols = self.read_uint('n_pols')
+        ips = np.frombuffer(self.read('ips', n*4), dtype='>u4')
+        ports = np.frombuffer(self.read('ports', n*4), dtype='>u4')
+        for i in range(n):
+            is_header = bool(flags[i] & 0x1)
+            is_eof = bool(flags[i] & 0x10000)
+            if not (print_all or (print_headers and is_header) or (print_eofs and is_eof)):
+                continue
+            print('block %.4d' % i, 
+                'ant %.3d' % ants[i],
+                'chan_block %.3d' % (chans[i] >> 24),
+                'chan0 %.4d' % (chans[i] & 0xffffff),
+                'is_header %s' % bool(flags[i] & 0x1),
+                'is_vld %s' % bool(flags[i] & 0x100),
+                'is_eof %s' % bool(flags[i] & 0x10000),
+                'ip:port 0x%x:%d' % (ips[i], ports[i]),
+                )
