@@ -208,7 +208,7 @@ class Snap2Fengine():
                 print('Block %s stats:' % blockname)
                 block.print_status(use_color=use_color, ignore_ok=ignore_ok)
 
-    def configure_output(self, antenna_ids, n_chans_per_packet, n_chans_per_xeng, chans, ips, ports=None, debug=False):
+    def configure_output(self, antenna_ids, n_chans_per_packet, n_chans_per_xeng, chans, chan_block_ids, ips, ports=None, debug=False):
         """
         Configure channel reordering and packetizer modules to emit a selection
         of frequency channels.
@@ -225,6 +225,16 @@ class Snap2Fengine():
             of ``n_chans_per_packet``. An assertion error is raised if this
             is not the case.
         :type chans: list of int
+
+        :param chan_block_ids: A list of block IDs associated with the channels
+            to be sent. If ``n`` packets are being sent to a common destination IP/port
+            then these should be given block IDs ``0...n-1``
+            The ``n`` th entry in this list reflects the block ID which should be assigned
+            to ``chans[n*n_chans_per_packet : (n+1)*n_chans_per_packet]``.
+            As such, ``chan_block_ids`` should have ``len(chans) // n_chans_per_packet``
+            elements.
+            Ad assertion error is raised if this is not the case.
+        :type chan_block_ids: list of int
 
         :param ips: A list of IP addresses to which packets should be sent. The
             order of values in ``ips`` and ``chans`` should reflect where different
@@ -279,6 +289,7 @@ class Snap2Fengine():
         assert len(ips) == n_packets
         assert len(ports) == n_packets
         assert len(antenna_ids) == n_packets
+        assert len(chan_block_ids) == n_packets
 
         # channel_indices above gives the channel IDs which will
         # be sent. Remap the ones we _want_ into these slots
@@ -312,6 +323,7 @@ class Snap2Fengine():
             packet_starts,
             packet_payloads,
             chans[::n_chans_per_packet],
+            chan_block_ids,
             antenna_ids,
             ips,
             ports,
@@ -738,6 +750,7 @@ class Snap2Fengine():
         ips = []
         ports = []
         signal_ids = []
+        channel_block_ids = []
         this_x_packets = None
         ok = True
         for dest in dests:
@@ -760,6 +773,7 @@ class Snap2Fengine():
                     ips += [dest_ip] * this_x_packets
                     ports += [dest_port] * this_x_packets
                     chans_to_send += list(this_x_chans)
+                    channel_block_ids += list(range(this_x_packets))
             except:
                 self.logger.exception("Failed to parse destination %s" % dest)
                 ok = False
@@ -772,6 +786,7 @@ class Snap2Fengine():
                     chans_per_packet,
                     chans_per_packet*this_x_packets,
                     chans_to_send,
+                    channel_block_ids,
                     ips,
                     ports
                     )

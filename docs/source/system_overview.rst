@@ -217,8 +217,10 @@ Packet Fields are as follows:
     |                   |        |         | destination.            |
     +-------------------+--------+---------+-------------------------+
     | ``chan_block_id`` | uint32 |         | Index of this block of  |
-    |                   |        |         | channels. I.e.          |
-    |                   |        |         | ``mod(chan0, nchan)``   |
+    |                   |        |         | channels. I.e. runs     |
+    |                   |        |         | from ``0`` to           |
+    |                   |        |         | ``nchan_tot - 1`` for   |
+    |                   |        |         | each destination stream.|
     +-------------------+--------+---------+-------------------------+
     | ``chan0``         | uint32 |         | The index of the first  |
     |                   |        |         | channel present in a    |
