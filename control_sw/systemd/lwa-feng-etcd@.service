@@ -12,17 +12,19 @@ Description=LWA SNAP etcd service for host %i
 Type=simple
 Restart=always
 RestartSec=60
+User=pipeline
+Group=pipeline
 
 # Logging
-ExecStartPre=/bin/bash -c '[ -d %h/logs ] || mkdir -p %h/logs'
-StandardOutput=%h/logs/lwa-feng-etcd%i.out
-StandardError=%h/logs/lwa-feng-etcd%i.err
+ExecStartPre=/bin/bash -c '[ -d /home/pipeline/logs ] || mkdir -p /home/pipeline/logs'
+StandardOutput=/home/pipeline/logs/lwa-feng-etcd%i.out
+StandardError=/home/pipeline/logs/lwa-feng-etcd%i.err
 SyslogIdentifier=lwa-feng-etcd%i
 
 Environment=PYTHONUNBUFFERED=1
 ExecStart=/bin/bash -ec '\
 source /opt/miniconda3/bin/activate deployment && \
-/opt/devel/pipeline/envs/deployment/bin/lwa_start_feng_etcd_service.py --snaphost %i > %h/logs/lwa-feng-etcd%i.out 2>%h/logs/lwa-feng-etcd%i.err'
+/opt/devel/pipeline/envs/deployment/bin/lwa_start_feng_etcd_service.py --snaphost %i > /home/pipeline/logs/lwa-feng-etcd%i.out 2>~pipeline/logs/lwa-feng-etcd%i.err'
 
 [Install]
 WantedBy=multi-user.target
