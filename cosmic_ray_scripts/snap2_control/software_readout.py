@@ -10,7 +10,7 @@ parser.add_argument('brd', type=str, help='SNAP2 to hostname.')
 #parser.add_argument('pktwait', type=int, help='Clock cycles to wait between packets. 0 means do not set this register (only choose 0 for old versions of firmware without the variable delay option)')
 
 #parser.add_argument('dest', type=str, help='Destination. "minor" or "lwacr"')
-parser.add_argument('data', type=str, help='Data source e.g. "counter", "constant", "adc"')
+#parser.add_argument('data', type=str, help='Data source e.g. "counter", "constant", "adc"')
 parser.add_argument('nsnapshots', type=int, help='Number of triggers to send.')
 parser.add_argument('triggerwait', type=float, help='Number of seconds between triggers.')
 #parser.add_argument('configethernet',type=bool,help='Choose whether to configure the ethernet block. Leave false if ethernet is already configured.')
