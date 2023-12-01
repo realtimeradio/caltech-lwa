@@ -158,6 +158,7 @@ class Snap2Fengine():
             block.initialize(read_only=read_only)
         if not read_only:
             self.logger.info("Performing software global reset")
+            self.sync.reset_error_count()
             self.sync.arm_sync()
             self.sync.sw_sync()
 
