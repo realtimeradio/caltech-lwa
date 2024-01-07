@@ -494,6 +494,13 @@ class Snap2Fengine():
             if 'xengines' not in conf:
                 self.logger.error("No 'xengines' key in output configuration!")
                 raise RuntimeError('Config file missing "xengines" key')
+            # adc_clocksource can be controlled either globally as a top-level key
+            # in 'fengines' or locally as a key within a SNAP2 host configuration
+            # the local value takes precedence over the global one
+            try:
+                adc_clocksource = conf['fengines']['adc_clocksource']
+            except KeyError:
+                adc_clocksource = 1
             try:
                 enable_pfb = conf['fengines']['enable_pfb']
             except KeyError:
@@ -505,10 +512,24 @@ class Snap2Fengine():
             if eq_coeffs is not None:
                 if not isinstance(eq_coeffs, list):
                     eq_coeffs = [eq_coeffs] * self.eq.n_coeffs
+            # nant_tot sets the total number of antennas for the entire
+            # system  if the key is not provided a value will be determined
+            # from counting all of the SNAP2 host configuration entries
+            try:
+                nant_tot = conf['fengines']['nant_tot']
+            except KeyError:
+                nant_tot = 0
+                for key, data in conf['fengines'].items():
+                    if isinstance(data, dict) and 'ants' in data:
+                        nant_tot += data['ants'][1] - data['ants'][0]
             localconf = conf['fengines'].get(self.hostname, None)
             if localconf is None:
                 self.logger.error("No configuration for F-engine host %s" % self.hostname)
                 raise RuntimeError("No config found for F-engine host %s" % self.hostname)
+            try:
+                adc_clocksource = localconf['adc_clocksource']
+            except KeyError:
+                pass
             first_stand_index = localconf['ants'][0]
             nstand = localconf['ants'][1] - first_stand_index
             macs = conf['xengines']['arp']
@@ -532,6 +553,7 @@ class Snap2Fengine():
             test_vectors = test_vectors,
             sync = sync,
             sw_sync = sw_sync,
+            adc_clocksource = adc_clocksource,
             enable_pfb = enable_pfb,
             enable_eth = enable_eth,
             fft_shift = fft_shift,
@@ -539,6 +561,7 @@ class Snap2Fengine():
             chans_per_packet = chans_per_packet,
             first_stand_index = first_stand_index,
             nstand = nstand,
+            nstand_tot = nant_tot,
             macs = macs,
             source_ip = source_ip,
             source_port = source_port,
@@ -547,11 +570,11 @@ class Snap2Fengine():
 
 
     def cold_start(self, program=True, initialize=True, test_vectors=False,
-                   sync=True, sw_sync=False, enable_pfb=True, enable_eth=True,
-                   fft_shift=None, eq_coeffs=None,
+                   sync=True, sw_sync=False, adc_clocksource=1, enable_pfb=True,
+                   enable_eth=True, fft_shift=None, eq_coeffs=None,
                    chans_per_packet=96, first_stand_index=0, nstand=32,
-                   macs={}, source_ip='10.41.0.101', source_port=10000,
-                   dests=[]):
+                   nstand_tot=32, macs={}, source_ip='10.41.0.101',
+                   source_port=10000, dests=[]):
         """
         Completely configure a SNAP2 F-engine from scratch.
 
@@ -581,6 +604,9 @@ class Snap2Fengine():
             for an external reset pulse to be received over SMA.
         :type sw_sync: bool
 
+        :param adc_clocksource: Set the ADC clock source to use (0 or 1).
+        :type adc_clocksource: int
+        
         :param enable_pfb: If True, enable the PFB FIR filter on the F-Engine.
         :type enable_eth: bool
 
@@ -603,9 +629,13 @@ class Snap2Fengine():
         :type first_stand_index: int
 
         :param nstand: Number of stands to be sent. Values of ``n*32`` may be used
-            to spood F-engine packets from multiple SNAP2 boards.
+            to spoof F-engine packets from multiple SNAP2 boards.
         :type nstand: int
 
+        :param nstand_tot: Total number of stands for the entire collection of SNAP2
+            boards.
+        :type nstand_tot: int
+        
         :param start_chan: First frequency channel to send to X-engines. Should be
             an integer multiple of 16.
         :type start_chan: int
@@ -635,12 +665,14 @@ class Snap2Fengine():
 
         """
         if program:
+            assert adc_clocksource in (0, 1), \
+                "adc_clocksource needs to be either 0 or 1"
             self.program()
             try:
-                self.adc.initialize(read_only=False)
+                self.adc.initialize(read_only=False, clocksource=adc_clocksource)
             except RuntimeError:
                 # Try once more. TODO: just make work(!)
-                self.adc.initialize(read_only=False)
+                self.adc.initialize(read_only=False, clocksource=adc_clocksource)
         
         if program or initialize:
             self.eth.disable_tx()
@@ -711,6 +743,9 @@ class Snap2Fengine():
             "first_ant_index should be a multiple of %d" % nstand_per_board
         assert nstand % nstand_per_board == 0, \
             "nstand should be a multiple of %d" % nstand_per_board
+        assert nstand_tot % nstand_per_board == 0, \
+            "nstand_tot should be a multiple of %d" % nstand_per_board
+        self.n_signals_per_xeng = nstand_tot * 2
         localants = range(first_stand_index, first_stand_index + nstand)
         chans_to_send = []
         ips = []
