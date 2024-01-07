@@ -390,7 +390,8 @@ class Sync(Block):
         sync_period = self.period()
         self._info("Detected sync period %.1f (2^%.1f) clocks" % (sync_period, log2(sync_period)))
         if ((log2(sync_period) % 1) != 0):
-            self._warning("Odd sync period detected")
+            self._error("Odd sync period detected")
+            raise RuntimeError("Non power-of-2 sync period detected")
         if sync_period < fs_hz:
             self._warning("Might have issues synchronizing with a sync period < 1 second")
         # We assume that the master TT is tracking clocks since unix epoch.
