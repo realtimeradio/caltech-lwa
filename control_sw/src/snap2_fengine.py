@@ -829,7 +829,7 @@ def _intercept_method_call(self, blockname, methodname, method, args, kwargs):
     for aa, arg in enumerate(args):
         argdict[arg_names[aa]] = arg
     argdict.update(**kwargs)
-    rv = self.ec.send_command(self.snap_id, blockname, methodname, kwargs=argdict, timeout=10)
+    rv = self.ec.send_command(self.snap_id, blockname, methodname, kwargs=argdict, timeout=10)[self.snap_id]
     return rv
 
 class Snap2FengineEtcd(Snap2Fengine):
