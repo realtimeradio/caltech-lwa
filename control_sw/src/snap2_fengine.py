@@ -480,6 +480,8 @@ class Snap2Fengine():
         :param config_file: Path to a configuration YAML file.
         :type config_file: str
 
+        :return: The return value of ``cold_start``
+
         """
         self.logger.info("Trying to configure output with config file %s" % config_file)
         if not os.path.exists(config_file):
@@ -547,7 +549,7 @@ class Snap2Fengine():
             self.logger.exception("Failed to parse output configuration file %s" % config_file)
             raise
 
-        self.cold_start(
+        return self.cold_start(
             program = program,
             initialize = initialize,
             test_vectors = test_vectors,
@@ -662,6 +664,8 @@ class Snap2Fengine():
               - 'nchans' : The number of channels which should be sent to this IP / port.
                 ``nchans`` should be a multiple of ``chans_per_packet``.
         :type dests: List of dict
+
+        :return: True
 
         """
         if program:
@@ -802,6 +806,7 @@ class Snap2Fengine():
             self.eth.disable_tx()
 
         self.logger.info("Startup of %s complete" % self.hostname)
+        return True
 
 def __getattribute__(self, attr):
     wrap_method = True
@@ -824,7 +829,7 @@ def _intercept_method_call(self, blockname, methodname, method, args, kwargs):
     for aa, arg in enumerate(args):
         argdict[arg_names[aa]] = arg
     argdict.update(**kwargs)
-    rv = self.ec.send_command(self.snap_id, blockname, methodname, kwargs=argdict, timeout=10)
+    rv = self.ec.send_command(self.snap_id, blockname, methodname, kwargs=argdict, timeout=10)[self.snap_id]
     return rv
 
 class Snap2FengineEtcd(Snap2Fengine):

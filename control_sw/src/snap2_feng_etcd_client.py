@@ -185,7 +185,7 @@ class Snap2FengineEtcdControl():
             raise RuntimeError("Block %s doesn't have method %s" % (block, cmd))
         cmd_method = getattr(block_obj, cmd)
         try:
-            return cmd_method(**kwargs)
+            return {fid: cmd_method(**kwargs)}
         except TypeError:
             raise TypeError("Wrong command arguments")
         
@@ -216,8 +216,7 @@ class Snap2FengineEtcdControl():
         :param n_response_expected: Number of individual responses expected.
         :type n_response_expected: int
 
-        :return: If `fid=0`, a dictionary of responses keyed by `fid`.
-            If `fid != 0`, the return value matching the underlying command.
+        :return: A dictionary of responses keyed by `fid`.
         """
         if fid == 0:
             cmd_key = ETCD_CMD_ROOT + "%.1d" % fid
@@ -282,7 +281,7 @@ class Snap2FengineEtcdControl():
                         rv[k] = v['val']['response']
                 # If we were targetting a single board, don't return a dictionary
                 if fid != 0:
-                    return rv.get(fid, {})
+                    return {fid: rv.get(fid, None)}
                 return rv
             time.sleep(0.01)
 
