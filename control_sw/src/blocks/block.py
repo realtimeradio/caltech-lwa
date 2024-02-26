@@ -2,6 +2,7 @@ import logging
 from termcolor import colored
 from lwa_f import helpers
 from lwa_f import error_levels as el
+import numpy as np
 
 class Block(object):
     """
@@ -250,6 +251,26 @@ class Block(object):
                 # Only raise an exception if the register is there, otherwise
                 # just skip the write
                 raise
+
+    def read_list_from_ram(self, reg, nvalues, dtype):
+        """
+        Read a blob of binary data from ram and convert to a list.
+
+        :param reg: The name of the register to read
+        :type reg: str
+
+        :param nvalues: The number of values (NOT bytes) to read.
+        :type nvalues: int
+
+        :param dtype: The numpy-style type to read. E.g. 'i4'.
+        :type dtype: str
+
+        :return: List of values with `nvalues` elements
+        """
+        dtype = np.dtype('>' + dtype)
+        nbytes = dtype.itemsize * nvalues
+        raw = self.read(reg, nbytes)
+        return np.frombuffer(raw, dtype=dtype).tolist()
 
     def change_reg_bits(self, reg, val, start, width=1):
         """
