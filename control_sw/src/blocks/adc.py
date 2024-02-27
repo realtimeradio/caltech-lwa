@@ -67,13 +67,19 @@ class Adc(Block):
             except:
                 self._error("Failed to check ADC control register on fmc %d" % fmc)
                 continue
+            if not np.all(connected_chips):
+                self._warning("Not all chips on port %d responded. Issuing resets" % fmc)
+                for chipn, connected in enumerate(connected_chips):
+                    if not connected:
+                        adc.reset(chipn)
+                connected_chips = adc.is_connected()
             if np.any(connected_chips):
                 self._info("Detected FMC ADC board on port %d" % fmc)
                 if not np.all(connected_chips):
-                    self._warning("Not all chips responded on port %d" % fmc)
+                    self._error("Not all chips responded on port %d" % fmc)
                 self.adcs += [adc]
             else:
-                self._warning("Did not detect FMC ADC board on port %d" % fmc)
+                self._error("Did not detect FMC ADC board on port %d" % fmc)
 
     def initialize(self, read_only=False, clocksource=1, fail_hard=False):
         """

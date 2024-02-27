@@ -32,7 +32,7 @@ class Eth(Block):
         except:
             self.core = None
         if self.core is None:
-            self._warning("Couldn't find Ethernet core. Will retry later")
+            self._info("Couldn't find Ethernet core. Will retry later")
 
     def add_arp_entry(self, ip, mac):
         """

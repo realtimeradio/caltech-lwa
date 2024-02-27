@@ -158,6 +158,7 @@ class Snap2Fengine():
             block.initialize(read_only=read_only)
         if not read_only:
             self.logger.info("Performing software global reset")
+            self.sync.reset_error_count()
             self.sync.arm_sync()
             self.sync.sw_sync()
 
@@ -208,7 +209,7 @@ class Snap2Fengine():
                 print('Block %s stats:' % blockname)
                 block.print_status(use_color=use_color, ignore_ok=ignore_ok)
 
-    def configure_output(self, antenna_ids, n_chans_per_packet, n_chans_per_xeng, chans, ips, ports=None, debug=False):
+    def configure_output(self, antenna_ids, n_chans_per_packet, n_chans_per_xeng, chans, chan_block_ids, ips, ports=None, debug=False):
         """
         Configure channel reordering and packetizer modules to emit a selection
         of frequency channels.
@@ -225,6 +226,16 @@ class Snap2Fengine():
             of ``n_chans_per_packet``. An assertion error is raised if this
             is not the case.
         :type chans: list of int
+
+        :param chan_block_ids: A list of block IDs associated with the channels
+            to be sent. If ``n`` packets are being sent to a common destination IP/port
+            then these should be given block IDs ``0...n-1``
+            The ``n`` th entry in this list reflects the block ID which should be assigned
+            to ``chans[n*n_chans_per_packet : (n+1)*n_chans_per_packet]``.
+            As such, ``chan_block_ids`` should have ``len(chans) // n_chans_per_packet``
+            elements.
+            Ad assertion error is raised if this is not the case.
+        :type chan_block_ids: list of int
 
         :param ips: A list of IP addresses to which packets should be sent. The
             order of values in ``ips`` and ``chans`` should reflect where different
@@ -279,6 +290,7 @@ class Snap2Fengine():
         assert len(ips) == n_packets
         assert len(ports) == n_packets
         assert len(antenna_ids) == n_packets
+        assert len(chan_block_ids) == n_packets
 
         # channel_indices above gives the channel IDs which will
         # be sent. Remap the ones we _want_ into these slots
@@ -312,6 +324,7 @@ class Snap2Fengine():
             packet_starts,
             packet_payloads,
             chans[::n_chans_per_packet],
+            chan_block_ids,
             antenna_ids,
             ips,
             ports,
@@ -467,6 +480,8 @@ class Snap2Fengine():
         :param config_file: Path to a configuration YAML file.
         :type config_file: str
 
+        :return: The return value of ``cold_start``
+
         """
         self.logger.info("Trying to configure output with config file %s" % config_file)
         if not os.path.exists(config_file):
@@ -481,6 +496,13 @@ class Snap2Fengine():
             if 'xengines' not in conf:
                 self.logger.error("No 'xengines' key in output configuration!")
                 raise RuntimeError('Config file missing "xengines" key')
+            # adc_clocksource can be controlled either globally as a top-level key
+            # in 'fengines' or locally as a key within a SNAP2 host configuration
+            # the local value takes precedence over the global one
+            try:
+                adc_clocksource = conf['fengines']['adc_clocksource']
+            except KeyError:
+                adc_clocksource = 1
             try:
                 enable_pfb = conf['fengines']['enable_pfb']
             except KeyError:
@@ -492,10 +514,24 @@ class Snap2Fengine():
             if eq_coeffs is not None:
                 if not isinstance(eq_coeffs, list):
                     eq_coeffs = [eq_coeffs] * self.eq.n_coeffs
+            # nant_tot sets the total number of antennas for the entire
+            # system  if the key is not provided a value will be determined
+            # from counting all of the SNAP2 host configuration entries
+            try:
+                nant_tot = conf['fengines']['nant_tot']
+            except KeyError:
+                nant_tot = 0
+                for key, data in conf['fengines'].items():
+                    if isinstance(data, dict) and 'ants' in data:
+                        nant_tot += data['ants'][1] - data['ants'][0]
             localconf = conf['fengines'].get(self.hostname, None)
             if localconf is None:
                 self.logger.error("No configuration for F-engine host %s" % self.hostname)
                 raise RuntimeError("No config found for F-engine host %s" % self.hostname)
+            try:
+                adc_clocksource = localconf['adc_clocksource']
+            except KeyError:
+                pass
             first_stand_index = localconf['ants'][0]
             nstand = localconf['ants'][1] - first_stand_index
             macs = conf['xengines']['arp']
@@ -513,12 +549,13 @@ class Snap2Fengine():
             self.logger.exception("Failed to parse output configuration file %s" % config_file)
             raise
 
-        self.cold_start(
+        return self.cold_start(
             program = program,
             initialize = initialize,
             test_vectors = test_vectors,
             sync = sync,
             sw_sync = sw_sync,
+            adc_clocksource = adc_clocksource,
             enable_pfb = enable_pfb,
             enable_eth = enable_eth,
             fft_shift = fft_shift,
@@ -526,6 +563,7 @@ class Snap2Fengine():
             chans_per_packet = chans_per_packet,
             first_stand_index = first_stand_index,
             nstand = nstand,
+            nstand_tot = nant_tot,
             macs = macs,
             source_ip = source_ip,
             source_port = source_port,
@@ -534,11 +572,11 @@ class Snap2Fengine():
 
 
     def cold_start(self, program=True, initialize=True, test_vectors=False,
-                   sync=True, sw_sync=False, enable_pfb=True, enable_eth=True,
-                   fft_shift=None, eq_coeffs=None,
+                   sync=True, sw_sync=False, adc_clocksource=1, enable_pfb=True,
+                   enable_eth=True, fft_shift=None, eq_coeffs=None,
                    chans_per_packet=96, first_stand_index=0, nstand=32,
-                   macs={}, source_ip='10.41.0.101', source_port=10000,
-                   dests=[]):
+                   nstand_tot=32, macs={}, source_ip='10.41.0.101',
+                   source_port=10000, dests=[]):
         """
         Completely configure a SNAP2 F-engine from scratch.
 
@@ -568,6 +606,9 @@ class Snap2Fengine():
             for an external reset pulse to be received over SMA.
         :type sw_sync: bool
 
+        :param adc_clocksource: Set the ADC clock source to use (0 or 1).
+        :type adc_clocksource: int
+        
         :param enable_pfb: If True, enable the PFB FIR filter on the F-Engine.
         :type enable_eth: bool
 
@@ -590,9 +631,13 @@ class Snap2Fengine():
         :type first_stand_index: int
 
         :param nstand: Number of stands to be sent. Values of ``n*32`` may be used
-            to spood F-engine packets from multiple SNAP2 boards.
+            to spoof F-engine packets from multiple SNAP2 boards.
         :type nstand: int
 
+        :param nstand_tot: Total number of stands for the entire collection of SNAP2
+            boards.
+        :type nstand_tot: int
+        
         :param start_chan: First frequency channel to send to X-engines. Should be
             an integer multiple of 16.
         :type start_chan: int
@@ -620,14 +665,18 @@ class Snap2Fengine():
                 ``nchans`` should be a multiple of ``chans_per_packet``.
         :type dests: List of dict
 
+        :return: True
+
         """
         if program:
+            assert adc_clocksource in (0, 1), \
+                "adc_clocksource needs to be either 0 or 1"
             self.program()
             try:
-                self.adc.initialize(read_only=False)
+                self.adc.initialize(read_only=False, clocksource=adc_clocksource)
             except RuntimeError:
                 # Try once more. TODO: just make work(!)
-                self.adc.initialize(read_only=False)
+                self.adc.initialize(read_only=False, clocksource=adc_clocksource)
         
         if program or initialize:
             self.eth.disable_tx()
@@ -698,11 +747,15 @@ class Snap2Fengine():
             "first_ant_index should be a multiple of %d" % nstand_per_board
         assert nstand % nstand_per_board == 0, \
             "nstand should be a multiple of %d" % nstand_per_board
+        assert nstand_tot % nstand_per_board == 0, \
+            "nstand_tot should be a multiple of %d" % nstand_per_board
+        self.n_signals_per_xeng = nstand_tot * 2
         localants = range(first_stand_index, first_stand_index + nstand)
         chans_to_send = []
         ips = []
         ports = []
         signal_ids = []
+        channel_block_ids = []
         this_x_packets = None
         ok = True
         for dest in dests:
@@ -725,6 +778,7 @@ class Snap2Fengine():
                     ips += [dest_ip] * this_x_packets
                     ports += [dest_port] * this_x_packets
                     chans_to_send += list(this_x_chans)
+                    channel_block_ids += list(range(this_x_packets))
             except:
                 self.logger.exception("Failed to parse destination %s" % dest)
                 ok = False
@@ -737,6 +791,7 @@ class Snap2Fengine():
                     chans_per_packet,
                     chans_per_packet*this_x_packets,
                     chans_to_send,
+                    channel_block_ids,
                     ips,
                     ports
                     )
@@ -751,6 +806,7 @@ class Snap2Fengine():
             self.eth.disable_tx()
 
         self.logger.info("Startup of %s complete" % self.hostname)
+        return True
 
 def __getattribute__(self, attr):
     wrap_method = True
@@ -773,7 +829,7 @@ def _intercept_method_call(self, blockname, methodname, method, args, kwargs):
     for aa, arg in enumerate(args):
         argdict[arg_names[aa]] = arg
     argdict.update(**kwargs)
-    rv = self.ec.send_command(self.snap_id, blockname, methodname, kwargs=argdict, timeout=10)
+    rv = self.ec.send_command(self.snap_id, blockname, methodname, kwargs=argdict, timeout=10)[self.snap_id]
     return rv
 
 class Snap2FengineEtcd(Snap2Fengine):
