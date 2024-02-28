@@ -243,10 +243,10 @@ def read_threshold_rates(casperbrd):
     #casperbrd is a casperfpga CasperFpga object
     core = np.zeros(64)
     veto = np.zeros(64)
-    core[:32]= struct.unpack('>32l',casperbrd.read("cosmic_ray_thresh_rate1",32*4,0))
-    core[32:]= struct.unpack('>32l',casperbrd.read("cosmic_ray_thresh_rate2",32*4,0))
-    veto[:32]= struct.unpack('>32l',casperbrd.read("cosmic_ray_veto_thresh_rate1",32*4,0))
-    veto[32:]= struct.unpack('>32l',casperbrd.read("cosmic_ray_veto_thresh_rate2",32*4,0))
+    core[:32]= casperbrd.read_list_from_ram("cosmic_ray_thresh_rate1",32,'u4')
+    core[32:]= casperbrd.read_list_from_ram("cosmic_ray_thresh_rate2",32,'u4')
+    veto[:32]= casperbrd.read_list_from_ram("cosmic_ray_veto_thresh_rate1",32,'u4')
+    veto[32:]= casperbrd.read_list_from_ram("cosmic_ray_veto_thresh_rate2",32,'u4')
     return core, veto
 
 
