@@ -9,7 +9,7 @@ from cr_functions import *
 #parse arguments
 parser=argparse.ArgumentParser(description='Run cosmic ray trigger on muon detector only')
 parser.add_argument('threshold',type=int,help="Power threshold for muon detector.")
-parser.add_argument('duration', type=str, help= "Number of seconds to run detector.")
+parser.add_argument('duration', type=int, help= "Number of seconds to run detector.")
 
 args=parser.parse_args()
 
@@ -25,7 +25,7 @@ snapbrds = [snap2_fengine.Snap2FengineEtcd(brdname).fpga for brdname in brdnames
 
 # which snap board and input correspond to the muon detector
 snapbrd=snapbrds[3]  
-ant_index=31
+ant_index=60
 
 #set up coincidencer
 veto_power_thresh=0
@@ -33,8 +33,8 @@ trigger_window=10 #a small positive number
 veto_window=0 #not using
 antenna_number_thresh=0  #trigger on only one antenna
 veto_number_thresh=64 #turn off
-veto_roles_array=np.zeros(64)
-core_roles_array=np.zeros(64)
+veto_roles_array=np.zeros(64,dtype=int)
+core_roles_array=np.zeros(64,dtype=int)
 core_roles_array[ant_index]=1  #set only the muon detector to participate
 bufferwait=2000
 
