@@ -14,6 +14,7 @@ parser.add_argument('datadir', type=str, help= "Directory in which to make data 
 parser.add_argument('packets_per_file',type=int,help="Maximum number of packets to put in one file before starting a new file.")
 parser.add_argument('timeout',type=int,help='Socket timeout time in seconds. If this time elapses before the maximum number of packets in a file is reached, save the current file and start a new file.')
 parser.add_argument('packetlimit',type=int,help='Maximum number of packets to receive before stopping the datacapture.')
+parser.add_argument('delaystart',type=int,help='Time to wait before starting packet capture')
 
 args=parser.parse_args()
 computer = args.thiscomputer
@@ -24,6 +25,11 @@ if datadir[-1]!='/': #make sure the directory name string ends with a /
 packets_per_file=args.packets_per_file
 timeout= args.timeout
 packetlimit=args.packetlimit
+wait=args.delaystart
+
+#wait if required
+time.sleep(wait)
+
 print("Beginning data capture with data written to",datadir, " with ",packets_per_file, 'packets per file, a timeout time of ', timeout, ' seconds, and an upper limit of ',packetlimit, 'packets before stopping the program.')
 
 if computer =='minor':
@@ -31,8 +37,11 @@ if computer =='minor':
 elif computer == 'lwacr':
     #RX_IP = '10.41.0.106'
     RX_IP = '10.41.0.58'
+
+elif computer =='gpu09':
+    RX_IP = '10.41.0.25'
 else:
-    print('Argument not recognized. Options are lwacr and minor right now.')   
+    print('Argument not recognized. Options lwacr, gpu09, and minor right now.')   
     exit()
 
 

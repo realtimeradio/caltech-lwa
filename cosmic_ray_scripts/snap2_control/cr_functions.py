@@ -43,7 +43,7 @@ def getvalue(brd,name,fname):
     info=lookup_register(name,fname)
     mainregistername=info['registername'].values[0]
     mainregistervalue=brd.read_int(mainregistername)
-    value=extractvalue(mainregistervalue,info['mainregister_bitwidth'].values[0],info['offset_from_msb'].values[0],info['bitwidth'].values[0])
+    value=extractvalue(mainregistervalue,int(info['mainregister_bitwidth'].values[0]),int(info['offset_from_msb'].values[0]),int(info['bitwidth'].values[0]))
     time.sleep(0.001)
     return value
 
@@ -56,7 +56,7 @@ def setvalue(brd,name,fname,newvalue):
     mainregistername=info['registername'].values[0]
     mainregistervalue=brd.read_int(mainregistername)
     #value=extractvalue(mainregistervalue,info['mainregister_bitwidth'].values[0],info['offset_from_msb'].values[0],info['bitwidth'].values[0])
-    updatedvalue=updatevalue(mainregistervalue,info['mainregister_bitwidth'].values[0],info['offset_from_msb'].values[0],info['bitwidth'].values[0],newvalue)
+    updatedvalue=updatevalue(mainregistervalue,int(info['mainregister_bitwidth'].values[0]),int(info['offset_from_msb'].values[0]),int(info['bitwidth'].values[0]),newvalue)
     brd.write_int(mainregistername,updatedvalue)
     time.sleep(0.001)
     return
@@ -243,10 +243,10 @@ def read_threshold_rates(casperbrd):
     #casperbrd is a casperfpga CasperFpga object
     core = np.zeros(64)
     veto = np.zeros(64)
-    core[:32]= struct.unpack('>32l',casperbrd.read("cosmic_ray_thresh_rate1",32*4,0))
-    core[32:]= struct.unpack('>32l',casperbrd.read("cosmic_ray_thresh_rate2",32*4,0))
-    veto[:32]= struct.unpack('>32l',casperbrd.read("cosmic_ray_veto_thresh_rate1",32*4,0))
-    veto[32:]= struct.unpack('>32l',casperbrd.read("cosmic_ray_veto_thresh_rate2",32*4,0))
+    core[:32]= casperbrd.read_list_from_ram("cosmic_ray_thresh_rate1",32,'u4')
+    core[32:]= casperbrd.read_list_from_ram("cosmic_ray_thresh_rate2",32,'u4')
+    veto[:32]= casperbrd.read_list_from_ram("cosmic_ray_veto_thresh_rate1",32,'u4')
+    veto[32:]= casperbrd.read_list_from_ram("cosmic_ray_veto_thresh_rate2",32,'u4')
     return core, veto
 
 
@@ -257,7 +257,7 @@ def packantennaroles(roles_array):
     for i in range(32):
         output1+=roles_array[i]<<(31-i)
         output2+=roles_array[i+32]<<(31-i)
-    return output1, output2
+    return int(output1), int(output2)
 
 def setup_coincidencer(casperbrd,trigger_power_thresh,
                       veto_power_thresh,
