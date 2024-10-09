@@ -7,7 +7,7 @@
 # - development -- testing
 
 # Install etcd services only on this host:
-CONTROL_SERVER_HOST='lwacalim10'
+CONTROL_SERVER_HOST='lwacalimhead'
 # Install in this conda environment:
 CONDA_ENV=deployment
 
