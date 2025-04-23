@@ -88,7 +88,8 @@ class ZCU102Fengine():
         #: Control interface to high-level FPGA functionality
         self.fpga        = fpga.Fpga(self._cfpga, "")
         #: Control interface to ADC block
-        self.adc         = adc.Adc(self._cfpga, 'adc', passive=passive, n_boards_per_fmc=1)
+        self.adc         = adc.Adc(self._cfpga, 'adc', passive=passive, n_boards_per_fmc=1,
+                                   cal_step_size=2)
         #: Control interface to Synchronization / Timing block
         self.sync        = sync.Sync(self._cfpga, 'sync')
         #: Control interface to Noise Generation block

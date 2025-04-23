@@ -38,9 +38,14 @@ class Adc(Block):
     
     :param n_boards_per_fmc: Number of digitizer boards connected to each FMC port.
     :type n_boards_per_fmc: int
+    
+    :param cal_step_size: Number of IDELAY tap steps between error counts to use
+                          during calibration.
+    :type cal_step_size: int
     """
 
-    def __init__(self, host, name, logger=None, passive=False, n_boards_per_fmc=NBOARDS):
+    def __init__(self, host, name, logger=None, passive=False, n_boards_per_fmc=NBOARDS,
+                       cal_step_size=TAP_STEP_SIZE):
         super(Adc, self).__init__(host, name, logger)
         # Check which ADCs are connected. Only if no ADC chips on an FMC board
         # respond do we ignore a port
@@ -51,6 +56,7 @@ class Adc(Block):
         # False -> intiialization failed.
         self.init_ok = None
         self.n_boards_per_fmc = n_boards_per_fmc
+        self.cal_step_size = cal_step_size
         if not passive:
             self._connect_to_adcs()
 
@@ -163,7 +169,7 @@ class Adc(Block):
         #for i in range(10): self.sync()
         self.reset()
         self.sync()
-        ok, delays, slacks = self.calibrate(fail_hard=fail_hard)
+        ok, delays, slacks = self.calibrate(fail_hard=fail_hard, step_size=self.cal_step_size)
         # Return ADC to analog sampling mode
         self.use_data()
         self.init_ok = ok
@@ -559,7 +565,7 @@ class Adc(Block):
             for i in range(4*self.n_boards_per_fmc):
                 adc.enable_test_pattern('data', i)
 
-    def calibrate(self, use_ramp=False, fail_hard=True, step_size=TAP_STEP_SIZE, verbose=False):
+    def calibrate(self, use_ramp=False, fail_hard=True, step_size=None, verbose=False):
         """
         Compute and set all ADC data lane input delays to their optimal values.
         After this call, the ADCs are left in test mode.
@@ -578,7 +584,7 @@ class Adc(Block):
         :type verbose: bool
 
         :param step_size: Number of IDELAY tap steps between error counts.
-        :type step_size: int
+        :type step_size: int or None
 
         :return: (status, delays, slack) tuple.
             ``status`` is True if the calibration procedure succeeded. False otherwise.
@@ -589,6 +595,9 @@ class Adc(Block):
             nearest delay which showed ADC errors.
         :rtype: bool, list, list
         """
+        if step_size is None:
+            step_size = self.cal_step_size
+            
         ok = True
         TEST_VAL = 0b0000010101
         best_by_adc = []
