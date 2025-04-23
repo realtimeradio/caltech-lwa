@@ -37,7 +37,7 @@ class Adc(Block):
     :type logger: logging.Logger
     """
 
-    def __init__(self, host, name, logger=None, passive=False):
+    def __init__(self, host, name, logger=None, passive=False, n_boards_per_fmc=NBOARDS):
         super(Adc, self).__init__(host, name, logger)
         # Check which ADCs are connected. Only if no ADC chips on an FMC board
         # respond do we ignore a port
@@ -47,6 +47,7 @@ class Adc(Block):
         # True -> initialization completed OK
         # False -> intiialization failed.
         self.init_ok = None
+        self.n_boards_per_fmc = n_boards_per_fmc
         if not passive:
             self._connect_to_adcs()
 
@@ -114,7 +115,7 @@ class Adc(Block):
             return
         self.write_int(CONTROL_REG, 0) # initialize all flags low
         for adc in self.adcs:
-            for board in range(NBOARDS):
+            for board in range(self.n_boards_per_fmc):
                 self._info("FMC %d board %d: Setting clock source to %d" % (adc.fmc, board, clocksource))
                 adc.reset_mmcm_assert(board)
                 adc.set_clock_source(clocksource, board)
@@ -126,11 +127,11 @@ class Adc(Block):
         self._init()
         time.sleep(0.1) # wait for Initialization. Probably not needed
         for adc in self.adcs:
-            for board in range(NBOARDS):
+            for board in range(self.n_boards_per_fmc):
                 adc.reset_mmcm(board)
         time.sleep(0.1) # wait for MMCM to come out of reset
         for adc in self.adcs:
-            for board in range(NBOARDS):
+            for board in range(self.n_boards_per_fmc):
                 for cs in range(4*board, 4*board+1):
                     adc.enable_rst_data(range(8), cs)
                     adc.enable_rst_fclk(board)
