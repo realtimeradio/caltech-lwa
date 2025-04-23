@@ -116,8 +116,8 @@ class ZCU102Fengine():
         self.eth         = eth.Eth(self._cfpga, 'eth')
         #: Control interface to Correlation block
         self.corr        = corr.Corr(self._cfpga,'corr_0', n_signals=32, n_chans=2**12 // 8) # Corr module collapses channels by 8x
-        #: Control interface to Power Monitor block
-        self.powermon    = powermon.PowerMon(self._cfpga, 'powermon', passive=passive)
+        ##: Control interface to Power Monitor block
+        #self.powermon    = powermon.PowerMon(self._cfpga, 'powermon', passive=passive)
 
         # The order here can be important, blocks are initialized in the
         # order they appear here
@@ -139,7 +139,7 @@ class ZCU102Fengine():
             'eth'       : self.eth,
             'autocorr'  : self.autocorr,
             'corr'      : self.corr,
-            'powermon'  : self.powermon,
+            # 'powermon'  : self.powermon,
         }
 
     def initialize(self, read_only=True):
