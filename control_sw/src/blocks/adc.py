@@ -179,7 +179,7 @@ class Adc(Block):
         """
         mmcm_locked = True
         for adc in self.adcs:
-            for board in range(2):
+            for board in range(self.n_boards_per_fmc):
                 this_board_locked = adc.mmcm_get_lock(board)
                 self._info("FMC %d board %d clock rates: %s" % (adc.fmc, board, adc.read_clk_rates(board)))
                 if this_board_locked is None:
@@ -225,11 +225,11 @@ class Adc(Block):
             Data from ADC lanes n,n+1 are associated with the same analog input.
         :rtype: numpy.array
         """
-        out = np.zeros([8,8,NSAMPLES])
+        out = np.zeros([4*self.n_boards_per_fmc,8,NSAMPLES])
         if trigger:
             self._trigger_snapshot()
         # Loop over chips
-        for i in range(8):     
+        for i in range(4*self.n_boards_per_fmc):     
             x = self.host.read('ads5296_wb_ram%d_%d_%d' % (fmc, i // 4, i % 4), NSAMPLES*2*2*4)
             d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
             # Remove 10-bit -> 16-bit padding
@@ -265,10 +265,10 @@ class Adc(Block):
             [ADC_CHANNELS_PER_FMC, TIME_SAMPLES].
         :rtype: numpy.ndarray
         """
-        out = np.zeros([32,2*NSAMPLES])
+        out = np.zeros([16*self.n_boards_per_fmc,2*NSAMPLES])
         if trigger:
             self._trigger_snapshot()
-        for i in range(8):     
+        for i in range(4*self.n_boards_per_fmc):     
             x = self.host.read('ads5296_wb_ram%d_%d_%d' % (fmc, i // 4, i % 4), NSAMPLES*2*2*4)
             d = struct.unpack('>%dH'%(NSAMPLES*2*4), x)
             v = [xx >> 6 for xx in d]
@@ -301,13 +301,13 @@ class Adc(Block):
             ``n`` x ``step_size``
         :rtype: list
         """
-        for i in range(8):
+        for i in range(4*self.n_boards_per_fmc):
             adc.enable_test_pattern('constant', i, val0=test_val)
         NTAPS=512
         NSTEPS = NTAPS // step_size
-        d = np.zeros([NSTEPS, 8, 8, NSAMPLES]) # taps x chips x lanes x samples
-        errs = np.zeros([NSTEPS, 8, 8]) # taps x chips x lanes
-        for cs in range(8):
+        d = np.zeros([NSTEPS, 4*self.n_boards_per_fmc, 8, NSAMPLES]) # taps x chips x lanes x samples
+        errs = np.zeros([NSTEPS, 4*self.n_boards_per_fmc, 8]) # taps x chips x lanes
+        for cs in range(4*self.n_boards_per_fmc):
             #a.enable_rst_data(range(8), cs)
             adc.disable_rst_data(range(8), cs)
             adc.enable_vtc_data(range(8), cs)
@@ -320,7 +320,7 @@ class Adc(Block):
                 adc.load_delay_data(delay, range(8), cs)
             d[dn] = self.get_snapshot(adc.fmc)
         for t in range(NSTEPS):
-            for c in range(8):
+            for c in range(4*self.n_boards_per_fmc):
                 for l in range(8):
                     errs[t,c,l] = np.count_nonzero(d[t,c,l,:] != test_val)
         return errs.tolist()
@@ -348,14 +348,14 @@ class Adc(Block):
             Error array has dimensions [ADC_CHIPS_PER_FMC_CARD, DATA_LANES_PER_ADC_CHIP].
         :rtype: list
         """
-        for i in range(8):
+        for i in range(4*self.n_boards_per_fmc):
             if use_ramp:
                 adc.enable_test_pattern('ramp', i)
             else:
                 adc.enable_test_pattern('constant', i, val0=test_val)
-        errs = np.zeros([8, 8]) # taps x chips x lanes
+        errs = np.zeros([4*self.n_boards_per_fmc, 8]) # taps x chips x lanes
         d = self.get_snapshot(adc.fmc)
-        for c in range(8):
+        for c in range(4*self.n_boards_per_fmc):
             for l in range(8):
                 if use_ramp:
                     ds = d[c,l]
@@ -433,14 +433,14 @@ class Adc(Block):
         """
         delays = np.array(delays)
         nchips, nlanes = delays.shape
-        for cs in range(8):
+        for cs in range(4*self.n_boards_per_fmc):
             #adc.enable_rst_data(range(8), cs)
             adc.disable_rst_data(range(8), cs)
             adc.disable_vtc_data(range(8), cs)
         for c in range(nchips):
             for l in range(nlanes):
                 adc.load_delay_data(delays[c,l], [l], c)
-        for cs in range(8):
+        for cs in range(4*self.n_boards_per_fmc):
             adc.enable_vtc_data(range(8), cs)
     
     def print_sweep(self, errs, best_delays=None, step_size=TAP_STEP_SIZE):
@@ -490,7 +490,7 @@ class Adc(Block):
         method.
         """
         for adc in self.adcs:
-            for i in range(8):
+            for i in range(4*self.n_boards_per_fmc):
                 adc.init(i) # includes reset
 
     def get_status(self):
@@ -537,7 +537,7 @@ class Adc(Block):
         val0 = val0 & 0x3ff
         val1 = val1 & 0x3ff
         for adc in self.adcs:
-            for i in range(8):
+            for i in range(4*self.n_boards_per_fmc):
                 adc.enable_test_pattern('toggle', i, val0=val0, val1=val1)
     
     def use_ramp(self):
@@ -547,7 +547,7 @@ class Adc(Block):
         increments with each ADC clock.
         """
         for adc in self.adcs:
-            for i in range(8):
+            for i in range(4*self.n_boards_per_fmc):
                 adc.enable_test_pattern('ramp', i)
     
     def use_data(self):
@@ -556,7 +556,7 @@ class Adc(Block):
         are digitized and transmitted.
         """
         for adc in self.adcs:
-            for i in range(8):
+            for i in range(4*self.n_boards_per_fmc):
                 adc.enable_test_pattern('data', i)
 
     def calibrate(self, use_ramp=False, fail_hard=True, step_size=TAP_STEP_SIZE, verbose=False):
@@ -596,15 +596,17 @@ class Adc(Block):
         for adc in self.adcs:
             #self.reset() # Flush FIFOs and begin reading after next sync
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
-            for board in range(2):
+            for board in range(self.n_boards_per_fmc):
                 adc.set_bitslip_index(0, board)
                 adc.decrement_bitslip_index(board) # empirically optimized
                 adc.decrement_bitslip_index(board) # empirically optimized
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
+            nsteps, nchips, nlanes = errs.shape
+            
             for slip in range(2):
                 rescan = False
-                for board in range(2):
+                for board in range(self.n_boards_per_fmc):
                     if not np.any(errs[1:-2, 4*board:4*(board+1), :] == 0):
                         # If nowhere is good, slip a whole board by 2
                         rescan = True
@@ -618,13 +620,13 @@ class Adc(Block):
             # Go through each chip, and slip if the eye is on the edge of the delay, or if nowhere is good
             for slip in range(5):
                 slip_done = True
-                for board in range(2):
-                    for chip in range(4):
+                for board in range(self.n_boards_per_fmc):
+                    for chip in range(nchips):
                         if np.any(errs[0:20, 4*board + chip:4*board + chip + 1, :] == 0):
                             slip_done = False
                             self._info("Bitslipping board %d chip %d because delay start too large" % (board, chip))
-                            for lane in range(4):
-                                adc.bitslip(4*chip + lane, board)
+                            for lane in range(nlanes):
+                                adc.bitslip(nlanes*chip + lane, board)
                         if not np.any(errs[:, 4*board + chip:4*board + chip + 1, :] == 0):
                             slip_done = False
                             self._info("Bitslipping board %d chip %d because nowhere was good" % (board, chip))
