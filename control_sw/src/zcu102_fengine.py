@@ -31,8 +31,8 @@ from .blocks import powermon
 
 FENG_40G_SOURCE_PORT = 10000
 MAC_BASE = 0x020203030400
-IP_BASE = (10 << 24) + (41 << 16) + (0 << 8) + 100
-PIPELINES_PER_XENG = 4
+IP_BASE = (192 << 24) + (168 << 16) + (40 << 8) + 100
+PIPELINES_PER_XENG = 2
 FS_HZ = 196000000 # ADC sample rate in Hz
 
 class ZCU102Fengine():
@@ -576,7 +576,7 @@ class ZCU102Fengine():
                    sync=True, sw_sync=False, adc_clocksource=1, enable_pfb=True,
                    enable_eth=True, fft_shift=None, eq_coeffs=None,
                    chans_per_packet=96, first_stand_index=0, nstand=16,
-                   nstand_tot=16, macs={}, source_ip='10.41.0.101',
+                   nstand_tot=16, macs={}, source_ip='192.168.40.101',
                    source_port=10000, dests=[]):
         """
         Completely configure a ZCU102 F-engine from scratch.
