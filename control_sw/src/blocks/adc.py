@@ -35,6 +35,9 @@ class Adc(Block):
 
     :param logger: Logger instance to which log messages should be emitted.
     :type logger: logging.Logger
+    
+    :param n_boards_per_fmc: Number of digitizer boards connected to each FMC port.
+    :type n_boards_per_fmc: int
     """
 
     def __init__(self, host, name, logger=None, passive=False, n_boards_per_fmc=NBOARDS):
