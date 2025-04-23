@@ -303,7 +303,7 @@ class Adc(Block):
         """
         for i in range(4*self.n_boards_per_fmc):
             adc.enable_test_pattern('constant', i, val0=test_val)
-        NTAPS=512
+        NTAPS = 512
         NSTEPS = NTAPS // step_size
         d = np.zeros([NSTEPS, 4*self.n_boards_per_fmc, 8, NSAMPLES]) # taps x chips x lanes x samples
         errs = np.zeros([NSTEPS, 4*self.n_boards_per_fmc, 8]) # taps x chips x lanes
@@ -598,11 +598,10 @@ class Adc(Block):
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
             for board in range(self.n_boards_per_fmc):
                 adc.set_bitslip_index(0, board)
-                adc.decrement_bitslip_index(board) # empirically optimized
-                adc.decrement_bitslip_index(board) # empirically optimized
+                adc.decrement_bitslip_index(board) # empirically optimized for the SNAP2
+                adc.decrement_bitslip_index(board) # empirically optimized for the SNAP2
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
-            nsteps, nchips, nlanes = errs.shape
             
             for slip in range(2):
                 rescan = False
@@ -618,21 +617,21 @@ class Adc(Block):
                                                             step_size=step_size))
 
             # Go through each chip, and slip if the eye is on the edge of the delay, or if nowhere is good
-            for slip in range(5):
+            for slip in range(5 if self.n_boards_per_fmc == 2 else 10):
                 slip_done = True
                 for board in range(self.n_boards_per_fmc):
-                    for chip in range(nchips):
+                    for chip in range(4):
                         if np.any(errs[0:20, 4*board + chip:4*board + chip + 1, :] == 0):
                             slip_done = False
                             self._info("Bitslipping board %d chip %d because delay start too large" % (board, chip))
-                            for lane in range(nlanes):
-                                adc.bitslip(nlanes*chip + lane, board)
+                            for lane in range(4):
+                                adc.bitslip(4*chip + lane, board)
                         if not np.any(errs[:, 4*board + chip:4*board + chip + 1, :] == 0):
                             slip_done = False
                             self._info("Bitslipping board %d chip %d because nowhere was good" % (board, chip))
                             for lane in range(4):
                                 adc.bitslip(4*chip + lane, board)
-                        if np.any(errs[-5:-1,4*board + chip:4*board + chip + 1,:] == 0):
+                        if np.any(errs[-5:-1, 4*board + chip:4*board + chip + 1,:] == 0):
                             slip_done = False
                             self._info("Bitslipping board %d chip %d because delay start too small" % (board, chip))
                             for lane in range(4):
