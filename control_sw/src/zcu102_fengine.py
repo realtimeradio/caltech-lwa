@@ -575,8 +575,8 @@ class ZCU102Fengine():
     def cold_start(self, program=True, initialize=True, test_vectors=False,
                    sync=True, sw_sync=False, adc_clocksource=1, enable_pfb=True,
                    enable_eth=True, fft_shift=None, eq_coeffs=None,
-                   chans_per_packet=96, first_stand_index=0, nstand=32,
-                   nstand_tot=32, macs={}, source_ip='10.41.0.101',
+                   chans_per_packet=96, first_stand_index=0, nstand=16,
+                   nstand_tot=16, macs={}, source_ip='10.41.0.101',
                    source_port=10000, dests=[]):
         """
         Completely configure a ZCU102 F-engine from scratch.
@@ -631,7 +631,7 @@ class ZCU102Fengine():
             board.
         :type first_stand_index: int
 
-        :param nstand: Number of stands to be sent. Values of ``n*32`` may be used
+        :param nstand: Number of stands to be sent. Values of ``n*16`` may be used
             to spoof F-engine packets from multiple ZCU102 boards.
         :type nstand: int
 
