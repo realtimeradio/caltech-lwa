@@ -55,7 +55,7 @@ class ZCU102Fengine():
         #: Underlying CasperFpga control instance
         self._cfpga = casperfpga.CasperFpga(
                         host=self.hostname,
-                        transport=casperfpga.TapcpTransport,
+                        transport=casperfpga.KatcpTransport,
                     )
         try:
             self._cfpga.get_system_information()
