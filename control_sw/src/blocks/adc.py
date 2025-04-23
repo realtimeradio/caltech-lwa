@@ -316,7 +316,7 @@ class Adc(Block):
         pb = progressbar.ProgressBar()
         for dn, delay in enumerate(pb(range(0, NTAPS, step_size))):
             self._debug("FMC %d Scanning delay %d" % (adc.fmc, delay))
-            for cs in range(8):
+            for cs in range(4*self.n_boards_per_fmc):
                 adc.load_delay_data(delay, range(8), cs)
             d[dn] = self.get_snapshot(adc.fmc)
         for t in range(NSTEPS):
