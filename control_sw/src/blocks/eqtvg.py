@@ -71,7 +71,7 @@ class EqTvg(Block):
         """
         tv = np.array(test_vector, dtype='>%s'%self._FORMAT)
         assert (tv.shape[0] == self.n_chans), "Test vector should have self.n_chans elements!"
-        core_name = 'core%d_tv' % (stream // 16)
+        core_name = 'core%d_tv' % (stream // 16 * (1 + (64 - self.n_streams) // 32))
         sub_index = stream % 16
         self.write(core_name, tv.tostring(), offset=sub_index*self._stream_size)
 
@@ -110,7 +110,7 @@ class EqTvg(Block):
         :rtype: numpy.ndarray
 
         """
-        core_name = 'core%d_tv' % (stream // 16)
+        core_name = 'core%d_tv' % (stream // 16 * (1 + (64 - self.n_streams) // 32))
         sub_index = stream % 16
         s = self.read(core_name, self._stream_size, offset=sub_index*self._stream_size)
         tvg = np.fromstring(s, dtype='>%s' %self._FORMAT)

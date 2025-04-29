@@ -57,7 +57,7 @@ class Eq(Block):
         coeffs = list(coeffs)
         assert len(coeffs) == self.n_coeffs, "Length of provided coefficient vector should be %d" % self.n_coeffs
         coeffs_str = struct.pack('>%d%s' % (len(coeffs), self._FORMAT), *coeffs)
-        coeff_reg = 'core%d_coeffs' % (stream // 16)
+        coeff_reg = 'core%d_coeffs' % (stream // 16 * (1 + (64 - self.n_streams) // 32))
         stream_sub_index = stream % 16
         self.write(coeff_reg, coeffs_str, offset=self._stream_size * stream_sub_index)
 
@@ -105,7 +105,7 @@ class Eq(Block):
         :rtype: (numpy.ndarray, int) or numpy.ndarray
 
         """
-        coeff_reg = 'core%d_coeffs' % (stream // 16)
+        coeff_reg = 'core%d_coeffs' % (stream // 16 * (1 + (64 - self.n_streams) // 32))
         stream_sub_index = stream % 16
         coeffs_str = self.read(coeff_reg, self._stream_size, offset= self._stream_size * stream_sub_index)
         coeffs = np.array(struct.unpack('>%d%s' % (self.n_coeffs, self._FORMAT), coeffs_str))
@@ -124,6 +124,8 @@ class Eq(Block):
         """
         clip_cnt = 0
         for i in range(self.n_streams // 16):
+            if self.n_streams == 32 and i == 1:
+                i = 2
             clip_cnt += self.read_uint('core%d_clip_cnt' % i)
         return clip_cnt
 
