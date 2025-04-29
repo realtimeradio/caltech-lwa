@@ -607,26 +607,34 @@ class Adc(Block):
             #self.sync() # Need to sync after moving fclk to re-lock deserializers
             for board in range(self.n_boards_per_fmc):
                 adc.set_bitslip_index(0, board)
-                adc.decrement_bitslip_index(board) # empirically optimized for the SNAP2
-                adc.decrement_bitslip_index(board) # empirically optimized for the SNAP2
+                if self.n_boards_per_fmc == 2:
+                    adc.decrement_bitslip_index(board) # empirically optimized for the SNAP2
+                    adc.decrement_bitslip_index(board) # empirically optimized for the SNAP2
+                elif self.n_boards_per_fmc == 1:
+                    adc.increment_bitslip_index(board) # empirically optimized for the ZCU102
+                    adc.increment_bitslip_index(board) # empirically optimized for the ZCU102
+                    adc.increment_bitslip_index(board) # empirically optimized for the ZCU102
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
             
-            for slip in range(2):
+            for slip in range(2 if self.n_boards_per_fmc == 2 else 0):
                 rescan = False
                 for board in range(self.n_boards_per_fmc):
                     if not np.any(errs[1:-2, 4*board:4*(board+1), :] == 0):
                         # If nowhere is good, slip a whole board by 2
                         rescan = True
                         self._info("Bitslipping board %d because everywhere was bad" % board)
-                        adc.decrement_bitslip_index(board)
-                        adc.decrement_bitslip_index(board)
+                        if self.n_boards_per_fmc == 2:
+                            adc.decrement_bitslip_index(board)
+                            adc.decrement_bitslip_index(board)
+                        elif self.n_boards_per_fmc == 1:
+                            pass
                 if rescan:
                     errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                             step_size=step_size))
 
             # Go through each chip, and slip if the eye is on the edge of the delay, or if nowhere is good
-            for slip in range(5 if self.n_boards_per_fmc == 2 else 10):
+            for slip in range(5):
                 slip_done = True
                 for board in range(self.n_boards_per_fmc):
                     for chip in range(4):
