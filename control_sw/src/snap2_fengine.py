@@ -104,7 +104,7 @@ class Snap2Fengine():
         #: Control interface to Autocorrelation block
         self.autocorr    = autocorr.AutoCorr(self._cfpga, 'autocorr')
         #: Control interface to Equalization block
-        self.eq          = eq.Eq(self._cfpga, 'eq', n_streams=64, n_coeffs=2**9)
+        self.eq          = eq.Eq(self._cfpga, 'eq', n_streams=64, n_coeffs=2**12)
         #: Control interface to post-equalization Test Vector Generator block
         self.eqtvg       = eqtvg.EqTvg(self._cfpga, 'post_eq_tvg', n_streams=64, n_chans=2**12)
         #: Control interface to Channel Reorder block
