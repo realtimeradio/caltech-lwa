@@ -50,14 +50,14 @@ The top-level specs of the F-Engine are:
 | Post-FFT Scaling        | 16       |                      |
 | Coefficient Width       |          |                      |
 +-------------------------+----------+----------------------+
-| Post-FFT Scaling        | 4        |                      |
+| Post-FFT Scaling        | 2        |                      |
 | Coefficient Binary      |          |                      |
 | Point                   |          |                      |
 +-------------------------+----------+----------------------+
-| Number of Post-FFT      | 32768    | One coefficient per  |
+| Number of Post-FFT      | 262144   | One coefficient per  |
 | Scaling Coefficients    |          | analog input. One    |
-|                         |          | coefficient per 8    |
-|                         |          | frequency channels   |
+|                         |          | coefficient per      |
+|                         |          | frequency channel    |
 +-------------------------+----------+----------------------+
 | Post-Quantization Data  | 4        | 4-bit real; 4-bit    |
 | Bitwidth                |          | imaginary            |
