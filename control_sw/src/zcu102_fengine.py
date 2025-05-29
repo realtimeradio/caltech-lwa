@@ -417,30 +417,26 @@ class ZCU102Fengine():
         # Resolve symlinks
         if fpgfile:
             fpgfile = os.path.realpath(fpgfile)
+            self._fpgfile = fpgfile
 
         if fpgfile and not os.path.exists(fpgfile):
             raise RuntimeError("Path %s doesn't exist" % fpgfile)
 
         try:
             if fpgfile is None:
-                self.logger.info("Loading existing firmware to %s" % (self.hostname))
-                self._cfpga.transport.prog_user_image()
-                loaded_fpg = self._cfpga.transport.get_metadata()['filename']
-                self.logger.info("Loaded %s" % loaded_fpg)
-                try:
-                    self._cfpga.get_system_information()
-                except:
-                    self.logger.error("Failed to get firmware metadata from flash")
+                self.logger.error("Failed to get firmware metadata from flash")
             else:
                 self.logger.info("Loading firmware %s to %s" % (fpgfile, self.hostname))
                 self._cfpga.transport.upload_to_ram_and_program(fpgfile, force=force)
         except:
             self.logger.exception("Exception when loading new firmware")
+            del self._fpgfile
             raise RuntimeError("Error during load")
         try:
             self._initialize_blocks()
         except:
             self.logger.exception("Exception when reinitializing firmware blocks")
+            del self._fpgfile
             raise RuntimeError("Error reinitializing blocks")
 
     def cold_start_from_config(self, config_file,
@@ -673,7 +669,9 @@ class ZCU102Fengine():
         if program:
             assert adc_clocksource in (0, 1), \
                 "adc_clocksource needs to be either 0 or 1"
-            self.program()
+            assert(getattr(self, '_fpgfile', None) is not None, \
+                "need to program before calling cold starting")
+            
             try:
                 self.adc.initialize(read_only=False, clocksource=adc_clocksource)
             except RuntimeError:
