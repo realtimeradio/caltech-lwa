@@ -3,7 +3,8 @@ import logging
 from casperfpga.i2c import I2C_DEVICE
 
 class PCA9544A(object):
-
+    """ 4-channel 2.3- to 5.5-V I2C/SMBus multiplexer with interrupt """
+    
     devAddrBase = 0b1110000 #: Top 4 address bits are hard coded
 
     def __init__(self, itf, addr=0b101, **kwargs):
