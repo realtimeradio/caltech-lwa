@@ -1,3 +1,4 @@
+import time
 import logging
 from casperfpga.i2c import I2C_DEVICE
 
@@ -25,8 +26,8 @@ class INA226(I2C_DEVICE):
     DICT[0x00] = {'configuration': 0xffff << 0,
                   'RST':           0b1    << 15,
                   'AVG':           0b111  << 9,
-                  'VBUS':          0b111  << 6,
-                  'VSH':           0b111  << 3,
+                  'VBUSCT':        0b111  << 6,
+                  'VSHCT':         0b111  << 3,
                   'MODE':          0b111  << 0}
     
     DICT[0x01] = {'shuntvoltage' : 0xffff << 0,}
@@ -40,6 +41,87 @@ class INA226(I2C_DEVICE):
     
     def __init__(self, itf, addr=0x45, **kwargs):
         super(INA226, self).__init__(itf, addr, **kwargs)
+        self._tsampling = 0.009  # Maximum conversion time + ~1 ms
+        
+    def init(self, avg=0b000, vbusct=0b100, vshct=0b100, mode=0b011):
+        """ Initialise INA226
+        
+            Avg, availiable options:
+               AVG2    AVG1   AVG0   Number of averages
+               0       0      0      1
+               0       0      1      4
+               0       1      0      16
+               0       1      1      64
+               1       0      0      128
+               1       0      1      256
+               1       1      0      512
+               1       1      1      1024
+         
+            Vbusct, availiable options:
+               CT2     CT1    CT1    VBus conversion time
+               0       0      0      140 us
+               0       0      1      204 us
+               0       1      0      332 us
+               0       1      1      588 us
+               1       0      0      1.1 ms
+               1       0      1      2.116 ms
+               1       1      0      4.156 ms
+               1       1      1      8.244 ms
+               
+            Vshct, availiable options:
+               CT2     CT1    CT1    VSh conversion time
+               0       0      0      140 us
+               0       0      1      204 us
+               0       1      0      332 us
+               0       1      1      588 us
+               1       0      0      1.1 ms
+               1       0      1      2.116 ms
+               1       1      0      4.156 ms
+               1       1      1      8.244 ms
+               
+            Mode, availiable options:
+               MODE3   MODE2  MODE1  MODE
+               0       0      0      Power-Down (or Shutdown)
+               0       0      1      Shunt Voltage, Triggered
+               0       1      0      Bus Voltage, Triggered
+               0       1      1      Shunt and Bus, Triggered
+               1       0      0      Power-Down (or Shutdown)
+               1       0      1      Shunt Voltage, Continuous
+               1       1      0      Bus Voltage, Continuous
+               1       1      1      Shunt and Bus, Continuous
+               
+        """
+        
+        if avg not in range(8):
+            raise ValueError("Invalid parameter")
+        if vbusct not in range(8):
+            raise ValueError("Invalid parameter")
+        if vshct not in range(8):
+            raise ValueError("Invalid parameter")
+        if mode not in range(8):
+            raise ValueError("Invalid parameter")
+        
+        val = 0x4127
+        rid, mask = self._getMask(self.DICT, 'AVG')
+        val = self._set(val, mode, mask)
+        rid, mask = self._getMask(self.DICT, 'VBUSCT')
+        val = self._set(val, mode, mask)
+        rid, mask = self._getMask(self.DICT, 'VSHCT')
+        val = self._set(val, mode, mask)
+        rid, mask = self._getMask(self.DICT, 'MODE')
+        val = self._set(val, mode, mask)
+        
+        self.write(rid, val)
+        
+        ct = max(vbusct, vshct)
+        self._tsampling = (2**(ct-4) + 0.5) / 1000.
+            
+    def _set(self, d1, d2, mask=None):
+        # Update some bits of d1 with d2, while keep other bits unchanged
+        if mask:
+            d1 = d1 & ~mask
+            d2 = d2 * (mask & -mask)
+        return d1 | d2
         
     def _get(self, data, mask):
         data = data & mask
@@ -87,7 +169,7 @@ class INA226(I2C_DEVICE):
 
         # trigger
         conf = self.getWord('configuration')
-        self.setWord('configuration',conf)
+        self.setWord('configuration', conf)
 
         # check availability
         for i in range(self._retry+1):
