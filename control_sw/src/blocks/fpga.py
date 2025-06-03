@@ -178,6 +178,7 @@ class Fpga(Block):
         try:
             meta = self.host.transport.get_metadata()
         except AttributeError:
+            # Catch for the ZCU102 that uses KatcpTransport
             katcp_meta = self.sysmon.fpga.system_info
             meta = {'filename': katcp_meta['system'],
                     'md5sum': katcp_meta['md5_bitstream']
