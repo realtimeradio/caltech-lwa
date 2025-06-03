@@ -3,7 +3,8 @@ import datetime
 
 from .block import Block
 from lwa_f.error_levels import *
-from lwa_f.zcu102_i2c import *
+from lwa_f.blocks.zcu102_i2c import *
+from casperfpga import i2c
 
 class PowerMon(Block):
     """
@@ -26,50 +27,50 @@ class PowerMon(Block):
     voltage_sensor_config = {
         'vcc_int_0v85' : {
             'address' : 0x40,
-            'shunt_r' : 10.,
-            'max_current' : 32.,
+            'shunt_r' : 0.002,
+            'max_current' : 40.,
             'voltage' : 0.85,
         },
         'vccbram_0v85' : {
             'address' : 0x41,
-            'shunt_r' : 10.,
-            'max_current' : 13.,
+            'shunt_r' : 0.005,
+            'max_current' : 6.,
             'voltage' : 0.85,
         },
         'vccaux_1v8' : {
             'address' : 0x42,
-            'shunt_r' : 10.,
-            'max_current' : 13.,
+            'shunt_r' : 0.005,
+            'max_current' : 3.,
             'voltage' : 1.8,
         },
         'vcc_1v2' : {
             'address' : 0x43,
-            'shunt_r' : 10.,
-            'max_current' : 13.,
+            'shunt_r' : 0.005,
+            'max_current' : 2.,
             'voltage' : 1.2,
         },
         'vcc_3v3' : {
             'address' : 0x44,
-            'shunt_r' : 10.,
-            'max_current' : 13.,
+            'shunt_r' : 0.005,
+            'max_current' : 5.,
             'voltage' : 3.3,
         },
         'vadj_1v8' : {
             'address' : 0x45,
-            'shunt_r' : 10.,
-            'max_current' : 13.,
+            'shunt_r' : 0.005,
+            'max_current' : 10.,
             'voltage' : 1.8,
         },
         'mgtavcc_0v9' : {
             'address' : 0x46,
-            'shunt_r' : 0.1,
-            'max_current' : 16.,
+            'shunt_r' : 0.005,
+            'max_current' : 6.,
             'voltage' : 0.9,
         },
         'mgtavtt_1v2' : {
             'address' : 0x47,
-            'shunt_r' : 10.,
-            'max_current' : 16.,
+            'shunt_r' : 0.005,
+            'max_current' : 6.,
             'voltage' : 1.2,
         },
     }

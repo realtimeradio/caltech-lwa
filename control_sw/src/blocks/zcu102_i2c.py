@@ -67,10 +67,10 @@ class INA226(I2C_DEVICE):
 
             returns: Current in Amps
         """
-         v = self.readVolt('shunt')
+        v = self.readVolt('shunt')
         return v / r
         
-     def readVolt(self,name):
+    def readVolt(self, name):
         """ Read Voltage
 
         Please switch to corresponding modes using init() before measuring voltage.
