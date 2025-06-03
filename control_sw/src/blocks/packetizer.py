@@ -91,6 +91,7 @@ class Packetizer(Block):
         # Figure out what fraction of channels we can fit on the link
         self._info("Full data rate is %.2f Gbps" % self.full_data_rate_gbps)
         chan_frac = occupation * self.line_rate_gbps / self.full_data_rate_gbps
+        chan_frac = min(1.0, chan_frac)
         self._info("%.2f link occupation => Max %.2f bandwidth sent" % (occupation, chan_frac))
         # Round down to an integer number of channels
         n_sent_chans = int(np.floor(chan_frac * self.n_chans))
