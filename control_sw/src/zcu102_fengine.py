@@ -12,7 +12,7 @@ from . import helpers
 from . import __version__
 from .error_levels import *
 from .blocks import block
-from .blocks import fpga
+from .blocks import zcu102_fpga as fpga
 from .blocks import adc
 from .blocks import sync
 from .blocks import noisegen
