@@ -19,12 +19,23 @@ class Fpga(_Fpga):
 
     :param name: Name of block in Simulink hierarchy.
     :type name: str
+    
+    :param username: Username for ssh-ing into the PS side
+    :type name: str
+    
+    :param password: Password for ssh-ing into the PS side
+    :type name: str
 
     :param logger: Logger instance to which log messages should be emitted.
     :type logger: logging.Logger
 
     """
-    
+    def __init__(self, host, name, username='casper', password='casper', logger=None):
+        # Top-level F-engine sees all registers
+        super(Fpga, self).__init__(host, name, logger)
+        self.username = username
+        self.password = password
+
     def get_status(self):
         """
         Get status and error flag dictionaries.
@@ -116,8 +127,8 @@ class Fpga(_Fpga):
             if not stats['fw_supported']:
                 flags['fw_supported'] = FENG_ERROR
         try:
-            soutput = subprocess.check_output(['sshpass', '-p', 'casper', 'ssh',
-                                                   f"casper@{self.host.host}",
+            soutput = subprocess.check_output(['sshpass', '-p', self.password, 'ssh',
+                                                   f"{self.username}@{self.host.host}",
                                                    'cat /sys/bus/iio/devices/iio\:device0/in_temp2_pl_temp_* && cat /sys/bus/iio/devices/iio\:device0/in_voltage[234]_*'], text=True)
             to, tr, ts, cr, cs, br, bs, ur, us = soutput.split('\n', 8)
             stats['temp'] = (int(tr, 10) + int(to, 10)) * float(ts) / 1000.

@@ -42,14 +42,22 @@ class ZCU102Fengine():
     :param host: Hostname of ZCU102 board
     :type host: str
 
+    :param username: Username for ssh-ing into the PS side
+    :type name: str
+    
+    :param password: Password for ssh-ing into the PS side
+    :type name: str
+
     :param logger: Logger instance to which log messages should be emitted.
     :type logger: logging.Logger
 
     """
     n_signals_per_board = 32   #: Number of analog inputs per FPGA
     n_signals_per_xeng = 256*2 #: Number of analog inputs per X-engine
-    def __init__(self, host, logger=None):
+    def __init__(self, host, username='casper', password='casper', logger=None):
         self.hostname = host #: hostname of the F-Engine's host ZCU102 board
+        self.username = username #: username for ssh-ing into the PS side
+        self.password = passowrd #: password for ssh-ing into the PS side
         #: Python Logger instance
         self.logger = logger or helpers.add_default_log_handlers(logging.getLogger(__name__ + ":%s" % (host)))
         #: Underlying CasperFpga control instance
@@ -86,7 +94,8 @@ class ZCU102Fengine():
 
         # blocks
         #: Control interface to high-level FPGA functionality
-        self.fpga        = fpga.Fpga(self._cfpga, "")
+        self.fpga        = fpga.Fpga(self._cfpga, "",
+                                     username=self.username, password=self.password)
         #: Control interface to ADC block
         self.adc         = adc.Adc(self._cfpga, 'adc', passive=passive, n_boards_per_fmc=1,
                                    cal_step_size=2)
