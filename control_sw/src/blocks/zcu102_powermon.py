@@ -22,7 +22,7 @@ class PowerMon(Block):
     """
     I2C_REF_CLK_MHZ = 100
     I2C_CLK_KHZ = 100
-    I2C_MUX_OUTPUT_INDEX = 2
+    I2C_MUX_OUTPUT_INDEX = 1
     I2C_NAME = 'powermon_i2c_interface'
     voltage_sensor_config = {
         'vcc_int_0v85' : {
@@ -123,7 +123,7 @@ class PowerMon(Block):
 
     def _configure_mux(self):
         if self.i2c is not None:
-            mux = PCA9544A(self.i2c, 0b101)
+            mux = PCA9544A(self.i2c, 0b1010)
             mux.set_output(0b100 | self.I2C_MUX_OUTPUT_INDEX)
         else:
             self._warning("Couldn't configure MUX because I2C not connected")
