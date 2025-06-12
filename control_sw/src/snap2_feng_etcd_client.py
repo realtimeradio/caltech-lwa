@@ -619,6 +619,8 @@ class Snap2FengineEtcdService():
             time.sleep(10)
         try:
             stats, flags = self.feng.get_status_all()
+            # Remove EQ coefficients which are large
+            stats.pop('eq', None)
             t = datetime.datetime.utcnow().astimezone().isoformat()
             etcd_dict = {
                     "stats": stats,
