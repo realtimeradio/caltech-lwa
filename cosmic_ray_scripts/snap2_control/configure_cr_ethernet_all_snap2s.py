@@ -2,7 +2,8 @@ import casperfpga
 import time
 from cr_functions import *
 
-brdnames=['snap01','snap02','snap03','snap04','snap05','snap06','snap07','snap08','snap09','snap10','snap11']
+#brdnames=['snap01','snap02','snap03','snap04','snap05','snap06','snap07','snap08','snap09','snap10','snap11']
+brdnames=['snap07','snap08','snap09','snap10','snap11']
 fpgfile='/home/ubuntu/kp/caltech-lwa/snap2_f_200msps_64i_4096c/outputs/snap2_f_200msps_64i_4096c.fpg'
 
 casperbrds = [casperfpga.CasperFpga(brdname, transport=casperfpga.TapcpTransport) for brdname in brdnames]
@@ -11,7 +12,7 @@ casperbrds = [casperfpga.CasperFpga(brdname, transport=casperfpga.TapcpTransport
 
 veto_roles_array=np.zeros(64,dtype=int)
 core_roles_array=np.zeros(64,dtype=int)
-for p in range(11):
+for p in range(len(casperbrds)):
     casperbrd=casperbrds[p]
     setup_coincidencer(casperbrd,0,0,0,0,0,0,core_roles_array,veto_roles_array)
     setvalue(casperbrd,"enable_coinc_trig","cr_registers.xlsx",0)
