@@ -71,7 +71,7 @@ class Mask(Block):
         :type last: int
         """
         f = first // self._n_parallel_chans
-        l = (last + 1) // self._n_parallel_chans) - 1
+        l = (last + 1) // self._n_parallel_chans - 1
         v = f * (self.n_chans // self._n_parallel_chans) + l
         self.write_int('start_stop', v)
 
