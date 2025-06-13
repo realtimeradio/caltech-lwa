@@ -45,6 +45,7 @@ class Mask(Block):
         self.initial_acc_len = acc_len
         self.initial_flag_threshold = flag_threshold
         self._input_binary_point = 17 #: Input data binary point
+        self._n_parallel_chans = 8 #: Number of channels processed in parallel
    
     def _wait_for_acc(self):
         """
@@ -57,6 +58,36 @@ class Mask(Block):
         while self.get_current_acc_count() < (cnt+1):
             time.sleep(0.1)
         return self.get_current_acc_count()
+
+    def set_first_last_chan(self, first, last):
+        """
+        Set the first and last channel to contribute to the masking calculation.
+        Will be rounded down to self._n_parallel_chans
+
+        :param first: First channel to contribute
+        :type first: int
+
+        :param last: Last channel to contribute
+        :type last: int
+        """
+        f = first // self._n_parallel_chans
+        l = (last + 1) // self._n_parallel_chans - 1
+        v = f * (self.n_chans // self._n_parallel_chans) + l
+        self.write_int('start_stop', v)
+
+    def get_first_last_chan(self):
+        """
+        Get the first and last channel contributing to the masking calculation.
+
+        :return: first, last
+        :rtype: int, int
+        """
+        v = self.read_uint('start_stop')
+        f = v // (self.n_chans // self._n_parallel_chans)
+        l = v % (self.n_chans // self._n_parallel_chans)
+        first = f * self._n_parallel_chans
+        last = ((l + 1) * self._n_parallel_chans) - 1
+        return first, last
 
     def get_current_acc_count(self):
         """
@@ -197,6 +228,8 @@ class Mask(Block):
 
             - acc_len : Currently loaded accumulation length in number of spectra.
             - flag_threshold : Currently loaded flagging threshold.
+            - first_chan : First channel contributing to stats
+            - last_chan : Last channel contributing to stats
 
         :return: (status_dict, flags_dict) tuple. `status_dict` is a dictionary of
             status key-value pairs. flags_dict is
@@ -205,8 +238,11 @@ class Mask(Block):
             that values in the status dictionary are outside normal ranges.
 
         """
+        first, last = self.get_first_last_chan()
         stats = {
             'acc_len': self.get_acc_len(),
+            'first_chan': first,
+            'last_chan': last,
         }
         for i in range(self.n_signals):
             stats['flag_threshold%.2d'%i] = self.get_flag_threshold(i)
@@ -218,13 +254,15 @@ class Mask(Block):
         Initialize the block, setting (or reading) the accumulation length.
 
         :param read_only: If False, set the accumulation length to the value provided
-            when this block was instantiated. If True, use whatever accumulation length
+            when this block was instantiated. Use all frequency channels.
+            If True, use whatever accumulation length
             is currently loaded.
         :type read_only: bool
         """
         if read_only:
             return
         else:
+            self.set_first_last_chan(0, self.n_chans)
             self.set_acc_len(self.initial_acc_len)
             for i in range(self.n_signals):
                 self.set_flag_threshold(i, self.initial_flag_threshold)
