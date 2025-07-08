@@ -123,7 +123,7 @@ class PowerMon(Block):
 
     def _configure_mux(self):
         if self.i2c is not None:
-            mux = PCA9544A(self.i2c, 0b101)
+            mux = PCA9544A(self.i2c, 0b010)
             mux.set_output(0b100 | self.I2C_MUX_OUTPUT_INDEX)
         else:
             self._warning("Couldn't configure MUX because I2C not connected")
