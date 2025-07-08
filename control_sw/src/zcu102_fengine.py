@@ -57,7 +57,7 @@ class ZCU102Fengine():
     def __init__(self, host, username='casper', password='casper', logger=None):
         self.hostname = host #: hostname of the F-Engine's host ZCU102 board
         self.username = username #: username for ssh-ing into the PS side
-        self.password = passowrd #: password for ssh-ing into the PS side
+        self.password = password #: password for ssh-ing into the PS side
         #: Python Logger instance
         self.logger = logger or helpers.add_default_log_handlers(logging.getLogger(__name__ + ":%s" % (host)))
         #: Underlying CasperFpga control instance
