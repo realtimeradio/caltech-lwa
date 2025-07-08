@@ -678,7 +678,7 @@ class ZCU102Fengine():
         if program:
             assert adc_clocksource in (0, 1), \
                 "adc_clocksource needs to be either 0 or 1"
-            assert getattr(self, '_fpgfile', None) is not None, \
+            assert getattr(self, '_fpgfile', None) is not None or self.fpga.is_programmed(), \
                 "need to program before calling cold starting"
             
             try:
