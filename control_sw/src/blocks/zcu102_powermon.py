@@ -103,7 +103,7 @@ class PowerMon(Block):
             self.i2c = i2c.I2C(self.host, self.I2C_NAME)
             if not read_only:
                 self.i2c.setClock(self.I2C_CLK_KHZ, self.I2C_REF_CLK_MHZ)
-                self._configure_mux()
+                #self._configure_mux()
         except:
             self._exception('Failed to instantiate I2C control object')
             self.i2c = None
