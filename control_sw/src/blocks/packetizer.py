@@ -45,7 +45,7 @@ class Packetizer(Block):
         self.sample_rate_mhz = sample_rate_mhz
         self.n_total_words = self.sample_width * self.n_chans * self.n_signals // self.word_width
         self.n_words_per_chan = self.sample_width * self.n_signals // self.word_width
-        assert self.n_words_per_chan >= 1, \
+        assert self.n_words_per_chan > 1, \
             "Packetizer software not compatible with n_signals / word_width combination"
         self.full_data_rate_gbps = 8*self.sample_width * self.n_signals * self.sample_rate_mhz*1e6/2. / 1.0e9
 
