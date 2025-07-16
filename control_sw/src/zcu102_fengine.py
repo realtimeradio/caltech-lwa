@@ -120,8 +120,7 @@ class ZCU102Fengine():
         #: Control interface to Channel Reorder block
         self.reorder     = chanreorder.ChanReorder(self._cfpga, 'chan_reorder', n_chans=2**12)
         #: Control interface to Packetizer block
-        self.packetizer  = packetizer.Packetizer(self._cfpga, 'packetizer', n_signals=32,
-                                                 sample_rate_mhz=196.608)
+        self.packetizer  = packetizer.Packetizer(self._cfpga, 'packetizer', sample_rate_mhz=196.608)
         #: Control interface to 40GbE interface block
         self.eth         = eth.Eth(self._cfpga, 'eth')
         #: Control interface to Correlation block
@@ -285,6 +284,10 @@ class ZCU102Fengine():
 
         packet_starts, packet_payloads, channel_indices = \
             self.packetizer.get_packet_info(n_chans_per_packet, chan_block_size=self.reorder.n_parallel_chans)
+
+        # Small adjustment to the packet starts to move them up against the payloads
+        for i,pp in enumerate(packet_payloads):
+            packet_starts[i] = pp[0] - 1
 
         self.logger.debug("Packet starts: %s" % packet_starts)
         self.logger.debug("Packet payloads: %s" % packet_payloads)
