@@ -119,8 +119,9 @@ class ZCU102Fengine():
         self.eqtvg       = eqtvg.EqTvg(self._cfpga, 'post_eq_tvg', n_streams=32, n_chans=2**12)
         #: Control interface to Channel Reorder block
         self.reorder     = chanreorder.ChanReorder(self._cfpga, 'chan_reorder', n_chans=2**12)
-        #: Control interface to Packetizer block
+        #: Control interface to Packetizer block, plus say that it can do 80 Gbps
         self.packetizer  = packetizer.Packetizer(self._cfpga, 'packetizer', sample_rate_mhz=196.608)
+        self.packetizer.line_rate_gbps = 80
         #: Control interface to 40GbE interface block
         self.eth         = eth.Eth(self._cfpga, 'eth')
         #: Control interface to Correlation block
