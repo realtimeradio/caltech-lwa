@@ -60,6 +60,7 @@ class Input(Block):
         """
         pos = []
         for regn in range(self.n_streams // 16):
+            regn *= 1 + (64 - self.n_streams) // 32
             reg_val = self.read_uint('source_sel%d' % regn)
             for i in range(16):
                 # MSBs of control signals are for first input
@@ -82,7 +83,7 @@ class Input(Block):
         assert (val < 4), "Mux input value not recognized!"
         if stream is not None:
             assert (stream < self.n_streams), "Can't switch stream >= self.n_streams" 
-            reg = 'source_sel%d' % (stream // 16) # one register per 16 streams
+            reg = 'source_sel%d' % (stream // 16 * (1 + (64 - self.n_streams) // 32)) # one register per 16 streams
             reg_pos = 15 - (stream % 16) # First input controlled by MSBs
             self.change_reg_bits(reg, val, 2*reg_pos, 2)
         else:
@@ -145,7 +146,11 @@ class Input(Block):
         self.write_int('rms_enable', 1)
         time.sleep(0.01)
         self.write_int('rms_enable', 0)
-        x = np.array(struct.unpack('>%dQ' % (self.n_streams), self.read('rms_levels', self.n_streams * 8)), dtype=np.uint64)
+        if self.n_streams == 32:
+            x = np.array(struct.unpack('>%dQ' % (2*self.n_streams), self.read('rms_levels', 2*self.n_streams * 8)), dtype=np.uint64)
+            x = np.concatenate([x[0:16], x[32:48]])
+        else:
+            x = np.array(struct.unpack('>%dQ' % (self.n_streams), self.read('rms_levels', self.n_streams * 8)), dtype=np.uint64)
         self.write_int('rms_enable', 1)
         # Top 29 bits of data are signed means
         # Lower 35 bits are unsigned powers
