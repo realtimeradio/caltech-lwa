@@ -6,7 +6,7 @@ import subprocess
 from lwa_f.blocks.fpga import Fpga as _Fpga
 from lwa_f.error_levels import *
 from lwa_f import __version__
-from lwa_f import __fwversion__
+from lwa_f import __zcu102_fwversion__
 
 import casperfpga.sysmon
 
@@ -35,6 +35,26 @@ class Fpga(_Fpga):
         super(Fpga, self).__init__(host, name, logger)
         self.username = username
         self.password = password
+
+  def check_firmware_support(self):
+        """
+        Check the software packages firmware support version against
+        the running firmware version.
+
+        :return: True if firmware is supported, False otherwise.
+        :rtype bool:
+        """
+        vfw_str = self.get_firmware_version()
+        vsw_str = __zcu102_fwversion__
+        vfw = vfw_str.split('.')
+        vsw = vsw_str.split('.')
+        # Check from major version down. If __fwversion__ says "A.B"
+        # then any A.B.x.y is deemed supported.
+        for vn, ver in enumerate(vsw):
+            if len(ver) > 0 and ver != vfw[vn]:
+                self._warning("Software supports FW rev %s, but not %s" % (vsw_str, vfw_str))
+                return False
+        return True
 
     def get_status(self):
         """
