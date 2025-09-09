@@ -110,9 +110,9 @@ class ZCU102Fengine():
         #: Control interface to PFB block
         self.pfb         = pfb.Pfb(self._cfpga, 'pfb')
         #: Control interface to Mask (flagging) block
-        self.mask        = mask.Mask(self._cfpga, 'mask', n_signals=32)
+        self.mask        = mask.Mask(self._cfpga, 'mask', n_signals=32, n_cores=2)
         #: Control interface to Autocorrelation block
-        self.autocorr    = autocorr.AutoCorr(self._cfpga, 'autocorr', n_signals=32)
+        self.autocorr    = autocorr.AutoCorr(self._cfpga, 'autocorr', n_signals=32, n_cores=2)
         #: Control interface to Equalization block
         self.eq          = eq.Eq(self._cfpga, 'eq', n_streams=32, n_coeffs=2**9)
         #: Control interface to post-equalization Test Vector Generator block

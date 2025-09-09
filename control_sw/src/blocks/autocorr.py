@@ -68,11 +68,7 @@ class AutoCorr(Block):
         self._n_cores = n_cores
         self._use_mux = use_mux
         self.n_signals_per_block = self.n_signals // self._n_cores
-        self.n_signals_per_block *= 1 + (64 - self.n_signals) // 32
         
-        if self.n_signals == 32 and not self._use_mux:
-            self._warning("Using n_signals=%i with use_mux=%s is untested" % (self.n_signals, self._use_mux))
-            
     def get_acc_cnt(self):
         """
         Get the current accumulation count.
@@ -109,11 +105,9 @@ class AutoCorr(Block):
         """
         if not self._use_mux:
             return
-        if sel >= self._n_cores or (sel >= 2 and self.n_signals == 32):
+        if sel >= self._n_cores:
             self.logger.error("Cannot select input %d when there are only %d cores" % (sel, self._n_cores))
             return
-        if self.n_signals == 32:
-            sel += 2
         self.write_int('mux_sel', sel)
 
     def _get_mux(self):
@@ -124,10 +118,7 @@ class AutoCorr(Block):
         :rtype sel: int
 
         """
-        sel = self.read_uint('mux_sel')
-        if self.n_signals == 32:
-            sel -= 2
-        return sel
+        return self.read_uint('mux_sel')
 
     def _read_bram(self):
         """ 
@@ -245,8 +236,6 @@ class AutoCorr(Block):
         specs = np.zeros([self.n_signals, self.n_chans], dtype=float)
         if self._use_mux:
             for i in range(self._n_cores):
-                if i >= 2 and self.n_signals == 32:
-                    continue
                 specs[i*self.n_signals_per_block:(i+1)*self.n_signals_per_block] = \
                     self.get_new_spectra(i, filter_ksize=filter_ksize)
         else:

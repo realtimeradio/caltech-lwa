@@ -41,7 +41,7 @@ class Mask(Block):
         self.n_signals = n_signals
         self.n_cores = n_cores
         assert self.n_signals % self.n_cores == 0
-        self._n_signals_per_core = max(16, self.n_signals // self.n_cores)
+        self._n_signals_per_core = self.n_signals // self.n_cores
         self.initial_acc_len = acc_len
         self.initial_flag_threshold = flag_threshold
         self._input_binary_point = 17 #: Input data binary point
@@ -112,7 +112,7 @@ class Mask(Block):
         :param v: Threshold level
         :type v: float
         """
-        core_num = signal // self._n_signals_per_core * (1 + (64 - self.n_signals) // 32)
+        core_num = signal // self._n_signals_per_core
         addr = signal % self._n_signals_per_core
         v = int(v * 2**self._input_binary_point)
         assert v < 2**32, "Threshold exceeded maximum allowed"
@@ -134,7 +134,7 @@ class Mask(Block):
         :return: Threshold level
         :rtype: float
         """
-        core_num = signal // self._n_signals_per_core * (1 + (64 - self.n_signals) // 32)
+        core_num = signal // self._n_signals_per_core
         addr = signal % self._n_signals_per_core
         self.write_int('core%d_addr' % core_num, addr)
         v = self.read_uint('core%d_readback' % core_num)

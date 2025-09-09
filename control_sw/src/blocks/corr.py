@@ -48,9 +48,6 @@ class Corr(Block):
         """
         assert signal1 < self.n_signals
         assert signal2 < self.n_signals
-        if self.n_signals == 32:
-            signal1 += 32
-            signal2 += 32
         self.write_int('input_sel',(signal1 + (signal2<<8)))
  
     def _wait_for_acc(self):
