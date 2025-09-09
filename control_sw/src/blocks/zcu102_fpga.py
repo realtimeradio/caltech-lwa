@@ -36,7 +36,7 @@ class Fpga(_Fpga):
         self.username = username
         self.password = password
 
-  def check_firmware_support(self):
+    def check_firmware_support(self):
         """
         Check the software packages firmware support version against
         the running firmware version.
