@@ -175,14 +175,7 @@ class Fpga(Block):
         stats = {}
         flags = {}
         stats['programmed'] = self.is_programmed()
-        try:
-            meta = self.host.transport.get_metadata()
-        except AttributeError:
-            # Catch for the ZCU102 that uses KatcpTransport
-            katcp_meta = self.sysmon.fpga.system_info
-            meta = {'filename': katcp_meta['system'],
-                    'md5sum': katcp_meta['md5_bitstream']
-                   }
+        meta = self.host.transport.get_metadata()
         stats['flash_firmware'] = meta['filename']
         stats['flash_firmware_md5'] = meta['md5sum']
         stats['timestamp'] = datetime.datetime.now().isoformat()
