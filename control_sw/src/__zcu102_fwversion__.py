@@ -1,1 +1,1 @@
-__fwversion__ = "7.3."
+__zcu102_fwversion__ = "102.2."
