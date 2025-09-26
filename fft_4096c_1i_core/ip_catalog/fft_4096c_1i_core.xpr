@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Product Version: Vivado v2019.1.3 (64-bit)              -->
+<!-- Product Version: Vivado v2019.1 (64-bit)              -->
 <!--                                                         -->
 <!-- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.   -->
 
 <Project Version="7" Minor="40" Path="/home/jackh/src/caltech-lwa/fft_4096c_1i_core/ip_catalog/fft_4096c_1i_core.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="1ae55ded1b414bf68e21b2c06a63ee92"/>
+    <Option Name="Id" Val="413a7c7959274e679b0f1235ff85912e"/>
     <Option Name="Part" Val="xcku115-flvf1924-2-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -71,7 +71,7 @@
       <File Path="$PSRCDIR/sources_1/imports/hdl/fft_4096c_1i_core_bd_wrapper.vhd">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/fft_4096c_1i_core_bd/hdl/fft_4096c_1i_core_bd_wrapper.vhd"/>
-          <Attr Name="ImportTime" Val="1676399163"/>
+          <Attr Name="ImportTime" Val="1758031066"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -88,7 +88,7 @@
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/fft_4096c_1i_core_mod.vhd"/>
-          <Attr Name="ImportTime" Val="1676399159"/>
+          <Attr Name="ImportTime" Val="1758031065"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -103,7 +103,7 @@
       <File Path="$PSRCDIR/constrs_1/imports/sysgen/fft_4096c_1i_core_clock.xdc">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/fft_4096c_1i_core_clock.xdc"/>
-          <Attr Name="ImportTime" Val="1676399095"/>
+          <Attr Name="ImportTime" Val="1758031024"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
@@ -111,7 +111,7 @@
       <File Path="$PSRCDIR/constrs_1/imports/sysgen/fft_4096c_1i_core.xdc">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../sysgen/fft_4096c_1i_core.xdc"/>
-          <Attr Name="ImportTime" Val="1676399095"/>
+          <Attr Name="ImportTime" Val="1758031024"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
