@@ -440,17 +440,27 @@ class ZCU102Fengine():
                 loaded_fpg = self._cfpga.read('cache_loaded_firmware', 1024)
                 loaded_fpg = loaded_fpg.split(b'\x00', 1)[0]
                 loaded_fpg = loaded_fpg.decode()
+                loaded_md5 = self._cfpga.read('cache_loaded_md5sum', 32)
+                loaded_md5 = loaded_md5.split(b'\x00', 1)[0]
+                loaded_md5 = loaded_md5.decode()
+                actual_md5 = helpers.md5sum(loaded_fpg)
+                if loaded_md5 != actual_md5:
+                    raise RuntimeError("md5sum mis-match")
+                    
                 self._cfpga.transport.upload_to_ram_and_program(loaded_fpg, force=force)
                 self.logger.info("Loaded %s" % loaded_fpg)
                 fpgfile = loaded_fpg
+                fpgmd5 = actual_md5
                 try:
                     self._cfpga.get_system_information()
                 except:
                     self.logger.error("Failed to get firmware metadata from flash")
             else:
+                fpgmd5 = helpers.md5sum(fpgfile)
                 self.logger.info("Loading firmware %s to %s" % (fpgfile, self.hostname))
                 self._cfpga.transport.upload_to_ram_and_program(fpgfile, force=force)
             self._cfpga.write('cache_loaded_firmware', struct.pack('1024s', fpgfile[:1024].encode()))
+            self._cfpga.write('cache_loaded_md5sum', struct.pack('32s', fpgmd5[:32].encode()))
         except:
             self.logger.exception("Exception when loading new firmware")
             raise RuntimeError("Error during load")

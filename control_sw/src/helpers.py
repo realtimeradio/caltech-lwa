@@ -6,6 +6,7 @@ import redis
 import json
 import socket
 import struct
+import hashlib
 
 
 logger = logging.getLogger(__name__)
@@ -78,3 +79,14 @@ def add_default_log_handlers(logger, redishostname=None, fglevel=logging.INFO, b
         redis_handler.setFormatter(formatter)
         logger.addHandler(redis_handler)
     return logger
+
+
+def md5sum(filename, block_size=2622144):
+    with open(filename, 'rb') as fh:
+        m = hashlib.md5()
+        while True:
+            block = fh.read(block_size)
+            if len(block) == 0:
+                break
+            m.update(block)
+    return m.hexdigest()
