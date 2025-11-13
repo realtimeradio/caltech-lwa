@@ -354,7 +354,7 @@ class ZCU102Fengine():
         """
         Reprogram the FPGA into its default boot image.
         """
-        self._cfpga.transport.progdev(0)
+        self._cfpga.transport.deprogram()
 
     def set_equalization(self, eq_start_chan=1000, eq_stop_chan=3300, 
             start_chan=512, stop_chan=3584, filter_ksize=21, target_rms=0.125*3):
