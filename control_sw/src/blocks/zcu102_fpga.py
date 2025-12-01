@@ -36,6 +36,30 @@ class Fpga(_Fpga):
         self.username = username
         self.password = password
 
+    def get_fpga_clock(self):
+        """
+        Estimate the FPGA clock, by polling the ``sys_clkcounter`` register.
+        
+        :return: Estimated FPGA clock in MHz
+        :rtype: float
+
+        """
+        t0a = time.time()
+        c0 = self.read_uint('sys_clkcounter')
+        t0b = time.time()
+        t0 = (t0a + t0b) / 2
+        time.sleep(0.1)
+        t1a = time.time()
+        c1 = self.read_uint('sys_clkcounter')
+        t1b = time.time()
+        t1 = (t1a + t1b) / 2
+        # Catch counter wrap
+        if c1 < c0:
+            c1 += 2**32
+        clk_mhz = (c1 - c0) / 1e6 / (t1 - t0)
+        
+        return clk_mhz
+    
     def check_firmware_support(self):
         """
         Check the software packages firmware support version against
