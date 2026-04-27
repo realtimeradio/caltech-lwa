@@ -283,7 +283,7 @@ class ZCU102Fengine():
             "Number of channels per packet must be an integer multiple of %d" % self.reorder.n_parallel_chans
 
         packet_starts, packet_payloads, channel_indices = \
-            self.packetizer.get_packet_info(n_chans_per_packet, occupation=0.59, chan_block_size=self.reorder.n_parallel_chans)
+            self.packetizer.get_packet_info(n_chans_per_packet, occupation=0.50, chan_block_size=self.reorder.n_parallel_chans)
 
         # Small adjustment to the packet starts to move them up against the payloads
         for i,pp in enumerate(packet_payloads):
