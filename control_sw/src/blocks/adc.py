@@ -613,11 +613,10 @@ class Adc(Block):
                 elif self.n_boards_per_fmc == 1:
                     adc.increment_bitslip_index(board) # empirically optimized for the ZCU102
                     adc.increment_bitslip_index(board) # empirically optimized for the ZCU102
-                    adc.increment_bitslip_index(board) # empirically optimized for the ZCU102
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
             
-            for slip in range(2 if self.n_boards_per_fmc == 2 else 0):
+            for slip in range(2):
                 rescan = False
                 for board in range(self.n_boards_per_fmc):
                     if not np.any(errs[1:-2, 4*board:4*(board+1), :] == 0):
@@ -628,7 +627,8 @@ class Adc(Block):
                             adc.decrement_bitslip_index(board)
                             adc.decrement_bitslip_index(board)
                         elif self.n_boards_per_fmc == 1:
-                            pass
+                            adc.decrement_bitslip_index(board)
+                            adc.decrement_bitslip_index(board)
                 if rescan:
                     errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                             step_size=step_size))
