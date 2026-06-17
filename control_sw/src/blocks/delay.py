@@ -65,8 +65,9 @@ class Delay(Block):
             delay = self.max_delay-1
         self._debug('Setting delay of stream %d to %d' % (stream, delay))
         control_id = stream // 32
+        en_id = stream // (self.n_streams // 2)
         enable_reg = 'delay_en%d' % (control_id)
-        delay_reg  = 'delay%d' % (control_id)
+        delay_reg  = 'delay%d' % (en_id)
         self.write_int(enable_reg, 0)
         self.write_int(delay_reg, delay)
         self.write_int(enable_reg, 1 << (31 - (stream % 32))) # MSB is channel 0
@@ -85,9 +86,9 @@ class Delay(Block):
         """
         if stream > self.n_streams:
             self._error('Tried to get delay for stream %d > n_streams (%d)' % (stream, self.n_streams))
-        control_id = stream//32
+        control_id = stream//(self.n_streams//2)
         block = 'delay_store%d' % control_id
-        self.write_int('%s_sel' % block, stream % 32)
+        self.write_int('%s_sel' % block, stream % (self.n_streams//2))
         return self.read_uint('%s_readout' % block)
 
     def initialize(self, read_only=False):
