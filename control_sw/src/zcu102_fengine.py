@@ -699,8 +699,8 @@ class ZCU102Fengine():
 
         """
         if program:
-            assert adc_clocksource in (0, 1), \
-                "adc_clocksource needs to be either 0 or 1"
+            assert adc_clocksource == 0 \
+                "adc_clocksource needs to be 0"
             self.program()
             try:
                 self.adc.initialize(read_only=False, clocksource=adc_clocksource)
