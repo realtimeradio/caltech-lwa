@@ -450,14 +450,16 @@ class ZCU102Fengine():
                 self.logger.info("Loaded %s" % loaded_fpg)
                 fpgfile = loaded_fpg
                 fpgmd5 = actual_md5
-                try:
-                    self._cfpga.get_system_information()
-                except:
-                    self.logger.error("Failed to get firmware metadata from flash")
             else:
                 fpgmd5 = helpers.md5sum(fpgfile)
                 self.logger.info("Loading firmware %s to %s" % (fpgfile, self.hostname))
                 self._cfpga.transport.upload_to_ram_and_program(fpgfile, force=force)
+                
+            try:
+                self._cfpga.get_system_information()
+            except:
+                self.logger.error("Failed to get firmware metadata from flash")
+                raise RuntimeError("Error during load of system information")
             self._cfpga.write('cache_loaded_firmware', struct.pack('1024s', fpgfile[:1024].encode()))
             self._cfpga.write('cache_loaded_md5sum', struct.pack('32s', fpgmd5[:32].encode()))
         except:
