@@ -598,6 +598,12 @@ class Adc(Block):
         if step_size is None:
             step_size = self.cal_step_size
             
+        leading_slack = 20
+        if self.n_boards_per_fmc == 1:
+            # empirically optimized for the ZCU102 - see discussion at the ends of:
+            # https://github.com/lwa-project/ng_digital_processor/issues/44
+            leading_slack = 12
+            
         ok = True
         TEST_VAL = 0b0000010101
         best_by_adc = []
@@ -611,8 +617,11 @@ class Adc(Block):
                     adc.decrement_bitslip_index(board) # empirically optimized for the SNAP2
                     adc.decrement_bitslip_index(board) # empirically optimized for the SNAP2
                 elif self.n_boards_per_fmc == 1:
-                    adc.increment_bitslip_index(board) # empirically optimized for the ZCU102
-                    adc.increment_bitslip_index(board) # empirically optimized for the ZCU102
+                    for chip in range(4):  # empirically optimized for the ZCU102
+                        for lane in range(4):
+                            adc.bitslip(4*chip + lane, board)
+                            adc.bitslip(4*chip + lane, board)
+                    adc.decrement_bitslip_index(board) # empirically optimized for the ZCU102
             errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                     step_size=step_size))
             
@@ -627,8 +636,7 @@ class Adc(Block):
                             adc.decrement_bitslip_index(board)
                             adc.decrement_bitslip_index(board)
                         elif self.n_boards_per_fmc == 1:
-                            adc.decrement_bitslip_index(board)
-                            adc.decrement_bitslip_index(board)
+                            adc.increment_bitslip_index(board)
                 if rescan:
                     errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                             step_size=step_size))
@@ -638,7 +646,7 @@ class Adc(Block):
                 slip_done = True
                 for board in range(self.n_boards_per_fmc):
                     for chip in range(4):
-                        if np.any(errs[0:20, 4*board + chip:4*board + chip + 1, :] == 0):
+                        if np.any(errs[0:leading_slack, 4*board + chip:4*board + chip + 1, :] == 0):
                             slip_done = False
                             self._info("Bitslipping board %d chip %d because delay start too large" % (board, chip))
                             for lane in range(4):
@@ -648,7 +656,8 @@ class Adc(Block):
                             self._info("Bitslipping board %d chip %d because nowhere was good" % (board, chip))
                             for lane in range(4):
                                 adc.bitslip(4*chip + lane, board)
-                        if np.any(errs[-5:-1, 4*board + chip:4*board + chip + 1,:] == 0):
+                        if self.n_boards_per_fmc != 1 \
+                           and np.any(errs[-5:-1, 4*board + chip:4*board + chip + 1,:] == 0):
                             slip_done = False
                             self._info("Bitslipping board %d chip %d because delay start too small" % (board, chip))
                             for lane in range(4):
@@ -656,12 +665,22 @@ class Adc(Block):
                                     adc.bitslip(4*chip + lane, board)
                 if verbose:
                     self.print_sweep(errs)
-
+                    
                 if slip_done:
                     break
-
+                    
                 errs = np.array(self._get_errs_by_delay(adc, test_val=TEST_VAL,
                                                         step_size=step_size))
+
+            if not slip_done:
+                msg = "FMC %d: slip loop hit its pass cap without converging (word alignment is parity-dependent)" % adc.fmc
+                if self.n_boards_per_fmc == 1:
+                    self._error(msg)
+                    if fail_hard:
+                        raise RuntimeError(msg)
+                    ok = False
+                else:
+                    self._warning(msg)
 
             best, slack = self._get_best_delays(errs, step_size=step_size)
             best_by_adc += [best]
