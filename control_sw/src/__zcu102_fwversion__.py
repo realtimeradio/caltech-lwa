@@ -1,1 +1,1 @@
-__zcu102_fwversion__ = "102.2."
+__zcu102_fwversion__ = "102.3."
